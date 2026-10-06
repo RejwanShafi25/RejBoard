@@ -1,7 +1,7 @@
 {
   "name": "rejwan-whiteboard",
   "productName": "Rejwan Whiteboard",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A cute, local-first whiteboard and note-taking app",
   "main": "main.js",
   "author": "Rejwan Shafi",
@@ -12,8 +12,8 @@
     "dist": "electron-builder"
   },
   "devDependencies": {
-    "electron": "^44.5.1",
-    "electron-builder": "^26.15.3"
+    "electron": "^31.0.0",
+    "electron-builder": "^24.13.3"
   },
   "build": {
     "appId": "com.rejwan.whiteboard",
@@ -32,21 +32,34 @@
       "vendor/**"
     ],
     "win": {
-      "target": "nsis"
+      "target": [
+        "nsis",
+        "portable"
+      ]
     },
     "mac": {
-      "target": "dmg"
+      "target": [
+        "dmg"
+      ]
     },
     "linux": {
-      "target": "AppImage"
+      "target": [
+        "AppImage",
+        "deb",
+        "rpm"
+      ]
     },
     "publish": [
       {
         "provider": "github",
         "releaseType": "release"
       }
-    ]
+    ],
+    "artifactName": "Rejwan-Whiteboard-${version}-${os}-${arch}.${ext}"
   },
   "repository": "github:YOUR_USERNAME/rejwan-whiteboard",
-  "homepage": "https://github.com/YOUR_USERNAME/rejwan-whiteboard"
+  "homepage": "https://github.com/YOUR_USERNAME/rejwan-whiteboard",
+  "allowScripts": {
+    "electron@31.7.7": true
+  }
 }

@@ -55,3 +55,30 @@ and push a tag (`git tag v1.0.0 && git push --tags`) to build Windows/macOS/Linu
 
 ## Not built yet
 Templates (UML / flowchart / planners), smart connectors, rotate, group/ungroup, ruler, Word/PowerPoint import, handwriting-to-LaTeX OCR with a bundled model.
+
+## v1.1.0 update
+
+This build includes:
+- finite paper clipping so drawing stays inside selected page dimensions
+- fixed text placement and Enter-to-finish editing (Shift+Enter inserts a line break)
+- rich text color and partial-selection formatting
+- inline `$...$` math preview while typing
+- expanded LaTeX palette: structures, Greek, symbols, computer-science, and other symbols
+- folder-first home dashboard with 5x5 folder paging, nested folders, folder colors, search, drag/drop board moves, board copy and password lock
+- board hover actions for copy, move, lock and delete
+- rotation handle for selected objects and individual movement within multi-selection
+- transparent ruler with drag/rotation support for straight-line drawing
+- Pomodoro timer
+- Windows Ink/raw pointer event mode for lower-latency pen input when Chromium exposes it
+- PDF, DOCX and PPTX text import through the built-in ZIP/XML reader
+- Electron build targets for Windows NSIS + portable EXE, macOS DMG, and Linux AppImage + DEB + RPM
+
+Legacy binary `.doc` and `.ppt` files are detected and report that they need conversion to `.docx`/`.pptx`; parsing those old binary formats would require a separate legacy Office parser.
+
+## Home screen: folders, protected boards, tags (v17)
+- **Sidebar**: All notes · Favorites · **Protected** · Trash, then **Tags** and **Folders** as buttons. Folders are no longer listed in the sidebar; the **Folders** button shows your top-level folders as a grid (click one to see its subfolders and boards, with a breadcrumb back).
+- **Folder cards** (hover): ✎ rename, 🎨 color (swatches + custom), ＋ subfolder, 🗑 delete (contents move up one level). The top-bar **＋ New folder** creates a folder in the folder you are looking at.
+- **Board ⋮ menu**: favorite, copy, **Move board** (pick Home / any folder / subfolder from a tree), **Edit tags**, **Lock with password** / **Remove password**, Move to Trash. Locked boards show a blurred thumbnail with a lock, are listed under **Protected**, and ask for the password before opening.
+- **Tags**: add them from the ⋮ menu or the board header; the **Tags** page lists every tag, click one to see its boards (tag chips on cards are clickable too).
+- All prompts are in-app dialogs (browser `prompt()` does not exist in Electron).
+- Typing `text $O(n)$ more text` turns only `$O(n)$` into a formula; the formula is its own object you can select, move, resize and rotate, and the rest stays normal text.
