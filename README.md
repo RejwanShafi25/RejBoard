@@ -82,8 +82,11 @@ Legacy binary `.doc` and `.ppt` files are detected and report that they need con
 - **Tags**: add them from the ⋮ menu or the board header; the **Tags** page lists every tag, click one to see its boards (tag chips on cards are clickable too).
 - All prompts are in-app dialogs (browser `prompt()` does not exist in Electron).
 - Typing `text $O(n)$ more text` turns only `$O(n)$` into a formula; the formula is its own object you can select, move, resize and rotate, and the rest stays normal text.
+<<<<<<< HEAD
 
 ## v21 update
 - **Dynamic connectors**: Line / Arrow / Double arrow can be curved (drag the orange mid-handle; double-click it to straighten). Drag an end onto a shape's edge to attach it (green ring); attached ends follow the shapes when they move or resize, and a connector joining two shapes bends automatically into a smooth S-curve. Drag the mid-handle to override.
 - **Sketch & snap** (the "Fix shapes" toggle, now on by default and remembered): rough circles, ellipses, rectangles (also rotated), squares, triangles, diamonds, pentagons, hexagons, straight lines, curved lines and arrows become real shapes. Lines/arrows drawn between shapes become connected.
 - **Offline translation**: UI text is translated at runtime, no per-language hard-coding. Built-in strings work everywhere; for any other string the browser's on-device Translator API is used (Chrome 138+; one-time language-pack download, then fully offline) and results are cached locally. Extra languages appear in the language list when that API exists.
+=======
+>>>>>>> 57a956a7a091888ace5d6d83a72203acfb5673cb
