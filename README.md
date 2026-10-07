@@ -33,7 +33,7 @@ Tauri instead of Electron? Create a Tauri project and point `frontendDist` at th
 - **PDF**: import and annotate on top (pages become a locked layer); multi-page PDF export follows the imported pages.
 - **Export**: PNG, SVG, PDF, selection as PNG, JSON, optional invert; **Save a copy** writes a `.rjwb` file that only this app opens.
 - **Zoom** (buttons, Ctrl+wheel, pinch, Fit), **speed mode** for big notes, **palm rejection**, **tilt shading**, stylus side-button eraser.
-- **Present mode**: fullscreen, dock stays visible, laser pointer, spotlight, blank screen (B), timer.
+- **Present mode**: fullscreen, dock stays visible, laser pointer, spotlight, timer.
 - **Settings** (⚙): appearance (language, themes), inking, canvas, reset to default, boards. Every section explains itself; every button has a hover tooltip.
 - **Autosave** with a live indicator (● Saving… → ✓ Saved).
 - 8 UI languages (English default) and 15 text languages.
