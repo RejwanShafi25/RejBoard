@@ -173,7 +173,7 @@ lib('vendor/tex-svg.js','https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es
 <div class="bar" id="tb"></div>
 <div class="bar" id="b5"><label><span data-i="size"></span> <select id="cps"><option value="inf" data-i="inf"></option><option value="pdf">PDF</option><option value="a4">A4</option><option value="a5">A5</option><option value="a3">A3</option><option value="letter">Letter</option></select></label><label><span data-i="orient"></span> <select id="cpo"><option value="p" data-i="portrait"></option><option value="l" data-i="landscape"></option></select></label><button id="apg" data-i="addpage"></button></div>
 <div class="bar" id="b4"><span class="sep"></span>
-<label><input type="checkbox" id="palm"> <span data-i="palm"></span></label><label><input type="checkbox" id="tilt"> <span data-i="tilt"></span></label><label><input type="checkbox" id="fast"> <span data-i="speed"></span></label><span class="sep"></span>
+<label><input type="checkbox" id="palm"> <span data-i="palm"></span></label><label><input type="checkbox" id="tilt"> <span data-i="tilt"></span></label><label><input type="checkbox" id="fast"> <span data-i="speed"></span></label><button id="penb" type="button" hidden title="Graphics tablet pen detected - adjust pen pressure">🖊 Pen</button><span class="sep"></span>
 <select id="shp" hidden><option value="rect">Rectangle</option><option value="ell">Ellipse</option><option value="tri">Triangle</option><option value="dia">Diamond</option><option value="line">Line</option><option value="arr">Arrow</option><option value="rtri">Right triangle</option><option value="pent">Pentagon</option><option value="hex">Hexagon</option><option value="oct">Octagon</option><option value="star">Star</option><option value="darr">Double arrow</option><option value="cyl">Cylinder</option><option value="cone">Cone</option><option value="sphere">Sphere</option><option value="cube">Cube</option><option value="prism">Prism</option><option value="xyz">XYZ Plane</option><option value="trap">Trapezoid</option><option value="para">Parallelogram</option><option value="heart">Heart</option><option value="cross">Cross</option><option value="cloud">Cloud</option><option value="hexagram">Hexagram</option></select>
 </div>
 </div><button id="sh" hidden title="Show toolbars">▼</button>
@@ -223,7 +223,7 @@ const S={id:null,pg:{size:'inf',o:'p',n:1},cell:null,sc:'#fff3a3',sk:'m',fill:''
 S.shapeStyle=Object.assign({lineType:'solid',cornerType:'rounded',size:cfg?.shape?.size||3,border:S.color,fill:S.fill||''},L('wb.shapeStyle',{}));
 let pals=Object.assign({'Pastel Candy':['#ffb3c6','#ffcfd2','#fde4cf','#fbf8cc','#b9fbc0','#a0c4ff','#cdb4ff'],'Pastel Sky':['#cae9ff','#bde0fe','#a2d2ff','#d0f4de','#e4c1f9','#fcf6bd','#ffc8dd'],'Pastel Earth':['#e6ccb2','#ddb892','#b7b7a4','#a5a58d','#cb997e','#ddbea9','#ffe8d6']},L('wb.pals',{})),hist=[],fut=[],cur=null,lasso=null,drag=null,cache=null,CF='',sp,lt,lp,mp=[100,100],st;
 const cv=$('#c'),cx=cv.getContext('2d',{desynchronized:!!L('wb.st',{}).ll});let dpr=1;
-const toast=m=>{const t=$('#ts_');t.textContent=m;t.hidden=0;clearTimeout(toast.h);toast.h=setTimeout(()=>t.hidden=1,2800)};
+const toast=(m,ms=2800)=>{const t=$('#ts_');t.textContent=m;t.hidden=0;clearTimeout(toast.h);toast.h=setTimeout(()=>t.hidden=1,ms)};
 /* ---------- rendering ---------- */
 const IM={};function img(s){if(!IM[s]){const m=new Image();m.onload=draw;m.src=s;IM[s]=m}return IM[s]}
 const wd=(s,p)=>Math.max(.6,s.size*(1-s.sens+s.sens*2*p));
@@ -415,10 +415,41 @@ function queueErase(p){
  });
 }
 /* ---------- input ---------- */
+/* ---------- graphics tablet / pen pressure ---------- */
+let lastPenPr=0,penOn=false,penLast=0,penCurve=L('wb.pcurve',50);
+/* pen pressure after the user's "feel" curve (Soft .. Firm). 50 = raw pressure from the tablet. */
+const penGamma=()=>Math.pow(3,(penCurve-50)/50);
+function penPr(ev){let r=ev.pressure;if(!(r>0))r=lastPenPr||.3;lastPenPr=r;return Math.max(.02,Math.min(1,Math.pow(r,penGamma())))}
+function penUi(){const b=$('#penb');if(b)b.hidden=!penOn}
+function penSeen(e){
+ const now=Date.now();
+ if(e.pointerType=='pen'){penLast=now;if(!penOn){penOn=true;penUi();toast('Graphics tablet pen detected - pen pressure is on. Tune it with the 🖊 Pen button.',4500)}
+  const m=$('#penmeter');if(m&&!$('#penp').hidden){m.style.width=Math.round((e.pressure||0)*100)+'%';$('#penval').textContent=(e.pressure||0).toFixed(2)}}
+ else if(penOn&&(e.pointerType=='mouse'||e.pointerType=='touch')&&now-penLast>60000){penOn=false;lastPenPr=0;penUi();const p=$('#penp');if(p)p.hidden=true}
+}
+['pointermove','pointerdown','pointerover','pointerenter'].forEach(t=>window.addEventListener(t,penSeen,true));
+(function(){
+ const b=$('#penb');if(!b)return;
+ const p=document.createElement('div');p.id='penp';p.hidden=true;
+ p.style.cssText='position:fixed;z-index:60;min-width:250px;padding:12px 14px;border-radius:14px;background:var(--bg,#fff);color:var(--fg,#222);border:1px solid var(--bd,#ccc);box-shadow:0 8px 30px #0004;font-size:13px;display:flex;flex-direction:column;gap:8px';
+ p.innerHTML='<b>🖊 Graphics tablet pen</b><div style="opacity:.75">Pen detected. Press on the tablet to see pressure.</div>'+
+  '<div style="height:10px;border-radius:6px;background:#8883;overflow:hidden"><div id="penmeter" style="height:100%;width:0;background:var(--ac,#e8679b)"></div></div>'+
+  '<div style="display:flex;justify-content:space-between"><span>Pressure</span><span id="penval">0.00</span></div>'+
+  '<label style="display:flex;flex-direction:column;gap:2px">Pressure feel <span style="opacity:.7;display:flex;justify-content:space-between"><small>Soft (thick with light touch)</small><small>Firm</small></span><input type="range" id="pencv" min="0" max="100" step="1"></label>'+
+  '<div style="display:flex;gap:6px"><button id="penrs" type="button">Reset</button><button id="penx" type="button">Close</button></div>'+
+  '<small style="opacity:.7">How much pressure changes line width per brush is the Pressure slider in each brush panel; the master on/off switch is ⚙ Settings → Pressure sensitivity.</small>';
+ document.body.append(p);
+ const cv_=p.querySelector('#pencv');cv_.value=penCurve;
+ cv_.oninput=()=>{penCurve=+cv_.value;Wr('wb.pcurve',penCurve)};
+ p.querySelector('#penrs').onclick=()=>{penCurve=50;cv_.value=50;Wr('wb.pcurve',50)};
+ p.querySelector('#penx').onclick=()=>p.hidden=true;
+ b.onclick=e=>{e.stopPropagation();if(!p.hidden){p.hidden=true;return}const r=b.getBoundingClientRect();p.hidden=false;p.style.left=Math.max(8,Math.min(innerWidth-270,r.left))+'px';p.style.top=(r.bottom+6)+'px'};
+ document.addEventListener('pointerdown',e=>{if(!p.hidden&&!p.contains(e.target)&&e.target!==b)p.hidden=true});
+})();
 function addPt(ev,p){p=rulerPoint(paperPoint(p));const c=cfg[cur.tool],k=Math.min(.92,c.stab/100*.95),dt=Math.max(1,ev.timeStamp-lt);lt=ev.timeStamp;
  if(S.straight||ev.shiftKey){cur.pts=[cur.pts[0],[p[0],p[1],.5]];return}
  sp=[sp[0]+(p[0]-sp[0])*(1-k),sp[1]+(p[1]-sp[1])*(1-k)];const l=cur.pts.at(-1),d=Math.hypot(sp[0]-l[0],sp[1]-l[1]);
- const pr=ev.pointerType!='mouse'&&ev.pressure>0?ev.pressure:Math.max(.15,Math.min(1,1-d/dt*.4));lp+=(pr-lp)*.3;if(d>.6/S.z)cur.pts.push([sp[0],sp[1],lp,cur.tl?Math.min(1,Math.hypot(ev.tiltX||0,ev.tiltY||0)/60):0])}
+ const isPen=ev.pointerType=='pen',pr=isPen?penPr(ev):(ev.pointerType!='mouse'&&ev.pressure>0?ev.pressure:Math.max(.15,Math.min(1,1-d/dt*.4)));lp+=(pr-lp)*(isPen?.55:.3);if(d>.6/S.z)cur.pts.push([sp[0],sp[1],lp,cur.tl?Math.min(1,Math.hypot(ev.tiltX||0,ev.tiltY||0)/60):0])}
 const tp=new Map();let lastPen=0;
 const pinchStart=()=>{const[a,b]=[...tp.values()];return{k:'pz',d:Math.hypot(a[0]-b[0],a[1]-b[1])||1,z:S.z,mx:(a[0]+b[0])/2,my:(a[1]+b[1])/2,ox:S.ox,oy:S.oy}};
 function xyzHandles(i){const o=i.xyz||{},ox=o.ox??i.x,oy=o.oy??i.y,dx=(o.zLen||35)*.72,dy=(o.zLen||35)*.55;return {x:[ox+(o.xLen||120),oy,'x'],y:[ox,oy+(o.yLen||90),'y'],z:[ox+dx,oy-dy,'z']}}
@@ -433,7 +464,7 @@ cv.addEventListener('pointerdown',e=>{cv.setPointerCapture(e.pointerId);if(e.but
  if(t=='erase'){push();drag={k:'er',last:p};erase(p);draw();return}
  if(t=='lasso'||t=='select'){if(S.sel.length===1&&S.sel[0].t=='sp'&&spDown(p))return;if(S.sel.length===1&&S.sel[0].xyz){const q=S.sel[0],hs=Object.values(xyzHandles(q)),xh=hs.find(v=>Math.hypot(v[0]-p[0],v[1]-p[1])<13/S.z);if(xh){push();drag={k:'xyz',axis:xh[2],item:q};return}}if(S.sel.length&&!(S.sel.length===1&&S.sel[0].t=='sp')){const b=bnds(S.sel),rc=[(b[0]+b[2])/2,b[1]-28/S.z];if(Math.hypot(rc[0]-p[0],rc[1]-p[1])<13/S.z){push();const center=[(b[0]+b[2])/2,(b[1]+b[3])/2];drag={k:'rot',center,start:Math.atan2(p[1]-center[1],p[0]-center[0]),items:S.sel.map(i=>({i,rot:i.rot||0,c:i.t=='sp'?[i.x+i.w/2,i.y+i.h/2]:null}))};return}const h=HD(b).find(q=>Math.hypot(q[0]-p[0],q[1]-p[1])<11/S.z);if(h){push();drag={k:'rs',h:h[2]};return}if(p[0]>b[0]&&p[0]<b[2]&&p[1]>b[1]&&p[1]<b[3]){push();drag={k:'mv',last:p};return}}const h=hit(p);if(h&&h.t=='tb')S.cell=cellAt(h,p);if(h){if(e.shiftKey)S.sel=S.sel.includes(h)?S.sel.filter(q=>q!=h):[...S.sel,h];else S.sel=[h];push();drag={k:'mv',last:p};draw();return}if(!e.shiftKey)S.sel=[];lasso=[p];drag={k:'ls',r:t=='select'?p:null};draw();return}
  if(t=='shape'||t=='tape'){if(t=='tape'){const h=hit(p);if(h&&h.t=='k'){push();h.open=!h.open;save();draw();return}}drag={k:'sh',a:p};mkCache();return}
- const c=cfg[t];cur={t:'s',tool:t,color:S.color,size:c.size,sens:ST.pres?c.sens:0,ang:c.ang,opacity:c.opacity??(t[0]=='h'?35:100),tl:S.tilt&&e.pointerType=='pen',pts:[[p[0],p[1],.5]]};sp=p.slice();lt=e.timeStamp;lp=.5;drag={k:'pen'};mkCache();draw()});
+ const c=cfg[t];cur={t:'s',tool:t,color:S.color,size:c.size,sens:ST.pres?c.sens:0,ang:c.ang,opacity:c.opacity??(t[0]=='h'?35:100),tl:S.tilt&&e.pointerType=='pen',pts:[[p[0],p[1],e.pointerType=='pen'?penPr(e):.5]]};sp=p.slice();lt=e.timeStamp;lp=e.pointerType=='pen'?penPr(e):.5;drag={k:'pen'};mkCache();draw()});
 cv.addEventListener('pointermove',e=>{updateBrushCursor(e.clientX,e.clientY);if(e.pointerType=='touch'&&tp.has(e.pointerId))tp.set(e.pointerId,[e.clientX,e.clientY]);if(!drag)return;
  if(drag.k=='pz'){if(tp.size<2)return;const[a,b]=[...tp.values()],r=cv.getBoundingClientRect(),nz=Math.max(.1,Math.min(8,drag.z*Math.hypot(a[0]-b[0],a[1]-b[1])/drag.d)),mx=(a[0]+b[0])/2,my=(a[1]+b[1])/2,wx=(drag.mx-r.left-drag.ox)/drag.z,wy=(drag.my-r.top-drag.oy)/drag.z;S.z=nz;S.ox=mx-r.left-wx*nz;S.oy=my-r.top-wy*nz;zl();draw();return}
  let p=rulerPoint(paperPoint(pt(e))),k=drag.k;
@@ -1164,7 +1195,7 @@ $('#tgs').oninput=e=>{S.tags=e.target.value;save()};
 $('#hb').onclick=()=>{$('#bars').hidden=1;$('#sh').hidden=0};$('#sh').onclick=()=>{$('#bars').hidden=0;$('#sh').hidden=1};
 document.addEventListener('keydown',e=>{if(/TEXTAREA|INPUT|SELECT/.test(e.target.tagName))return;const m=e.ctrlKey||e.metaKey;
  if(m&&e.key=='z'){e.preventDefault();e.shiftKey?redo():undo()}else if(m&&e.key=='y'){e.preventDefault();redo()}else if(m&&e.key=='c'&&S.sel.length){e.preventDefault();copy()}else if(m&&e.key=='x'&&S.sel.length){e.preventDefault();copy();delSel()}else if(m&&e.key=='d'){e.preventDefault();selAct.dup()}else if(m&&e.key=='s'){e.preventDefault();saveNow()}else if(e.key=='Escape'&&document.body.classList.contains('pres'))present(false);else if(document.body.classList.contains('pres')&&(e.key=='ArrowRight'||e.key=='PageDown'))goPage(pgOf()+1);else if(document.body.classList.contains('pres')&&(e.key=='ArrowLeft'||e.key=='PageUp'))goPage(pgOf()-1);else if(e.key=='z'&&!m)zoomSel();else if(e.key=='Delete'||e.key=='Backspace')delSel();else if(e.key=='+'||e.key=='=')zoomAt(1.2,cv.clientWidth/2,cv.clientHeight/2);else if(e.key=='-')zoomAt(1/1.2,cv.clientWidth/2,cv.clientHeight/2)});
-(async()=>{zl();buildPops();swBrush();try{navigator.serviceWorker&&location.protocol.startsWith('http')&&navigator.serviceWorker.register('sw.js').catch(()=>{})}catch(e){}applyTheme(L('wb.th','auto'));syncPaper();i18n($('#lg').value);swBrush();setColor(S.color);setTool('fount');fit();const all=((await tx('readonly',s=>s.getAll()))||[]).filter(r=>!r.folder&&!r.del&&!r.locked).sort((a,b)=>b.t-a.t);if(all.length)await openNote(all[0]);else{await newNote();await saveNow()}showHome()})();
+(async()=>{zl();buildPops();swBrush();try{navigator.serviceWorker&&location.protocol.startsWith('http')&&navigator.serviceWorker.register('sw.js').catch(()=>{})}catch(e){}applyTheme(L('wb.th','auto'));syncPaper();i18n($('#lg').value);swBrush();setColor(S.color);setTool('fount');fit();const all=((await tx('readonly',s=>s.getAll()))||[]).filter(r=>!r.folder&&!r.del&&!r.locked).sort((a,b)=>b.t-a.t);if(all.length)await openNote(all[0]);else{await newNote();await saveNow()}showHome();try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist().catch(()=>{})}catch(e){}try{if(!window.wb&&!localStorage.getItem('wb.webnote')){localStorage.setItem('wb.webnote','1');setTimeout(()=>toast('Your boards are stored in this browser. Clearing site data deletes them, so use Backup now and then. The desktop app keeps them safer.',9000),1200)}}catch(e){}})();
 /* ===== v21: dynamic connectors, sketch-to-shape, offline UI translation ===== */
 (()=>{
 const isL=i=>i&&i.t=='sp'&&LINEK.includes(i.shp),mid=(a,b)=>[(a[0]+b[0])/2,(a[1]+b[1])/2],dst=(a,b)=>Math.hypot(a[0]-b[0],a[1]-b[1]);

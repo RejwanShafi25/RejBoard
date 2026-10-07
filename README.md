@@ -9,6 +9,8 @@ Open the link, then in Chrome/Edge click the install icon in the address bar to 
 
 **⬇️ Desktop installers (Windows, macOS, Linux): https://github.com/RejwanShafi25/RejBoard/releases/latest**
 
+**Where are my boards stored?** In the browser's IndexedDB (not the cache). Clearing only "cached images and files" is safe; clearing "cookies and other site data" deletes boards. Use **Backup** on the home screen regularly. The desktop app stores boards in its own app-data folder.
+
 ## Run it
 | Way | Steps |
 |---|---|

@@ -6,7 +6,7 @@
   "main": "main.js",
   "author": {
     "name": "Rejwan Shafi",
-    "email": "rejwan.shafi03@gmail.com"
+    "email": "196472099+RejwanShafi25@users.noreply.github.com"
   },
   "license": "MIT",
   "scripts": {
@@ -74,7 +74,7 @@
       ],
       "icon": "build/icon.png",
       "category": "Office",
-      "maintainer": "Rejwan Shafi <RejwanShafi25@users.noreply.github.com>",
+      "maintainer": "Rejwan Shafi <196472099+RejwanShafi25@users.noreply.github.com>",
       "synopsis": "A cute, local-first whiteboard and note-taking app"
     },
     "publish": [
