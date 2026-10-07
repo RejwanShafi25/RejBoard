@@ -25,7 +25,7 @@ Tauri instead of Electron? Create a Tauri project and point `frontendDist` at th
 ## What's inside
 - **Home screen**: boards grid with thumbnails, nested folders (as many as you like), tags, favorites, search (titles, text, #tags), import PDF, backup/restore.
 - **Bottom dock** with cute pens: fountain, calligraphy (angle adjustable), soft brush, ballpoint, pencil, square / chisel / round highlighters (opacity, nib angle), eraser, select, lasso, pan, laser pointer, text, sticky notes, shapes, emoji, images, undo/redo.
-- **Select tools**: click, box-select, lasso, Shift-click multi-select, 8-handle resize, move, duplicate, copy/cut/paste, delete, lock, bring to front / send to back, align, center, distribute.
+- **Select tools**: click, box-select, lasso, Shift-click multi-select, 8-handle resize, move, duplicate, copy/cut/paste, delete, **group / ungroup** (Ctrl+G / Ctrl+Shift+G), **lock / unlock** (Ctrl+Shift+L), bring to front / send to back, align, center, distribute. Clicking any member selects its whole group. Locked objects can't be moved, edited, erased or deleted; they stay clickable on purpose (a click selects them so you can unlock them, Alt+click picks one even under an unlocked object) and a 🔓 *Unlock all* pill appears while anything is locked.
 - **Text**: fonts (handwriting, sans, mono, marker, serif), bold/italic/underline; typed math (`sqrt(x^2+1)/2`, `a/b`, `int_0^1 x^2 dx`) becomes a LaTeX formula; plus a manual LaTeX tool.
 - **Sticky notes** (small / medium / large, pastel colors), **shapes** (12 kinds, fill + line width), **emoji**.
 - **Layers** (add, rename, hide, lock, reorder, delete), **tape** (covers what is beneath; click to reveal), **pen & highlighter presets**.
@@ -44,14 +44,15 @@ Lasso-select your handwriting → **✍→T** (Canvas panel). Order tried: brows
 for another engine (MyScript, a local model) at any time. Recognized text that looks like math becomes a formula.
 
 ## Shortcuts
-Ctrl+Z / Ctrl+Y undo/redo · Ctrl+C/X/V/D copy/cut/paste/duplicate · Ctrl+S save · Delete · +/- zoom · Esc/B in present mode.
+Ctrl+Z / Ctrl+Y undo/redo · Ctrl+C/X/V/D copy/cut/paste/duplicate · Ctrl+G group · Ctrl+Shift+G ungroup · Ctrl+Shift+L lock/unlock · Ctrl+S save · Delete · +/- zoom · Esc/B in present mode.
 
 ## Files
 `index.html` (whole app) · `server.py` · `main.js`+`preload.js` (Electron) · `manifest.json`+`sw.js` (PWA) · `fetch_libs.py` · `build/icon.png`.
 
 ## Pages, tables, trash
 - **Canvas** panel: Infinite (default) or A4 / A5 / A3 / Letter with Portrait/Landscape (orientation is locked while infinite). Pages stack vertically; when content reaches the bottom a "Page full — add another page?" button appears. PDF export writes one PDF page per board page.
-- **Tables**: ➕ → Table (3×3). Double-click (or Text tool) to edit a cell; with the table selected use the bar for row/column insert & delete, copy, bring to front / send to back.
+- **Tables**: ➕ → Table (3×3). Select the table, then use its bar. **Select cells** by dragging across them (Shift+click extends). **Resize** columns/rows by dragging a grid line; the ✥ handle at the top-left corner moves the table. **Merge** / **Split** (unmerge a merged cell, or split one cell into N×M). **Cell background** (swatches or custom colour), **borders** (all / outer / inner / top / bottom / left / right / none, with thickness and colour), **alignment** (left/centre/right, top/middle/bottom). Text wraps inside cells. Double-click (or Text tool) to edit; **Tab / Shift+Tab** jumps to the next/previous cell. Row/column insert & delete work on the selected range and keep merges and formulas intact.
+- **Table formulas**: type `=` in a cell. Cells are `A1`-style (column letter + row number, the top-left cell is A1); ranges are `A1:B3`. Operators `+ - * / ^ %`, `&` (join text) and comparisons (`= <> < > <= >=`). Functions: `SUM AVERAGE (AVG) MIN MAX COUNT PRODUCT ABS SQRT ROUND POWER MOD IF CONCAT`, constants `TRUE FALSE PI`. Errors show as `#DIV/0!`, `#REF!`, `#NAME?`, `#VALUE!`, `#CYCLE!`, `#ERR!`. The **Σ Sum** button fills in `=SUM(...)` for the numbers above (or to the left of) the selected cell. Formulas follow their cells when you insert or delete rows/columns.
 - **Papers**: plain, grid, dots, lined, Cornell, columns, ruled + margin, isometric dots.
 - **Present**: ◀ ▶ (or arrow keys / PageUp / PageDown) change pages with a smooth camera move; 🔍 / Z zooms to the selection (or everything).
 - **Trash**: deleting a board moves it to Trash (home screen); restore it or empty the trash.
@@ -67,7 +68,7 @@ See the step-by-step guide in the project description / repo wiki: push this fol
 and push a tag (`git tag v1.0.0 && git push --tags`) to build Windows/macOS/Linux installers automatically.
 
 ## Not built yet
-Templates (UML / flowchart / planners), smart connectors, rotate, group/ungroup, ruler, Word/PowerPoint import, handwriting-to-LaTeX OCR with a bundled model.
+Templates (UML / flowchart / planners), smart connectors, rotate, ruler, Word/PowerPoint import, handwriting-to-LaTeX OCR with a bundled model.
 
 ## v1.1.0 update
 

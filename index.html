@@ -159,6 +159,16 @@ button,select,input,textarea{border-radius:12px}
 <script>window.MathJax={startup:{typeset:false}}</script>
 <script>function lib(a,b){const t=document.createElement('script');t.src=a;t.onerror=()=>{const u=document.createElement('script');u.src=b;document.head.append(u)};document.head.append(t)}
 lib('vendor/tex-svg.js','https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.min.js');lib('vendor/jspdf.umd.min.js','https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');lib('vendor/pdf.min.js','https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js')</script>
+<style id="v13css">
+#unl{position:absolute;right:12px;top:12px;z-index:6;padding:6px 12px;border-radius:14px;box-shadow:0 4px 16px #0002;font-size:13px}body.pres #unl{display:none}
+#tbp{flex-direction:column;align-items:stretch;flex-wrap:nowrap;gap:5px;padding:8px 10px;max-height:62vh;overflow:auto}
+#tbp .tbr{display:flex;gap:4px;flex-wrap:wrap;justify-content:center;align-items:center}
+#tbp .tbr b{font-size:11px;font-weight:600;opacity:.65;margin:0 2px 0 4px}
+#tbp .tbr button,#tbp .tbr select{padding:3px 8px;font-size:13px}
+#tbp input[type=color]{width:30px;height:28px;padding:1px;border-radius:8px;cursor:pointer}
+#tbp .sw{width:22px;height:22px;padding:0;border-radius:50%}
+#tbp .tbh{font-size:11px;opacity:.65;text-align:center;max-width:520px;align-self:center}
+</style>
 </head><body>
 <div id="hdr"><button id="bn" title="Boards — all your notes, folders and tags"><img src="icon-192.png" alt="" width="18" height="18" style="vertical-align:-4px;border-radius:4px"> <span data-i="boards">Boards</span></button><button id="nn" title="Create a new board">＋ <span data-i="newb">New</span></button><b>Rejwan Whiteboard</b><input id="ti" size="16" aria-label="Board title" title="Rename this board"><button id="favnote" title="Add to favorites">☆</button><input id="tgs" size="12" placeholder="#tags, comma" title="Add tags to this board (comma separated)"><span class="chip" id="sv" role="status" title="Autosave status">✓ Saved</span><span style="flex:1"></span><button id="cvb" title="Canvas: paper, grid, dots, pages and settings">🎨 <span data-i="canvas">Canvas</span></button><button id="exb" title="Export, save a copy, open a board file">⬆ <span data-i="export">Export</span></button><button id="prb" title="Present full screen">📽 <span data-i="present">Present</span></button><button id="stb" title="Settings">⚙</button></div>
 <div id="bars" hidden><div class="bar"><button id="hb" title="Close this panel">✕</button>
@@ -177,7 +187,7 @@ lib('vendor/tex-svg.js','https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es
 <select id="shp" hidden><option value="rect">Rectangle</option><option value="ell">Ellipse</option><option value="tri">Triangle</option><option value="dia">Diamond</option><option value="line">Line</option><option value="arr">Arrow</option><option value="rtri">Right triangle</option><option value="pent">Pentagon</option><option value="hex">Hexagon</option><option value="oct">Octagon</option><option value="star">Star</option><option value="darr">Double arrow</option><option value="cyl">Cylinder</option><option value="cone">Cone</option><option value="sphere">Sphere</option><option value="cube">Cube</option><option value="prism">Prism</option><option value="xyz">XYZ Plane</option><option value="trap">Trapezoid</option><option value="para">Parallelogram</option><option value="heart">Heart</option><option value="cross">Cross</option><option value="cloud">Cloud</option><option value="hexagram">Hexagram</option></select>
 </div>
 </div><button id="sh" hidden title="Show toolbars">▼</button>
-<div id="w"><canvas id="c"></canvas><div id="brushCursor" class="brush-cursor" aria-hidden="true"></div></div>
+<div id="w"><canvas id="c"></canvas><div id="brushCursor" class="brush-cursor" aria-hidden="true"></div><button id="unl" hidden title="Unlock every locked object on this board">🔓 Unlock all</button></div>
 <div id="zw"><button id="zo" title="Zoom out (-)">−</button><button id="zp" title="Reset zoom to 100%">100%</button><button id="zi" title="Zoom in (+)">＋</button><button id="zf" title="Fit everything on screen">⛶</button></div>
 <div id="dk"><button data-t="select" title="Select — click, drag a box, Shift-click to add/remove, drag corners & sides to resize"><svg viewBox="0 0 28 28" width="24" height="24"><path d="M7 4l14 9-6.2 1.6L11.5 21z" fill="#fff" stroke="#6b5876" stroke-width="1.3" stroke-linejoin="round" stroke-linecap="round"/></svg></button><button data-t="lasso" title="Lasso — draw a loop around things to select them">➰</button><button data-t="hand" title="Pan — drag the canvas (right-drag also pans)">✋</button><button data-t="laser" title="Laser pointer — a fading red trail for presenting">🔴</button><span class="sep"></span><button data-t="fount" title="Fountain pen — pressure sensitive"><svg viewBox="0 0 28 28" width="26" height="26"><g transform="rotate(35 14 14)" stroke="#6b5876" stroke-width="1.3" stroke-linejoin="round" stroke-linecap="round"><rect x="10.5" y="2" width="7" height="17" rx="3.2" fill="#ffc8dd"/><path d="M10.5 19h7l-3.5 7z" fill="#fff3b0"/><path d="M14 21v3"/></g></svg></button><button data-t="calli" title="Calligraphy pen — angled nib"><svg viewBox="0 0 28 28" width="26" height="26"><g transform="rotate(35 14 14)" stroke="#6b5876" stroke-width="1.3" stroke-linejoin="round" stroke-linecap="round"><rect x="10.5" y="2" width="7" height="17" rx="3.2" fill="#cdb4ff"/><path d="M10.5 19h7l-.8 6h-5.4z" fill="#fff3b0"/></g></svg></button><button data-t="soft" title="Soft paint brush pen"><svg viewBox="0 0 28 28" width="26" height="26"><g transform="rotate(35 14 14)" stroke="#6b5876" stroke-width="1.3" stroke-linejoin="round" stroke-linecap="round"><rect x="10.5" y="2" width="7" height="17" rx="3.2" fill="#a2d2ff"/><path d="M10.5 19h7q0 3-3.5 6-3.5-3-3.5-6z" fill="#ffafcc"/></g></svg></button><button data-t="ball" title="Ballpoint pen"><svg viewBox="0 0 28 28" width="26" height="26"><g transform="rotate(35 14 14)" stroke="#6b5876" stroke-width="1.3" stroke-linejoin="round" stroke-linecap="round"><rect x="10.5" y="2" width="7" height="17" rx="3.2" fill="#b9fbc0"/><path d="M10.5 19h7l-3.5 7z" fill="#e9ecef"/><rect x="12.5" y="-1" width="3" height="3" rx="1" fill="#ffd6a5"/></g></svg></button><button data-t="pencil" title="Pencil"><svg viewBox="0 0 28 28" width="26" height="26"><g transform="rotate(35 14 14)" stroke="#6b5876" stroke-width="1.3" stroke-linejoin="round" stroke-linecap="round"><rect x="10.5" y="2" width="7" height="17" rx="3.2" fill="#ffe5a5"/><path d="M10.5 19h7l-3.5 7z" fill="#f7c59f"/><rect x="10.5" y="2" width="7" height="4" rx="2" fill="#ffafcc"/><path d="M13 24.4l1 1.6 1-1.6z" fill="#6b5876"/></g></svg></button><span class="sep"></span><button data-t="hsq" title="Square-tip highlighter"><svg viewBox="0 0 28 28" width="26" height="26"><g transform="rotate(35 14 14)" stroke="#6b5876" stroke-width="1.3" stroke-linejoin="round" stroke-linecap="round"><rect x="10.5" y="2" width="7" height="17" rx="3.2" fill="#fff3a3"/><path d="M9.5 19h9v5h-9z" fill="#ffe066"/></g></svg></button><button data-t="hch" title="Chisel highlighter — angled flat tip"><svg viewBox="0 0 28 28" width="26" height="26"><g transform="rotate(35 14 14)" stroke="#6b5876" stroke-width="1.3" stroke-linejoin="round" stroke-linecap="round"><rect x="10.5" y="2" width="7" height="17" rx="3.2" fill="#ffc2d9"/><path d="M9.5 20l9-1.5v5.5l-9 1z" fill="#ff8fab"/></g></svg></button><button data-t="hrd" title="Round-tip highlighter"><svg viewBox="0 0 28 28" width="26" height="26"><g transform="rotate(35 14 14)" stroke="#6b5876" stroke-width="1.3" stroke-linejoin="round" stroke-linecap="round"><rect x="10.5" y="2" width="7" height="17" rx="3.2" fill="#e0c3fc"/><path d="M10 19h8q0 5-4 6-4-1-4-6z" fill="#c8a2f0"/></g></svg></button><button data-t="erase" title="Eraser — removes whole strokes"><svg viewBox="0 0 28 28" width="26" height="26"><g stroke="#6b5876" stroke-width="1.3" stroke-linejoin="round" stroke-linecap="round"><rect x="4" y="9" width="20" height="11" rx="3.5" fill="#ffafcc"/><path d="M4 12.5a3.5 3.5 0 0 1 3.5-3.5H13v11H7.5A3.5 3.5 0 0 1 4 16.5z" fill="#fff"/></g></svg></button><span class="sep"></span><button data-t="text" title="Text — click to type; Ctrl+Enter to finish">🅣</button><button data-t="sticky" title="Sticky note — pick size and color">🗒️</button><button data-t="shape" title="Shapes — rectangles, ellipses, stars, arrows…">🔷</button><button id="emj" title="Emoji">😊</button><button id="img" title="Add a picture">🖼️</button><button id="plus" title="Add image or PDF/DOCX/PPTX document">➕</button><span class="sep"></span><button id="u2" title="Undo (Ctrl+Z)">↶</button><button id="r2" title="Redo (Ctrl+Y)">↷</button><span class="sep"></span><button id="mathd" title="LaTeX equation writer">∑</button><button id="rulerBtn" title="Transparent ruler">📏</button><button id="pomoBtn" title="Pomodoro timer">⏱</button><button id="lyd" title="Layers">▤</button><button id="taped" data-t="tape" title="Tape">▭</button><button id="more" title="Paper, grid, pages and more">⋯</button></div>
 <div id="shpp" class="pp" hidden></div><div id="stp" class="pp sticky-panel" hidden><b>Sticky note</b><div style="opacity:.7;font-size:12px">Choose a size and color, then click anywhere on the board.</div><div class="sticky-sizes" id="stickySizes"></div><div><b style="font-size:13px">Color</b><div class="sticky-colors" id="stickyColors"></div></div><div style="display:flex;gap:8px;align-items:center"><label style="font-size:13px">Custom</label><input id="stickyCustom" type="color" value="#fff3a3"><button id="stickyDone" class="on">Done</button></div></div>
@@ -185,8 +195,8 @@ lib('vendor/tex-svg.js','https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es
 <div id="emp" class="pp" hidden><button class="em" style="font-size:22px">😀</button><button class="em" style="font-size:22px">😍</button><button class="em" style="font-size:22px">🥰</button><button class="em" style="font-size:22px">😎</button><button class="em" style="font-size:22px">🤔</button><button class="em" style="font-size:22px">😴</button><button class="em" style="font-size:22px">🎉</button><button class="em" style="font-size:22px">✨</button><button class="em" style="font-size:22px">🌸</button><button class="em" style="font-size:22px">🌈</button><button class="em" style="font-size:22px">⭐</button><button class="em" style="font-size:22px">❤️</button><button class="em" style="font-size:22px">💡</button><button class="em" style="font-size:22px">📌</button><button class="em" style="font-size:22px">✅</button><button class="em" style="font-size:22px">❌</button><button class="em" style="font-size:22px">⚠️</button><button class="em" style="font-size:22px">❓</button><button class="em" style="font-size:22px">🔥</button><button class="em" style="font-size:22px">🍀</button><button class="em" style="font-size:22px">🎯</button><button class="em" style="font-size:22px">📚</button><button class="em" style="font-size:22px">✏️</button><button class="em" style="font-size:22px">🖍️</button><button class="em" style="font-size:22px">🧠</button><button class="em" style="font-size:22px">🐱</button><button class="em" style="font-size:22px">🐶</button><button class="em" style="font-size:22px">🦄</button><button class="em" style="font-size:22px">🍓</button><button class="em" style="font-size:22px">☕</button><button class="em" style="font-size:22px">🎵</button></div>
 <div id="plm" class="pp" hidden><button id="pl1">🖼️ Add image</button><button id="pl2">📄 PDF (annotate on top)</button><button id="pl4">📄 DOCX / PPTX</button><button id="pl3">▦ <span data-i="addtable"></span></button></div>
 <div id="exm" class="pp" hidden style="flex-direction:column;align-items:stretch"><button data-x="png">🖼 Export board as PNG</button><button data-x="svg">✏️ Export board as SVG</button><button data-x="pdf">📕 Export as PDF</button><button data-x="selpng">🔲 Export selection as PNG</button><button data-x="fit">⛶ Fit everything on the paper</button><button data-x="copy">💾 Save a copy (.rjwb — opens only in this app)</button><button data-x="open">📂 Open a board file</button></div>
-<div id="sb" class="pp" hidden><button data-a="dup" title="Duplicate (Ctrl+D)">⧉</button><button data-a="copy" title="Copy (Ctrl+C)">📋</button><button data-a="cut" title="Cut (Ctrl+X)">✂️</button><button data-a="del" title="Delete">🗑</button><button data-a="front" title="Bring to front">⬆</button><button data-a="back" title="Send to back">⬇</button><button data-a="lock" title="Lock selection">🔒</button><span class="sep"></span><button data-a="L" title="Align left">⇤</button><button data-a="H" title="Center horizontally">⇔</button><button data-a="R" title="Align right">⇥</button><button data-a="T" title="Align top">⤒</button><button data-a="V" title="Center vertically">⇕</button><button data-a="D" title="Align bottom">⤓</button><button data-a="zsel" title="Zoom to selection (Z)">🔍</button><button data-a="dist" title="Distribute evenly (3+ objects)">⋯</button></div>
-<div id="tbp" class="pp" hidden style="bottom:140px"><button data-b="ra">＋ Row above</button><button data-b="rb">＋ Row below</button><button data-b="cl">＋ Col left</button><button data-b="cr">＋ Col right</button><button data-b="dr">− Row</button><button data-b="dc">− Col</button><button data-b="dup">⧉ Copy</button><button data-b="front">⬆ Front</button><button data-b="back">⬇ Back</button></div>
+<div id="sb" class="pp" hidden><button data-a="dup" title="Duplicate (Ctrl+D)">⧉</button><button data-a="copy" title="Copy (Ctrl+C)">📋</button><button data-a="cut" title="Cut (Ctrl+X)">✂️</button><button data-a="del" title="Delete">🗑</button><button data-a="front" title="Bring to front">⬆</button><button data-a="back" title="Send to back">⬇</button><button data-a="lock" title="Lock selection (Ctrl+Shift+L)">🔒</button><button data-a="grp" title="Group (Ctrl+G)">▣</button><button data-a="ungrp" title="Ungroup (Ctrl+Shift+G)">▢</button><span class="sep"></span><button data-a="L" title="Align left">⇤</button><button data-a="H" title="Center horizontally">⇔</button><button data-a="R" title="Align right">⇥</button><button data-a="T" title="Align top">⤒</button><button data-a="V" title="Center vertically">⇕</button><button data-a="D" title="Align bottom">⤓</button><button data-a="zsel" title="Zoom to selection (Z)">🔍</button><button data-a="dist" title="Distribute evenly (3+ objects)">⋯</button></div>
+<div id="tbp" class="pp" hidden style="bottom:146px"><div class="tbr"><b>Rows / columns</b><button data-b="ra">＋ Row above</button><button data-b="rb">＋ Row below</button><button data-b="cl">＋ Col left</button><button data-b="cr">＋ Col right</button><button data-b="dr">− Row</button><button data-b="dc">− Col</button></div><div class="tbr"><b>Cells</b><button data-b="mg" title="Merge the selected cells into one">⊞ Merge</button><button data-b="sp" title="Unmerge a merged cell, or split a single cell into rows / columns">⊟ Split</button><button data-b="sum" title="AutoSum the numbers above (or to the left of) the selected cell">Σ Sum</button><b>Fill</b><button class="sw" data-bgc="#fff3a3" style="background:#fff3a3" title="Cell background #fff3a3"></button><button class="sw" data-bgc="#ffd6e0" style="background:#ffd6e0" title="Cell background #ffd6e0"></button><button class="sw" data-bgc="#d6f5d6" style="background:#d6f5d6" title="Cell background #d6f5d6"></button><button class="sw" data-bgc="#d6e8ff" style="background:#d6e8ff" title="Cell background #d6e8ff"></button><button class="sw" data-bgc="#e5d6ff" style="background:#e5d6ff" title="Cell background #e5d6ff"></button><button class="sw" data-bgc="#ffe0b3" style="background:#ffe0b3" title="Cell background #ffe0b3"></button><button class="sw" data-bgc="#e0e0e0" style="background:#e0e0e0" title="Cell background #e0e0e0"></button><input type="color" id="tbbg" value="#ffe066" title="Custom cell background"><button data-b="nofill" title="Remove cell background">∅</button></div><div class="tbr"><b>Align</b><button data-al="l" title="Align left">⇤</button><button data-al="c" title="Center">↔</button><button data-al="r" title="Align right">⇥</button><button data-av="t" title="Align top">⤒</button><button data-av="m" title="Middle">↕</button><button data-av="b" title="Align bottom">⤓</button></div><div class="tbr"><b>Borders</b><button data-bd="all">All</button><button data-bd="outer">Outer</button><button data-bd="inner">Inner</button><button data-bd="T">Top</button><button data-bd="B">Bottom</button><button data-bd="L">Left</button><button data-bd="R">Right</button><button data-bd="none" title="Remove the borders around the selected cells">None</button><button data-bd="reset" title="Back to the default thin line">Default</button></div><div class="tbr"><b>Border style</b><select id="tbbw" title="Border thickness"><option value="1">Thin</option><option value="2" selected>Medium</option><option value="4">Thick</option></select><input type="color" id="tbbc" value="#111111" title="Border color"><b>Table</b><button data-b="dup">⧉ Copy</button><button data-b="front">⬆ Front</button><button data-b="back">⬇ Back</button></div><div class="tbh">Drag across cells to select (Shift+click extends) · drag a grid line to resize · ✥ moves the table · double-click or Tab to type · formulas: =SUM(A1:A3), =B2*C2, =AVERAGE(B2:B9)</div></div>
 <div id="pgn" class="pp" hidden style="left:12px;transform:none;bottom:14px;flex-wrap:nowrap"><button id="pg0" title="Previous page">◀</button><span id="pgl2" class="chip">1/1</span><button id="pg1" title="Next page">▶</button><button id="pgadd" title="Add another page">＋ <span data-i="page"></span></button><button id="pgfull" hidden class="on"></button></div>
 <div id="pp"><button id="zs" title="Zoom to selection (Z)">🔍</button><span id="tm" class="chip">00:00</span><button id="spb" title="Spotlight">🔦</button><button id="px" title="Exit presentation (Esc)">✕</button></div>
 <div id="hm" hidden><div id="hs"></div><div id="hmain"></div><button id="fab" title="New board">✏️</button></div><div id="rulerOverlay"><div class="ruler-body"></div></div><div id="pomo" class="pop" hidden><div class="phd" id="pomoHead"><b>⏱ Pomodoro</b><button class="pclose" id="pomoClose" title="Close timer (keeps running in the background)" aria-label="Close">✕</button></div><div class="clock" id="pomoClock" title="Double-click to type a custom time">25:00</div><div class="prow pset" id="pomoSet"><input id="pomoH" type="number" min="0" max="99" value="0" title="Hours" aria-label="Hours"><span>h</span><input id="pomoM" type="number" min="0" max="59" value="25" title="Minutes" aria-label="Minutes"><span>m</span><input id="pomoS" type="number" min="0" max="59" value="0" title="Seconds" aria-label="Seconds"><span>s</span><button id="pomoApply" title="Set the timer to this time">Set</button></div><div class="prow"><button id="pomoSub1" title="Remove 1 minute">−1 min</button><button id="pomoAdd1" title="Add 1 minute">+1 min</button><button id="pomoAdd5" title="Add 5 minutes">+5 min</button><button id="pomoAdd10" title="Add 10 minutes">+10 min</button><button id="pomoAdd60" title="Add 1 hour">+1 hr</button></div><div class="prow"><button id="pomoStart" class="on">Start</button><button id="pomoPause">Pause</button><button id="pomoReset">Reset</button><button id="pomoBreak">5 min break</button></div><div class="presz" id="pomoResize" title="Drag to resize"></div></div>
@@ -260,7 +270,6 @@ function txt(c,i,paint){
  if(i.bg){c.save();c.shadowColor='#0005';c.shadowBlur=8;c.fillStyle=i.bg;c.fillRect(i.x-10,i.y-10,i.w+20,i.h+20);c.restore()}
  c.textBaseline='top';for(const m of metrics){const q=m.q;c.font=`${q.i?'italic ':''}${q.b?'bold ':''}${q.size}px ${FF[q.ff]||FONT}`;c.fillStyle=i.t=='l'?'#4f8cff':(q.color||i.color);if(q.math&&q.text){c.font=`italic ${q.size}px ${FF[q.ff]||FONT}`}c.fillText(q.text,m.x,m.y);if(q.u)c.fillRect(m.x,m.y+q.size*1.05,m.mw,Math.max(1,q.size/16))}
 }
-function tbl(c,i){c.strokeStyle=c.fillStyle=i.color;c.lineWidth=1.5;c.font=`${i.fs}px ${FONT}`;c.textBaseline='middle';c.textAlign='left';let y=i.y;i.rh.forEach((h,r)=>{let x=i.x;i.cw.forEach((w,k)=>{c.strokeRect(x,y,w,h);const t=i.cells[r][k];if(t){c.save();c.beginPath();c.rect(x,y,w,h);c.clip();c.fillText(t,x+8,y+h/2);c.restore()}x+=w});y+=h});i.w=i.cw.reduce((a,b)=>a+b,0);i.h=i.rh.reduce((a,b)=>a+b,0)}
 function shapeDash(c,s,hidden=false){const dashes={solid:[],dashed:[10,7],dotted:[2,7],dashdot:[10,5,2,5],longdash:[18,7],shortdash:[5,5]};c.setLineDash(hidden?[7,6]:(dashes[s.lineType||'solid']||[]));}
 function drawShape3D(c,i){
  const o=i.xyz||{},ox=o.ox??i.x,oy=o.oy??i.y,x=Math.max(10,o.xLen||120),y=Math.max(10,o.yLen||90),z=Math.max(6,o.zLen||28),dx=z*.72,dy=z*.55;
@@ -311,7 +320,7 @@ function draw0(){cx.setTransform(dpr,0,0,dpr,0,0);bgAll(cx,cv.width/dpr,cv.heigh
  if(cur)item(cx,cur);
  cx.setLineDash([5,4]);cx.strokeStyle='#3b82f6';cx.lineWidth=1;
  if(lasso){cx.beginPath();lasso.forEach((p,i)=>i?cx.lineTo(p[0],p[1]):cx.moveTo(p[0],p[1]));cx.stroke()}
- if(S.sel.length===1&&S.sel[0].t=='sp')spOverlay(cx,S.sel[0]);else if(S.sel.length){const b=bnds(S.sel);cx.strokeRect(b[0],b[1],b[2]-b[0],b[3]-b[1]);cx.setLineDash([]);cx.fillStyle='#3b82f6';{const hs=5/S.z;HD(b).forEach(q=>cx.fillRect(q[0]-hs,q[1]-hs,2*hs,2*hs));const rc=[(b[0]+b[2])/2,b[1]-28/S.z];cx.beginPath();cx.moveTo((b[0]+b[2])/2,b[1]);cx.lineTo(rc[0],rc[1]);cx.stroke();cx.beginPath();cx.arc(rc[0],rc[1],7/S.z,0,Math.PI*2);cx.fill();if(S.sel.length===1&&S.sel[0].xyz){const q=S.sel[0];Object.values(xyzHandles(q)).forEach(v=>{cx.beginPath();cx.arc(v[0],v[1],7/S.z,0,Math.PI*2);cx.fill()})}}}cx.restore()}
+ if(S.sel.some(i=>i.lk)){const b=bnds(S.sel);cx.strokeStyle='#f08c00';cx.lineWidth=1.5/S.z;cx.strokeRect(b[0],b[1],b[2]-b[0],b[3]-b[1])}else if(S.sel.length===1&&S.sel[0].t=='sp')spOverlay(cx,S.sel[0]);else if(S.sel.length){const b=bnds(S.sel);cx.strokeRect(b[0],b[1],b[2]-b[0],b[3]-b[1]);cx.setLineDash([]);cx.fillStyle='#3b82f6';{const hs=5/S.z;HD(b).forEach(q=>cx.fillRect(q[0]-hs,q[1]-hs,2*hs,2*hs));const rc=[(b[0]+b[2])/2,b[1]-28/S.z];cx.beginPath();cx.moveTo((b[0]+b[2])/2,b[1]);cx.lineTo(rc[0],rc[1]);cx.stroke();cx.beginPath();cx.arc(rc[0],rc[1],7/S.z,0,Math.PI*2);cx.fill();if(S.sel.length===1&&S.sel[0].xyz){const q=S.sel[0];Object.values(xyzHandles(q)).forEach(v=>{cx.beginPath();cx.arc(v[0],v[1],7/S.z,0,Math.PI*2);cx.fill()})}}}selExtras(cx);cx.restore()}
 function fit(){dpr=devicePixelRatio||1;const r=$('#w').getBoundingClientRect();cv.width=r.width*dpr;cv.height=r.height*dpr;cv.style.width=r.width+'px';cv.style.height=r.height+'px';draw()}
 new ResizeObserver(fit).observe($('#w'));
 /* ---------- history / persistence ---------- */
@@ -369,7 +378,7 @@ const rotPoint=(p,cx,cy,a)=>{const dx=p[0]-cx,dy=p[1]-cy,co=Math.cos(a),si=Math.
 const itemCenter=i=>{const b=bnds([i]);return[(b[0]+b[2])/2,(b[1]+b[3])/2]};
 const HD=b=>{const mx=(b[0]+b[2])/2,my=(b[1]+b[3])/2;return[[b[0],b[1],'nw'],[mx,b[1],'n'],[b[2],b[1],'ne'],[b[2],my,'e'],[b[2],b[3],'se'],[mx,b[3],'s'],[b[0],b[3],'sw'],[b[0],my,'w']]};
 const ds=(p,a,b)=>{const dx=b[0]-a[0],dy=b[1]-a[1],l=dx*dx+dy*dy,t=l?Math.max(0,Math.min(1,((p[0]-a[0])*dx+(p[1]-a[1])*dy)/l)):0;return Math.hypot(p[0]-a[0]-t*dx,p[1]-a[1]-t*dy)};
-function hit(p){return[...S.items].reverse().find(i=>{if(!act(i))return false;if(i.t=='sp')return spHit(i,p);if(i.t=='s')return i.pts.some((q,k)=>ds(p,i.pts[Math.max(0,k-1)],q)<i.size/2+6);const b=bnds([i]);return p[0]>=b[0]-4&&p[0]<=b[2]+4&&p[1]>=b[1]-4&&p[1]<=b[3]+4})}
+function hit(p){return hitBy(p,act)}function hitBy(p,pred){return[...S.items].reverse().find(i=>{if(!pred(i))return false;if(i.t=='sp')return spHit(i,p);if(i.t=='s')return i.pts.some((q,k)=>ds(p,i.pts[Math.max(0,k-1)],q)<i.size/2+6);const b=bnds([i]);return p[0]>=b[0]-4&&p[0]<=b[2]+4&&p[1]>=b[1]-4&&p[1]<=b[3]+4})}
 function erase(p){
  const r=(cfg.erase?.size||16)/2;
  if(S.eraseWhole){S.items=S.items.filter(i=>{if(!act(i))return true;if(i.t=='sp')return!spHit(i,p,r);if(i.t=='s')return!i.pts.some(q=>Math.hypot(q[0]-p[0],q[1]-p[1])<r+i.size/2);const b=bnds([i]);return!(p[0]>b[0]-r&&p[0]<b[2]+r&&p[1]>b[1]-r&&p[1]<b[3]+r)});S.sel=S.sel.filter(i=>S.items.includes(i));return}
@@ -462,7 +471,7 @@ cv.addEventListener('pointerdown',e=>{cv.setPointerCapture(e.pointerId);if(e.but
  if(t=='hand'||e.button==1){drag={k:'pan',x:e.clientX,y:e.clientY,ox:S.ox,oy:S.oy};mkCache();return}
  if(t=='laser'){drag={k:'lz'};lz.push([p[0],p[1],performance.now()]);if(!lzOn){lzOn=true;lzLoop()}return}if(t=='sticky'){const h=hit(p);if(h&&h.t=='t'&&h.sticky)return editItem(h);return textAt(p,null,true)}if(t=='text'){const h=hit(p);if(h&&h.t=='tb')return editCell(h,p);return h&&(h.t=='t'||h.t=='m')?editItem(h):textAt(p)}if(t=='math'){const h=hit(p);if(h&&h.t=='m')return editItem(h);mp=p;medit=null;$('#mq').hidden=0;$('#ml').focus();return}
  if(t=='erase'){push();drag={k:'er',last:p};erase(p);draw();return}
- if(t=='lasso'||t=='select'){if(S.sel.length===1&&S.sel[0].t=='sp'&&spDown(p))return;if(S.sel.length===1&&S.sel[0].xyz){const q=S.sel[0],hs=Object.values(xyzHandles(q)),xh=hs.find(v=>Math.hypot(v[0]-p[0],v[1]-p[1])<13/S.z);if(xh){push();drag={k:'xyz',axis:xh[2],item:q};return}}if(S.sel.length&&!(S.sel.length===1&&S.sel[0].t=='sp')){const b=bnds(S.sel),rc=[(b[0]+b[2])/2,b[1]-28/S.z];if(Math.hypot(rc[0]-p[0],rc[1]-p[1])<13/S.z){push();const center=[(b[0]+b[2])/2,(b[1]+b[3])/2];drag={k:'rot',center,start:Math.atan2(p[1]-center[1],p[0]-center[0]),items:S.sel.map(i=>({i,rot:i.rot||0,c:i.t=='sp'?[i.x+i.w/2,i.y+i.h/2]:null}))};return}const h=HD(b).find(q=>Math.hypot(q[0]-p[0],q[1]-p[1])<11/S.z);if(h){push();drag={k:'rs',h:h[2]};return}if(p[0]>b[0]&&p[0]<b[2]&&p[1]>b[1]&&p[1]<b[3]){push();drag={k:'mv',last:p};return}}const h=hit(p);if(h&&h.t=='tb')S.cell=cellAt(h,p);if(h){if(e.shiftKey)S.sel=S.sel.includes(h)?S.sel.filter(q=>q!=h):[...S.sel,h];else S.sel=[h];push();drag={k:'mv',last:p};draw();return}if(!e.shiftKey)S.sel=[];lasso=[p];drag={k:'ls',r:t=='select'?p:null};draw();return}
+ if(t=='lasso'||t=='select'){const LKS=S.sel.some(i=>i.lk);if(!LKS&&S.sel.length===1&&S.sel[0].t=='sp'&&spDown(p))return;if(!LKS&&S.sel.length===1&&S.sel[0].xyz){const q=S.sel[0],hs=Object.values(xyzHandles(q)),xh=hs.find(v=>Math.hypot(v[0]-p[0],v[1]-p[1])<13/S.z);if(xh){push();drag={k:'xyz',axis:xh[2],item:q};return}}if(!LKS&&S.sel.length&&!(S.sel.length===1&&S.sel[0].t=='sp')){const b=bnds(S.sel),rc=[(b[0]+b[2])/2,b[1]-28/S.z];if(Math.hypot(rc[0]-p[0],rc[1]-p[1])<13/S.z){push();const center=[(b[0]+b[2])/2,(b[1]+b[3])/2];drag={k:'rot',center,start:Math.atan2(p[1]-center[1],p[0]-center[0]),items:S.sel.map(i=>({i,rot:i.rot||0,c:i.t=='sp'?[i.x+i.w/2,i.y+i.h/2]:null}))};return}const h=HD(b).find(q=>Math.hypot(q[0]-p[0],q[1]-p[1])<11/S.z);if(h){push();drag={k:'rs',h:h[2]};return}if(S.sel.length===1&&S.sel[0].t=='tb'&&tbDown(p,e))return;if(p[0]>b[0]&&p[0]<b[2]&&p[1]>b[1]&&p[1]<b[3]){push();drag={k:'mv',last:p};return}}const h0=hit(p),hl=hitLocked(p),h=(e.altKey&&hl)?null:h0;if(!h&&hl){const G=S.items.filter(i=>i.lk&&(i===hl||(hl.g&&i.g===hl.g)));S.sel=[];lasso=[p];drag={k:'ls',r:t=='select'?p:null,lk:G};draw();return}if(h&&h.t=='tb'){const a=cellAt(h,p);S.cell={...a,ar:a.r,ac:a.c}}if(h){const G=grpOf(h);if(e.shiftKey){const base=S.sel.filter(q=>!q.lk);S.sel=G.every(q=>base.includes(q))?base.filter(q=>!G.includes(q)):[...base,...G.filter(q=>!base.includes(q))]}else S.sel=G;push();drag={k:'mv',last:p};draw();return}if(!e.shiftKey)S.sel=[];lasso=[p];drag={k:'ls',r:t=='select'?p:null};draw();return}
  if(t=='shape'||t=='tape'){if(t=='tape'){const h=hit(p);if(h&&h.t=='k'){push();h.open=!h.open;save();draw();return}}drag={k:'sh',a:p};mkCache();return}
  const c=cfg[t];cur={t:'s',tool:t,color:S.color,size:c.size,sens:ST.pres?c.sens:0,ang:c.ang,opacity:c.opacity??(t[0]=='h'?35:100),tl:S.tilt&&e.pointerType=='pen',pts:[[p[0],p[1],e.pointerType=='pen'?penPr(e):.5]]};sp=p.slice();lt=e.timeStamp;lp=e.pointerType=='pen'?penPr(e):.5;drag={k:'pen'};mkCache();draw()});
 cv.addEventListener('pointermove',e=>{updateBrushCursor(e.clientX,e.clientY);if(e.pointerType=='touch'&&tp.has(e.pointerId))tp.set(e.pointerId,[e.clientX,e.clientY]);if(!drag)return;
@@ -471,17 +480,18 @@ cv.addEventListener('pointermove',e=>{updateBrushCursor(e.clientX,e.clientY);if(
  if(k=='pan'){S.ox=drag.ox+e.clientX-drag.x;S.oy=drag.oy+e.clientY-drag.y}else if(k=='er')erase(p);else if(k=='ls'){if(drag.r){const a=drag.r;lasso=[a,[p[0],a[1]],p,[a[0],p[1]]]}else lasso.push(p)}else if(k=='lz')lz.push([p[0],p[1],performance.now()]);
  else if(k=='xyz'){const i=drag.item,o=i.xyz;if(drag.axis==='x')o.xLen=Math.max(10,p[0]-o.ox);else if(drag.axis==='y')o.yLen=Math.max(10,p[1]-o.oy);else{o.zLen=Math.max(8,Math.hypot(p[0]-o.ox,p[1]-o.oy)/.9)}i.x=o.ox;i.y=o.oy} else if(k=='mv'){const dx=p[0]-drag.last[0],dy=p[1]-drag.last[1];drag.last=p;xf(S.sel,(x,y)=>[x+dx,y+dy],1)}
  else if(k=='rot'){const a=Math.atan2(p[1]-drag.center[1],p[0]-drag.center[0]);let d=a-drag.start;if(e.shiftKey&&drag.items.length===1){const sn=Math.PI/12;d=Math.round((drag.items[0].rot+d)/sn)*sn-drag.items[0].rot}drag.items.forEach(q=>{q.i.rot=q.rot+d;if(q.c&&drag.items.length>1){const n=rotPoint(q.c,drag.center[0],drag.center[1],d);q.i.x=n[0]-q.i.w/2;q.i.y=n[1]-q.i.h/2}})}
+ else if(k=='tcw'){const q=tbLocal(drag.t,p);drag.t.cw[drag.i]=Math.max(24,drag.w0+q[0]-drag.q0)}else if(k=='trh'){const q=tbLocal(drag.t,p);drag.t.rh[drag.i]=Math.max(18,drag.w0+q[1]-drag.q0)}else if(k=='tcs'){const a=cellAt(drag.t,p);S.cell={...tbRange(drag.t,drag.ar,drag.ac,a.r,a.c),ar:drag.ar,ac:drag.ac}}
  else if(k=='sprs')spResize(p,e.shiftKey);
  else if(k=='spend'){let P=p;if(e.shiftKey){const f=drag.fixed,sn=Math.PI/12,ang=Math.round(Math.atan2(p[1]-f[1],p[0]-f[0])/sn)*sn,l=Math.hypot(p[0]-f[0],p[1]-f[1]);P=[f[0]+l*Math.cos(ang),f[1]+l*Math.sin(ang)]}drag.w==0?spSetEnds(drag.item,P,drag.fixed):spSetEnds(drag.item,drag.fixed,P)}
  else if(k=='rs'){const b=bnds(S.sel),h=drag.h,W=Math.max(1,b[2]-b[0]),H=Math.max(1,b[3]-b[1]);let sx=1,sy=1,ax=b[0],ay=b[1];if(h.includes('e'))sx=(p[0]-ax)/W;else if(h.includes('w')){ax=b[2];sx=(ax-p[0])/W}if(h.includes('s'))sy=(p[1]-ay)/H;else if(h.includes('n')){ay=b[3];sy=(ay-p[1])/H}sx=Math.max(.05,sx);sy=Math.max(.05,sy);if(h.length==2)sx=sy=Math.max(sx,sy);xf(S.sel,(x,y)=>[ax+(x-ax)*sx,ay+(y-ay)*sy],sx,sy)}
  else if(k=='sh'){if(S.tool=='tape'){const ts=cfg.tape?.size||18,x0=drag.a[0],y0=drag.a[1],dx=p[0]-x0,dy=p[1]-y0;if(Math.abs(dx)>=Math.abs(dy)){cur={t:'k',x:Math.min(x0,p[0]),y:y0-ts/2,w:Math.abs(dx),h:ts,color:S.color,open:false}}else{cur={t:'k',x:x0-ts/2,y:Math.min(y0,p[1]),w:ts,h:Math.abs(dy),color:S.color,open:false}}}else{cur=mkSp($('#shp').value,drag.a,p,e.shiftKey)}}
  else if(k=='pen'&&!(ST.inkRaw&&e.pointerType==='pen'))for(const v of(e.getCoalescedEvents?e.getCoalescedEvents():[e]))addPt(v,pt(v));
  draw()});
-const up=e=>{if(e&&e.pointerId!=null)tp.delete(e.pointerId);if(!drag)return;const k=drag.k;if(k=='pz'&&tp.size)return;drag=null;cache=null;
+const up=e=>{if(e&&e.pointerId!=null)tp.delete(e.pointerId);if(!drag)return;const k=drag.k,dg=drag;if(k=='pz'&&tp.size)return;drag=null;cache=null;
  if(k=='pen'&&cur){let s=cur;cur=null;if(S.snap&&s.pts.length>8){const r=skSnap(s);if(r)s=r;else{const g=snap(s.pts);if(g){s.pts=g;s.sharp=1}}}push();addI(s);save()}
  else if(k=='sh'&&cur){const s=cur;cur=null;if(s.t=='k'?s.w>8&&s.h>8:s.t=='sp'?(s.w>3||s.h>3):true){push();addI(s);S.sel=(s.t=='sp'&&ST.rts)?[s]:[];save()}}
- else if(k=='ls'){const poly=lasso;lasso=null;S.sel=poly.length>2?S.items.filter(i=>act(i)&&selIn(i,poly)):[]}
- else if(k=='mv'||k=='rs'||k=='rot'||k=='xyz'||k=='er'||k=='sprs'||k=='spend'){if(k=='er'&&erPending){const q=erPending;erPending=null;erase(q);drag.last=q}save();}if(ST.rts&&k=='sh')setTool('select');draw()};
+ else if(k=='ls'){const poly=lasso;lasso=null;const px=poly.map(q=>q[0]),py=poly.map(q=>q[1]),click=Math.max(...px)-Math.min(...px)<4/S.z&&Math.max(...py)-Math.min(...py)<4/S.z;S.sel=!click&&poly.length>2?expandSel(S.items.filter(i=>act(i)&&selIn(i,poly))):((click&&dg.lk)||[])}
+ else if(k=='mv'||k=='rs'||k=='rot'||k=='xyz'||k=='er'||k=='sprs'||k=='spend'||k=='tcw'||k=='trh'){if(k=='er'&&erPending){const q=erPending;erPending=null;erase(q);drag.last=q}save();}if(ST.rts&&k=='sh')setTool('select');draw()};
 cv.addEventListener('pointerrawupdate',e=>{if(!ST.inkRaw||e.pointerType!=='pen'||!drag||drag.k!=='pen')return;for(const v of(e.getCoalescedEvents?e.getCoalescedEvents():[e]))addPt(v,pt(v));draw()});
 cv.addEventListener('pointerup',up);cv.addEventListener('pointercancel',up);cv.addEventListener('contextmenu',e=>e.preventDefault());
 cv.addEventListener('wheel',e=>{e.preventDefault();if(e.ctrlKey||e.metaKey||ST.wheel){const r=cv.getBoundingClientRect();zoomAt(Math.exp(-e.deltaY*.01),e.clientX-r.left,e.clientY-r.top)}else{S.ox-=e.deltaX;S.oy-=e.deltaY;cache=null;draw()}},{passive:false});
@@ -650,7 +660,7 @@ function svgOut(inv){const b=S.items.length?bnds(S.items):[0,0,800,600],m=40,x=b
  for(const l of S.layers)if(l.vis)for(const i of S.items){if((i.ly??1)!=l.id)continue;
   if(i.t=='sp')o+=spSvg(i);else if(i.t=='s'){const av=i.pts.reduce((a,q)=>a+q[2],0)/i.pts.length,wv=i.tool=='fount'||i.tool=='calli'?i.size*(1-i.sens+i.sens*2*av):i.size;o+=`<path d="M${i.pts.map(q=>q[0].toFixed(1)+' '+q[1].toFixed(1)).join('L')}" fill="none" stroke="${i.color}" stroke-width="${wv.toFixed(1)}" stroke-linecap="${i.tool=='hsq'?'square':'round'}" stroke-linejoin="round" opacity="${i.tool[0]=='h'?.35:i.tool=='pencil'?.6:1}"/>`}
   else if(i.t=='i'||i.t=='m')o+=`<image x="${i.x}" y="${i.y}" width="${i.w}" height="${i.h}" href="${i.src}"/>`;
-  else if(i.t=='tb'){let yy=i.y;i.rh.forEach((h,r)=>{let xx=i.x;i.cw.forEach((w,k)=>{o+=`<rect x="${xx}" y="${yy}" width="${w}" height="${h}" fill="none" stroke="${i.color}"/><text x="${xx+8}" y="${yy+h/2+i.fs*.35}" font-size="${i.fs}" fill="${i.color}">${e(i.cells[r][k])}</text>`;xx+=w});yy+=h})}
+  else if(i.t=='tb')o+=tbSvg(i,e);
   else if(i.t=='k'){if(!i.open)o+=`<rect x="${i.x}" y="${i.y}" width="${i.w}" height="${i.h}" fill="${i.color}"/>`}
   else{bnds([i]);if(i.bg)o+=`<rect x="${i.x-10}" y="${i.y-10}" width="${i.w+20}" height="${i.h+20}" fill="${i.bg}"/>`;i.text.split('\n').forEach((t,k)=>o+=`<text x="${i.x}" y="${i.y+i.size*(1.25*k+1)}" font-size="${i.size}" font-family="sans-serif" fill="${i.t=='l'?'#4f8cff':i.color}">${e(t)}</text>`)}}
  o+='</svg>';return inv?o.replace('<svg ','<svg style="filter:invert(1)" '):o}
@@ -690,7 +700,7 @@ $('#bsp').onclick=()=>{const n=$('#bpn').value.trim();if(!n)return toast('Name t
 $('#tg').onclick=e=>{S.straight=!S.straight;e.target.classList.toggle('on',S.straight)};$('#tsn').onclick=e=>{S.snap=!S.snap;e.target.classList.toggle('on',S.snap)};
 $('#hw').onclick=hw;$('#nn').onclick=newNote;
 $('#bn').onclick=async()=>{closeTransient();$('#np').hidden=1;await saveNow();showHome()};
-const delSel=()=>{if(!S.sel.length)return;push();S.items=S.items.filter(i=>!S.sel.includes(i));S.sel=[];save();draw()};$('#dl').onclick=delSel;
+const delSel=()=>{if(!S.sel.length)return;if(S.sel.some(i=>i.lk))return toast('Unlock the selection first (🔓 button or Ctrl+Shift+L)');push();S.items=S.items.filter(i=>!S.sel.includes(i));S.sel=[];save();draw()};$('#dl').onclick=delSel;
 $('#ti').oninput=e=>{S.title=e.target.value;save()};$('#favnote').onclick=async()=>{S.fav=!S.fav;$('#favnote').textContent=S.fav?'★':'☆';$('#favnote').title=S.fav?'Remove from favorites':'Add to favorites';await saveNow()};
 const PAP={white:'#ffffff',cream:'#fbf5e6',gray:'#dfe3e8',black:'#111111',slate:'#1e2430',navy:'#14213d'},dk=k=>['black','slate','navy'].includes(k);
 function bgfx(c,W,H,ox,oy,z=1){c.fillStyle=PAP[S.bg]||'#fff';c.fillRect(0,0,W,H);if(S.pat=='plain')return;const g=S.gs*z,d=dk(S.bg),col=d?'rgba(255,255,255,.22)':'rgba(0,0,0,.2)',sx=(ox%g+g)%g,sy=(oy%g+g)%g;c.fillStyle=c.strokeStyle=col;c.lineWidth=S.gd*.5+.3;
@@ -713,16 +723,16 @@ $('#pic').onclick=()=>$('#fi').click();$('#fi').onchange=async e=>{for(const f o
 let lz=[],lzOn=false,SPOT=false,mxy=[0,0],clip=[],intern=false,tm0=0,tmr=null,HV={sec:'all',q:''};
 let HOME_SIDEBAR_EXPANDED=false;
 function lzLoop(){const n=performance.now();lz=lz.filter(q=>n-q[2]<900);draw();if(lz.length)requestAnimationFrame(lzLoop);else lzOn=false}
-function ov2(){if(textEditor){$('#sb').hidden=true}else $('#sb').hidden=!S.sel.length;const blocked=['bars','emp','plm','exm','pdfq','pdfm','shpp','stp','lp','bop','erp','mq'].some(id=>{const e=$('#'+id);return e&&!e.hidden});const txsel=S.sel.length==1&&S.sel[0].t=='t'&&!blocked;if(txsel){const t=S.sel[0];S.tf={ff:t.ff||'sans',b:t.b?1:0,i:t.i?1:0,u:t.u?1:0,size:t.size||24,color:t.color||S.color};$('#txp').hidden=false;$('#tff').value=S.tf.ff;$('#txsz').value=S.tf.size;$('#tb_').classList.toggle('on',!!S.tf.b);$('#ti_').classList.toggle('on',!!S.tf.i);$('#tu_').classList.toggle('on',!!S.tf.u)}else if(S.tool!='text')$('#txp').hidden=true;$('#tbp').hidden=!(S.sel.length==1&&S.sel[0].t=='tb');if(S.pg.size!='inf'&&!$('#pgn').hidden)$('#pgl2').textContent=(pgOf()+1)+'/'+S.pg.n;const W=cv.width/dpr,H=cv.height/dpr;cx.setTransform(dpr,0,0,dpr,0,0);
+function ov2(){sbSync();if(textEditor){$('#sb').hidden=true}else $('#sb').hidden=!S.sel.length;const blocked=['bars','emp','plm','exm','pdfq','pdfm','shpp','stp','lp','bop','erp','mq'].some(id=>{const e=$('#'+id);return e&&!e.hidden});const txsel=S.sel.length==1&&S.sel[0].t=='t'&&!blocked;if(txsel){const t=S.sel[0];S.tf={ff:t.ff||'sans',b:t.b?1:0,i:t.i?1:0,u:t.u?1:0,size:t.size||24,color:t.color||S.color};$('#txp').hidden=false;$('#tff').value=S.tf.ff;$('#txsz').value=S.tf.size;$('#tb_').classList.toggle('on',!!S.tf.b);$('#ti_').classList.toggle('on',!!S.tf.i);$('#tu_').classList.toggle('on',!!S.tf.u)}else if(S.tool!='text')$('#txp').hidden=true;$('#tbp').hidden=!(S.sel.length==1&&S.sel[0].t=='tb'&&!S.sel[0].lk);tbSyncColor();if(S.pg.size!='inf'&&!$('#pgn').hidden)$('#pgl2').textContent=(pgOf()+1)+'/'+S.pg.n;const W=cv.width/dpr,H=cv.height/dpr;cx.setTransform(dpr,0,0,dpr,0,0);
  if(lz.length){const n=performance.now();cx.lineCap='round';cx.lineJoin='round';for(let i=1;i<lz.length;i++){const a=1-(n-Math.max(lz[i-1][2],lz[i][2]))/900;if(a<=0)continue;cx.strokeStyle=`rgba(255,40,90,${Math.max(0,a)})`;cx.lineWidth=4;cx.beginPath();cx.moveTo(lz[i-1][0]*S.z+S.ox,lz[i-1][1]*S.z+S.oy);cx.lineTo(lz[i][0]*S.z+S.ox,lz[i][1]*S.z+S.oy);cx.stroke()}}
  if(SPOT&&document.body.classList.contains('pres')){const r=cv.getBoundingClientRect();cx.save();   cx.beginPath();cx.rect(0,0,W,H);cx.moveTo(mxy[0]-r.left+120,mxy[1]-r.top);cx.arc(mxy[0]-r.left,mxy[1]-r.top,120,0,Math.PI*2,true);cx.closePath();cx.fillStyle='rgba(0,0,0,.65)';cx.fill('evenodd');cx.restore()}}
 cv.addEventListener('pointermove',e=>{mxy=[e.clientX,e.clientY];if(SPOT)draw()});
 const copy=()=>{clip=structuredClone(S.sel);intern=true};document.addEventListener('copy',()=>intern=false);
-function paste(){if(!clip.length)return;push();const n=structuredClone(clip);xf(n,(x,y)=>[x+24,y+24]);n.forEach(addI);S.sel=n;clip=structuredClone(n);save();draw()}
+function paste(){if(!clip.length)return;push();const n=structuredClone(clip),gm={};n.forEach(i=>{delete i.lk;if(i.g)i.g=gm[i.g]||(gm[i.g]=newGid())});xf(n,(x,y)=>[x+24,y+24]);n.forEach(addI);S.sel=n;clip=structuredClone(n);save();draw()}
 function align(k){push();const B=bnds(S.sel);S.sel.forEach(i=>{const b=bnds([i]);let dx=0,dy=0;if(k=='L')dx=B[0]-b[0];if(k=='R')dx=B[2]-b[2];if(k=='T')dy=B[1]-b[1];if(k=='D')dy=B[3]-b[3];if(k=='H')dx=(B[0]+B[2])/2-(b[0]+b[2])/2;if(k=='V')dy=(B[1]+B[3])/2-(b[1]+b[3])/2;xf([i],(x,y)=>[x+dx,y+dy])});save();draw()}
 function distrib(){if(S.sel.length<3)return toast('Select 3 or more objects');push();const a=S.sel.map(i=>[i,bnds([i])]).sort((p,q)=>p[1][0]-q[1][0]),f=a[0][1][0],l=a.at(-1)[1][2],tot=a.reduce((t,q)=>t+q[1][2]-q[1][0],0),gap=(l-f-tot)/(a.length-1);let x=f;a.forEach(([i,b])=>{const d=x-b[0];xf([i],(px,py)=>[px+d,py]);x+=b[2]-b[0]+gap});save();draw()}
-const selAct={dup:()=>{copy();paste()},copy,cut:()=>{copy();delSel()},del:()=>delSel(),front:()=>{push();S.items=S.items.filter(i=>!S.sel.includes(i)).concat(S.sel);save();draw()},back:()=>{push();S.items=S.sel.concat(S.items.filter(i=>!S.sel.includes(i)));save();draw()},lock:()=>{push();S.sel.forEach(i=>i.lk=1);S.sel=[];save();draw()},dist:distrib,zsel:()=>zoomSel()};
-$('#sb').onclick=e=>{const a=e.target.closest('[data-a]')?.dataset.a;if(!a||!S.sel.length)return;(selAct[a]||(()=>align(a)))()};
+const selAct={dup:()=>{copy();paste()},copy,cut:()=>{copy();delSel()},del:()=>delSel(),front:()=>{push();S.items=S.items.filter(i=>!S.sel.includes(i)).concat(S.sel);save();draw()},back:()=>{push();S.items=S.sel.concat(S.items.filter(i=>!S.sel.includes(i)));save();draw()},lock:()=>toggleLock(),grp:()=>groupSel(),ungrp:()=>ungroupSel(),dist:distrib,zsel:()=>zoomSel()};
+$('#sb').onclick=e=>{const a=e.target.closest('[data-a]')?.dataset.a;if(!a||!S.sel.length)return;if(S.sel.some(i=>i.lk)&&!['lock','copy','dup','zsel'].includes(a))return toast('Unlock the selection first');(selAct[a]||(()=>align(a)))()};
 function present(on){document.body.classList.toggle('pres',on);if(on){document.documentElement.requestFullscreen?.().catch(()=>{});tm0=Date.now();clearInterval(tmr);tmr=setInterval(()=>{const t=((Date.now()-tm0)/1000)|0;$('#tm').textContent=String(t/60|0).padStart(2,'0')+':'+String(t%60).padStart(2,'0')},1000);$('#bars').hidden=1}else{clearInterval(tmr);SPOT=false;document.fullscreenElement&&document.exitFullscreen?.();draw()}setTimeout(fit,200)}
 document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement&&document.body.classList.contains('pres'))present(false)});
 $('#prb').onclick=()=>present(true);$('#px').onclick=()=>present(false);$('#spb').onclick=()=>{SPOT=!SPOT;draw()};
@@ -1067,18 +1077,242 @@ $('#cps').onchange=e=>{S.pg.size=e.target.value;if(S.pg.n<1)S.pg.n=1;save();pgUi
 $('#cpo').onchange=e=>{S.pg.o=e.target.value;save();pgUi();goPage(pgOf())};
 $('#apg').onclick=$('#pgadd').onclick=$('#pgfull').onclick=addPage;$('#pg0').onclick=()=>goPage(pgOf()-1);$('#pg1').onclick=()=>goPage(pgOf()+1);$('#zs').onclick=()=>zoomSel();
 function zoomSel(){const L=S.sel.length?S.sel:S.items;if(!L.length)return;const b=bnds(L),W=cv.clientWidth,H=cv.clientHeight,z=Math.max(.1,Math.min(6,.85*Math.min(W/Math.max(1,b[2]-b[0]),H/Math.max(1,b[3]-b[1])))),mx=(b[0]+b[2])/2,my=(b[1]+b[3])/2;camTo(z,W/2-mx*z,H/2-my*z)}
-function cellAt(t,p){let y=t.y,r=0;for(;r<t.rh.length-1&&p[1]>y+t.rh[r];r++)y+=t.rh[r];let x=t.x,c=0;for(;c<t.cw.length-1&&p[0]>x+t.cw[c];c++)x+=t.cw[c];return{it:t,r,c}}
-function addTable(){push();const v=view();addI({t:'tb',x:v[0],y:v[1],cw:[120,120,120],rh:[40,40,40],cells:[['','',''],['','',''],['','','']],fs:18,color:S.color,w:360,h:120});save();draw()}
-function editCell(t,p){const{r,c}=cellAt(t,p);let x=t.x,y=t.y;for(let i=0;i<c;i++)x+=t.cw[i];for(let i=0;i<r;i++)y+=t.rh[i];const ta=document.createElement('textarea');
- Object.assign(ta.style,{position:'absolute',left:x*S.z+S.ox+'px',top:y*S.z+S.oy+'px',width:t.cw[c]*S.z+'px',height:t.rh[r]*S.z+'px',font:`${t.fs*S.z}px ${FONT}`,color:t.color,background:PAP[S.bg]||'#fff',border:'2px solid #3b82f6',boxSizing:'border-box',resize:'none',zIndex:5,padding:'2px 6px'});
- ta.value=t.cells[r][c];$('#w').append(ta);setTimeout(()=>ta.focus(),30);let ok=1;const done=()=>{if(!ta.parentNode)return;const v=ta.value;ta.remove();if(ok&&v!=t.cells[r][c]){push();t.cells[r][c]=v;save()}draw()};
- ta.onblur=done;ta.onkeydown=e=>{if(e.key=='Escape'){ok=0;done()}else if(e.key=='Enter'&&!e.shiftKey){e.preventDefault();done()}}}
-function tbOp(a){const t=S.sel[0],{r,c}=S.cell&&S.cell.it==t?S.cell:{r:0,c:0};push();
- if(a=='ra'||a=='rb'){const k=a=='ra'?r:r+1;t.rh.splice(k,0,t.rh[r]);t.cells.splice(k,0,t.cw.map(()=>''))}
- else if(a=='cl'||a=='cr'){const k=a=='cl'?c:c+1;t.cw.splice(k,0,t.cw[c]);t.cells.forEach(row=>row.splice(k,0,''))}
- else if(a=='dr'&&t.rh.length>1){t.rh.splice(r,1);t.cells.splice(r,1)}else if(a=='dc'&&t.cw.length>1){t.cw.splice(c,1);t.cells.forEach(row=>row.splice(c,1))}
- S.cell={it:t,r:Math.min(r,t.rh.length-1),c:Math.min(c,t.cw.length-1)};save();draw()}
-$('#tbp').onclick=e=>{const b=e.target.dataset.b;if(!b||!S.sel.length)return;if(b=='dup'||b=='front'||b=='back')selAct[b]();else tbOp(b)};
+/* ======================= v1.3: groups, lock/unlock, better tables ======================= */
+/* ---------- groups ---------- */
+function newGid(){return'g'+Date.now().toString(36)+Math.random().toString(36).slice(2,6)}
+function grpOf(h){return h.g?S.items.filter(i=>i.g===h.g&&act(i)):[h]}
+function expandSel(L,pred=act){const gs=new Set(L.map(i=>i.g).filter(Boolean));return gs.size?S.items.filter(i=>L.includes(i)||(i.g&&gs.has(i.g)&&pred(i))):L}
+function groupSel(){const L=expandSel(S.sel);if(L.length<2)return toast('Select 2 or more objects to group');if(L.some(i=>i.lk))return toast('Unlock the selection first');push();const id=newGid();L.forEach(i=>i.g=id);S.sel=L;save();draw();toast('Grouped '+L.length+' objects (Ctrl+Shift+G to ungroup)')}
+function ungroupSel(){const L=expandSel(S.sel).filter(i=>i.g);if(!L.length)return toast('Nothing in the selection is grouped');push();L.forEach(i=>{delete i.g});save();draw();toast('Ungrouped')}
+/* ---------- lock / unlock ---------- */
+function toggleLock(){if(!S.sel.length)return;const L=expandSel(S.sel,()=>true),un=L.some(i=>i.lk);push();if(un)L.forEach(i=>{delete i.lk});else L.forEach(i=>i.lk=1);S.sel=L;save();draw();toast(un?'Unlocked '+L.length+' object'+(L.length>1?'s':''):'Locked '+L.length+' object'+(L.length>1?'s':'')+' - click one to select it, 🔓 to unlock')}
+function unlockAll(){const n=S.items.filter(i=>i.lk).length;if(!n)return;push();S.items.forEach(i=>{delete i.lk});save();draw();toast('Unlocked '+n+' object'+(n>1?'s':''))}
+function lkVis(i){if(!i.lk)return false;const l=LY(i.ly);return!l||l.vis}
+function hitLocked(p){return hitBy(p,lkVis)}
+/* keeps the selection bar in step with the selection (group / ungroup / lock icons) */
+function sbSync(){const sb=$('#sb');if(!sb)return;const LK=S.sel.some(i=>i.lk),gs=new Set(S.sel.map(i=>i.g||'')),same=S.sel.length>1&&gs.size==1&&!gs.has(''),keep=['lock','copy','dup','zsel'];
+ sb.querySelectorAll('[data-a]').forEach(b=>{const a=b.dataset.a;let h=LK&&!keep.includes(a);if(a=='grp')h=LK||S.sel.length<2||same;if(a=='ungrp')h=LK||!S.sel.some(i=>i.g);if(b.hidden!==h)b.hidden=h;
+  if(a=='lock'){const ic=LK?'🔓':'🔒';if(b.textContent!==ic){b.textContent=ic;b.title=LK?'Unlock selection (Ctrl+Shift+L)':'Lock selection (Ctrl+Shift+L)'}}});
+ sb.querySelectorAll('.sep').forEach(s=>{if(s.hidden!==LK)s.hidden=LK});
+ const nl=S.items.reduce((n,i)=>n+(i.lk?1:0),0),u=$('#unl');if(u){u.hidden=!nl||!!textEditor;if(nl){const t='🔓 Unlock all ('+nl+')';if(u.textContent!==t)u.textContent=t}}}
+/* selection extras drawn in paper space: group outlines, lock badges, table cell range + move handle */
+function selExtras(c){c.save();const z=S.z;
+ if(S.sel.length>1&&S.sel.some(i=>i.g)&&!S.sel.some(i=>i.lk)){c.setLineDash([2/z,3/z]);c.strokeStyle='rgba(59,130,246,.55)';c.lineWidth=1/z;for(const i of S.sel)if(i.g){const b=bnds([i]);c.strokeRect(b[0],b[1],b[2]-b[0],b[3]-b[1])}}
+ if(S.tool=='select'||S.tool=='lasso'){c.setLineDash([]);c.font=(14/z)+'px system-ui,sans-serif';c.textBaseline='middle';c.textAlign='center';for(const i of S.items){if(!lkVis(i))continue;const b=bnds([i]);c.fillStyle='#fff';c.beginPath();c.arc(b[2],b[1],10/z,0,7);c.fill();c.strokeStyle='#f08c00';c.lineWidth=1.2/z;c.stroke();c.fillStyle='#000';c.fillText('🔒',b[2],b[1]+.5/z)}}
+ if(S.sel.length===1&&S.sel[0].t=='tb'&&!S.sel[0].lk)tbOverlay(c,S.sel[0]);
+ c.restore()}
+
+/* ---------- tables: model ----------
+   t.cells[r][c]  raw text (a leading "=" is a formula)
+   t.mg           merged cells  [{r,c,h,w}]  (anchor row/col + span in rows/cols)
+   t.st[r][c]     per-cell style {bg, ha:'l|c|r', va:'t|m|b', bd:{t,b,l,r}}  bd side: undefined=default, 0=none, [width,color]
+*/
+class TbErr{constructor(m){this.m=m}}
+function tbNorm(t){const R=t.rh.length,C=t.cw.length;t.mg=t.mg||[];t.st=t.st||[];t.cells.length=R;t.st.length=R;for(let r=0;r<R;r++){const a=t.cells[r]=t.cells[r]||[],b=t.st[r]=t.st[r]||[];for(let k=0;k<C;k++){if(a[k]==null)a[k]='';if(b[k]===undefined)b[k]=null}}return t}
+function tbCov(t){const g=t.rh.map(()=>t.cw.map(()=>null));for(const m of t.mg)for(let r=m.r;r<m.r+m.h&&r<g.length;r++)for(let c=m.c;c<m.c+m.w&&c<g[0].length;c++)g[r][c]=m;return g}
+function tbSpan(t,r,c,g){return(g||tbCov(t))[r]?.[c]||{r,c,h:1,w:1}}
+function tbAnch(t,g){g=g||tbCov(t);const o=[];for(let r=0;r<t.rh.length;r++)for(let c=0;c<t.cw.length;c++){const m=g[r][c];if(m&&(m.r!=r||m.c!=c))continue;o.push(m||{r,c,h:1,w:1})}return o}
+function tbXY(t){const xs=[t.x],ys=[t.y];t.cw.forEach(w=>xs.push(xs[xs.length-1]+w));t.rh.forEach(h=>ys.push(ys[ys.length-1]+h));return[xs,ys]}
+function tbRect(t,m,xy){const[xs,ys]=xy||tbXY(t);return[xs[m.c],ys[m.r],xs[m.c+m.w]-xs[m.c],ys[m.r+m.h]-ys[m.r]]}
+function tbIdx(a,v){let i=0;while(i<a.length-2&&v>a[i+1])i++;return i}
+function tbLocal(t,p){if(!t.rot)return p;const mx=t.x+t.w/2,my=t.y+t.h/2,a=-t.rot,dx=p[0]-mx,dy=p[1]-my;return[mx+dx*Math.cos(a)-dy*Math.sin(a),my+dx*Math.sin(a)+dy*Math.cos(a)]}
+/* grow a cell range so that it fully contains every merged cell it touches */
+function tbRange(t,r1,c1,r2,c2){let a=Math.min(r1,r2),b=Math.min(c1,c2),d=Math.max(r1,r2),e=Math.max(c1,c2),ch=1;while(ch){ch=0;for(const m of t.mg){if(m.r<=d&&m.r+m.h-1>=a&&m.c<=e&&m.c+m.w-1>=b){const na=Math.min(a,m.r),nb=Math.min(b,m.c),nd=Math.max(d,m.r+m.h-1),ne=Math.max(e,m.c+m.w-1);if(na!=a||nb!=b||nd!=d||ne!=e){a=na;b=nb;d=nd;e=ne;ch=1}}}}return{it:t,r:a,c:b,r2:d,c2:e}}
+function cellAt(t,p){tbNorm(t);const q=tbLocal(t,p),[xs,ys]=tbXY(t),r=tbIdx(ys,q[1]),c=tbIdx(xs,q[0]),m=tbSpan(t,r,c);return{it:t,r:m.r,c:m.c,r2:m.r+m.h-1,c2:m.c+m.w-1}}
+function tbSel(t){const s=S.cell&&S.cell.it==t?S.cell:null,R=t.rh.length-1,C=t.cw.length-1;if(!s)return tbRange(t,0,0,0,0);return tbRange(t,Math.min(s.r,R),Math.min(s.c,C),Math.min(s.r2??s.r,R),Math.min(s.c2??s.c,C))}
+function tbSt(t,r,c){return t.st[r][c]||(t.st[r][c]={})}
+function tbApply(t,fn){const s=tbSel(t),g=tbCov(t),seen=new Set();for(let r=s.r;r<=s.r2;r++)for(let c=s.c;c<=s.c2;c++){const m=tbSpan(t,r,c,g),k=m.r+','+m.c;if(seen.has(k))continue;seen.add(k);fn(tbSt(t,m.r,m.c),m)}}
+function tbCp(s){if(!s)return null;const o={};if(s.bg)o.bg=s.bg;if(s.ha)o.ha=s.ha;if(s.va)o.va=s.va;return Object.keys(o).length?o:null}
+
+/* ---------- tables: formulas ---------- */
+function TBCOL(n){let s='';n++;while(n>0){const m=(n-1)%26;s=String.fromCharCode(65+m)+s;n=Math.floor((n-1)/26)}return s}
+function TBCOLN(s){let n=0;for(const ch of s)n=n*26+ch.charCodeAt(0)-64;return n-1}
+function tbFmt(n){return Number.isFinite(n)?String(+n.toFixed(10)):'#NUM!'}
+function tbTok(s){const out=[];let i=0;while(i<s.length){const ch=s[i];if(/\s/.test(ch)){i++;continue}const rest=s.slice(i);let m;
+ if(rest.startsWith('#REF!'))throw new TbErr('#REF!');
+ if(m=/^(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?/.exec(rest)){out.push({t:'n',v:parseFloat(m[0])});i+=m[0].length;continue}
+ if(ch=='"'){let j=i+1,str='';while(j<s.length&&s[j]!='"')str+=s[j++];if(j>=s.length)throw new TbErr('#ERR!');out.push({t:'s',v:str});i=j+1;continue}
+ if(m=/^\$?([A-Za-z]{1,3})\$?(\d+)(?![\w(])/.exec(rest)){out.push({t:'ref',c:TBCOLN(m[1].toUpperCase()),r:+m[2]-1});i+=m[0].length;continue}
+ if(m=/^[A-Za-z_][A-Za-z0-9_.]*/.exec(rest)){out.push({t:'id',v:m[0].toUpperCase()});i+=m[0].length;continue}
+ const two=s.substr(i,2);if(two=='<='||two=='>='||two=='<>'){out.push({t:'op',v:two});i+=2;continue}
+ if('+-*/^&%(),:<>='.includes(ch)){out.push({t:'op',v:ch});i++;continue}
+ throw new TbErr('#ERR!')}return out}
+/* evaluates every formula of one table lazily; returns {disp(r,c), val(r,c)} */
+function tbEval(t){tbNorm(t);const memo=new Map(),stack=new Set(),R=t.rh.length,C=t.cw.length;
+ const raw=(r,c)=>String((t.cells[r]&&t.cells[r][c])??'');
+ function val(r,c){const k=r+','+c;if(memo.has(k))return memo.get(k);const s=raw(r,c);let v;
+  if(s[0]=='='){if(stack.has(k))return new TbErr('#CYCLE!');stack.add(k);try{v=calc(s.slice(1))}catch(e){v=e instanceof TbErr?e:new TbErr('#ERR!')}stack.delete(k)}
+  else v=(s.trim()!==''&&isFinite(+s))?+s:s;
+  memo.set(k,v);return v}
+ const num=v=>{if(v instanceof TbErr)throw v;if(typeof v=='number')return v;if(typeof v=='boolean')return v?1:0;if(Array.isArray(v))throw new TbErr('#VALUE!');if(v===''||v==null)return 0;const n=Number(v);if(isNaN(n))throw new TbErr('#VALUE!');return n};
+ const str=v=>{if(v instanceof TbErr)throw v;if(Array.isArray(v))throw new TbErr('#VALUE!');if(typeof v=='number')return tbFmt(v);if(typeof v=='boolean')return v?'TRUE':'FALSE';return String(v)};
+ function calc(src){const tk=tbTok(src);let p=0;const isOp=v=>tk[p]&&tk[p].t=='op'&&tk[p].v==v,nx=()=>tk[p++];
+  const cellv=k=>{if(k.r<0||k.c<0||k.r>=R||k.c>=C)throw new TbErr('#REF!');const v=val(k.r,k.c);if(v instanceof TbErr)throw v;return v};
+  const rng=(a,b)=>{const r1=Math.min(a.r,b.r),r2=Math.max(a.r,b.r),c1=Math.min(a.c,b.c),c2=Math.max(a.c,b.c);if(r1<0||c1<0||r2>=R||c2>=C)throw new TbErr('#REF!');const o=[];for(let r=r1;r<=r2;r++){const row=[];for(let c=c1;c<=c2;c++)row.push(val(r,c));o.push(row)}return o};
+  const collect=a=>{const o=[];for(const x of a){if(x instanceof TbErr)throw x;if(Array.isArray(x)){for(const y of x.flat()){if(y instanceof TbErr)throw y;if(typeof y=='number')o.push(y)}}else o.push(num(x))}return o};
+  const fn=(n,a)=>{const A=i=>{const v=a[i];if(v instanceof TbErr)throw v;return v};
+   switch(n){
+    case'SUM':return collect(a).reduce((x,y)=>x+y,0);
+    case'AVERAGE':case'AVG':{const v=collect(a);if(!v.length)throw new TbErr('#DIV/0!');return v.reduce((x,y)=>x+y,0)/v.length}
+    case'MIN':{const v=collect(a);return v.length?Math.min(...v):0}
+    case'MAX':{const v=collect(a);return v.length?Math.max(...v):0}
+    case'COUNT':return collect(a).length;
+    case'PRODUCT':return collect(a).reduce((x,y)=>x*y,1);
+    case'ABS':return Math.abs(num(A(0)));
+    case'SQRT':{const v=num(A(0));if(v<0)throw new TbErr('#NUM!');return Math.sqrt(v)}
+    case'ROUND':{const d=a.length>1?num(A(1)):0,f=Math.pow(10,d);return Math.round(num(A(0))*f)/f}
+    case'POWER':return Math.pow(num(A(0)),num(A(1)));
+    case'MOD':{const d=num(A(1));if(!d)throw new TbErr('#DIV/0!');const n0=num(A(0));return n0-d*Math.floor(n0/d)}
+    case'IF':{const c=A(0),tr=typeof c=='string'?c!=='':!!c;return tr?(a.length>1?A(1):true):(a.length>2?A(2):false)}
+    case'CONCAT':return a.map((x,i)=>str(A(i))).join('');
+    default:throw new TbErr('#NAME?')}};
+  const cmpv=(a,o,b)=>{if(a instanceof TbErr)throw a;if(b instanceof TbErr)throw b;const bn=a!==''&&b!==''&&!isNaN(+a)&&!isNaN(+b);let x=a,y=b;if(bn){x=+a;y=+b}else{x=String(a).toLowerCase();y=String(b).toLowerCase()}switch(o){case'=':return x==y;case'<>':return x!=y;case'<':return x<y;case'>':return x>y;case'<=':return x<=y;default:return x>=y}};
+  function cmp(){let a=cat();while(tk[p]&&tk[p].t=='op'&&['=','<>','<','>','<=','>='].includes(tk[p].v)){const o=nx().v,b=cat();a=cmpv(a,o,b)}return a}
+  function cat(){let a=add();while(isOp('&')){nx();const b=add();a=str(a)+str(b)}return a}
+  function add(){let a=mul();while(isOp('+')||isOp('-')){const o=nx().v,b=mul();a=o=='+'?num(a)+num(b):num(a)-num(b)}return a}
+  function mul(){let a=un();while(isOp('*')||isOp('/')){const o=nx().v,b=un();if(o=='*')a=num(a)*num(b);else{const d=num(b);if(d===0)throw new TbErr('#DIV/0!');a=num(a)/d}}return a}
+  function un(){if(isOp('-')){nx();return-num(un())}if(isOp('+')){nx();return num(un())}return pw()}
+  function pw(){let a=pc();if(isOp('^')){nx();const b=un();a=Math.pow(num(a),num(b))}return a}
+  function pc(){let a=atom();while(isOp('%')){nx();a=num(a)/100}return a}
+  function atom(){const k=nx();if(!k)throw new TbErr('#ERR!');
+   if(k.t=='n'||k.t=='s')return k.v;
+   if(k.t=='op'&&k.v=='('){const v=cmp();if(!isOp(')'))throw new TbErr('#ERR!');nx();return v}
+   if(k.t=='ref'){if(isOp(':')){nx();const k2=nx();if(!k2||k2.t!='ref')throw new TbErr('#ERR!');return rng(k,k2)}return cellv(k)}
+   if(k.t=='id'){if(isOp('(')){nx();const a=[];if(!isOp(')')){for(;;){try{a.push(cmp())}catch(e){if(e instanceof TbErr)a.push(e);else throw e}if(isOp(',')){nx();continue}break}}if(!isOp(')'))throw new TbErr('#ERR!');nx();return fn(k.v,a)}
+    if(k.v=='TRUE')return true;if(k.v=='FALSE')return false;if(k.v=='PI')return Math.PI;throw new TbErr('#NAME?')}
+   throw new TbErr('#ERR!')}
+  const v=cmp();if(p<tk.length)throw new TbErr('#ERR!');return v}
+ const disp=(r,c)=>{const s=raw(r,c);if(s[0]!='=')return s;const v=val(r,c);if(v instanceof TbErr)return v.m;if(Array.isArray(v))return'#VALUE!';if(typeof v=='number')return tbFmt(v);if(typeof v=='boolean')return v?'TRUE':'FALSE';return String(v)};
+ return{disp,val}}
+/* when rows/columns are inserted or deleted, formulas keep pointing at the same cells */
+function tbShiftRefs(t,ax,at,d){const re=/(\$?)([A-Za-z]{1,3})(\$?)(\d+)(?::(\$?)([A-Za-z]{1,3})(\$?)(\d+))?(?![\w(])/g;
+ const sh=(i,isEnd,rg)=>{if(d>0)return i>=at?i+d:i;if(i==at){if(!rg)return null;return isEnd?i-1:i}return i>at?i-1:i};
+ const fix=s=>s.replace(re,(m,d1,c1,d2,r1,e1,c2,e2,r2)=>{const a={c:TBCOLN(c1.toUpperCase()),r:+r1-1},b=c2?{c:TBCOLN(c2.toUpperCase()),r:+r2-1}:null,K=ax;const na=sh(a[K],0,!!b),nb=b?sh(b[K],1,true):null;if(na==null||(b&&(nb==null||nb<na)))return'#REF!';a[K]=na;if(b)b[K]=nb;const f=(q,x,y)=>x+TBCOL(q.c)+y+(q.r+1);return f(a,d1,d2)+(b?':'+f(b,e1,e2):'')});
+ for(const row of t.cells)for(let k=0;k<row.length;k++){const s=row[k];if(typeof s=='string'&&s[0]=='=')row[k]=s.split('"').map((seg,i)=>i%2?seg:fix(seg)).join('"')}}
+
+/* ---------- tables: structure ---------- */
+function tbInsRow(t,at,src){tbNorm(t);const cl=t.st[src].map(tbCp);t.rh.splice(at,0,t.rh[src]);t.cells.splice(at,0,t.cw.map(()=>''));t.st.splice(at,0,cl);for(const m of t.mg){if(m.r>=at)m.r++;else if(m.r+m.h>at)m.h++}tbShiftRefs(t,'r',at,1)}
+function tbInsCol(t,at,src){tbNorm(t);t.cw.splice(at,0,t.cw[src]);t.cells.forEach(row=>row.splice(at,0,''));t.st.forEach(row=>row.splice(at,0,tbCp(row[src])));for(const m of t.mg){if(m.c>=at)m.c++;else if(m.c+m.w>at)m.w++}tbShiftRefs(t,'c',at,1)}
+function tbDelRow(t,r){tbNorm(t);if(t.rh.length<2)return;
+ for(const m of t.mg.slice()){if(m.r<=r&&r<m.r+m.h){if(m.h>1){if(m.r==r){t.cells[r+1][m.c]=t.cells[r][m.c];t.st[r+1][m.c]=t.st[r][m.c]}m.h--}else t.mg.splice(t.mg.indexOf(m),1)}else if(m.r>r)m.r--}
+ tbShiftRefs(t,'r',r,-1);t.rh.splice(r,1);t.cells.splice(r,1);t.st.splice(r,1)}
+function tbDelCol(t,c){tbNorm(t);if(t.cw.length<2)return;
+ for(const m of t.mg.slice()){if(m.c<=c&&c<m.c+m.w){if(m.w>1){if(m.c==c){t.cells[m.r][c+1]=t.cells[m.r][c];t.st[m.r][c+1]=t.st[m.r][c]}m.w--}else t.mg.splice(t.mg.indexOf(m),1)}else if(m.c>c)m.c--}
+ tbShiftRefs(t,'c',c,-1);t.cw.splice(c,1);t.cells.forEach(row=>row.splice(c,1));t.st.forEach(row=>row.splice(c,1))}
+function tbMerge(t){const s=tbSel(t);if(s.r==s.r2&&s.c==s.c2)return false;const g=tbCov(t);
+ const get=(r,c,sd)=>{const m=tbSpan(t,r,c,g),q=t.st[m.r][m.c];return q&&q.bd?q.bd[sd]:undefined};
+ const nb={t:get(s.r,s.c,'t'),l:get(s.r,s.c,'l'),b:get(s.r2,s.c,'b'),r:get(s.r,s.c2,'r')};
+ let txt=t.cells[s.r][s.c];if(txt==='')for(let r=s.r;r<=s.r2&&txt==='';r++)for(let c=s.c;c<=s.c2;c++)if(t.cells[r][c]!==''){txt=t.cells[r][c];break}
+ const own=t.st[s.r][s.c]?{...t.st[s.r][s.c]}:{};
+ t.mg=t.mg.filter(m=>!(m.r>=s.r&&m.c>=s.c&&m.r+m.h-1<=s.r2&&m.c+m.w-1<=s.c2));
+ for(let r=s.r;r<=s.r2;r++)for(let c=s.c;c<=s.c2;c++){t.cells[r][c]='';t.st[r][c]=null}
+ t.cells[s.r][s.c]=txt;own.bd={};for(const k in nb)if(nb[k]!==undefined)own.bd[k]=nb[k];if(!Object.keys(own.bd).length)delete own.bd;t.st[s.r][s.c]=own;
+ t.mg.push({r:s.r,c:s.c,h:s.r2-s.r+1,w:s.c2-s.c+1});S.cell={...s,ar:s.r,ac:s.c};return true}
+function tbUnmerge(t){const s=tbSel(t),hit=t.mg.filter(m=>m.r<=s.r2&&m.r+m.h-1>=s.r&&m.c<=s.c2&&m.c+m.w-1>=s.c);if(!hit.length)return false;t.mg=t.mg.filter(m=>!hit.includes(m));return true}
+function tbSplitCell(t,r,c,nc,nr){tbNorm(t);
+ if(nc>1){const w=t.cw[c]/nc;for(let j=1;j<nc;j++)tbInsCol(t,c+1,c);for(let j=0;j<nc;j++)t.cw[c+j]=w;const g=tbCov(t),done=new Set();
+  for(let rr=0;rr<t.rh.length;rr++){if(rr==r)continue;const m=tbSpan(t,rr,c,g),k=m.r+','+m.c;if(done.has(k))continue;done.add(k);if(m.c+m.w-1==c){if(t.mg.includes(m))m.w+=nc-1;else t.mg.push({r:m.r,c:m.c,h:1,w:nc})}}}
+ if(nr>1){const h=t.rh[r]/nr;for(let j=1;j<nr;j++)tbInsRow(t,r+1,r);for(let j=0;j<nr;j++)t.rh[r+j]=h;const g=tbCov(t),done=new Set();
+  for(let cc=0;cc<t.cw.length;cc++){if(cc>=c&&cc<c+nc)continue;const m=tbSpan(t,r,cc,g),k=m.r+','+m.c;if(done.has(k))continue;done.add(k);if(m.r+m.h-1==r){if(t.mg.includes(m))m.h+=nr-1;else t.mg.push({r:m.r,c:m.c,h:nr,w:1})}}}}
+/* borders: mode all|outer|inner|T|B|L|R|none|reset, val [w,color] | 0 | undefined */
+function tbBorder(t,mode,val){const s=tbSel(t),g=tbCov(t),R=t.rh.length,C=t.cw.length,opp={t:'b',b:'t',l:'r',r:'l'};
+ const set=(r,c,sd,v)=>{const m=tbSpan(t,r,c,g);if((sd=='t'&&r!=m.r)||(sd=='b'&&r!=m.r+m.h-1)||(sd=='l'&&c!=m.c)||(sd=='r'&&c!=m.c+m.w-1))return;
+  const q=tbSt(t,m.r,m.c);q.bd=q.bd||{};if(v===undefined)delete q.bd[sd];else q.bd[sd]=v;
+  const nr=sd=='t'?r-1:sd=='b'?r+1:r,nc=sd=='l'?c-1:sd=='r'?c+1:c;if(nr<0||nc<0||nr>=R||nc>=C)return;
+  const n=tbSpan(t,nr,nc,g),q2=tbSt(t,n.r,n.c);q2.bd=q2.bd||{};if(v===undefined)delete q2.bd[opp[sd]];else q2.bd[opp[sd]]=v};
+ for(let r=s.r;r<=s.r2;r++)for(let c=s.c;c<=s.c2;c++){const top=r==s.r,bot=r==s.r2,lef=c==s.c,rig=c==s.c2;let S4;
+  if(mode=='outer')S4={t:top,b:bot,l:lef,r:rig};else if(mode=='inner')S4={t:!top,b:!bot,l:!lef,r:!rig};else if(mode=='T')S4={t:top};else if(mode=='B')S4={b:bot};else if(mode=='L')S4={l:lef};else if(mode=='R')S4={r:rig};else S4={t:1,b:1,l:1,r:1};
+  for(const sd in S4)if(S4[sd])set(r,c,sd,val)}}
+function tbEdges(t,A,xy,g){const out=[],R=t.rh.length,C=t.cw.length,opp={t:'b',b:'t',l:'r',r:'l'};
+ for(const m of A){const bd=(t.st[m.r][m.c]||{}).bd||{},[x,y,w,h]=tbRect(t,m,xy);
+  for(const sd of['t','b','l','r']){let v=bd[sd];
+   if(v===undefined){const nr=sd=='t'?m.r-1:sd=='b'?m.r+m.h:m.r,nc=sd=='l'?m.c-1:sd=='r'?m.c+m.w:m.c;if(nr>=0&&nc>=0&&nr<R&&nc<C){const n=tbSpan(t,nr,nc,g);v=((t.st[n.r][n.c]||{}).bd||{})[opp[sd]]}}
+   if(v===0)continue;
+   const L=sd=='t'?[x,y,x+w,y]:sd=='b'?[x,y+h,x+w,y+h]:sd=='l'?[x,y,x,y+h]:[x+w,y,x+w,y+h];
+   out.push([...L,v?v[0]:1.5,v?v[1]:t.color])}}
+ return out}
+function tbWrap(c,text,maxW){const out=[],fit=s=>c.measureText(s).width<=maxW;
+ for(const para of String(text).split('\n')){let line='';
+  for(const word of para.split(' ')){let w=word;if(line&&fit(line+' '+w)){line+=' '+w;continue}if(line){out.push(line);line=''}
+   while(!fit(w)&&w.length>1){let n=w.length-1;while(n>1&&!fit(w.slice(0,n)))n--;out.push(w.slice(0,n));w=w.slice(n)}line=w}
+  out.push(line)}
+ return out}
+/* ---------- tables: drawing ---------- */
+function tbl(c,i){tbNorm(i);const g=tbCov(i),xy=tbXY(i),ev=tbEval(i),A=tbAnch(i,g),lh=i.fs*1.25;
+ c.save();c.font=`${i.fs}px ${FONT}`;c.textBaseline='middle';
+ for(const m of A){const s=i.st[m.r][m.c];if(s&&s.bg){const[x,y,w,h]=tbRect(i,m,xy);c.fillStyle=s.bg;c.fillRect(x,y,w,h)}}
+ for(const m of A){const t=ev.disp(m.r,m.c);if(!t)continue;const s=i.st[m.r][m.c]||{},[x,y,w,h]=tbRect(i,m,xy),ha=s.ha||'l',va=s.va||'m';
+  c.save();c.beginPath();c.rect(x,y,w,h);c.clip();c.fillStyle=i.color;c.textAlign=ha=='c'?'center':ha=='r'?'right':'left';
+  const tx=ha=='c'?x+w/2:ha=='r'?x+w-8:x+8,lines=tbWrap(c,t,Math.max(10,w-16)),th=lines.length*lh,ty=va=='t'?y+4:va=='b'?y+h-4-th:y+(h-th)/2;
+  lines.forEach((ln,j)=>c.fillText(ln,tx,ty+lh*(j+.5)));c.restore()}
+ c.lineCap='square';for(const e of tbEdges(i,A,xy,g)){c.strokeStyle=e[5];c.lineWidth=e[4];c.beginPath();c.moveTo(e[0],e[1]);c.lineTo(e[2],e[3]);c.stroke()}
+ i.w=xy[0][xy[0].length-1]-i.x;i.h=xy[1][xy[1].length-1]-i.y;c.restore()}
+function tbSvg(i,e){tbNorm(i);const g=tbCov(i),xy=tbXY(i),ev=tbEval(i),A=tbAnch(i,g),lh=i.fs*1.25,mc=document.createElement('canvas').getContext('2d');mc.font=`${i.fs}px ${FONT}`;let o='';
+ for(const m of A){const s=i.st[m.r][m.c];if(s&&s.bg){const[x,y,w,h]=tbRect(i,m,xy);o+=`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${e(s.bg)}"/>`}}
+ for(const m of A){const t=ev.disp(m.r,m.c);if(!t)continue;const s=i.st[m.r][m.c]||{},[x,y,w,h]=tbRect(i,m,xy),ha=s.ha||'l',va=s.va||'m',lines=tbWrap(mc,t,Math.max(10,w-16)),th=lines.length*lh,tx=ha=='c'?x+w/2:ha=='r'?x+w-8:x+8,ty=va=='t'?y+4:va=='b'?y+h-4-th:y+(h-th)/2;
+  o+=`<text font-size="${i.fs}" fill="${e(i.color)}" text-anchor="${ha=='c'?'middle':ha=='r'?'end':'start'}" font-family="Noto Sans,system-ui,sans-serif">`+lines.map((ln,j)=>`<tspan x="${tx}" y="${ty+lh*(j+.5)+i.fs*.35}">${e(ln)}</tspan>`).join('')+'</text>'}
+ for(const d of tbEdges(i,A,xy,g))o+=`<line x1="${d[0]}" y1="${d[1]}" x2="${d[2]}" y2="${d[3]}" stroke="${e(d[5])}" stroke-width="${d[4]}" stroke-linecap="square"/>`;
+ return o}
+function tbOverlay(c,t){tbNorm(t);const z=S.z,s=tbSel(t),[xs,ys]=tbXY(t);c.save();
+ if(t.rot){const mx=t.x+t.w/2,my=t.y+t.h/2;c.translate(mx,my);c.rotate(t.rot);c.translate(-mx,-my)}
+ const x=xs[s.c],y=ys[s.r],w=xs[s.c2+1]-x,h=ys[s.r2+1]-y;c.setLineDash([]);c.fillStyle='rgba(59,130,246,.16)';c.fillRect(x,y,w,h);c.strokeStyle='#3b82f6';c.lineWidth=2/z;c.strokeRect(x,y,w,h);
+ const hx=t.x-16/z,hy=t.y-16/z;c.fillStyle='#3b82f6';c.beginPath();c.arc(hx,hy,10/z,0,7);c.fill();c.fillStyle='#fff';c.font=(13/z)+'px system-ui,sans-serif';c.textAlign='center';c.textBaseline='middle';c.fillText('✥',hx,hy+.5/z);
+ c.restore()}
+/* ---------- tables: mouse ---------- */
+function tbHit(t,p){tbNorm(t);const q=tbLocal(t,p),z=S.z,[xs,ys]=tbXY(t),tol=6/z,g=tbCov(t),x1=xs[xs.length-1],y1=ys[ys.length-1];
+ if(Math.hypot(q[0]-(t.x-16/z),q[1]-(t.y-16/z))<12/z)return{k:'move'};
+ if(q[1]>=t.y-tol&&q[1]<=y1+tol){const rr=tbIdx(ys,q[1]);for(let k=1;k<xs.length;k++)if(Math.abs(q[0]-xs[k])<tol){const m=tbSpan(t,rr,k-1,g);if(m.c+m.w-1==k-1)return{k:'col',i:k-1,q:q[0]}}}
+ if(q[0]>=t.x-tol&&q[0]<=x1+tol){const cc=tbIdx(xs,q[0]);for(let k=1;k<ys.length;k++)if(Math.abs(q[1]-ys[k])<tol){const m=tbSpan(t,k-1,cc,g);if(m.r+m.h-1==k-1)return{k:'row',i:k-1,q:q[1]}}}
+ if(q[0]>=t.x&&q[0]<=x1&&q[1]>=t.y&&q[1]<=y1)return{k:'cell'};return null}
+function tbDown(p,e){const t=S.sel[0],h=tbHit(t,p);if(!h)return false;
+ if(h.k=='move'){push();drag={k:'mv',last:p};return true}
+ if(h.k=='col'){push();drag={k:'tcw',t,i:h.i,w0:t.cw[h.i],q0:h.q};return true}
+ if(h.k=='row'){push();drag={k:'trh',t,i:h.i,w0:t.rh[h.i],q0:h.q};return true}
+ const a=cellAt(t,p),base=e.shiftKey&&S.cell&&S.cell.it==t?{r:S.cell.ar??S.cell.r,c:S.cell.ac??S.cell.c}:{r:a.r,c:a.c};
+ S.cell={...tbRange(t,base.r,base.c,a.r,a.c),ar:base.r,ac:base.c};drag={k:'tcs',t,ar:base.r,ac:base.c};draw();return true}
+let tbCur=false;
+cv.addEventListener('pointermove',e=>{if(drag||e.pointerType=='touch')return;const t=S.sel.length===1&&S.sel[0].t=='tb'&&!S.sel[0].lk&&(S.tool=='select'||S.tool=='lasso')?S.sel[0]:null;let v='';
+ if(t){const h=tbHit(t,paperPoint(pt(e)));if(h)v=h.k=='move'?'move':h.k=='col'?'col-resize':h.k=='row'?'row-resize':'cell'}
+ if(v){cv.style.cursor=v;tbCur=true}else if(tbCur){cv.style.cursor='';tbCur=false}});
+/* ---------- tables: editing ---------- */
+function tbNext(t,r,c,dir){const A=tbAnch(t),i=A.findIndex(m=>m.r==r&&m.c==c),n=A[i+dir];return n||null}
+function editCell(t,p){const a=cellAt(t,p);editCellRC(t,a.r,a.c)}
+function editCellRC(t,r,c){tbNorm(t);const m=tbSpan(t,r,c);r=m.r;c=m.c;const[x,y,w,h]=tbRect(t,m);S.cell={it:t,r,c,r2:r+m.h-1,c2:c+m.w-1,ar:r,ac:c};
+ const ta=document.createElement('textarea'),s=t.st[r][c]||{};
+ Object.assign(ta.style,{position:'absolute',left:x*S.z+S.ox+'px',top:y*S.z+S.oy+'px',width:w*S.z+'px',height:h*S.z+'px',font:`${t.fs*S.z}px ${FONT}`,color:t.color,background:s.bg||PAP[S.bg]||'#fff',textAlign:s.ha=='c'?'center':s.ha=='r'?'right':'left',border:'2px solid #3b82f6',boxSizing:'border-box',resize:'none',zIndex:5,padding:'2px 6px'});
+ if(t.rot){ta.style.transformOrigin=((t.x+t.w/2)-x)*S.z+'px '+((t.y+t.h/2)-y)*S.z+'px';ta.style.transform='rotate('+t.rot+'rad)'}
+ ta.title='Type text, or a formula such as =SUM(A1:A3)';ta.value=t.cells[r][c];$('#w').append(ta);setTimeout(()=>ta.focus(),30);let ok=1;
+ let fin=0;const done=()=>{if(fin)return;fin=1;const v=ta.value;if(ta.parentNode)ta.remove();if(ok&&v!=t.cells[r][c]){push();t.cells[r][c]=v;save()}draw()};
+ ta.onblur=done;ta.onkeydown=e=>{if(e.key=='Escape'){ok=0;done()}else if(e.key=='Enter'&&!e.shiftKey){e.preventDefault();done()}else if(e.key=='Tab'){e.preventDefault();done();const n=tbNext(t,r,c,e.shiftKey?-1:1);if(n)editCellRC(t,n.r,n.c)}}}
+function tbSum(t){const s=tbSel(t),ev=tbEval(t),isN=(r,c)=>typeof ev.val(r,c)=='number',L=TBCOL;let a=s.r;while(a>0&&isN(a-1,s.c))a--;
+ if(a<s.r){push();t.cells[s.r][s.c]=`=SUM(${L(s.c)}${a+1}:${L(s.c)}${s.r})`;save();draw();return}
+ let b=s.c;while(b>0&&isN(s.r,b-1))b--;
+ if(b<s.c){push();t.cells[s.r][s.c]=`=SUM(${L(b)}${s.r+1}:${L(s.c-1)}${s.r+1})`;save();draw();return}
+ toast('Select the empty cell under (or to the right of) some numbers, then press Σ')}
+async function tbSplitDlg(t,s){const v=await dlg({title:'Split cell',msg:'Split this cell into a grid of smaller cells.',fields:[{label:'Columns',type:'number',value:'2'},{label:'Rows',type:'number',value:'1'}],ok:'Split',validate:([c,r])=>{c=+c;r=+r;if(!(c>=1&&c<=10&&r>=1&&r<=10)||c%1||r%1)return'Enter whole numbers from 1 to 10.';return c==1&&r==1?'Choose 2 or more columns or rows.':''}});
+ if(!v)return;push();tbSplitCell(t,s.r,s.c,+v[0],+v[1]);S.cell={it:t,r:s.r,c:s.c,r2:s.r,c2:s.c,ar:s.r,ac:s.c};save();draw()}
+function tbOp(a){const t=tbNorm(S.sel[0]),s=tbSel(t);
+ if(a=='sum')return tbSum(t);
+ if(a=='sp'){if(t.mg.some(m=>m.r<=s.r2&&m.r+m.h-1>=s.r&&m.c<=s.c2&&m.c+m.w-1>=s.c)){push();tbUnmerge(t);save();draw();return}
+  if(s.r==s.r2&&s.c==s.c2)return tbSplitDlg(t,s);return toast('Select a merged cell to unmerge it, or a single cell to split it')}
+ if(a=='mg'){if(s.r==s.r2&&s.c==s.c2)return toast('Select 2 or more cells first (drag across them, or Shift+click)');push();tbMerge(t);save();draw();return}
+ if((a=='dr'&&t.rh.length-(s.r2-s.r+1)<1)||(a=='dc'&&t.cw.length-(s.c2-s.c+1)<1))return toast('A table needs at least one row and one column');
+ push();
+ if(a=='ra')tbInsRow(t,s.r,s.r);else if(a=='rb')tbInsRow(t,s.r2+1,s.r2);else if(a=='cl')tbInsCol(t,s.c,s.c);else if(a=='cr')tbInsCol(t,s.c2+1,s.c2);
+ else if(a=='dr'){for(let r=s.r2;r>=s.r;r--)tbDelRow(t,r)}else if(a=='dc'){for(let c=s.c2;c>=s.c;c--)tbDelCol(t,c)}
+ else if(a=='nofill')tbApply(t,q=>{delete q.bg});
+ const r=Math.min(s.r,t.rh.length-1),c=Math.min(s.c,t.cw.length-1);S.cell={it:t,r,c,r2:r,c2:c,ar:r,ac:c};save();draw()}
+let tbLast=null;
+function tbSyncColor(){const t=S.sel.length==1&&S.sel[0].t=='tb'?S.sel[0]:null;if(t!==tbLast){tbLast=t;if(t&&/^#[0-9a-f]{6}$/i.test(t.color||''))$('#tbbc').value=t.color}}
+function addTable(){push();const v=view();addI({t:'tb',x:v[0],y:v[1],cw:[120,120,120],rh:[40,40,40],cells:[['','',''],['','',''],['','','']],mg:[],st:[[null,null,null],[null,null,null],[null,null,null]],fs:18,color:S.color,w:360,h:120});save();draw()}
+$('#tbp').onclick=e=>{const bt=e.target.closest('button');if(!bt||!S.sel.length||S.sel[0].t!='tb')return;const t=S.sel[0],d=bt.dataset;
+ if(d.b){if(d.b=='dup'||d.b=='front'||d.b=='back')selAct[d.b]();else tbOp(d.b);return}
+ tbNorm(t);
+ if(d.bgc){push();tbApply(t,q=>{q.bg=d.bgc});save();draw();return}
+ if(d.al||d.av){push();tbApply(t,q=>{if(d.al)q.ha=d.al;if(d.av)q.va=d.av});save();draw();return}
+ if(d.bd){push();tbBorder(t,d.bd,d.bd=='none'?0:d.bd=='reset'?undefined:[+$('#tbbw').value,$('#tbbc').value]);save();draw()}};
+{let pushed=false;$('#tbbg').oninput=e=>{const t=S.sel[0];if(!t||t.t!='tb')return;tbNorm(t);if(!pushed){push();pushed=true}tbApply(t,q=>{q.bg=e.target.value});save();draw()};$('#tbbg').onchange=()=>{pushed=false}}
+$('#unl').onclick=unlockAll;
 $('#pl3').onclick=()=>{addTable();$('#plm').hidden=1};
 const lum=h=>(parseInt(h.slice(1,3),16)*.299+parseInt(h.slice(3,5),16)*.587+parseInt(h.slice(5,7),16)*.114)/255;
 const zl=()=>{$('#zp').textContent=Math.round(S.z*100)+'%'};
@@ -1194,7 +1428,7 @@ const tgl=(id,k)=>{$(id).checked=S[k];$(id).onchange=e=>{S[k]=e.target.checked;W
 $('#tgs').oninput=e=>{S.tags=e.target.value;save()};
 $('#hb').onclick=()=>{$('#bars').hidden=1;$('#sh').hidden=0};$('#sh').onclick=()=>{$('#bars').hidden=0;$('#sh').hidden=1};
 document.addEventListener('keydown',e=>{if(/TEXTAREA|INPUT|SELECT/.test(e.target.tagName))return;const m=e.ctrlKey||e.metaKey;
- if(m&&e.key=='z'){e.preventDefault();e.shiftKey?redo():undo()}else if(m&&e.key=='y'){e.preventDefault();redo()}else if(m&&e.key=='c'&&S.sel.length){e.preventDefault();copy()}else if(m&&e.key=='x'&&S.sel.length){e.preventDefault();copy();delSel()}else if(m&&e.key=='d'){e.preventDefault();selAct.dup()}else if(m&&e.key=='s'){e.preventDefault();saveNow()}else if(e.key=='Escape'&&document.body.classList.contains('pres'))present(false);else if(document.body.classList.contains('pres')&&(e.key=='ArrowRight'||e.key=='PageDown'))goPage(pgOf()+1);else if(document.body.classList.contains('pres')&&(e.key=='ArrowLeft'||e.key=='PageUp'))goPage(pgOf()-1);else if(e.key=='z'&&!m)zoomSel();else if(e.key=='Delete'||e.key=='Backspace')delSel();else if(e.key=='+'||e.key=='=')zoomAt(1.2,cv.clientWidth/2,cv.clientHeight/2);else if(e.key=='-')zoomAt(1/1.2,cv.clientWidth/2,cv.clientHeight/2)});
+ if(m&&e.key=='z'){e.preventDefault();e.shiftKey?redo():undo()}else if(m&&e.key=='y'){e.preventDefault();redo()}else if(m&&e.key=='c'&&S.sel.length){e.preventDefault();copy()}else if(m&&e.key=='x'&&S.sel.length){e.preventDefault();copy();delSel()}else if(m&&e.key=='d'){e.preventDefault();selAct.dup()}else if(m&&e.key.toLowerCase()=='g'){e.preventDefault();e.shiftKey?ungroupSel():groupSel()}else if(m&&e.shiftKey&&e.key.toLowerCase()=='l'){e.preventDefault();toggleLock()}else if(m&&e.key=='s'){e.preventDefault();saveNow()}else if(e.key=='Escape'&&document.body.classList.contains('pres'))present(false);else if(document.body.classList.contains('pres')&&(e.key=='ArrowRight'||e.key=='PageDown'))goPage(pgOf()+1);else if(document.body.classList.contains('pres')&&(e.key=='ArrowLeft'||e.key=='PageUp'))goPage(pgOf()-1);else if(e.key=='z'&&!m)zoomSel();else if(e.key=='Delete'||e.key=='Backspace')delSel();else if(e.key=='+'||e.key=='=')zoomAt(1.2,cv.clientWidth/2,cv.clientHeight/2);else if(e.key=='-')zoomAt(1/1.2,cv.clientWidth/2,cv.clientHeight/2)});
 (async()=>{zl();buildPops();swBrush();try{navigator.serviceWorker&&location.protocol.startsWith('http')&&navigator.serviceWorker.register('sw.js').catch(()=>{})}catch(e){}applyTheme(L('wb.th','auto'));syncPaper();i18n($('#lg').value);swBrush();setColor(S.color);setTool('fount');fit();const all=((await tx('readonly',s=>s.getAll()))||[]).filter(r=>!r.folder&&!r.del&&!r.locked).sort((a,b)=>b.t-a.t);if(all.length)await openNote(all[0]);else{await newNote();await saveNow()}showHome();try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist().catch(()=>{})}catch(e){}try{if(!window.wb&&!localStorage.getItem('wb.webnote')){localStorage.setItem('wb.webnote','1');setTimeout(()=>toast('Your boards are stored in this browser. Clearing site data deletes them, so use Backup now and then. The desktop app keeps them safer.',9000),1200)}}catch(e){}})();
 /* ===== v21: dynamic connectors, sketch-to-shape, offline UI translation ===== */
 (()=>{
