@@ -3,6 +3,12 @@
 A cute, local-first whiteboard and note-taking app. No account, no cloud: your boards live on your device
 (IndexedDB). Runs as a website, an installable offline app (PWA), or a desktop app (Electron).
 
+**🌐 Use it in the browser (web build): https://rejwanshafi25.github.io/RejBoard/**
+
+Open the link, then in Chrome/Edge click the install icon in the address bar to install it as an offline app (PWA). Boards are stored in your own browser, so they are not shared between devices.
+
+**⬇️ Desktop installers (Windows, macOS, Linux): https://github.com/RejwanShafi25/RejBoard/releases/latest**
+
 ## Run it
 | Way | Steps |
 |---|---|
@@ -50,6 +56,11 @@ Ctrl+Z / Ctrl+Y undo/redo · Ctrl+C/X/V/D copy/cut/paste/duplicate · Ctrl+S sav
 - Visible labels are translated into 8 languages; hover tooltips are English only.
 
 ## Publishing on GitHub
+- **Web build**: `.github/workflows/pages.yml` deploys to GitHub Pages on every push to `main`. One-time: repo **Settings → Pages → Source: GitHub Actions**.
+- **Installers**: `.github/workflows/build.yml` builds Windows (Setup + Portable `.exe`), macOS (`.dmg`, Intel + Apple Silicon) and Linux (`.AppImage`, `.deb`, `.rpm`) and attaches them to a GitHub Release. Bump `version` in `package.json`, commit, then `git tag v1.2.0 && git push origin v1.2.0` (the tag must match the version).
+- macOS/Windows builds are unsigned: macOS may say the app is damaged (run `xattr -cr "/Applications/Rejwan Whiteboard.app"`), Windows SmartScreen may warn (More info → Run anyway).
+
+Older note:
 See the step-by-step guide in the project description / repo wiki: push this folder, enable GitHub Pages for the web/PWA version,
 and push a tag (`git tag v1.0.0 && git push --tags`) to build Windows/macOS/Linux installers automatically.
 

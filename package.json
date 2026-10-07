@@ -4,7 +4,10 @@
   "version": "1.2.0",
   "description": "A cute, local-first whiteboard and note-taking app",
   "main": "main.js",
-  "author": "Rejwan Shafi",
+  "author": {
+    "name": "Rejwan Shafi",
+    "email": "rejwan.shafi03@gmail.com"
+  },
   "license": "MIT",
   "scripts": {
     "start": "electron .",
@@ -33,17 +36,35 @@
     ],
     "win": {
       "target": [
-        "nsis",
-        "portable"
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
       ],
       "signAndEditExecutable": true,
       "icon": "build/icon.ico"
     },
     "mac": {
       "target": [
-        "dmg"
+        {
+          "target": "dmg",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
       ],
-      "icon": "build/icon.png"
+      "icon": "build/icon.png",
+      "category": "public.app-category.productivity",
+      "identity": null
     },
     "linux": {
       "target": [
@@ -51,7 +72,10 @@
         "deb",
         "rpm"
       ],
-      "icon": "build/icon.png"
+      "icon": "build/icon.png",
+      "category": "Office",
+      "maintainer": "Rejwan Shafi <RejwanShafi25@users.noreply.github.com>",
+      "synopsis": "A cute, local-first whiteboard and note-taking app"
     },
     "publish": [
       {
@@ -59,7 +83,13 @@
         "releaseType": "release"
       }
     ],
-    "artifactName": "Rejwan-Whiteboard-${version}-${os}-${arch}.${ext}"
+    "artifactName": "Rejwan-Whiteboard-${version}-${os}-${arch}.${ext}",
+    "nsis": {
+      "artifactName": "Rejwan-Whiteboard-${version}-win-${arch}-Setup.${ext}"
+    },
+    "portable": {
+      "artifactName": "Rejwan-Whiteboard-${version}-win-${arch}-Portable.${ext}"
+    }
   },
   "repository": "github:RejwanShafi25/RejBoard",
   "homepage": "https://github.com/RejwanShafi25/RejBoard",

@@ -1,0 +1,52 @@
+# Deploy the web / PWA build to GitHub Pages on every push to main.
+# One-time setup: repo Settings -> Pages -> Build and deployment -> Source: "GitHub Actions".
+name: Deploy web build
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      # vendor/ is git-ignored; download MathJax / jsPDF / pdf.js so the site works offline.
+      - name: Fetch offline libraries
+        run: python fetch_libs.py
+
+      - name: Assemble site
+        run: |
+          mkdir _site
+          cp index.html manifest.json sw.js icon.svg icon-192.png icon-512.png _site/
+          cp -r vendor _site/vendor
+          touch _site/.nojekyll
+          for f in index.html manifest.json sw.js vendor/tex-svg.js vendor/jspdf.umd.min.js vendor/pdf.min.js vendor/pdf.worker.min.js; do
+            test -s "_site/$f" || { echo "missing $f"; exit 1; }
+          done
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - id: deployment
+        uses: actions/deploy-pages@v4
