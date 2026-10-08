@@ -194,9 +194,9 @@ lib('vendor/tex-svg.js','https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es
 <div id="txp" class="pp" hidden><label title="Text size">Size <input id="txsz" type="range" min="8" max="120" value="24"></label><input id="txcolor" type="color" title="Text color" value="#111111"><select id="tff" title="Font"><option value="hand">Handwriting</option><option value="sans" selected>Sans</option><option value="mono">Mono</option><option value="marker">Marker</option><option value="serif">Serif</option></select><button id="tb_" title="Bold"><b>B</b></button><button id="ti_" title="Italic"><i>I</i></button><button id="tu_" title="Underline"><u>U</u></button></div>
 <div id="emp" class="pp" hidden><button class="em" style="font-size:22px">😀</button><button class="em" style="font-size:22px">😍</button><button class="em" style="font-size:22px">🥰</button><button class="em" style="font-size:22px">😎</button><button class="em" style="font-size:22px">🤔</button><button class="em" style="font-size:22px">😴</button><button class="em" style="font-size:22px">🎉</button><button class="em" style="font-size:22px">✨</button><button class="em" style="font-size:22px">🌸</button><button class="em" style="font-size:22px">🌈</button><button class="em" style="font-size:22px">⭐</button><button class="em" style="font-size:22px">❤️</button><button class="em" style="font-size:22px">💡</button><button class="em" style="font-size:22px">📌</button><button class="em" style="font-size:22px">✅</button><button class="em" style="font-size:22px">❌</button><button class="em" style="font-size:22px">⚠️</button><button class="em" style="font-size:22px">❓</button><button class="em" style="font-size:22px">🔥</button><button class="em" style="font-size:22px">🍀</button><button class="em" style="font-size:22px">🎯</button><button class="em" style="font-size:22px">📚</button><button class="em" style="font-size:22px">✏️</button><button class="em" style="font-size:22px">🖍️</button><button class="em" style="font-size:22px">🧠</button><button class="em" style="font-size:22px">🐱</button><button class="em" style="font-size:22px">🐶</button><button class="em" style="font-size:22px">🦄</button><button class="em" style="font-size:22px">🍓</button><button class="em" style="font-size:22px">☕</button><button class="em" style="font-size:22px">🎵</button></div>
 <div id="plm" class="pp" hidden><button id="pl1">🖼️ Add image</button><button id="pl2">📄 PDF (annotate on top)</button><button id="pl4">📄 DOCX / PPTX</button><button id="pl3">▦ <span data-i="addtable"></span></button></div>
-<div id="exm" class="pp" hidden style="flex-direction:column;align-items:stretch"><button data-x="png">🖼 Export board as PNG</button><button data-x="svg">✏️ Export board as SVG</button><button data-x="pdf">📕 Export as PDF</button><button data-x="selpng">🔲 Export selection as PNG</button><button data-x="fit">⛶ Fit everything on the paper</button><button data-x="copy">💾 Save a copy (.rjwb — opens only in this app)</button><button data-x="open">📂 Open a board file</button></div>
+<div id="exm" class="pp" hidden style="flex-direction:column;align-items:stretch"><button data-x="png">🖼 Export board as PNG</button><button data-x="svg">✏️ Export board as SVG</button><button data-x="pdf">📕 Export as PDF</button><button data-x="selpng">🔲 Export selection as PNG</button><button data-x="fit">⛶ Fit everything on the paper</button><button data-x="copy">💾 Save a copy (.rjwb — opens only in this app)</button><button data-x="open">📂 Open a board file</button><button data-x="lan">📡 Share boards on local network (encrypted)…</button></div>
 <div id="sb" class="pp" hidden><button data-a="dup" title="Duplicate (Ctrl+D)">⧉</button><button data-a="copy" title="Copy (Ctrl+C)">📋</button><button data-a="cut" title="Cut (Ctrl+X)">✂️</button><button data-a="del" title="Delete">🗑</button><button data-a="front" title="Bring to front">⬆</button><button data-a="back" title="Send to back">⬇</button><button data-a="lock" title="Lock selection (Ctrl+Shift+L)">🔒</button><button data-a="grp" title="Group (Ctrl+G)">▣</button><button data-a="ungrp" title="Ungroup (Ctrl+Shift+G)">▢</button><span class="sep"></span><button data-a="L" title="Align left">⇤</button><button data-a="H" title="Center horizontally">⇔</button><button data-a="R" title="Align right">⇥</button><button data-a="T" title="Align top">⤒</button><button data-a="V" title="Center vertically">⇕</button><button data-a="D" title="Align bottom">⤓</button><button data-a="zsel" title="Zoom to selection (Z)">🔍</button><button data-a="dist" title="Distribute evenly (3+ objects)">⋯</button></div>
-<div id="tbp" class="pp" hidden style="bottom:146px"><div class="tbr"><b>Rows / columns</b><button data-b="ra">＋ Row above</button><button data-b="rb">＋ Row below</button><button data-b="cl">＋ Col left</button><button data-b="cr">＋ Col right</button><button data-b="dr">− Row</button><button data-b="dc">− Col</button></div><div class="tbr"><b>Cells</b><button data-b="mg" title="Merge the selected cells into one">⊞ Merge</button><button data-b="sp" title="Unmerge a merged cell, or split a single cell into rows / columns">⊟ Split</button><button data-b="sum" title="AutoSum the numbers above (or to the left of) the selected cell">Σ Sum</button><b>Fill</b><button class="sw" data-bgc="#fff3a3" style="background:#fff3a3" title="Cell background #fff3a3"></button><button class="sw" data-bgc="#ffd6e0" style="background:#ffd6e0" title="Cell background #ffd6e0"></button><button class="sw" data-bgc="#d6f5d6" style="background:#d6f5d6" title="Cell background #d6f5d6"></button><button class="sw" data-bgc="#d6e8ff" style="background:#d6e8ff" title="Cell background #d6e8ff"></button><button class="sw" data-bgc="#e5d6ff" style="background:#e5d6ff" title="Cell background #e5d6ff"></button><button class="sw" data-bgc="#ffe0b3" style="background:#ffe0b3" title="Cell background #ffe0b3"></button><button class="sw" data-bgc="#e0e0e0" style="background:#e0e0e0" title="Cell background #e0e0e0"></button><input type="color" id="tbbg" value="#ffe066" title="Custom cell background"><button data-b="nofill" title="Remove cell background">∅</button></div><div class="tbr"><b>Align</b><button data-al="l" title="Align left">⇤</button><button data-al="c" title="Center">↔</button><button data-al="r" title="Align right">⇥</button><button data-av="t" title="Align top">⤒</button><button data-av="m" title="Middle">↕</button><button data-av="b" title="Align bottom">⤓</button></div><div class="tbr"><b>Borders</b><button data-bd="all">All</button><button data-bd="outer">Outer</button><button data-bd="inner">Inner</button><button data-bd="T">Top</button><button data-bd="B">Bottom</button><button data-bd="L">Left</button><button data-bd="R">Right</button><button data-bd="none" title="Remove the borders around the selected cells">None</button><button data-bd="reset" title="Back to the default thin line">Default</button></div><div class="tbr"><b>Border style</b><select id="tbbw" title="Border thickness"><option value="1">Thin</option><option value="2" selected>Medium</option><option value="4">Thick</option></select><input type="color" id="tbbc" value="#111111" title="Border color"><b>Table</b><button data-b="dup">⧉ Copy</button><button data-b="front">⬆ Front</button><button data-b="back">⬇ Back</button></div><div class="tbh">Drag across cells to select (Shift+click extends) · drag a grid line to resize · ✥ moves the table · double-click or Tab to type · formulas: =SUM(A1:A3), =B2*C2, =AVERAGE(B2:B9)</div></div>
+<div id="tbp" class="pp" hidden style="bottom:146px"><div class="tbr"><b>Rows / columns</b><button data-b="ra">＋ Row above</button><button data-b="rb">＋ Row below</button><button data-b="cl">＋ Col left</button><button data-b="cr">＋ Col right</button><button data-b="dr">− Row</button><button data-b="dc">− Col</button></div><div class="tbr"><b>Cells</b><button data-b="mg" title="Merge the selected cells into one">⊞ Merge</button><button data-b="sp" title="Unmerge a merged cell, or split a single cell into rows / columns">⊟ Split</button><button data-b="sum" title="AutoSum the numbers above (or to the left of) the selected cell">Σ Sum</button><b>Fill</b><button class="sw" data-bgc="#fff3a3" style="background:#fff3a3" title="Cell background #fff3a3"></button><button class="sw" data-bgc="#ffd6e0" style="background:#ffd6e0" title="Cell background #ffd6e0"></button><button class="sw" data-bgc="#d6f5d6" style="background:#d6f5d6" title="Cell background #d6f5d6"></button><button class="sw" data-bgc="#d6e8ff" style="background:#d6e8ff" title="Cell background #d6e8ff"></button><button class="sw" data-bgc="#e5d6ff" style="background:#e5d6ff" title="Cell background #e5d6ff"></button><button class="sw" data-bgc="#ffe0b3" style="background:#ffe0b3" title="Cell background #ffe0b3"></button><button class="sw" data-bgc="#e0e0e0" style="background:#e0e0e0" title="Cell background #e0e0e0"></button><input type="color" id="tbbg" value="#ffe066" title="Custom cell background"><button data-b="nofill" title="Remove cell background">∅</button></div><div class="tbr"><b>Align</b><button data-al="l" title="Align left">⇤</button><button data-al="c" title="Center">↔</button><button data-al="r" title="Align right">⇥</button><button data-av="t" title="Align top">⤒</button><button data-av="m" title="Middle">↕</button><button data-av="b" title="Align bottom">⤓</button></div><div class="tbr"><b>Borders</b><button data-bd="all">All</button><button data-bd="outer">Outer</button><button data-bd="inner">Inner</button><button data-bd="T">Top</button><button data-bd="B">Bottom</button><button data-bd="L">Left</button><button data-bd="R">Right</button><button data-bd="none" title="Remove the borders around the selected cells">None</button><button data-bd="reset" title="Back to the default thin line">Default</button></div><div class="tbr"><b>Border style</b><select id="tbbw" title="Border thickness"><option value="1">Thin</option><option value="2" selected>Medium</option><option value="4">Thick</option></select><input type="color" id="tbbc" value="#111111" title="Border color"><b>Table</b><button data-b="dup">⧉ Copy</button><button data-b="front">⬆ Front</button><button data-b="back">⬇ Back</button></div><div class="tbh">Drag across cells to select (Shift+click extends) · drag a grid line to resize · ✥ moves the table · double-click or Tab to type · formulas start with = : =SUM(A1:A3), =B2*C2, =AVERAGE(B2:B9), =IF(A1&gt;5,"hi","lo"), =SUMIF(A1:A9,"&gt;5") — letters/numbers on the table edge are the cell addresses · while typing a formula, click cells to insert them</div></div>
 <div id="pgn" class="pp" hidden style="left:12px;transform:none;bottom:14px;flex-wrap:nowrap"><button id="pg0" title="Previous page">◀</button><span id="pgl2" class="chip">1/1</span><button id="pg1" title="Next page">▶</button><button id="pgadd" title="Add another page">＋ <span data-i="page"></span></button><button id="pgfull" hidden class="on"></button></div>
 <div id="pp"><button id="zs" title="Zoom to selection (Z)">🔍</button><span id="tm" class="chip">00:00</span><button id="spb" title="Spotlight">🔦</button><button id="px" title="Exit presentation (Esc)">✕</button></div>
 <div id="hm" hidden><div id="hs"></div><div id="hmain"></div><button id="fab" title="New board">✏️</button></div><div id="rulerOverlay"><div class="ruler-body"></div></div><div id="pomo" class="pop" hidden><div class="phd" id="pomoHead"><b>⏱ Pomodoro</b><button class="pclose" id="pomoClose" title="Close timer (keeps running in the background)" aria-label="Close">✕</button></div><div class="clock" id="pomoClock" title="Double-click to type a custom time">25:00</div><div class="prow pset" id="pomoSet"><input id="pomoH" type="number" min="0" max="99" value="0" title="Hours" aria-label="Hours"><span>h</span><input id="pomoM" type="number" min="0" max="59" value="25" title="Minutes" aria-label="Minutes"><span>m</span><input id="pomoS" type="number" min="0" max="59" value="0" title="Seconds" aria-label="Seconds"><span>s</span><button id="pomoApply" title="Set the timer to this time">Set</button></div><div class="prow"><button id="pomoSub1" title="Remove 1 minute">−1 min</button><button id="pomoAdd1" title="Add 1 minute">+1 min</button><button id="pomoAdd5" title="Add 5 minutes">+5 min</button><button id="pomoAdd10" title="Add 10 minutes">+10 min</button><button id="pomoAdd60" title="Add 1 hour">+1 hr</button></div><div class="prow"><button id="pomoStart" class="on">Start</button><button id="pomoPause">Pause</button><button id="pomoReset">Reset</button><button id="pomoBreak">5 min break</button></div><div class="presz" id="pomoResize" title="Drag to resize"></div></div>
@@ -744,12 +744,66 @@ $('#cvb').onclick=()=>{if(!$('#bars').hidden)closeTransient();else{closeTransien
 $('#emp').onclick=e=>{if(!e.target.classList.contains('em'))return;push();const v=view();addI({t:'t',x:v[0],y:v[1],text:e.target.textContent,size:48,color:S.color});save();draw();$('#emp').hidden=1};
 $('#mathd').onclick=()=>{closeTransient('mq');$('#mq').hidden=0;$('#ml').focus()};$('#lyd').onclick=()=>{closeTransient('lp');const p=$('#lp');p.hidden=!p.hidden;if(!p.hidden)renderLayers()};$('#taped').onclick=()=>setTool('tape');
 $('#pl1').onclick=()=>{$('#fi').click();$('#plm').hidden=1};$('#pl2').onclick=()=>{startPdfImport('board');$('#plm').hidden=1};$('#pl4').onclick=()=>{$('#docf').click();$('#plm').hidden=1};
-$('#exm').onclick=async e=>{const x=e.target.dataset.x;if(!x)return;$('#exm').hidden=1;if(x=='fit')return fitAll();if(x=='copy')return saveCopy();if(x=='open')return $('#of').click();
+$('#exm').onclick=async e=>{const x=e.target.dataset.x;if(!x)return;$('#exm').hidden=1;if(x=='fit')return fitAll();if(x=='copy')return saveCopy();if(x=='open')return $('#of').click();if(x=='lan')return lanDialog();
  if(x=='pdf'){closeTransient('pdfq');$('#pdfq').hidden=0;positionUnder($('#pdfq'),$('#exb'));return}if(x=='selpng'){if(!S.sel.length)return toast('Select something first');const keep=S.items;S.items=S.sel;const c=rexp(false,2,0,bnds(S.sel));S.items=keep;return dlf((S.title||'note')+'-selection.png',await new Promise(r=>c.toBlob(r,'image/png')))}exportAs(x)};
 $('#pdfcancel').onclick=()=>$('#pdfq').hidden=1;$('#pdfsave').onclick=()=>{const inv=$('#pdfinv').checked;$('#pdfq').hidden=1;exportAs('pdf',inv)};
 $('#of').onchange=e=>{const f=e.target.files[0];e.target.value='';f&&openBoardFile(f)};
 const b64=t=>{const u=new TextEncoder().encode(t);let b='';for(let i=0;i<u.length;i+=8192)b+=String.fromCharCode(...u.subarray(i,i+8192));return btoa(b)};
 async function saveCopy(){await saveNow();dlf((S.title||'board').replace(/[\\/:*?"<>|]/g,'_')+'.rjwb',new Blob(['RJWB1:'+b64(JSON.stringify({title:S.title,items:S.items,bg:S.bg,pat:S.pat,gs:S.gs,gd:S.gd,layers:S.layers,tags:S.tags,pg:S.pg}))],{type:'application/octet-stream'}))}
+/* ---------- local-network sharing (desktop app only; encryption happens in the main process, in transit only) ---------- */
+const lanEl=(t,a={},...k)=>{const e=document.createElement(t);for(const[x,v]of Object.entries(a)){if(x=='style')e.style.cssText=v;else if(x.startsWith('on'))e[x]=v;else if(x in e)e[x]=v;else e.setAttribute(x,v)}e.append(...k);return e};
+const lanSize=n=>n<1024?n+' B':n<1048576?(n/1024).toFixed(1)+' KB':(n/1048576).toFixed(1)+' MB';
+
+const lanBar=()=>{const fill=lanEl('div',{style:'height:100%;width:0;background:linear-gradient(90deg,#60a5fa,#3b82f6);border-radius:8px;transition:width .15s'}),pct=lanEl('span',{style:'font-weight:600;min-width:44px;text-align:right'},'0%'),txt=lanEl('div',{style:'font-size:12px;opacity:.8;margin-bottom:4px'}),track=lanEl('div',{style:'flex:1;height:14px;background:rgba(128,128,128,.25);border-radius:8px;overflow:hidden'},fill),row=lanEl('div',{style:'display:flex;gap:8px;align-items:center'},track,pct),box=lanEl('div',{style:'margin-top:8px'},txt,row);
+ box.set=(label,sent,total)=>{const p=total?Math.min(100,Math.floor(sent/total*100)):100;fill.style.width=p+'%';pct.textContent=p+'%';txt.textContent=label+' — '+lanSize(sent)+' of '+lanSize(total)};return box};
+let lanSendBar=null,lanRecvBar=null,lanRecvHide=0;
+if(window.wb&&wb.lan)wb.lan.on('progress',d=>{if(d.role=='send'){if(lanSendBar){lanSendBar.hidden=false;lanSendBar.set('Sending',d.sent,d.total)}return}
+ if(!lanRecvBar){lanRecvBar=lanBar();Object.assign(lanRecvBar.style,{position:'fixed',left:'50%',bottom:'24px',transform:'translateX(-50%)',width:'min(420px,90vw)',background:'#fff',color:'#222',padding:'12px 14px',borderRadius:12,boxShadow:'0 6px 24px rgba(0,0,0,.25)',zIndex:99999,margin:0});document.body.append(lanRecvBar)}
+ lanRecvBar.hidden=false;lanRecvBar.set('Receiving from '+d.name,d.sent,d.total);clearTimeout(lanRecvHide);lanRecvHide=setTimeout(()=>lanRecvBar.hidden=true,d.sent>=d.total?1500:15000)});
+async function lanImport(from,payload){let d;try{d=JSON.parse(payload)}catch(e){return toast('The received data was not valid')}
+ if(!d||d.app!=='rejboard'||!Array.isArray(d.boards))return toast('The received data is not a Rejwan Whiteboard share');
+ const fid=uid();await tx('readwrite',s=>s.put({id:fid,folder:1,name:'Received from '+String(from).slice(0,40),parent:'',color:'#cdeffd',t:Date.now()}));
+ let n=0;for(const b of d.boards){if(!b||typeof b!=='object'||b.folder||!Array.isArray(b.items))continue;const r={...b,id:uid()+n,parent:fid,t:Date.now(),fav:false};await tx('readwrite',s=>s.put(r));n++}
+ toast('📥 Received '+n+' board'+(n==1?'':'s')+' from '+from+' (folder “Received from …”)',6000);
+ try{if(!$('#hm').hidden)renderHome()}catch(e){}}
+if(window.wb&&wb.lan){
+ wb.lan.on('incoming',async d=>{const ok=await askConfirm('📥 Incoming boards','“'+d.name+'” ('+d.host+') wants to send you '+d.count+' board'+(d.count==1?'':'s')+' ('+lanSize(d.size)+'). Security code: '+d.code+'. Accept only if the SAME code is shown on the sender’s screen.','Accept',false);wb.lan.respond(d.sid,ok)});
+ wb.lan.on('received',d=>lanImport(d.from,d.payload));
+}
+async function lanDialog(){
+ if(!window.wb||!wb.lan){await dlg({title:'📡 Local network share',msg:'Sharing over the local network needs the desktop app (Windows, macOS or Linux), because browsers cannot open network connections between computers. Install the desktop app on both computers and open this menu there.',hideOk:true,cancel:'OK'});return}
+ await saveNow();
+ const all=((await tx('readonly',s=>s.getAll()))||[]).filter(r=>!r.folder).sort((a,b)=>(b.t||0)-(a.t||0));
+ const sel=new Set(S.id&&all.some(r=>r.id==S.id)?[S.id]:[]);let info=await wb.lan.info(),busy=false;const offs=[];
+ const bar=lanSendBar=lanBar();bar.hidden=true;const status=lanEl('div',{style:'margin-top:8px;font-size:13px;min-height:18px;white-space:pre-wrap'});const setStatus=t=>status.textContent=t;
+ const me=lanEl('div',{style:'font-size:12px;opacity:.75;margin:2px 0 6px'});
+ const peersBox=lanEl('div',{style:'display:flex;flex-direction:column;gap:6px;margin:6px 0'});
+ const showInfo=()=>{me.textContent=info.on?'This computer: '+info.name+' — '+info.addrs.map(a=>a+':'+info.port).join(', '):'Receiving is off — other computers cannot see or reach this one.'};
+ const send=async peer=>{if(busy)return;if(!sel.size)return setStatus('Select at least one board to send first.');busy=true;setStatus('Connecting to '+(peer.name||peer.host)+'…');
+  try{const recs=[];for(const id of sel){const r=await tx('readonly',s=>s.get(id));if(r)recs.push(r)}
+   const res=await wb.lan.send({host:peer.host,port:peer.port,name:peer.name},JSON.stringify({app:'rejboard',v:1,boards:recs}),recs.length);
+   if(res.ok)bar.set('Sent',1,1);setStatus(res.ok?'✅ Sent '+res.count+' board'+(res.count==1?'':'s')+' to '+(peer.name||peer.host)+'.':'⚠️ '+res.error)}catch(e){setStatus('⚠️ '+(e.message||e))}busy=false};
+ const drawPeers=list=>{peersBox.textContent='';if(!list.length){peersBox.append(lanEl('div',{style:'font-size:12px;opacity:.7'},'No computers found yet. On the other computer open this same menu and turn on “Receive boards”. Both must be on the same Wi-Fi / network.'));return}
+  for(const p of list)peersBox.append(lanEl('div',{style:'display:flex;gap:8px;align-items:center'},lanEl('span',{style:'flex:1'},'💻 '+p.name+'  ('+p.host+')'),lanEl('button',{textContent:'Send ▶',onclick:()=>send(p)})))};
+ offs.push(wb.lan.on('peers',drawPeers));
+ offs.push(wb.lan.on('sas',d=>setStatus('🔐 Encrypted link ready. Security code: '+d.code+'\nAsk the other person to check that the same code is on their screen, then press Accept there…')));
+ const rc=lanEl('input',{type:'checkbox',checked:!!info.on,onchange:async()=>{info=rc.checked?await wb.lan.start():await wb.lan.stop();rc.checked=!!info.on;showInfo();drawPeers(info.on?await wb.lan.peers():[]);if(info.on&&info.error)setStatus('⚠️ '+info.error)}});
+ const list=lanEl('div',{style:'max-height:150px;overflow:auto;border:1px solid rgba(128,128,128,.35);border-radius:8px;padding:4px 8px;margin:4px 0'});
+ const allCb=lanEl('input',{type:'checkbox',onchange:()=>{sel.clear();if(allCb.checked)all.forEach(r=>sel.add(r.id));list.querySelectorAll('input').forEach(i=>i.checked=allCb.checked)}});
+ for(const r of all){const cb=lanEl('input',{type:'checkbox',checked:sel.has(r.id),onchange:()=>{cb.checked?sel.add(r.id):sel.delete(r.id)}});list.append(lanEl('label',{style:'display:flex;gap:6px;align-items:center;padding:2px 0'},cb,(r.locked?'🔒 ':'')+(r.title||'Untitled')))}
+ if(!all.length)list.textContent='No boards yet.';
+ const ip=lanEl('input',{type:'text',placeholder:'or type an IP address, e.g. 192.168.1.20',style:'flex:1;min-width:0'});
+ const body=lanEl('div',{style:'min-width:min(460px,80vw)'},
+  lanEl('div',{style:'font-size:12px;opacity:.8;margin-bottom:8px'},'🔐 Boards are encrypted only while they travel between the two computers (X25519 key exchange + AES-256-GCM, a new key for every transfer). Nothing is stored encrypted — saved boards stay normal boards on both computers.'),
+  lanEl('label',{style:'display:flex;gap:6px;align-items:center;font-weight:600'},rc,'Receive boards on this computer'),me,
+  lanEl('div',{style:'font-weight:600;margin-top:8px'},'1. Choose boards to send'),lanEl('label',{style:'display:flex;gap:6px;align-items:center;font-size:12px;opacity:.8'},allCb,'Select all'),list,
+  lanEl('div',{style:'font-weight:600;margin-top:8px'},'2. Pick a nearby computer'),peersBox,
+  bar,lanEl('div',{style:'display:flex;gap:6px'},ip,lanEl('button',{textContent:'Send ▶',onclick:()=>{const v=ip.value.trim();if(!v)return setStatus('Type the other computer’s IP address first.');const m=/^([^:\s]+)(?::(\d+))?$/.exec(v);if(!m)return setStatus('That address does not look right.');send({host:m[1],port:m[2]?+m[2]:undefined,name:v})}})),status);
+ showInfo();drawPeers(info.on?await wb.lan.peers():[]);
+ await dlg({title:'📡 Share on local network',hideOk:true,cancel:'Close',body:()=>body});
+ offs.forEach(f=>f&&f());lanSendBar=null;
+}
+
 async function openBoardFile(f){const t=await f.text();if(!t.startsWith('RJWB1:'))return toast('That is not a Rejwan Whiteboard file');try{const n=JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(t.slice(6)),c=>c.charCodeAt(0))));await saveNow();n.id=uid();n.t=Date.now();n.parent=CF;await openNote(n);save();toast('Board opened')}catch(x){toast('Could not open that file')}}
 const SHP=[['rect','Rectangle'],['ell','Ellipse'],['tri','Triangle'],['rtri','Right triangle'],['dia','Diamond'],['pent','Pentagon'],['hex','Hexagon'],['oct','Octagon'],['star','Star'],['line','Line'],['arr','Arrow'],['darr','Double arrow'],['cyl','Cylinder'],['cone','Cone'],['sphere','Sphere'],['cube','Cube'],['prism','Prism'],['xyz','XYZ Plane'],['trap','Trapezoid'],['para','Parallelogram'],['heart','Heart'],['cross','Cross'],['cloud','Cloud'],['hexagram','Hexagram']],PASTEL=['#ffb3c6','#ffe08a','#b9fbc0','#a2d2ff','#e4c1f9','#ffd6a5'];
 const chip=(c,on,f)=>{const b=document.createElement('button');b.className='sw'+(on?' on':'');b.style.background=c||'repeating-linear-gradient(45deg,#ddd 0 4px,#fff 4px 8px)';b.onclick=f;return b};
@@ -1132,17 +1186,29 @@ function tbTok(s){const out=[];let i=0;while(i<s.length){const ch=s[i];if(/\s/.t
  if(rest.startsWith('#REF!'))throw new TbErr('#REF!');
  if(m=/^(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?/.exec(rest)){out.push({t:'n',v:parseFloat(m[0])});i+=m[0].length;continue}
  if(ch=='"'){let j=i+1,str='';while(j<s.length&&s[j]!='"')str+=s[j++];if(j>=s.length)throw new TbErr('#ERR!');out.push({t:'s',v:str});i=j+1;continue}
+ if(m=/^\$?([A-Za-z]{1,3}):\$?([A-Za-z]{1,3})(?![\w(])/.exec(rest)){out.push({t:'cr',c:TBCOLN(m[1].toUpperCase()),c2:TBCOLN(m[2].toUpperCase())});i+=m[0].length;continue}
  if(m=/^\$?([A-Za-z]{1,3})\$?(\d+)(?![\w(])/.exec(rest)){out.push({t:'ref',c:TBCOLN(m[1].toUpperCase()),r:+m[2]-1});i+=m[0].length;continue}
  if(m=/^[A-Za-z_][A-Za-z0-9_.]*/.exec(rest)){out.push({t:'id',v:m[0].toUpperCase()});i+=m[0].length;continue}
  const two=s.substr(i,2);if(two=='<='||two=='>='||two=='<>'){out.push({t:'op',v:two});i+=2;continue}
  if('+-*/^&%(),:<>='.includes(ch)){out.push({t:'op',v:ch});i++;continue}
  throw new TbErr('#ERR!')}return out}
+function tbParse(s){const t=s.trim();if(t==='')return s;
+ if(/^[-+]?(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?$/.test(t))return +t;
+ const m=/^([-+]?)\$?([-+]?)((?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d*)?|\.\d+)(%?)$/.exec(t);
+ if(m){let n=parseFloat(m[3].replace(/,/g,''));if(m[1]=='-'||m[2]=='-')n=-n;if(m[4])n/=100;return n}return s}
+/* criteria for SUMIF / COUNTIF / AVERAGEIF: 5, ">5", "<=3", "<>x", "=abc", "abc" */
+function tbCrit(c){if(typeof c=='number')return v=>typeof v=='number'&&v===c;if(typeof c=='boolean')return v=>v===c;
+ const m=/^(<=|>=|<>|=|<|>)?([\s\S]*)$/.exec(String(c)),op=m[1]||'=',rhs=m[2],n=(rhs.trim()!==''&&isFinite(+rhs))?+rhs:null;
+ return v=>{if(n!==null){const x=typeof v=='number'?v:(typeof v=='string'&&v.trim()!==''&&isFinite(+v)?+v:null);if(x===null)return op=='<>';
+   switch(op){case'=':return x===n;case'<>':return x!==n;case'<':return x<n;case'>':return x>n;case'<=':return x<=n;default:return x>=n}}
+  const x=String(v).toLowerCase(),y=rhs.toLowerCase();
+  switch(op){case'=':return x===y;case'<>':return x!==y;case'<':return x<y;case'>':return x>y;case'<=':return x<=y;default:return x>=y}}}
 /* evaluates every formula of one table lazily; returns {disp(r,c), val(r,c)} */
 function tbEval(t){tbNorm(t);const memo=new Map(),stack=new Set(),R=t.rh.length,C=t.cw.length;
  const raw=(r,c)=>String((t.cells[r]&&t.cells[r][c])??'');
  function val(r,c){const k=r+','+c;if(memo.has(k))return memo.get(k);const s=raw(r,c);let v;
   if(s[0]=='='){if(stack.has(k))return new TbErr('#CYCLE!');stack.add(k);try{v=calc(s.slice(1))}catch(e){v=e instanceof TbErr?e:new TbErr('#ERR!')}stack.delete(k)}
-  else v=(s.trim()!==''&&isFinite(+s))?+s:s;
+  else v=tbParse(s);
   memo.set(k,v);return v}
  const num=v=>{if(v instanceof TbErr)throw v;if(typeof v=='number')return v;if(typeof v=='boolean')return v?1:0;if(Array.isArray(v))throw new TbErr('#VALUE!');if(v===''||v==null)return 0;const n=Number(v);if(isNaN(n))throw new TbErr('#VALUE!');return n};
  const str=v=>{if(v instanceof TbErr)throw v;if(Array.isArray(v))throw new TbErr('#VALUE!');if(typeof v=='number')return tbFmt(v);if(typeof v=='boolean')return v?'TRUE':'FALSE';return String(v)};
@@ -1160,22 +1226,51 @@ function tbEval(t){tbNorm(t);const memo=new Map(),stack=new Set(),R=t.rh.length,
     case'PRODUCT':return collect(a).reduce((x,y)=>x*y,1);
     case'ABS':return Math.abs(num(A(0)));
     case'SQRT':{const v=num(A(0));if(v<0)throw new TbErr('#NUM!');return Math.sqrt(v)}
-    case'ROUND':{const d=a.length>1?num(A(1)):0,f=Math.pow(10,d);return Math.round(num(A(0))*f)/f}
+    case'ROUND':{const d=a.length>1?num(A(1)):0,f=Math.pow(10,d),x=num(A(0));return Math.sign(x)*Math.round(+(Math.abs(x)*f).toFixed(9))/f}
     case'POWER':return Math.pow(num(A(0)),num(A(1)));
     case'MOD':{const d=num(A(1));if(!d)throw new TbErr('#DIV/0!');const n0=num(A(0));return n0-d*Math.floor(n0/d)}
     case'IF':{const c=A(0),tr=typeof c=='string'?c!=='':!!c;return tr?(a.length>1?A(1):true):(a.length>2?A(2):false)}
+    case'COUNTA':return a.flatMap(x=>Array.isArray(x)?x.flat():[x]).filter(y=>y instanceof TbErr||(y!==''&&y!=null)).length;
+    case'MEDIAN':{const v=collect(a).sort((x,y)=>x-y);if(!v.length)throw new TbErr('#NUM!');const m=v.length>>1;return v.length%2?v[m]:(v[m-1]+v[m])/2}
+    case'ROUNDUP':case'ROUNDDOWN':{const d=a.length>1?num(A(1)):0,f=Math.pow(10,d),x=num(A(0)),y=+(Math.abs(x)*f).toFixed(9);return Math.sign(x)*(n=='ROUNDUP'?Math.ceil(y):Math.floor(y))/f}
+    case'INT':return Math.floor(num(A(0)));
+    case'TRUNC':{const d=a.length>1?num(A(1)):0,f=Math.pow(10,d);return Math.trunc(+(num(A(0))*f).toFixed(9))/f}
+    case'SIGN':return Math.sign(num(A(0)));
+    case'EXP':return Math.exp(num(A(0)));
+    case'LN':{const v=num(A(0));if(v<=0)throw new TbErr('#NUM!');return Math.log(v)}
+    case'LOG10':{const v=num(A(0));if(v<=0)throw new TbErr('#NUM!');return Math.log10(v)}
+    case'LOG':{const v=num(A(0)),b=a.length>1?num(A(1)):10;if(v<=0||b<=0||b==1)throw new TbErr('#NUM!');return Math.log(v)/Math.log(b)}
+    case'FLOOR':case'CEILING':{const g=a.length>1?num(A(1)):1,x=num(A(0));if(!g)return 0;const q=+(x/g).toFixed(9);return +((n=='FLOOR'?Math.floor(q):Math.ceil(q))*g).toFixed(10)}
+    case'PI':return Math.PI;
+    case'AND':case'OR':{const v=a.flatMap(x=>Array.isArray(x)?x.flat():[x]).map(x=>{if(x instanceof TbErr)throw x;return x}).filter(x=>typeof x=='number'||typeof x=='boolean');if(!v.length)throw new TbErr('#VALUE!');return n=='AND'?v.every(Boolean):v.some(Boolean)}
+    case'NOT':{const c=A(0);return !(typeof c=='string'?c!=='':c)}
+    case'IFERROR':return a[0] instanceof TbErr?(a.length>1?A(1):''):a[0];
+    case'ISERROR':return a[0] instanceof TbErr;
+    case'ISNUMBER':return typeof a[0]=='number';
+    case'LEN':return str(A(0)).length;
+    case'UPPER':return str(A(0)).toUpperCase();
+    case'LOWER':return str(A(0)).toLowerCase();
+    case'TRIM':return str(A(0)).trim().replace(/\s+/g,' ');
+    case'LEFT':{const k=a.length>1?num(A(1)):1;return str(A(0)).slice(0,Math.max(0,k))}
+    case'RIGHT':{const k=a.length>1?num(A(1)):1,s0=str(A(0));return k<=0?'':s0.slice(-k)}
+    case'MID':{const st=num(A(1)),k=num(A(2));if(st<1||k<0)throw new TbErr('#VALUE!');return str(A(0)).substr(st-1,k)}
+    case'SUMIF':case'COUNTIF':case'AVERAGEIF':{const rg=A(0);if(!Array.isArray(rg))throw new TbErr('#VALUE!');const ok=tbCrit(A(1)),vals=rg.flat();let sr=vals;
+     if(n!='COUNTIF'&&a.length>2){const s2=A(2);if(!Array.isArray(s2))throw new TbErr('#VALUE!');sr=s2.flat()}
+     let sum=0,cnt=0,nc=0;vals.forEach((v,i)=>{if(v instanceof TbErr||!ok(v))return;cnt++;const x=sr[i];if(typeof x=='number'){sum+=x;nc++}});
+     if(n=='COUNTIF')return cnt;if(n=='SUMIF')return sum;if(!nc)throw new TbErr('#DIV/0!');return sum/nc}
     case'CONCAT':return a.map((x,i)=>str(A(i))).join('');
     default:throw new TbErr('#NAME?')}};
-  const cmpv=(a,o,b)=>{if(a instanceof TbErr)throw a;if(b instanceof TbErr)throw b;const bn=a!==''&&b!==''&&!isNaN(+a)&&!isNaN(+b);let x=a,y=b;if(bn){x=+a;y=+b}else{x=String(a).toLowerCase();y=String(b).toLowerCase()}switch(o){case'=':return x==y;case'<>':return x!=y;case'<':return x<y;case'>':return x>y;case'<=':return x<=y;default:return x>=y}};
+  const cmpv=(a,o,b)=>{if(a instanceof TbErr)throw a;if(b instanceof TbErr)throw b;if(a===''&&typeof b=='number')a=0;if(b===''&&typeof a=='number')b=0;const bn=a!==''&&b!==''&&!isNaN(+a)&&!isNaN(+b);let x=a,y=b;if(bn){x=+a;y=+b}else{x=String(a).toLowerCase();y=String(b).toLowerCase()}switch(o){case'=':return x==y;case'<>':return x!=y;case'<':return x<y;case'>':return x>y;case'<=':return x<=y;default:return x>=y}};
   function cmp(){let a=cat();while(tk[p]&&tk[p].t=='op'&&['=','<>','<','>','<=','>='].includes(tk[p].v)){const o=nx().v,b=cat();a=cmpv(a,o,b)}return a}
   function cat(){let a=add();while(isOp('&')){nx();const b=add();a=str(a)+str(b)}return a}
   function add(){let a=mul();while(isOp('+')||isOp('-')){const o=nx().v,b=mul();a=o=='+'?num(a)+num(b):num(a)-num(b)}return a}
   function mul(){let a=un();while(isOp('*')||isOp('/')){const o=nx().v,b=un();if(o=='*')a=num(a)*num(b);else{const d=num(b);if(d===0)throw new TbErr('#DIV/0!');a=num(a)/d}}return a}
   function un(){if(isOp('-')){nx();return-num(un())}if(isOp('+')){nx();return num(un())}return pw()}
-  function pw(){let a=pc();if(isOp('^')){nx();const b=un();a=Math.pow(num(a),num(b))}return a}
+  function pw(){let a=pc();while(isOp('^')){nx();const b=(isOp('-')||isOp('+'))?un():pc();a=Math.pow(num(a),num(b))}return a}
   function pc(){let a=atom();while(isOp('%')){nx();a=num(a)/100}return a}
   function atom(){const k=nx();if(!k)throw new TbErr('#ERR!');
    if(k.t=='n'||k.t=='s')return k.v;
+   if(k.t=='cr')return rng({r:0,c:k.c},{r:R-1,c:k.c2});
    if(k.t=='op'&&k.v=='('){const v=cmp();if(!isOp(')'))throw new TbErr('#ERR!');nx();return v}
    if(k.t=='ref'){if(isOp(':')){nx();const k2=nx();if(!k2||k2.t!='ref')throw new TbErr('#ERR!');return rng(k,k2)}return cellv(k)}
    if(k.t=='id'){if(isOp('(')){nx();const a=[];if(!isOp(')')){for(;;){try{a.push(cmp())}catch(e){if(e instanceof TbErr)a.push(e);else throw e}if(isOp(',')){nx();continue}break}}if(!isOp(')'))throw new TbErr('#ERR!');nx();return fn(k.v,a)}
@@ -1183,12 +1278,14 @@ function tbEval(t){tbNorm(t);const memo=new Map(),stack=new Set(),R=t.rh.length,
    throw new TbErr('#ERR!')}
   const v=cmp();if(p<tk.length)throw new TbErr('#ERR!');return v}
  const disp=(r,c)=>{const s=raw(r,c);if(s[0]!='=')return s;const v=val(r,c);if(v instanceof TbErr)return v.m;if(Array.isArray(v))return'#VALUE!';if(typeof v=='number')return tbFmt(v);if(typeof v=='boolean')return v?'TRUE':'FALSE';return String(v)};
- return{disp,val}}
+ return{disp,val,isNum:(r,c)=>typeof val(r,c)=='number'}}
 /* when rows/columns are inserted or deleted, formulas keep pointing at the same cells */
 function tbShiftRefs(t,ax,at,d){const re=/(\$?)([A-Za-z]{1,3})(\$?)(\d+)(?::(\$?)([A-Za-z]{1,3})(\$?)(\d+))?(?![\w(])/g;
  const sh=(i,isEnd,rg)=>{if(d>0)return i>=at?i+d:i;if(i==at){if(!rg)return null;return isEnd?i-1:i}return i>at?i-1:i};
  const fix=s=>s.replace(re,(m,d1,c1,d2,r1,e1,c2,e2,r2)=>{const a={c:TBCOLN(c1.toUpperCase()),r:+r1-1},b=c2?{c:TBCOLN(c2.toUpperCase()),r:+r2-1}:null,K=ax;const na=sh(a[K],0,!!b),nb=b?sh(b[K],1,true):null;if(na==null||(b&&(nb==null||nb<na)))return'#REF!';a[K]=na;if(b)b[K]=nb;const f=(q,x,y)=>x+TBCOL(q.c)+y+(q.r+1);return f(a,d1,d2)+(b?':'+f(b,e1,e2):'')});
- for(const row of t.cells)for(let k=0;k<row.length;k++){const s=row[k];if(typeof s=='string'&&s[0]=='=')row[k]=s.split('"').map((seg,i)=>i%2?seg:fix(seg)).join('"')}}
+ const reC=/(\$?)([A-Za-z]{1,3}):(\$?)([A-Za-z]{1,3})(?![\w(])/g;
+ const fixC=s=>ax!='c'?s:s.replace(reC,(m,d1,c1,d2,c2)=>{const a=TBCOLN(c1.toUpperCase()),b=TBCOLN(c2.toUpperCase()),na=sh(a,0,true),nb=sh(b,1,true);if(na==null||nb==null||nb<na)return'#REF!';return d1+TBCOL(na)+':'+d2+TBCOL(nb)});
+ for(const row of t.cells)for(let k=0;k<row.length;k++){const s=row[k];if(typeof s=='string'&&s[0]=='=')row[k]=s.split('"').map((seg,i)=>i%2?seg:fixC(fix(seg))).join('"')}}
 
 /* ---------- tables: structure ---------- */
 function tbInsRow(t,at,src){tbNorm(t);const cl=t.st[src].map(tbCp);t.rh.splice(at,0,t.rh[src]);t.cells.splice(at,0,t.cw.map(()=>''));t.st.splice(at,0,cl);for(const m of t.mg){if(m.r>=at)m.r++;else if(m.r+m.h>at)m.h++}tbShiftRefs(t,'r',at,1)}
@@ -1241,7 +1338,7 @@ function tbWrap(c,text,maxW){const out=[],fit=s=>c.measureText(s).width<=maxW;
 function tbl(c,i){tbNorm(i);const g=tbCov(i),xy=tbXY(i),ev=tbEval(i),A=tbAnch(i,g),lh=i.fs*1.25;
  c.save();c.font=`${i.fs}px ${FONT}`;c.textBaseline='middle';
  for(const m of A){const s=i.st[m.r][m.c];if(s&&s.bg){const[x,y,w,h]=tbRect(i,m,xy);c.fillStyle=s.bg;c.fillRect(x,y,w,h)}}
- for(const m of A){const t=ev.disp(m.r,m.c);if(!t)continue;const s=i.st[m.r][m.c]||{},[x,y,w,h]=tbRect(i,m,xy),ha=s.ha||'l',va=s.va||'m';
+ for(const m of A){const t=ev.disp(m.r,m.c);if(!t)continue;const s=i.st[m.r][m.c]||{},[x,y,w,h]=tbRect(i,m,xy),ha=s.ha||(ev.isNum(m.r,m.c)?'r':'l'),va=s.va||'m';
   c.save();c.beginPath();c.rect(x,y,w,h);c.clip();c.fillStyle=i.color;c.textAlign=ha=='c'?'center':ha=='r'?'right':'left';
   const tx=ha=='c'?x+w/2:ha=='r'?x+w-8:x+8,lines=tbWrap(c,t,Math.max(10,w-16)),th=lines.length*lh,ty=va=='t'?y+4:va=='b'?y+h-4-th:y+(h-th)/2;
   lines.forEach((ln,j)=>c.fillText(ln,tx,ty+lh*(j+.5)));c.restore()}
@@ -1249,13 +1346,16 @@ function tbl(c,i){tbNorm(i);const g=tbCov(i),xy=tbXY(i),ev=tbEval(i),A=tbAnch(i,
  i.w=xy[0][xy[0].length-1]-i.x;i.h=xy[1][xy[1].length-1]-i.y;c.restore()}
 function tbSvg(i,e){tbNorm(i);const g=tbCov(i),xy=tbXY(i),ev=tbEval(i),A=tbAnch(i,g),lh=i.fs*1.25,mc=document.createElement('canvas').getContext('2d');mc.font=`${i.fs}px ${FONT}`;let o='';
  for(const m of A){const s=i.st[m.r][m.c];if(s&&s.bg){const[x,y,w,h]=tbRect(i,m,xy);o+=`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${e(s.bg)}"/>`}}
- for(const m of A){const t=ev.disp(m.r,m.c);if(!t)continue;const s=i.st[m.r][m.c]||{},[x,y,w,h]=tbRect(i,m,xy),ha=s.ha||'l',va=s.va||'m',lines=tbWrap(mc,t,Math.max(10,w-16)),th=lines.length*lh,tx=ha=='c'?x+w/2:ha=='r'?x+w-8:x+8,ty=va=='t'?y+4:va=='b'?y+h-4-th:y+(h-th)/2;
+ for(const m of A){const t=ev.disp(m.r,m.c);if(!t)continue;const s=i.st[m.r][m.c]||{},[x,y,w,h]=tbRect(i,m,xy),ha=s.ha||(ev.isNum(m.r,m.c)?'r':'l'),va=s.va||'m',lines=tbWrap(mc,t,Math.max(10,w-16)),th=lines.length*lh,tx=ha=='c'?x+w/2:ha=='r'?x+w-8:x+8,ty=va=='t'?y+4:va=='b'?y+h-4-th:y+(h-th)/2;
   o+=`<text font-size="${i.fs}" fill="${e(i.color)}" text-anchor="${ha=='c'?'middle':ha=='r'?'end':'start'}" font-family="Noto Sans,system-ui,sans-serif">`+lines.map((ln,j)=>`<tspan x="${tx}" y="${ty+lh*(j+.5)+i.fs*.35}">${e(ln)}</tspan>`).join('')+'</text>'}
  for(const d of tbEdges(i,A,xy,g))o+=`<line x1="${d[0]}" y1="${d[1]}" x2="${d[2]}" y2="${d[3]}" stroke="${e(d[5])}" stroke-width="${d[4]}" stroke-linecap="square"/>`;
  return o}
 function tbOverlay(c,t){tbNorm(t);const z=S.z,s=tbSel(t),[xs,ys]=tbXY(t);c.save();
  if(t.rot){const mx=t.x+t.w/2,my=t.y+t.h/2;c.translate(mx,my);c.rotate(t.rot);c.translate(-mx,-my)}
  const x=xs[s.c],y=ys[s.r],w=xs[s.c2+1]-x,h=ys[s.r2+1]-y;c.setLineDash([]);c.fillStyle='rgba(59,130,246,.16)';c.fillRect(x,y,w,h);c.strokeStyle='#3b82f6';c.lineWidth=2/z;c.strokeRect(x,y,w,h);
+ c.font='600 '+(11/z)+'px system-ui,sans-serif';c.textAlign='center';c.textBaseline='middle';
+ for(let k=0;k<xs.length-1;k++){const on=k>=s.c&&k<=s.c2,cx_=(xs[k]+xs[k+1])/2,bw=Math.min(xs[k+1]-xs[k],26/z);c.fillStyle=on?'#3b82f6':'rgba(59,130,246,.16)';c.fillRect(cx_-bw/2,t.y-17/z,bw,14/z);c.fillStyle=on?'#fff':'#2563eb';c.fillText(TBCOL(k),cx_,t.y-10/z)}
+ for(let k=0;k<ys.length-1;k++){const on=k>=s.r&&k<=s.r2,cy_=(ys[k]+ys[k+1])/2,bh=Math.min(ys[k+1]-ys[k],16/z);c.fillStyle=on?'#3b82f6':'rgba(59,130,246,.16)';c.fillRect(t.x-26/z,cy_-bh/2,23/z,bh);c.fillStyle=on?'#fff':'#2563eb';c.fillText(String(k+1),t.x-14.5/z,cy_)}
  const hx=t.x-16/z,hy=t.y-16/z;c.fillStyle='#3b82f6';c.beginPath();c.arc(hx,hy,10/z,0,7);c.fill();c.fillStyle='#fff';c.font=(13/z)+'px system-ui,sans-serif';c.textAlign='center';c.textBaseline='middle';c.fillText('✥',hx,hy+.5/z);
  c.restore()}
 /* ---------- tables: mouse ---------- */
@@ -1281,9 +1381,19 @@ function editCellRC(t,r,c){tbNorm(t);const m=tbSpan(t,r,c);r=m.r;c=m.c;const[x,y
  const ta=document.createElement('textarea'),s=t.st[r][c]||{};
  Object.assign(ta.style,{position:'absolute',left:x*S.z+S.ox+'px',top:y*S.z+S.oy+'px',width:w*S.z+'px',height:h*S.z+'px',font:`${t.fs*S.z}px ${FONT}`,color:t.color,background:s.bg||PAP[S.bg]||'#fff',textAlign:s.ha=='c'?'center':s.ha=='r'?'right':'left',border:'2px solid #3b82f6',boxSizing:'border-box',resize:'none',zIndex:5,padding:'2px 6px'});
  if(t.rot){ta.style.transformOrigin=((t.x+t.w/2)-x)*S.z+'px '+((t.y+t.h/2)-y)*S.z+'px';ta.style.transform='rotate('+t.rot+'rad)'}
- ta.title='Type text, or a formula such as =SUM(A1:A3)';ta.value=t.cells[r][c];$('#w').append(ta);setTimeout(()=>ta.focus(),30);let ok=1;
- let fin=0;const done=()=>{if(fin)return;fin=1;const v=ta.value;if(ta.parentNode)ta.remove();if(ok&&v!=t.cells[r][c]){push();t.cells[r][c]=v;save()}draw()};
- ta.onblur=done;ta.onkeydown=e=>{if(e.key=='Escape'){ok=0;done()}else if(e.key=='Enter'&&!e.shiftKey){e.preventDefault();done()}else if(e.key=='Tab'){e.preventDefault();done();const n=tbNext(t,r,c,e.shiftKey?-1:1);if(n)editCellRC(t,n.r,n.c)}}}
+ ta.title='Type text, or a formula such as =SUM(A1:A3). While typing a formula, click cells to insert their address (Shift+click for a range).';ta.value=t.cells[r][c];$('#w').append(ta);setTimeout(()=>ta.focus(),30);let ok=1;
+ const pk={s:-1,e:-1,ref:'',hold:0};
+ const pd=e=>{if(!ta.isConnected||e.target!==cv||ta.value[0]!='=')return;const h=tbHit(t,paperPoint(pt(e)));if(!h||h.k!='cell')return;
+  const pos=ta.selectionStart,before=ta.value.slice(0,pos).trimEnd(),again=pk.s>=0&&pk.e==pos&&ta.value.slice(pk.s,pk.e)==pk.ref;
+  if(!again&&!/[=+\-*\/^&(,:<>]$/.test(before))return;
+  e.preventDefault();e.stopPropagation();pk.hold=1;const a=cellAt(t,pt(e)),ref0=TBCOL(a.c)+(a.r+1);
+  let s0=pos,e0=pos,ref=ref0;if(again){s0=pk.s;e0=pk.e;if(e.shiftKey)ref=pk.ref.split(':')[0]+':'+ref0}
+  ta.value=ta.value.slice(0,s0)+ref+ta.value.slice(e0);pk.s=s0;pk.e=s0+ref.length;pk.ref=ref;ta.focus();ta.setSelectionRange(pk.e,pk.e)};
+ const md=e=>{if(pk.hold){pk.hold=0;e.preventDefault()}};
+ document.addEventListener('pointerdown',pd,true);document.addEventListener('mousedown',md,true);
+ const off=()=>{document.removeEventListener('pointerdown',pd,true);document.removeEventListener('mousedown',md,true)};
+ let fin=0;const done=()=>{if(fin)return;fin=1;off();const v=ta.value;if(ta.parentNode)ta.remove();if(ok&&v!=t.cells[r][c]){push();t.cells[r][c]=v;save()}draw()};
+ ta.onblur=done;ta.onkeydown=e=>{if(e.key=='Escape'){ok=0;done()}else if(e.key=='Enter'&&!e.shiftKey){e.preventDefault();done();const nr=r+m.h;if(nr<t.rh.length){const m2=tbSpan(t,nr,c);S.cell={it:t,r:m2.r,c:m2.c,r2:m2.r+m2.h-1,c2:m2.c+m2.w-1,ar:m2.r,ac:m2.c};draw()}}else if(e.key=='Tab'){e.preventDefault();done();const n=tbNext(t,r,c,e.shiftKey?-1:1);if(n)editCellRC(t,n.r,n.c)}}}
 function tbSum(t){const s=tbSel(t),ev=tbEval(t),isN=(r,c)=>typeof ev.val(r,c)=='number',L=TBCOL;let a=s.r;while(a>0&&isN(a-1,s.c))a--;
  if(a<s.r){push();t.cells[s.r][s.c]=`=SUM(${L(s.c)}${a+1}:${L(s.c)}${s.r})`;save();draw();return}
  let b=s.c;while(b>0&&isN(s.r,b-1))b--;

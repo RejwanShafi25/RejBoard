@@ -1,5 +1,6 @@
 // Electron main process: opens the app and proxies handwriting recognition.
 const { app, BrowserWindow, ipcMain, shell } = require('electron');
+const lanShare = require('./lan');
 const path = require('path');
 const URL_ = 'https://inputtools.google.com/request?ime=handwriting&app=mobilesearch&cs=1&oe=UTF-8'; // unofficial; swap for another engine if needed
 ipcMain.handle('hw', async (_e, d) => {
@@ -12,6 +13,7 @@ function createWindow() {
   const w = new BrowserWindow({ width: 1320, height: 860, title: 'Rejwan Whiteboard', icon: path.join(__dirname, 'build', 'icon.png'), backgroundColor: '#fff7fa',
     webPreferences: { preload: path.join(__dirname, 'preload.js'), contextIsolation: true } });
   w.setMenuBarVisibility(false);
+  lanShare.register(ipcMain, w);
   w.loadFile('index.html');
   w.webContents.setWindowOpenHandler(({ url }) => { shell.openExternal(url); return { action: 'deny' }; });
 }

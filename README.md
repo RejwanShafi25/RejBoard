@@ -101,3 +101,20 @@ Legacy binary `.doc` and `.ppt` files are detected and report that they need con
 - **Dynamic connectors**: Line / Arrow / Double arrow can be curved (drag the orange mid-handle; double-click it to straighten). Drag an end onto a shape's edge to attach it (green ring); attached ends follow the shapes when they move or resize, and a connector joining two shapes bends automatically into a smooth S-curve. Drag the mid-handle to override.
 - **Sketch & snap** (the "Fix shapes" toggle, now on by default and remembered): rough circles, ellipses, rectangles (also rotated), squares, triangles, diamonds, pentagons, hexagons, straight lines, curved lines and arrows become real shapes. Lines/arrows drawn between shapes become connected.
 - **Offline translation**: UI text is translated at runtime, no per-language hard-coding. Built-in strings work everywhere; for any other string the browser's on-device Translator API is used (Chrome 138+; one-time language-pack download, then fully offline) and results are cached locally. Extra languages appear in the language list when that API exists.
+
+## Share boards on your local network (desktop app)
+
+Menu **Export / Save ▸ 📡 Share boards on local network**. Works between Windows, macOS and Linux computers on the same Wi‑Fi / LAN, both running the desktop app.
+
+1. On the receiving computer turn on **Receive boards on this computer**.
+2. On the sending computer tick the boards, pick the computer from the list (or type its IP address) and press **Send**.
+3. Both screens show the same 6‑digit security code. The receiver checks it matches and presses **Accept**.
+
+Received boards land in a folder called *Received from <computer>*.
+
+**Encryption:** only in transit. Every transfer does a fresh X25519 key exchange and sends the data with AES‑256‑GCM (tamper‑proof); the confirmation code protects against a man‑in‑the‑middle. Boards are never stored encrypted — they stay ordinary boards on both computers. Receiving is off by default, and nothing is announced on the network until you turn it on. The first time, the OS firewall may ask to allow the app on private networks (UDP 41234 discovery, TCP 41235 transfer) — allow it.
+
+## Table formulas
+
+Start a cell with `=`. Cell addresses (A, B, C… / 1, 2, 3…) show on the table edge when it is selected; while typing a formula you can click cells to insert them (Shift+click for a range). Operators `+ - * / ^ % &` and comparisons; ranges `A1:B5`, whole columns `A:A`.
+Functions: SUM AVERAGE MIN MAX COUNT COUNTA MEDIAN PRODUCT ABS SQRT POWER MOD ROUND ROUNDUP ROUNDDOWN INT TRUNC FLOOR CEILING SIGN EXP LN LOG LOG10 PI IF AND OR NOT IFERROR ISERROR ISNUMBER SUMIF COUNTIF AVERAGEIF CONCAT LEN UPPER LOWER TRIM LEFT RIGHT MID.

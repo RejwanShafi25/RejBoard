@@ -1,7 +1,7 @@
 {
   "name": "rejwan-whiteboard",
   "productName": "Rejwan Whiteboard",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "A cute, local-first whiteboard and note-taking app",
   "main": "main.js",
   "author": {
