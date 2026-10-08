@@ -87,6 +87,8 @@ jobs:
     permissions:
       contents: write
     steps:
+      - uses: actions/checkout@v4
+
       - uses: actions/download-artifact@v4
         with:
           pattern: installers-*
@@ -96,8 +98,17 @@ jobs:
       - name: List files
         run: ls -lh release-files
 
+      - name: Extract changelog for this version
+        shell: bash
+        run: |
+          VER="${GITHUB_REF_NAME#v}"
+          awk -v v="$VER" '$0 ~ "^## \\[" v "\\]" {f=1; next} /^## \[/ {f=0} f' CHANGELOG.md > release-notes.md
+          test -s release-notes.md || { echo "No CHANGELOG.md section for $VER"; exit 1; }
+          cat release-notes.md
+
       - uses: softprops/action-gh-release@v2
         with:
+          body_path: release-notes.md
           files: release-files/*
           generate_release_notes: true
           fail_on_unmatched_files: true
