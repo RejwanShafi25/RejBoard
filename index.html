@@ -150,6 +150,8 @@ button,select,input,textarea{border-radius:12px}
 #tagGrid{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}.tagbig{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;font-size:14px}.tagbig:hover{border-color:var(--ac)}.tagbig small{opacity:.6}
 .cardtags{display:flex;gap:4px;flex-wrap:wrap;margin-top:4px;min-height:0}.cardtags button{font-size:11px;padding:0 7px;border-radius:999px;background:var(--bg)}
 .crumb{display:flex;gap:6px;align-items:center;margin:10px 0 2px;flex-wrap:wrap}.crumb button{border:0;background:transparent;padding:2px 6px;text-decoration:underline;color:var(--ac)}
+.board-card.sel{outline:3px solid #3b82f6;outline-offset:-1px}.selbox{position:absolute;top:12px;left:12px;width:22px;height:22px;border-radius:6px;border:2px solid #3b82f6;background:#fff;display:grid;place-items:center;font-size:14px;color:#fff;z-index:2;pointer-events:none}.board-card.sel .selbox{background:#3b82f6}.board-card.sel .selbox::after{content:'✓'}
+#selbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:10px 0;padding:8px 12px;border:1px solid var(--bd);border-radius:12px;background:var(--pn)}#selbar[hidden]{display:none}#selbar b{margin-right:4px}
 .board-card .thumb{position:relative}.board-card.locked img{filter:blur(10px) saturate(.7)}
 .board-card .lock-cover{position:absolute;inset:0;display:grid;place-items:center;color:var(--fg);pointer-events:none}
 .board-card.mopen .ac{opacity:1}.board-card.mopen .board-more{display:flex}.board-card.mopen{z-index:5}
@@ -770,11 +772,11 @@ if(window.wb&&wb.lan){
  wb.lan.on('incoming',async d=>{const ok=await askConfirm('📥 Incoming boards','“'+d.name+'” ('+d.host+') wants to send you '+d.count+' board'+(d.count==1?'':'s')+' ('+lanSize(d.size)+'). Security code: '+d.code+'. Accept only if the SAME code is shown on the sender’s screen.','Accept',false);wb.lan.respond(d.sid,ok)});
  wb.lan.on('received',d=>lanImport(d.from,d.payload));
 }
-async function lanDialog(){
+async function lanDialog(pre){
  if(!window.wb||!wb.lan){await dlg({title:'📡 Local network share',msg:'Sharing over the local network needs the desktop app (Windows, macOS or Linux), because browsers cannot open network connections between computers. Install the desktop app on both computers and open this menu there.',hideOk:true,cancel:'OK'});return}
  await saveNow();
- const all=((await tx('readonly',s=>s.getAll()))||[]).filter(r=>!r.folder).sort((a,b)=>(b.t||0)-(a.t||0));
- const sel=new Set(S.id&&all.some(r=>r.id==S.id)?[S.id]:[]);let info=await wb.lan.info(),busy=false;const offs=[];
+ const all=((await tx('readonly',s=>s.getAll()))||[]).filter(r=>!r.folder&&!r.del).sort((a,b)=>(b.t||0)-(a.t||0));
+ const sel=new Set(pre&&pre.length?pre.filter(id=>all.some(r=>r.id==id)):(S.id&&all.some(r=>r.id==S.id)?[S.id]:[]));let info=await wb.lan.info(),busy=false;const offs=[];
  const bar=lanSendBar=lanBar();bar.hidden=true;const status=lanEl('div',{style:'margin-top:8px;font-size:13px;min-height:18px;white-space:pre-wrap'});const setStatus=t=>status.textContent=t;
  const me=lanEl('div',{style:'font-size:12px;opacity:.75;margin:2px 0 6px'});
  const peersBox=lanEl('div',{style:'display:flex;flex-direction:column;gap:6px;margin:6px 0'});
@@ -931,8 +933,8 @@ async function deleteFolder(f){
  await tx('readwrite',s=>{for(const r of allNow)if(r.id!==f.id&&(r.parent||'')===f.id)s.put({...r,parent});s.delete(f.id)});
  return true}
 async function moveBoardDialog(n,F){
- const cur=n.parent||'';let target;
- await dlg({title:'Move board',msg:`Choose where to move “${n.title}”.`,hideOk:true,cancel:'Cancel',body:close=>{
+ const arr=Array.isArray(n)?n:[n],cur=arr.every(b=>(b.parent||'')===(arr[0].parent||''))?(arr[0].parent||''):null;let target;
+ await dlg({title:arr.length>1?'Move boards':'Move board',msg:arr.length>1?`Choose where to move the ${arr.length} selected boards.`:`Choose where to move “${arr[0].title}”.`,hideOk:true,cancel:'Cancel',body:close=>{
   const w=document.createElement('div');w.className='mv-list';
   const row=(label,id,depth,color)=>{const b=document.createElement('button');b.className='mv-row';b.style.paddingLeft=(10+depth*18)+'px';
    b.innerHTML=id==null?'<span style="width:22px;text-align:center">🏠</span>':`<svg viewBox="0 0 48 40" fill="${color||'#e8def8'}"><path d="M4 8a4 4 0 0 1 4-4h12l5 5h15a4 4 0 0 1 4 4v19a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4V8Z" stroke="rgba(0,0,0,.25)" stroke-width="2"/></svg>`;
@@ -944,7 +946,7 @@ async function moveBoardDialog(n,F){
   const nb=document.createElement('button');nb.className='mv-row';nb.style.cssText+=';border-top:1px dashed var(--bd);margin-top:6px';nb.innerHTML='<span style="width:22px;text-align:center">＋</span><span>New folder and move here…</span>';
   nb.onclick=async()=>{const id=await newFolder('');if(id){target=id;close(true)}};w.append(nb);return w}});
  if(target===undefined)return false;
- await updateBoard(n,{parent:target});toast(target?'Moved to folder 📁':'Moved to Home');return true}
+ for(const b of arr)await updateBoard(b,{parent:target});toast(target?'Moved to folder 📁':'Moved to Home');return true}
 async function editTagsDialog(n,allTags){
  const body=close=>{const w=document.createElement('div');w.className='tagpick';
   const have=new Set(tagList(n.tags));
@@ -983,7 +985,7 @@ async function renderHome(){
  const rootFolders=F.filter(f=>(f.parent||'')==='').sort((a,b)=>a.name.localeCompare(b.name));
  sb.classList.toggle('collapsed',!HOME_SIDEBAR_EXPANDED);sb.innerHTML='';
  const head=document.createElement('div');head.className='hs-head';const ham=document.createElement('button');ham.textContent='☰';ham.title='Toggle navigation';ham.onclick=()=>{HOME_SIDEBAR_EXPANDED=!HOME_SIDEBAR_EXPANDED;renderHome()};head.append(ham);const brand=document.createElement('div');brand.className='hs-brand';brand.innerHTML='<img src="icon-192.png" alt=""><span>Rejwan Whiteboard</span>';head.append(brand);sb.append(head);
- const go=key=>{HV.sec=key;HV.q='';HV.fp=0;renderHome()};
+ const go=key=>{HV.sec=key;HV.q='';HV.fp=0;HV.selMode=false;HV.sel=new Set();renderHome()};
  const it=(label,key,cnt,ind,icon,on)=>{const d=document.createElement('div');d.className='it'+(on??(HV.sec==key)?' on':'');d.title=label;d.style.paddingLeft=HOME_SIDEBAR_EXPANDED?(8+ind*16)+'px':'0';const ic=document.createElement('span');ic.className='nav-icon';if(String(icon).startsWith('<svg'))ic.innerHTML=icon;else ic.textContent=icon;d.append(ic);const l=document.createElement('span');l.className='nav-label';l.textContent=label;d.append(l);if(cnt!=null){const c=document.createElement('small');c.className='nav-count';c.textContent=cnt;d.append(c)}d.onclick=()=>go(key);sb.append(d)};
  const lab=(label,icon)=>{const d=document.createElement('div');d.className='hs-section-label';d.innerHTML=`<span class="section-icon">${icon}</span><span class="section-label"></span>`;d.querySelector('.section-label').textContent=label;sb.append(d)};
  const PROT=tr('protected')==='protected'?'Protected':tr('protected');
@@ -1000,17 +1002,18 @@ async function renderHome(){
  /* ---------- main area ---------- */
  const sec=HV.sec,q=HV.q.toLowerCase().trim();
  const isTag=sec.startsWith('tag:'),isF=sec.startsWith('f:'),curFolder=isF?F.find(f=>f.id===CF):null;
+ $('#fab').hidden=sec!=='all'; /* the ✏️ new-board button belongs to the main Home page only */
  const special=['fav','trash','protected','tags'].includes(sec);
  const title=sec==='all'?'My boards':sec==='fav'?tr('favs'):sec==='trash'?tr('trash'):sec==='protected'?'Protected boards':sec==='tags'?tr('tags'):sec==='folders'?tr('folders'):isTag?'#'+sec.slice(4):(curFolder?curFolder.name:'Folder');
  const canFolder=!special&&!isTag;
  const m=$('#hmain');
- m.innerHTML=`<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><h2 style="margin:0;flex:1" id="htitle"></h2><input id="hq" placeholder="${tr('search')}" style="min-width:220px">${(!special&&sec!=='folders')?'<button id="hnew">＋ New board</button>':''}${canFolder?'<button id="hfolder">＋ New folder</button>':''}${(!special&&sec!=='folders')?'<button id="hpdf">📄 PDF / DOCX / PPTX</button>':''}<button id="hbk">⬇ Backup</button><button id="hrs">⬆ Restore</button>${sec==='trash'?'<button id="hempty" style="background:#d9534f;color:#fff;border-color:#d9534f">🗑 Empty trash</button>':''}<button id="hcl">✕</button></div><div id="crumb"></div><div id="hbody"></div>`;
+ m.innerHTML=`<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><h2 style="margin:0;flex:1" id="htitle"></h2><input id="hq" placeholder="${tr('search')}" style="min-width:220px">${(!special&&sec!=='folders')?'<button id="hnew">＋ New board</button>':''}${canFolder?'<button id="hfolder">＋ New folder</button>':''}${(!special&&sec!=='folders')?'<button id="hpdf">📄 PDF / DOCX / PPTX</button>':''}${(sec!=='tags'&&sec!=='folders')?`<button id="hsel">${HV.selMode?'✕ Done selecting':'☑ Select'}</button>`:''}<button id="hbk">⬇ Backup</button><button id="hrs">⬆ Restore</button>${sec==='trash'?'<button id="hempty" style="background:#d9534f;color:#fff;border-color:#d9534f">🗑 Empty trash</button>':''}</div><div id="selbar" hidden></div><div id="crumb"></div><div id="hbody"></div>`;
  $('#htitle').textContent=title;
  const hq=$('#hq');hq.value=HV.q;hq.oninput=()=>{HV.q=hq.value;const p=hq.selectionStart;renderHome().then(()=>{const e=$('#hq');e.focus();try{e.setSelectionRange(p,p)}catch(_){}})};
- $('#hcl').onclick=()=>$('#hm').hidden=1;
  if($('#hnew'))$('#hnew').onclick=async()=>{await newNote();$('#hm').hidden=1};
  if($('#hfolder'))$('#hfolder').onclick=async e=>{e.preventDefault();e.stopPropagation();const id=await newFolder(CF);if(id)renderHome()};
  if($('#hpdf'))$('#hpdf').onclick=()=>$('#docf').click();
+ if($('#hsel'))$('#hsel').onclick=()=>{HV.selMode=!HV.selMode;HV.sel=new Set();renderHome()};
  $('#hbk').onclick=backup;$('#hrs').onclick=()=>{$('#np').hidden=0;listNotes();$('#rf').click();$('#np').hidden=1};
  if(sec==='trash')$('#hempty').onclick=async()=>{if(!TR.length)return;if(!await askConfirm('Empty trash','Permanently delete all boards in Trash? This cannot be undone.','Empty trash'))return;await tx('readwrite',s=>TR.forEach(n=>s.delete(n.id)));HV.q='';await renderHome()};
 
@@ -1043,7 +1046,7 @@ async function renderHome(){
   [['✎','Rename',async()=>{if(await renameFolder(f))renderHome()}],['🎨','Color',async()=>{if(await pickFolderColor(f))renderHome()}],['＋','New subfolder',async()=>{const id=await newFolder(f.id);if(id)renderHome()}],['🗑','Delete folder',async()=>{if(await deleteFolder(f)){if(CF===f.id||sec==='f:'+f.id)HV.sec=f.parent?'f:'+f.parent:'folders';renderHome()}}]].forEach(([t,ti,fn])=>{const b=document.createElement('button');b.textContent=t;b.title=ti;b.onclick=async e=>{e.preventDefault();e.stopPropagation();await fn()};ac.append(b)});
   d.append(c,nm,sm,ac);d.onclick=()=>go('f:'+f.id);
   d.ondragover=e=>{e.preventDefault();d.classList.add('drop')};d.ondragleave=()=>d.classList.remove('drop');
-  d.ondrop=async e=>{e.preventDefault();d.classList.remove('drop');const id=e.dataTransfer.getData('text/board');const n=N.find(x=>x.id===id);if(n){await updateBoard(n,{parent:f.id});renderHome()}};
+  d.ondrop=async e=>{e.preventDefault();d.classList.remove('drop');let ids=[];try{ids=JSON.parse(e.dataTransfer.getData('text/boards')||'[]')}catch(_){}if(!ids.length)ids=[e.dataTransfer.getData('text/board')];const bs=N.filter(x=>ids.includes(x.id));if(bs.length){for(const b of bs)await updateBoard(b,{parent:f.id});toast('Moved '+bs.length+' board'+(bs.length==1?'':'s')+' to “'+f.name+'” 📁');if(HV.selMode)HV.sel=new Set();renderHome()}};
   return d};
  const showFolders=sec==='all'||sec==='folders'||isF;
  if(showFolders){
@@ -1066,7 +1069,25 @@ async function renderHome(){
  const g=section(sec==='all'||isF?'Boards':sec==='fav'?'Favorite boards':sec==='trash'?'Trashed boards':sec==='protected'?'Password-protected boards':'Boards','grid');
  if(!boards.length)g.textContent=q?'No matching boards.':sec==='fav'?'No favorite boards yet.':sec==='trash'?'Trash is empty.':sec==='protected'?'No protected boards yet. Use a board’s ⋮ menu → “Lock with password”.':'No boards here yet.';
 
- boards.slice(0,200).forEach(n=>{
+ const shown=boards.slice(0,200),sel=HV.sel||(HV.sel=new Set()),selOn=!!HV.selMode,bar=$('#selbar');
+ const refreshBar=()=>{bar.hidden=!selOn;if(!selOn)return;bar.textContent='';const picked=shown.filter(b=>sel.has(b.id)),none=!picked.length;
+  const mk=(label,fn,always)=>{const b=document.createElement('button');b.textContent=label;b.disabled=none&&!always;b.onclick=fn;bar.append(b)};
+  const cards=()=>g.querySelectorAll('.board-card').forEach((el,i)=>el.classList.toggle('sel',sel.has(shown[i].id)));
+  const fin=async()=>{HV.selMode=false;sel.clear();await renderHome()};
+  const cnt=document.createElement('b');cnt.textContent=picked.length+' selected';bar.append(cnt);if(document.querySelector('#folderGrid .folder-card')){const hn=document.createElement('small');hn.style.opacity='.7';hn.textContent='Drag the selected boards onto a folder to move them';bar.append(hn)}
+  mk(picked.length===shown.length&&shown.length?'Select none':'Select all',()=>{if(picked.length===shown.length)sel.clear();else shown.forEach(b=>sel.add(b.id));cards();refreshBar()},true);
+  if(sec==='trash'){
+   mk('↩ Restore',async()=>{for(const b of picked)await updateBoard(b,{del:0});toast('Restored '+picked.length+' board'+(picked.length==1?'':'s'));fin()});
+   mk('🗑 Delete permanently',async()=>{if(!await askConfirm('Delete permanently','Permanently delete '+picked.length+' selected board'+(picked.length==1?'':'s')+'? This cannot be undone.','Delete'))return;await tx('readwrite',s=>picked.forEach(b=>s.delete(b.id)));fin()});
+  }else{
+   const allFav=picked.every(b=>b.fav);
+   mk(allFav?'☆ Unfavorite':'⭐ Favorite',async()=>{for(const b of picked)await updateBoard(b,{fav:!allFav});fin()});
+   mk('📁 Move',async()=>{if(await moveBoardDialog(picked,F))fin()});
+   mk('🏷 Add tags',async()=>{const v=await askText('Add tags','Tags (comma separated)','','Add','The tags are added to every selected board.');if(!v)return;const add=tagList(v);for(const b of picked){const cur=(await tx('readonly',s=>s.get(b.id)))||b;await updateBoard(b,{tags:[...new Set([...tagList(cur.tags),...add])].join(', ')})}fin()});
+   mk('📡 Share on network',()=>lanDialog(picked.map(b=>b.id)));
+   mk('🗑 Move to Trash',async()=>{if(!await askConfirm('Move to Trash','Move '+picked.length+' selected board'+(picked.length==1?'':'s')+' to the Trash? You can restore them later.','Move to Trash'))return;for(const b of picked)await updateBoard(b,{del:Date.now()});if(picked.some(b=>b.id===S.id))await leaveBoard();fin()});
+  }};
+ shown.forEach(n=>{
   const d=document.createElement('div');d.className='cd board-card'+(n.locked?' locked':'');d.draggable=sec!=='trash';d.ondragstart=e=>{e.dataTransfer.setData('text/board',n.id)};
   const wrap=document.createElement('div');wrap.className='thumb';const im=new Image();im.alt='';im.src=n.locked?'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7':(n.th||'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7');wrap.append(im);
   if(n.locked){const lk=document.createElement('div');lk.className='lock-cover';lk.innerHTML=ICON_LOCK.replace('width="20" height="20"','width="46" height="46"');wrap.append(lk)}
@@ -1091,8 +1112,12 @@ async function renderHome(){
   more.onclick=e=>{e.stopPropagation();const open=menu.classList.contains('open');closeBoardMenus();if(!open){menu.classList.add('open');d.classList.add('mopen')}};
   ac.append(more,menu);
   d.append(wrap,t,dt,tg,ac);
+  if(selOn){d.draggable=true;d.ondragstart=e=>{if(!sel.has(n.id)){sel.add(n.id);d.classList.add('sel');refreshBar()}const ids=shown.filter(b=>sel.has(b.id)).map(b=>b.id);e.dataTransfer.setData('text/board',n.id);e.dataTransfer.setData('text/boards',JSON.stringify(ids));e.dataTransfer.effectAllowed='move';
+   const gh=document.createElement('div');gh.textContent='📋 '+ids.length+' board'+(ids.length==1?'':'s');gh.style.cssText='position:fixed;top:-100px;left:-100px;padding:8px 14px;border-radius:10px;background:#3b82f6;color:#fff;font:600 14px system-ui,sans-serif';document.body.append(gh);e.dataTransfer.setDragImage(gh,12,12);setTimeout(()=>gh.remove())};
+  const cb=document.createElement('div');cb.className='selbox';d.append(cb);ac.style.display='none';d.classList.toggle('sel',sel.has(n.id));d.onclick=()=>{sel.has(n.id)?sel.delete(n.id):sel.add(n.id);d.classList.toggle('sel',sel.has(n.id));refreshBar()};g.append(d);return}
   d.onclick=async()=>{if(sec==='trash')return;await openBoardGuarded(n)};
   g.append(d)});
+ refreshBar();
 }
 function closeBoardMenus(){document.querySelectorAll('.board-menu.open').forEach(el=>el.classList.remove('open'));document.querySelectorAll('.board-card.mopen').forEach(el=>el.classList.remove('mopen'))}
 document.addEventListener('click',closeBoardMenus);

@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.2.2]
+### Added
+- **Select multiple boards** on the Home screen (☑ Select): favorite/unfavorite, move, add tags, move to Trash, or share on the network in one go. In Trash: restore or permanently delete several at once.
+- **Drag and drop several selected boards onto a folder** to move them all at once.
+- **Move and Share on network** buttons appear in the selection bar whenever boards are selected.
+
+### Changed
+- Removed the ✕ button next to Restore on the Home screen (it jumped straight into the most recent board).
+- The ✏️ new-board button now appears only on the main Home page, not in Favorites, Protected, Trash, Tags or Folders.
+
+
 ## [1.2.1]
 
 ### Added
