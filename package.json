@@ -1,8 +1,8 @@
 {
   "name": "rejwan-whiteboard",
   "productName": "Rejwan Whiteboard",
-  "version": "1.2.2",
-  "description": "A cute, local-first whiteboard and note-taking app",
+  "version": "1.4.0",
+  "description": "Local-first whiteboard and note-taking app with handwriting, PDF annotation and per-board voice recordings",
   "main": "main.js",
   "author": {
     "name": "Rejwan Shafi",
@@ -76,7 +76,7 @@
       "icon": "build/icon.png",
       "category": "Office",
       "maintainer": "Rejwan Shafi <196472099+RejwanShafi25@users.noreply.github.com>",
-      "synopsis": "A cute, local-first whiteboard and note-taking app"
+      "synopsis": "Local-first whiteboard and note-taking app with handwriting, PDF annotation and per-board voice recordings"
     },
     "publish": [
       {

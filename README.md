@@ -1,13 +1,12 @@
-# 🌸 Rejwan Whiteboard
+# Rejwan Whiteboard
 
-A cute, local-first whiteboard and note-taking app. No account, no cloud: your boards live on your device
-(IndexedDB). Runs as a website, an installable offline app (PWA), or a desktop app (Electron).
+A local-first whiteboard and note-taking application for handwritten notes, diagrams, PDF annotation and lecture voice recordings. No account and no cloud: all data stays on your device (IndexedDB). Available as a website, an installable offline app (PWA) and a desktop app (Electron).
 
-**🌐 Use it in the browser (web build): https://rejwanshafi25.github.io/RejBoard/**
+**Web app: https://rejwanshafi25.github.io/RejBoard/**
 
 Open the link, then in Chrome/Edge click the install icon in the address bar to install it as an offline app (PWA). Boards are stored in your own browser, so they are not shared between devices.
 
-**⬇️ Desktop installers (Windows, macOS, Linux): https://github.com/RejwanShafi25/RejBoard/releases/latest**
+**Desktop installers (Windows, macOS, Linux): https://github.com/RejwanShafi25/RejBoard/releases/latest**
 
 **Where are my boards stored?** In the browser's IndexedDB (not the cache). Clearing only "cached images and files" is safe; clearing "cookies and other site data" deletes boards. Use **Backup** on the home screen regularly. The desktop app stores boards in its own app-data folder.
 
@@ -24,7 +23,7 @@ Tauri instead of Electron? Create a Tauri project and point `frontendDist` at th
 
 ## What's inside
 - **Home screen**: boards grid with thumbnails, nested folders (as many as you like), tags, favorites, search (titles, text, #tags), import PDF, backup/restore.
-- **Bottom dock** with cute pens: fountain, calligraphy (angle adjustable), soft brush, ballpoint, pencil, square / chisel / round highlighters (opacity, nib angle), eraser, select, lasso, pan, laser pointer, text, sticky notes, shapes, emoji, images, undo/redo.
+- **Bottom dock** with a full set of pens and tools: fountain, calligraphy (angle adjustable), soft brush, ballpoint, pencil, square / chisel / round highlighters (opacity, nib angle), eraser, select, lasso, pan, laser pointer, text, sticky notes, shapes, emoji, images, undo/redo.
 - **Select tools**: click, box-select, lasso, Shift-click multi-select, 8-handle resize, move, duplicate, copy/cut/paste, delete, **group / ungroup** (Ctrl+G / Ctrl+Shift+G), **lock / unlock** (Ctrl+Shift+L), bring to front / send to back, align, center, distribute. Clicking any member selects its whole group. Locked objects can't be moved, edited, erased or deleted; they stay clickable on purpose (a click selects them so you can unlock them, Alt+click picks one even under an unlocked object) and a 🔓 *Unlock all* pill appears while anything is locked.
 - **Text**: fonts (handwriting, sans, mono, marker, serif), bold/italic/underline; typed math (`sqrt(x^2+1)/2`, `a/b`, `int_0^1 x^2 dx`) becomes a LaTeX formula; plus a manual LaTeX tool.
 - **Sticky notes** (small / medium / large, pastel colors), **shapes** (12 kinds, fill + line width), **emoji**.
@@ -64,12 +63,10 @@ Ctrl+Z / Ctrl+Y undo/redo · Ctrl+C/X/V/D copy/cut/paste/duplicate · Ctrl+G gro
 - **Installers**: `.github/workflows/build.yml` builds Windows (Setup + Portable `.exe`), macOS (`.dmg`, Intel + Apple Silicon) and Linux (`.AppImage`, `.deb`, `.rpm`) and attaches them to a GitHub Release. Bump `version` in `package.json`, commit, then `git tag v1.2.0 && git push origin v1.2.0` (the tag must match the version).
 - macOS/Windows builds are unsigned: macOS may say the app is damaged (run `xattr -cr "/Applications/Rejwan Whiteboard.app"`), Windows SmartScreen may warn (More info → Run anyway).
 
-Older note:
-See the step-by-step guide in the project description / repo wiki: push this folder, enable GitHub Pages for the web/PWA version,
-and push a tag (`git tag v1.0.0 && git push --tags`) to build Windows/macOS/Linux installers automatically.
+To publish: enable GitHub Pages for the web build, and push a version tag (for example `git tag v1.4.0 && git push origin v1.4.0`) to build the Windows, macOS and Linux installers automatically.
 
-## Not built yet
-Templates (UML / flowchart / planners), smart connectors, rotate, ruler, Word/PowerPoint import, handwriting-to-LaTeX OCR with a bundled model.
+## Roadmap
+Templates (UML, flowchart, planners), smart connectors, object rotation, and handwriting-to-LaTeX recognition with a bundled model.
 
 ## v1.1.0 update
 
