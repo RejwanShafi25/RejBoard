@@ -171,8 +171,27 @@ lib('vendor/tex-svg.js','https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es
 #tbp .sw{width:22px;height:22px;padding:0;border-radius:50%}
 #tbp .tbh{font-size:11px;opacity:.65;text-align:center;max-width:520px;align-self:center}
 </style>
+<style id="reccss">
+#recp{right:8px;top:48px;width:min(390px,94vw);max-height:calc(100vh - 70px);display:flex;flex-direction:column;gap:8px;z-index:30;box-sizing:border-box}#recp[hidden],#recpill[hidden]{display:none!important}
+#recp .rh,#recp .rhd,#recp .rbtns,#recp .rtop,#recp .rbot,#recp .rbig{display:flex;align-items:center;gap:8px}
+#recp .rhd{justify-content:space-between;margin-top:2px}#recp .rhd label{display:flex;align-items:center;gap:4px;font-size:12px}
+#recp .rc{background:var(--bg);border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:8px;align-items:stretch}
+#recp .rstart{padding:10px;font-size:15px;border-radius:12px;background:#e5484d;border-color:#e5484d;color:#fff}
+#recp .rbig{justify-content:center;font-size:30px;font-variant-numeric:tabular-nums;font-weight:600}
+#recp .rbtns button{flex:1;padding:8px}#recp .rbtns .on{background:#e5484d;border-color:#e5484d;color:#fff}
+#recp .rnote{font-size:12px;opacity:.7}#recp .rmeter{height:8px;border-radius:6px;background:var(--bd);overflow:hidden}#reclv{height:100%;width:0;background:#3ab56a;transition:width .1s}
+.rdot{width:12px;height:12px;border-radius:50%;background:#e5484d;display:inline-block;animation:rrec 1.1s infinite}.rdot.off{animation:none;opacity:.35}@keyframes rrec{50%{opacity:.25}}
+#recl{overflow:auto;display:flex;flex-direction:column;gap:6px;min-height:0;max-height:46vh}
+#recp .rr{border:1px solid var(--bd);border-radius:12px;padding:8px;display:flex;flex-direction:column;gap:4px}#recp .rr.playing{border-color:var(--ac);box-shadow:0 0 0 2px color-mix(in srgb,var(--ac) 22%,transparent)}
+#recp .rp{width:38px;height:38px;border-radius:50%;padding:0;font-size:16px;flex:none;background:var(--ac);color:var(--acf,#fff);border-color:var(--ac)}
+#recp .rin{flex:1;min-width:0}#recp .rn{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}#recp .rm{font-size:11px;opacity:.7}
+#recp .rre,#recp .rdl{border:0;background:transparent;padding:4px 6px;font-size:16px}#recp .rs{flex:1;padding:0;min-width:0}#recp .rt{font-size:11px;font-variant-numeric:tabular-nums;opacity:.8;white-space:nowrap}
+#recb.on{background:#e5484d;border-color:#e5484d;color:#fff;font-variant-numeric:tabular-nums}
+#recpill{position:fixed;left:12px;bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:60;display:flex;align-items:center;gap:8px;background:var(--pn);border:1px solid #e5484d;border-radius:999px;padding:4px 6px 4px 12px;box-shadow:0 4px 18px #0004;max-width:min(92vw,360px)}
+#recpill #recpn{cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}#recpill #recpt{font-variant-numeric:tabular-nums;font-weight:600}#recpill button{border-radius:999px;padding:2px 9px}#recpill.paused .rdot{animation:none;opacity:.35}
+</style>
 </head><body>
-<div id="hdr"><button id="bn" title="Boards — all your notes, folders and tags"><img src="icon-192.png" alt="" width="18" height="18" style="vertical-align:-4px;border-radius:4px"> <span data-i="boards">Boards</span></button><button id="nn" title="Create a new board">＋ <span data-i="newb">New</span></button><b>Rejwan Whiteboard</b><input id="ti" size="16" aria-label="Board title" title="Rename this board"><button id="favnote" title="Add to favorites">☆</button><input id="tgs" size="12" placeholder="#tags, comma" title="Add tags to this board (comma separated)"><span class="chip" id="sv" role="status" title="Autosave status">✓ Saved</span><span style="flex:1"></span><button id="cvb" title="Canvas: paper, grid, dots, pages and settings">🎨 <span data-i="canvas">Canvas</span></button><button id="exb" title="Export, save a copy, open a board file">⬆ <span data-i="export">Export</span></button><button id="prb" title="Present full screen">📽 <span data-i="present">Present</span></button><button id="stb" title="Settings">⚙</button></div>
+<div id="hdr"><button id="bn" title="Boards — all your notes, folders and tags"><img src="icon-192.png" alt="" width="18" height="18" style="vertical-align:-4px;border-radius:4px"> <span data-i="boards">Boards</span></button><button id="nn" title="Create a new board">＋ <span data-i="newb">New</span></button><b>Rejwan Whiteboard</b><input id="ti" size="16" aria-label="Board title" title="Rename this board"><button id="favnote" title="Add to favorites">☆</button><input id="tgs" size="12" placeholder="#tags, comma" title="Add tags to this board (comma separated)"><span class="chip" id="sv" role="status" title="Autosave status">✓ Saved</span><span style="flex:1"></span><button id="recb" title="Voice recordings for this board: record the class, play it back later">🎙 Record</button><button id="cvb" title="Canvas: paper, grid, dots, pages and settings">🎨 <span data-i="canvas">Canvas</span></button><button id="exb" title="Export, save a copy, open a board file">⬆ <span data-i="export">Export</span></button><button id="prb" title="Present full screen">📽 <span data-i="present">Present</span></button><button id="stb" title="Settings">⚙</button></div>
 <div id="bars" hidden><div class="bar"><button id="hb" title="Close this panel">✕</button>
 <button id="tg" data-i="line"></button><button id="tsn" data-i="snap"></button><button id="pic" data-i="pic"></button><input type="file" id="fi" accept="image/*" multiple hidden><button id="hw" title="Handwriting → text (select strokes with lasso)">✍→T</button><button id="dl" title="Delete selection">🗑</button><span class="sep"></span>
 <label><input type="checkbox" id="am" checked> <span data-i="am"></span></label><span class="sep"></span>
@@ -329,7 +348,7 @@ new ResizeObserver(fit).observe($('#w'));
 const push=()=>{hist.push(structuredClone(S.items));if(hist.length>60)hist.shift();fut=[]};
 function undo(){if(!hist.length)return;fut.push(structuredClone(S.items));S.items=hist.pop();S.sel=[];save();draw()}
 function redo(){if(!fut.length)return;hist.push(structuredClone(S.items));S.items=fut.pop();S.sel=[];save();draw()}
-const DB=new Promise(r=>{try{const q=indexedDB.open('wb',1);q.onupgradeneeded=()=>q.result.createObjectStore('n',{keyPath:'id'});q.onsuccess=()=>r(q.result);q.onerror=()=>r(null)}catch(e){r(null)}});
+const DB=new Promise(r=>{try{const q=indexedDB.open('wb',2);q.onupgradeneeded=()=>{const d=q.result;if(!d.objectStoreNames.contains('n'))d.createObjectStore('n',{keyPath:'id'});if(!d.objectStoreNames.contains('rec'))d.createObjectStore('rec',{keyPath:'id'}).createIndex('b','board')};q.onblocked=()=>{try{toast('Close other tabs of this app so it can finish updating',8000)}catch(e){}};q.onsuccess=()=>{q.result.onversionchange=()=>q.result.close();r(q.result)};q.onerror=()=>r(null)}catch(e){r(null)}});
 const tx=async(m,f)=>{const d=await DB;if(!d)return;return new Promise(r=>{try{const q=f(d.transaction('n',m).objectStore('n'));q.onsuccess=()=>r(q.result);q.onerror=()=>r()}catch(e){r()}})};
 const ind=m=>{const e=$('#sv');if(e)e.textContent=m};
 async function saveNow(){clearTimeout(st);if(!S.id)return;const q=S.items.map(i=>i.srcText||i.text||i.latex||(i.cells?i.cells.flat().join(' '):'')).join(' ').slice(0,4000);const prev=await tx('readonly',s=>s.get(S.id))||{};
@@ -367,8 +386,8 @@ async function listNotes(){const p=$('#np');
   const x=document.createElement('button');x.textContent='✕';x.onclick=async()=>{if(x.textContent=='✕'){x.textContent='Sure?';return}await tx('readwrite',s=>s.delete(n.id));if(n.id==S.id){S.id=null;await newNote()}listNotes()};
   d.append(im,m,o,mv,x);ls.append(d)});
  if(!ls.children.length)ls.textContent=searching?'No matches.':'Empty — add a folder or a note.'}
-async function backup(){const all=(await tx('readonly',s=>s.getAll()))||[];dlf('whiteboard-backup.json',new Blob([JSON.stringify(all)],{type:'application/json'}))}
-async function restore(e){const f=e.target.files[0];e.target.value='';if(!f)return;try{const a=JSON.parse(await f.text());for(const r of a)if(r.id)await tx('readwrite',s=>s.put(r));toast('Restored '+a.length+' items');listNotes()}catch(x){toast('Invalid backup file')}}
+async function backup(){const all=(await tx('readonly',s=>s.getAll()))||[],recs=(await rtx('readonly',s=>s.getAll()))||[];for(const r of recs){const{blob,...m}=r;all.push({...m,rec:1,data:await blobToDataURL(blob)})}if(recs.length)toast('Backup includes '+recs.length+' voice recording'+(recs.length==1?'':'s'),3500);dlf('whiteboard-backup.json',new Blob([JSON.stringify(all)],{type:'application/json'}))}
+async function restore(e){const f=e.target.files[0];e.target.value='';if(!f)return;try{const a=JSON.parse(await f.text());for(const r of a)if(r.id){if(r.rec){const{data,rec,...m}=r;await rtx('readwrite',s=>s.put({...m,blob:dataURLToBlob(data)}))}else await tx('readwrite',s=>s.put(r))}toast('Restored '+a.length+' items');listNotes()}catch(x){toast('Invalid backup file')}}
 /* ---------- geometry helpers ---------- */
 const pt=e=>{const r=cv.getBoundingClientRect();return[(e.clientX-r.left-S.ox)/S.z,(e.clientY-r.top-S.oy)/S.z]};const paperPoint=p=>{if(S.pg.size==='inf')return p;const[pw,ph]=pdim(),idx=pgOf(),top=idx*(ph+PG_GAP);return [Math.max(0,Math.min(pw,p[0])),Math.max(top,Math.min(top+ph,p[1]))]};
 
@@ -751,7 +770,7 @@ $('#exm').onclick=async e=>{const x=e.target.dataset.x;if(!x)return;$('#exm').hi
 $('#pdfcancel').onclick=()=>$('#pdfq').hidden=1;$('#pdfsave').onclick=()=>{const inv=$('#pdfinv').checked;$('#pdfq').hidden=1;exportAs('pdf',inv)};
 $('#of').onchange=e=>{const f=e.target.files[0];e.target.value='';f&&openBoardFile(f)};
 const b64=t=>{const u=new TextEncoder().encode(t);let b='';for(let i=0;i<u.length;i+=8192)b+=String.fromCharCode(...u.subarray(i,i+8192));return btoa(b)};
-async function saveCopy(){await saveNow();dlf((S.title||'board').replace(/[\\/:*?"<>|]/g,'_')+'.rjwb',new Blob(['RJWB1:'+b64(JSON.stringify({title:S.title,items:S.items,bg:S.bg,pat:S.pat,gs:S.gs,gd:S.gd,layers:S.layers,tags:S.tags,pg:S.pg}))],{type:'application/octet-stream'}))}
+async function saveCopy(){await saveNow();dlf((S.title||'board').replace(/[\\/:*?"<>|]/g,'_')+'.rjwb',new Blob(['RJWB1:'+b64(JSON.stringify({title:S.title,items:S.items,bg:S.bg,pat:S.pat,gs:S.gs,gd:S.gd,layers:S.layers,tags:S.tags,pg:S.pg,recs:await recPack(S.id)}))],{type:'application/octet-stream'}))}
 /* ---------- local-network sharing (desktop app only; encryption happens in the main process, in transit only) ---------- */
 const lanEl=(t,a={},...k)=>{const e=document.createElement(t);for(const[x,v]of Object.entries(a)){if(x=='style')e.style.cssText=v;else if(x.startsWith('on'))e[x]=v;else if(x in e)e[x]=v;else e.setAttribute(x,v)}e.append(...k);return e};
 const lanSize=n=>n<1024?n+' B':n<1048576?(n/1024).toFixed(1)+' KB':(n/1048576).toFixed(1)+' MB';
@@ -765,8 +784,8 @@ if(window.wb&&wb.lan)wb.lan.on('progress',d=>{if(d.role=='send'){if(lanSendBar){
 async function lanImport(from,payload){let d;try{d=JSON.parse(payload)}catch(e){return toast('The received data was not valid')}
  if(!d||d.app!=='rejboard'||!Array.isArray(d.boards))return toast('The received data is not a Rejwan Whiteboard share');
  const fid=uid();await tx('readwrite',s=>s.put({id:fid,folder:1,name:'Received from '+String(from).slice(0,40),parent:'',color:'#cdeffd',t:Date.now()}));
- let n=0;for(const b of d.boards){if(!b||typeof b!=='object'||b.folder||!Array.isArray(b.items))continue;const r={...b,id:uid()+n,parent:fid,t:Date.now(),fav:false};await tx('readwrite',s=>s.put(r));n++}
- toast('📥 Received '+n+' board'+(n==1?'':'s')+' from '+from+' (folder “Received from …”)',6000);
+ let n=0,nr=0;for(const b of d.boards){if(!b||typeof b!=='object'||b.folder||!Array.isArray(b.items))continue;const rr=b.recs,r={...b,id:uid()+n,parent:fid,t:Date.now(),fav:false};delete r.recs;await tx('readwrite',s=>s.put(r));nr+=await recUnpack(rr,r.id);n++}
+ toast('📥 Received '+n+' board'+(n==1?'':'s')+' from '+from+(nr?' with '+nr+' voice recording'+(nr==1?'':'s'):'')+' (folder “Received from …”)',6000);
  try{if(!$('#hm').hidden)renderHome()}catch(e){}}
 if(window.wb&&wb.lan){
  wb.lan.on('incoming',async d=>{const ok=await askConfirm('📥 Incoming boards','“'+d.name+'” ('+d.host+') wants to send you '+d.count+' board'+(d.count==1?'':'s')+' ('+lanSize(d.size)+'). Security code: '+d.code+'. Accept only if the SAME code is shown on the sender’s screen.','Accept',false);wb.lan.respond(d.sid,ok)});
@@ -782,7 +801,7 @@ async function lanDialog(pre){
  const peersBox=lanEl('div',{style:'display:flex;flex-direction:column;gap:6px;margin:6px 0'});
  const showInfo=()=>{me.textContent=info.on?'This computer: '+info.name+' — '+info.addrs.map(a=>a+':'+info.port).join(', '):'Receiving is off — other computers cannot see or reach this one.'};
  const send=async peer=>{if(busy)return;if(!sel.size)return setStatus('Select at least one board to send first.');busy=true;setStatus('Connecting to '+(peer.name||peer.host)+'…');
-  try{const recs=[];for(const id of sel){const r=await tx('readonly',s=>s.get(id));if(r)recs.push(r)}
+  try{const recs=[];for(const id of sel){const r=await tx('readonly',s=>s.get(id));if(r)recs.push({...r,recs:await recPack(id)})}
    const res=await wb.lan.send({host:peer.host,port:peer.port,name:peer.name},JSON.stringify({app:'rejboard',v:1,boards:recs}),recs.length);
    if(res.ok)bar.set('Sent',1,1);setStatus(res.ok?'✅ Sent '+res.count+' board'+(res.count==1?'':'s')+' to '+(peer.name||peer.host)+'.':'⚠️ '+res.error)}catch(e){setStatus('⚠️ '+(e.message||e))}busy=false};
  const drawPeers=list=>{peersBox.textContent='';if(!list.length){peersBox.append(lanEl('div',{style:'font-size:12px;opacity:.7'},'No computers found yet. On the other computer open this same menu and turn on “Receive boards”. Both must be on the same Wi-Fi / network.'));return}
@@ -806,7 +825,7 @@ async function lanDialog(pre){
  offs.forEach(f=>f&&f());lanSendBar=null;
 }
 
-async function openBoardFile(f){const t=await f.text();if(!t.startsWith('RJWB1:'))return toast('That is not a Rejwan Whiteboard file');try{const n=JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(t.slice(6)),c=>c.charCodeAt(0))));await saveNow();n.id=uid();n.t=Date.now();n.parent=CF;await openNote(n);save();toast('Board opened')}catch(x){toast('Could not open that file')}}
+async function openBoardFile(f){const t=await f.text();if(!t.startsWith('RJWB1:'))return toast('That is not a Rejwan Whiteboard file');try{const n=JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(t.slice(6)),c=>c.charCodeAt(0))));await saveNow();n.id=uid();n.t=Date.now();n.parent=CF;const rr=n.recs;delete n.recs;const nr=await recUnpack(rr,n.id);await openNote(n);save();toast('Board opened'+(nr?' with '+nr+' voice recording'+(nr==1?'':'s'):''))}catch(x){toast('Could not open that file')}}
 const SHP=[['rect','Rectangle'],['ell','Ellipse'],['tri','Triangle'],['rtri','Right triangle'],['dia','Diamond'],['pent','Pentagon'],['hex','Hexagon'],['oct','Octagon'],['star','Star'],['line','Line'],['arr','Arrow'],['darr','Double arrow'],['cyl','Cylinder'],['cone','Cone'],['sphere','Sphere'],['cube','Cube'],['prism','Prism'],['xyz','XYZ Plane'],['trap','Trapezoid'],['para','Parallelogram'],['heart','Heart'],['cross','Cross'],['cloud','Cloud'],['hexagram','Hexagram']],PASTEL=['#ffb3c6','#ffe08a','#b9fbc0','#a2d2ff','#e4c1f9','#ffd6a5'];
 const chip=(c,on,f)=>{const b=document.createElement('button');b.className='sw'+(on?' on':'');b.style.background=c||'repeating-linear-gradient(45deg,#ddd 0 4px,#fff 4px 8px)';b.onclick=f;return b};
 function shapeIcon(k){const g=G[k]||G.rect,bx=(k=='rect'||k=='ell')?[3,6,22,16]:[4,4,20,20],ln=LINEK.includes(k);let o='';
@@ -1015,7 +1034,7 @@ async function renderHome(){
  if($('#hpdf'))$('#hpdf').onclick=()=>$('#docf').click();
  if($('#hsel'))$('#hsel').onclick=()=>{HV.selMode=!HV.selMode;HV.sel=new Set();renderHome()};
  $('#hbk').onclick=backup;$('#hrs').onclick=()=>{$('#np').hidden=0;listNotes();$('#rf').click();$('#np').hidden=1};
- if(sec==='trash')$('#hempty').onclick=async()=>{if(!TR.length)return;if(!await askConfirm('Empty trash','Permanently delete all boards in Trash? This cannot be undone.','Empty trash'))return;await tx('readwrite',s=>TR.forEach(n=>s.delete(n.id)));HV.q='';await renderHome()};
+ if(sec==='trash')$('#hempty').onclick=async()=>{if(!TR.length)return;if(!await askConfirm('Empty trash','Permanently delete all boards in Trash? This cannot be undone.','Empty trash'))return;await tx('readwrite',s=>TR.forEach(n=>s.delete(n.id)));await recDelBoards(TR.map(n=>n.id));HV.q='';await renderHome()};
 
  /* breadcrumb for folders */
  const cr=$('#crumb');
@@ -1078,7 +1097,7 @@ async function renderHome(){
   mk(picked.length===shown.length&&shown.length?'Select none':'Select all',()=>{if(picked.length===shown.length)sel.clear();else shown.forEach(b=>sel.add(b.id));cards();refreshBar()},true);
   if(sec==='trash'){
    mk('↩ Restore',async()=>{for(const b of picked)await updateBoard(b,{del:0});toast('Restored '+picked.length+' board'+(picked.length==1?'':'s'));fin()});
-   mk('🗑 Delete permanently',async()=>{if(!await askConfirm('Delete permanently','Permanently delete '+picked.length+' selected board'+(picked.length==1?'':'s')+'? This cannot be undone.','Delete'))return;await tx('readwrite',s=>picked.forEach(b=>s.delete(b.id)));fin()});
+   mk('🗑 Delete permanently',async()=>{if(!await askConfirm('Delete permanently','Permanently delete '+picked.length+' selected board'+(picked.length==1?'':'s')+'? This cannot be undone.','Delete'))return;await tx('readwrite',s=>picked.forEach(b=>s.delete(b.id)));await recDelBoards(picked.map(b=>b.id));fin()});
   }else{
    const allFav=picked.every(b=>b.fav);
    mk(allFav?'☆ Unfavorite':'⭐ Favorite',async()=>{for(const b of picked)await updateBoard(b,{fav:!allFav});fin()});
@@ -1100,7 +1119,7 @@ async function renderHome(){
   const mi=(label,fn)=>{const b=document.createElement('button');b.textContent=label;b.onclick=async e=>{e.stopPropagation();closeBoardMenus();await fn()};menu.append(b)};
   if(sec==='trash'){
    mi('↩  Restore',async()=>{await updateBoard(n,{del:0});renderHome()});
-   mi('🗑  Delete permanently',async()=>{if(!await askConfirm('Delete permanently',`Permanently delete “${n.title}”? This cannot be undone.`,'Delete'))return;await tx('readwrite',s=>s.delete(n.id));renderHome()});
+   mi('🗑  Delete permanently',async()=>{if(!await askConfirm('Delete permanently',`Permanently delete “${n.title}”? This cannot be undone.`,'Delete'))return;await tx('readwrite',s=>s.delete(n.id));await recDelBoards([n.id]);renderHome()});
   }else{
    mi(n.fav?'★  Remove favorite':'☆  Add to favorites',async()=>{await updateBoard(n,{fav:!n.fav});renderHome()});
    mi('⧉  Copy board',async()=>{const cur=(await tx('readonly',s=>s.get(n.id)))||n;const c={...structuredClone(cur),id:uid(),title:n.title+' copy',t:Date.now(),fav:false,del:0};await tx('readwrite',s=>s.put(c));renderHome()});
@@ -1661,5 +1680,117 @@ async function setLang(l){lang=l;tn=null;run++;sweep();if(l=='en'||!self.Transla
 const _i18=i18n;i18n=function(l){_i18(l);setLang(l)};
 new MutationObserver(()=>{if(lang=='en')return;clearTimeout(tmr);tmr=setTimeout(sweep,120)}).observe(document.body,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:['title','placeholder','aria-label']});
 setLang(document.documentElement.lang||L('wb.ui','en'));
+})();
+/* ---------- voice recordings (stored per board in their own IndexedDB store 'rec') ---------- */
+const RC={mr:null,stream:null,chunks:[],board:null,title:'',t0:0,acc:0,paused:false,tick:0,mime:'',ctx:null,an:null,audio:null,cur:null,url:'',rate:1,list:[],busy:false};
+async function rtx(m,f){const d=await DB;if(!d||!d.objectStoreNames.contains('rec'))return;return new Promise(r=>{try{const q=f(d.transaction('rec',m).objectStore('rec'));q.onsuccess=()=>r(q.result);q.onerror=()=>r()}catch(e){r()}})}
+async function recDelBoards(ids){const d=await DB;if(!d||!d.objectStoreNames.contains('rec')||!ids.length)return;return new Promise(r=>{try{const t=d.transaction('rec','readwrite'),s=t.objectStore('rec'),ix=s.index('b');for(const id of new Set(ids))ix.openKeyCursor(IDBKeyRange.only(id)).onsuccess=e=>{const c=e.target.result;if(c){s.delete(c.primaryKey);c.continue()}};t.oncomplete=t.onerror=t.onabort=()=>r()}catch(e){r()}})}
+const recFmt=s=>{s=Math.max(0,Math.floor(s||0));const h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=s%60,p=n=>String(n).padStart(2,'0');return(h?h+':'+p(m):m)+':'+p(x)};
+const recSize=n=>n<1048576?Math.max(1,Math.round(n/1024))+' KB':(n/1048576).toFixed(1)+' MB';
+const recElapsed=()=>(RC.acc+(RC.mr&&!RC.paused?performance.now()-RC.t0:0))/1000;
+const blobToDataURL=b=>new Promise(r=>{const f=new FileReader();f.onload=()=>r(f.result);f.onerror=()=>r('');f.readAsDataURL(b)});
+const dataURLToBlob=u=>{const i=u.indexOf(','),mt=(u.slice(5,i).split(';')[0])||'audio/webm',bin=atob(u.slice(i+1)),a=new Uint8Array(bin.length);for(let k=0;k<bin.length;k++)a[k]=bin.charCodeAt(k);return new Blob([a],{type:mt})};
+
+/* --- recording --- */
+async function recStart(){
+ if(RC.mr||RC.busy)return;
+ if(!S.id)return toast('Open a board first');
+ if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia||!window.MediaRecorder)return toast('Voice recording is not supported in this browser');
+ RC.busy=true;let st;
+ try{st=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}})}
+ catch(e){RC.busy=false;return toast(e&&e.name==='NotAllowedError'?'Microphone access is blocked. Allow it in your browser / system settings and try again.':'No microphone was found',5000)}
+ recStopPlay();
+ const mime=['audio/webm;codecs=opus','audio/webm','audio/mp4','audio/ogg;codecs=opus'].find(m=>MediaRecorder.isTypeSupported(m))||'';
+ let mr;try{mr=new MediaRecorder(st,mime?{mimeType:mime,audioBitsPerSecond:48000}:{audioBitsPerSecond:48000})}catch(e){try{mr=new MediaRecorder(st)}catch(x){st.getTracks().forEach(t=>t.stop());RC.busy=false;return toast('Could not start the recorder')}}
+ RC.stream=st;RC.mr=mr;RC.chunks=[];RC.board=S.id;RC.title=S.title||'Untitled';RC.acc=0;RC.t0=performance.now();RC.paused=false;RC.mime=mr.mimeType||mime||'audio/webm';
+ mr.ondataavailable=e=>{if(e.data&&e.data.size)RC.chunks.push(e.data)};
+ mr.onstop=recFinish;
+ st.getAudioTracks().forEach(t=>t.onended=()=>{if(RC.mr)recStop()});
+ try{RC.ctx=new(window.AudioContext||window.webkitAudioContext)();RC.an=RC.ctx.createAnalyser();RC.an.fftSize=512;RC.ctx.createMediaStreamSource(st).connect(RC.an)}catch(e){RC.ctx=RC.an=null}
+ mr.start(1000);RC.busy=false;clearInterval(RC.tick);RC.tick=setInterval(recTick,250);recTick();recUi();
+}
+function recPause(){const m=RC.mr;if(!m)return;if(!RC.paused){m.pause();RC.acc+=performance.now()-RC.t0;RC.paused=true}else{m.resume();RC.t0=performance.now();RC.paused=false}recUi()}
+function recStop(){const m=RC.mr;if(!m)return;if(!RC.paused)RC.acc+=performance.now()-RC.t0;RC.paused=true;try{m.state!=='inactive'&&m.stop()}catch(e){recFinish()}}
+async function recFinish(){
+ const board=RC.board,title=RC.title,dur=RC.acc/1000,chunks=RC.chunks,mime=RC.mime;
+ clearInterval(RC.tick);try{RC.stream&&RC.stream.getTracks().forEach(t=>t.stop())}catch(e){}try{RC.ctx&&RC.ctx.close()}catch(e){}
+ RC.mr=RC.stream=RC.ctx=RC.an=null;RC.chunks=[];RC.paused=false;
+ const blob=new Blob(chunks,{type:mime});recUi();
+ if(dur<1||!blob.size)return toast('Recording was too short, so it was not saved');
+ const n=((await rtx('readonly',s=>s.index('b').count(IDBKeyRange.only(board))))||0)+1;
+ const rec={id:uid(),board,name:'Recording '+n+' \u2014 '+new Date().toLocaleString([],{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}),t:Date.now(),dur,mime,size:blob.size,blob};
+ const ok=await rtx('readwrite',s=>s.put(rec));
+ if(ok===undefined)return toast('\u26a0 Could not save the recording (no storage space?)',6000);
+ toast('\ud83c\udf99 Recording saved to \u201c'+title+'\u201d',3500);
+ if(board===S.id)await recLoadList();else recUi();
+}
+function recTick(){const e=recElapsed(),t=$('#rectime'),b=$('#recb'),p=$('#recpill');
+ if(t)t.textContent=recFmt(e);if(b)b.textContent=RC.mr?(RC.paused?'\u23f8 ':'\u25cf ')+recFmt(e):'\ud83c\udf99 Record';
+ if($('#recpt'))$('#recpt').textContent=recFmt(e);
+ const lv=$('#reclv');if(lv&&RC.an&&!RC.paused){const a=new Uint8Array(RC.an.fftSize);RC.an.getByteTimeDomainData(a);let s=0;for(const v of a)s+=(v-128)*(v-128);lv.style.width=Math.min(100,Math.sqrt(s/a.length)/128*260)+'%'}else if(lv)lv.style.width='0'}
+
+/* --- playback (one recording at a time) --- */
+function recStopPlay(){const a=RC.audio;if(a){a.onended=a.ontimeupdate=a.onpause=a.onplay=null;a.pause();a.removeAttribute('src');a.load()}if(RC.url){URL.revokeObjectURL(RC.url);RC.url=''}RC.cur=null;recRows()}
+async function recToggle(r){
+ if(RC.cur===r.id&&RC.audio){if(RC.audio.paused)RC.audio.play().catch(()=>{});else RC.audio.pause();return}
+ if(RC.mr&&!RC.paused)toast('Tip: playback while recording can be picked up by the microphone \u2014 use headphones',4000);
+ recStopPlay();const a=RC.audio||(RC.audio=new Audio());RC.cur=r.id;RC.url=URL.createObjectURL(r.blob);a.src=RC.url;a.playbackRate=RC.rate;
+ await new Promise(res=>{a.onloadedmetadata=()=>{if(a.duration===Infinity||isNaN(a.duration)){a.ontimeupdate=()=>{a.ontimeupdate=null;a.currentTime=0;res()};a.currentTime=1e101}else res()};a.onerror=()=>res()});
+ if(RC.cur!==r.id)return;
+ a.onplay=a.onpause=recRows;a.ontimeupdate=recRows;a.onended=()=>{a.currentTime=0;recRows()};
+ try{a.playbackRate=RC.rate;await a.play()}catch(e){toast('Could not play this recording')}recRows()}
+function recRows(){const a=RC.audio;document.querySelectorAll('#recl .rr').forEach(row=>{const id=row.dataset.id,on=RC.cur===id&&a,r=RC.list.find(x=>x.id===id);if(!r)return;
+ row.querySelector('.rp').textContent=on&&!a.paused?'\u23f8':'\u25b6';row.classList.toggle('playing',!!on);
+ const sk=row.querySelector('.rs'),tm=row.querySelector('.rt'),cur=on?a.currentTime:0;
+ if(!sk.dataset.drag)sk.value=cur;tm.textContent=recFmt(cur)+' / '+recFmt(r.dur)})}
+
+/* --- panel --- */
+async function recLoadList(){const b=S.id;RC.list=b?((await rtx('readonly',s=>s.index('b').getAll(IDBKeyRange.only(b))))||[]).sort((x,y)=>y.t-x.t):[];recRender()}
+function recUi(){const b=$('#recb');if(b){b.classList.toggle('on',!!RC.mr);if(!RC.mr)b.textContent='\ud83c\udf99 Record'}
+ const pill=$('#recpill');if(pill){pill.hidden=!RC.mr;if(RC.mr){pill.classList.toggle('paused',RC.paused);$('#recpn').textContent=(RC.paused?'Paused':'Recording')+' \u00b7 '+RC.title;$('#recpp').textContent=RC.paused?'\u25b6':'\u23f8'}}
+ if(!$('#recp').hidden)recRender()}
+function recRender(){
+ const p=$('#recp');if(p.hidden)return;const L=$('#recl');const keepScroll=L?L.scrollTop:0;
+ const rec=!!RC.mr,here=RC.board===S.id;
+ p.innerHTML=`<div class="rh"><b>\ud83c\udf99 Voice recordings</b><span class="chip" style="max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="Recordings belong to this board only">${escHtml(S.title||'Untitled')}</span><span style="flex:1"></span><button id="recx" title="Close" aria-label="Close">\u2715</button></div>
+ <div class="rc">${rec?`<div class="rbig"><span class="rdot${RC.paused?' off':''}"></span><span id="rectime">${recFmt(recElapsed())}</span></div><div class="rmeter"><div id="reclv"></div></div>
+ <div class="rbtns"><button id="recpa">${RC.paused?'\u25b6 Resume':'\u23f8 Pause'}</button><button id="recst" class="on">\u25a0 Stop &amp; save</button></div>${here?'':`<div class="rnote">Recording on \u201c${escHtml(RC.title)}\u201d (another board). It is saved to that board.</div>`}`
+ :`<button id="recgo" class="on rstart">\u25cf Start new recording</button><div class="rnote">Saved on this device, only inside this board. Keep recording while you take notes.</div>`}</div>
+ <div class="rhd"><b>This board\u2019s recordings (${RC.list.length})</b><label>Speed <select id="recsp">${[.75,1,1.25,1.5,2].map(v=>`<option value="${v}"${v===RC.rate?' selected':''}>${v}\u00d7</option>`).join('')}</select></label></div>
+ <div id="recl">${RC.list.length?'':'<div class="rnote" style="padding:14px 4px;text-align:center">No recordings for this board yet.</div>'}</div>`;
+ $('#recx').onclick=()=>p.hidden=true;
+ if($('#recgo'))$('#recgo').onclick=recStart;if($('#recpa'))$('#recpa').onclick=recPause;if($('#recst'))$('#recst').onclick=recStop;
+ $('#recsp').onchange=e=>{RC.rate=+e.target.value;if(RC.audio)RC.audio.playbackRate=RC.rate};
+ const box=$('#recl');
+ for(const r of RC.list){const row=document.createElement('div');row.className='rr';row.dataset.id=r.id;
+  row.innerHTML=`<div class="rtop"><button class="rp" title="Play / pause">\u25b6</button><div class="rin"><div class="rn" title="${escHtml(r.name)}">${escHtml(r.name)}</div><div class="rm">${new Date(r.t).toLocaleString([],{dateStyle:'medium',timeStyle:'short'})} \u00b7 ${recFmt(r.dur)} \u00b7 ${recSize(r.size||r.blob.size)}</div></div><button class="rre" title="Rename">\u270e</button><button class="rdl" title="Delete this recording">\ud83d\uddd1</button></div>
+  <div class="rbot"><input type="range" class="rs" min="0" max="${Math.max(1,r.dur)}" step="0.1" value="0" aria-label="Seek"><span class="rt">0:00 / ${recFmt(r.dur)}</span></div>`;
+  row.querySelector('.rp').onclick=()=>recToggle(r);
+  const sk=row.querySelector('.rs');
+  sk.oninput=async()=>{sk.dataset.drag=1;if(RC.cur!==r.id)return;RC.audio.currentTime=+sk.value;row.querySelector('.rt').textContent=recFmt(sk.value)+' / '+recFmt(r.dur)};
+  sk.onchange=()=>{delete sk.dataset.drag;recRows()};
+  row.querySelector('.rre').onclick=async()=>{const v=await askText('Rename recording','Name',r.name);if(!v)return;r.name=v;await rtx('readwrite',s=>s.put(r));recRender()};
+  row.querySelector('.rdl').onclick=async()=>{if(!await askConfirm('Delete recording','Delete \u201c'+r.name+'\u201d? This cannot be undone.','Delete'))return;if(RC.cur===r.id)recStopPlay();await rtx('readwrite',s=>s.delete(r.id));await recLoadList();toast('Recording deleted')};
+  box.append(row)}
+ box.scrollTop=keepScroll;recRows();recTick()}
+function recPanel(show){const p=$('#recp');p.hidden=show===undefined?!p.hidden:!show;if(!p.hidden){closeTransient();recLoadList()}}
+
+/* --- recordings travel with a board in .rjwb files and local-network shares --- */
+async function recPack(boardId){const rs=(await rtx('readonly',s=>s.index('b').getAll(IDBKeyRange.only(boardId))))||[],out=[];for(const r of rs)out.push({name:r.name,t:r.t,dur:r.dur,mime:r.mime,data:await blobToDataURL(r.blob)});return out}
+async function recUnpack(list,newBoard){let n=0;if(!Array.isArray(list))return 0;for(const x of list){try{if(!x||typeof x.data!=='string'||!x.data.startsWith('data:'))continue;const b=dataURLToBlob(x.data),mime=b.type;if(!mime.startsWith('audio/'))continue;
+ const ok=await rtx('readwrite',s=>s.put({id:uid()+n,board:newBoard,name:String(x.name||'Recording').slice(0,200),t:+x.t||Date.now(),dur:Math.max(0,+x.dur||0),mime:b.type||mime,size:b.size,blob:b}));if(ok!==undefined)n++}catch(e){}}return n}
+/* --- wire into the app --- */
+(()=>{
+ const p=document.createElement('div');p.id='recp';p.className='pop';p.hidden=true;document.body.append(p);
+ const pill=document.createElement('div');pill.id='recpill';pill.hidden=true;pill.innerHTML='<span class="rdot"></span><span id="recpn"></span><span id="recpt">0:00</span><button id="recpp" title="Pause / resume">\u23f8</button><button id="recps" title="Stop &amp; save">\u25a0</button>';document.body.append(pill);
+ $('#recpp').onclick=recPause;$('#recps').onclick=recStop;$('#recpn').onclick=()=>recPanel(true);
+ $('#recb').onclick=()=>recPanel();
+ const _on=openNote;openNote=async function(n){const other=n&&n.id!==S.id;
+  if(RC.mr&&n&&n.id!==RC.board){recStop();toast('Recording stopped and saved to its board',3500)}
+  if(other)recStopPlay();
+  const r=await _on.apply(this,arguments);if(!p.hidden)recLoadList();return r};
+ $('#ti').addEventListener('input',()=>{if(!p.hidden){const c=p.querySelector('.rh .chip');if(c)c.textContent=S.title||'Untitled'}});
+ if(!window.wb)window.addEventListener('beforeunload',e=>{if(RC.mr){e.preventDefault();e.returnValue=''}});
+ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!p.hidden&&!document.querySelector('.mdl'))p.hidden=true});
 })();
 </script></body></html>

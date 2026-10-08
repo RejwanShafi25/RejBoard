@@ -35,6 +35,7 @@ Tauri instead of Electron? Create a Tauri project and point `frontendDist` at th
 - **Zoom** (buttons, Ctrl+wheel, pinch, Fit), **speed mode** for big notes, **palm rejection**, **tilt shading**, stylus side-button eraser.
 - **Present mode**: fullscreen, dock stays visible, laser pointer, spotlight, timer.
 - **Settings** (⚙): appearance (language, themes), inking, canvas, reset to default, boards. Every section explains itself; every button has a hover tooltip.
+- **Voice recordings per board** (🎙 Record): record a lecture while you take notes, pause/resume, keep several recordings per board, then play, seek, change speed, rename or delete them later. Recordings stay on your device, belong to one board only, and are part of Backup / Restore, "Save a copy" (.rjwb) files and local-network sharing.
 - **Autosave** with a live indicator (● Saving… → ✓ Saved).
 - 8 UI languages (English default) and 15 text languages.
 
