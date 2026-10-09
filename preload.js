@@ -2,6 +2,7 @@ const { contextBridge, ipcRenderer } = require('electron');
 const EVENTS = ['peers', 'incoming', 'sas', 'received', 'progress'];
 contextBridge.exposeInMainWorld('wb', {
   recognize: d => ipcRenderer.invoke('hw', d),
+  docToPdf: (name, buf) => ipcRenderer.invoke('doc:toPdf', name, buf),
   lan: {
     info: () => ipcRenderer.invoke('lan:info'),
     start: () => ipcRenderer.invoke('lan:start'),
