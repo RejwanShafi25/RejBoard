@@ -1,36 +1,6 @@
 # Changelog
 
-## 1.3.5
-- Improved importing dragged browser images whose URLs do not end in typical image extensions by checking the fetched MIME type.
-- Added resize handles on all four sides and all four corners of the shared Browser/Video floating panel.
-- Made edge resizing anchor the opposite edge and keep the panel within the viewport.
-
-# Changelog
-
-## 1.3.4
-- Fixed Browser and Video panel dragging by using viewport coordinates rather than offset coordinates under a CSS transform.
-- Added a visible bottom-right resize handle for the floating Browser and Video panel.
-- Improved move/resize pointer capture, bounds handling, and maximize/restore geometry.
-
-
-## 1.3.3
-- Fixed canvas selection recovery: Escape clears selection and cancels stale drag state.
-- Ctrl+A selects board objects only when the canvas is focused; it no longer selects the entire app interface.
-- Added a Deselect All toolbar command and cleared stale gestures when the app window loses focus.
-
-1.3.2 — Video picker and image drop fix
-- Fixed the Video > Add video source menu staying hidden after opening its options.
-- Improved local video file selection so the picker can be reopened and the selected video opens in the native controllable player.
-- Improved website image drag-and-drop: image URLs are fetched through a bounded main-process helper and inserted as image objects when the host allows access; unsupported or blocked images fall back to a link.
-- Remote image retrieval is limited to HTTP(S), image MIME types and 12 MB responses.
-
-
-## 1.3.1 — Video source picker fix
-- Fixed the media panel hidden-state styling so the Video menu and its options respond correctly to clicks.
-- Reset the local file input before opening it, allowing the same video to be selected again.
-- Local videos continue to use the built-in HTML video player with native playback controls.
-
-## [1.3.0] - 2026-10-09
+## [1.2.4]
 ### Added
 - **In-app Browser dock button** for a compact draggable website panel with address/search, back/forward, reload, minimize, maximize/restore and close controls.
 - **Video dock button** with YouTube, Udemy, online video/livestream URL and local video file options.
@@ -43,8 +13,7 @@
 
 ### Changed
 - Electron enables webview support while keeping Node integration disabled and context isolation enabled.
-- Version bumped to 1.3.0.
-
+- Version bumped to 1.2.4
 
 ## [1.2.3]
 ### Changed
