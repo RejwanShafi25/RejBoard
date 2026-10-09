@@ -11,6 +11,18 @@ Open the link, then in Chrome/Edge click the install icon in the address bar to 
 
 Current version: **1.3.2** (see [CHANGELOG.md](CHANGELOG.md)).
 
+## Browser image drag-and-drop
+
+When dragging an image from an embedded website, RejBoard attempts to retrieve the image and insert it onto the canvas as an image object. Some sites block access, require authentication, use expiring URLs, or deliver images in formats that cannot be fetched; in those cases the dropped URL may be inserted as a link instead. Remote image fetches are restricted to HTTP(S), image content types and a 12 MB size limit.
+
+## Browser privacy and data handling
+
+The embedded Browser and Video panels use a **non-persistent Electron session** (no `persist:` partition). RejBoard does not write the panel's typed addresses/search phrases, browsing history, website form values, keyboard events, mouse interactions, or login credentials into its board database, localStorage, or app preferences. Closing a panel releases its local video object URL and clears the temporary browser session; the session is also cleared when RejBoard exits. The app does not record keystrokes or mouse movement for this feature.
+
+**Important limits:** this is not an anonymity or zero-data guarantee. A website you visit can receive your IP address and normal connection metadata, and may store searches, account activity, cookies or other information on its own servers. Website behavior and policies are outside RejBoard's control. While a panel remains open, cookies and site storage may be used in memory so you can sign in and navigate normally; the temporary session is cleared at app exit, but this cannot erase data already received or retained by a website. Do not use this feature on a device you do not trust, and sign out of accounts before closing if desired. Private-session behavior may vary with Chromium/Electron versions and should be tested on each release.
+
+The embedded browser is an Electron webview, not a replacement for every standalone browser feature. Some sites block embedded contexts, DRM playback, popups, third-party cookies or specific codecs; livestream performance depends on the site, network, hardware and codecs. No application can promise that every website in the world will work perfectly or that a livestream will never lag.
+
 ## Run it
 | Way | Steps |
 |---|---|
@@ -44,6 +56,13 @@ Tauri instead of Electron? Create a Tauri project and point `frontendDist` at th
 - **Zoom** (buttons, Ctrl+wheel, pinch, Fit), **speed mode** for big notes, **palm rejection**, **tilt shading**, stylus side-button eraser, and a Windows Ink / raw pointer mode for lower-latency pen input when Chromium exposes it.
 - **Autosave** with a live indicator (● Saving… → ✓ Saved).
 - **Adapts to the window size:** the dock, page navigator and zoom controls stay on one row when there is room, move onto two rows when there is not, and the dock shrinks its icons before it ever scrolls. The header drops text labels on narrower windows. Works the same in a maximized, windowed or phone-sized window.
+
+#### In-app browser and video (desktop Electron)
+- **Browser dock button (🌐):** opens a compact, draggable in-app browser with address/search, back, forward, reload, minimize, maximize/restore and close controls.
+- **Video dock button (🎬):** choose YouTube, Udemy, an online video/livestream URL, or a local video file. Web video surfaces include play/pause and ±10-second seek controls where the website exposes standard HTML media elements. Local video uses the system file picker and plays inside the panel.
+- **Udemy:** sign in on Udemy's own website inside the browser panel to access courses associated with your account. Site-specific login, DRM, payment, popup, codec and authentication behavior is controlled by Udemy and Chromium; not every website or stream is guaranteed to work perfectly.
+- **Drag content:** ordinary website drag operations may work depending on the site's implementation. Cross-site dragging is restricted by Chromium and some sites; use the site's own copy/share features when dragging is blocked.
+- **Desktop only:** embedded webviews require Electron. The browser/video dock is not available in the regular web/PWA build.
 
 ### Text and math
 - Fonts (handwriting, sans, mono, marker, serif), bold/italic/underline, rich text color and partial-selection formatting. Enter finishes editing; Shift+Enter inserts a line break.
@@ -120,3 +139,10 @@ Templates (UML, flowchart, planners), smart connectors, and handwriting-to-LaTeX
 
 ## License
 MIT
+
+
+## Selection recovery (1.3.3)
+- Press **Esc** to clear selected canvas objects and cancel an active selection gesture.
+- Click **Deselect** in the toolbar to clear selection explicitly.
+- **Ctrl+A** selects canvas objects only when the canvas is focused; it will not select all visible interface text.
+- Selection movement requires an active pointer gesture; losing window focus cancels a stale gesture.

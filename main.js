@@ -60,13 +60,37 @@ ipcMain.handle('doc:toPdf', async (_e, name, data) => {
   } catch (e) { return { ok: false, error: e.message }; }
   finally { if (dir) fs.rm(dir, { recursive: true, force: true }, () => {}); }
 });
+ipcMain.handle('image:fetch-remote', async (_e, rawUrl) => {
+  try {
+    const u = new URL(String(rawUrl || ''));
+    if (!['http:', 'https:'].includes(u.protocol)) return { ok: false };
+    const response = await fetch(u, { signal: AbortSignal.timeout(12000) });
+    if (!response.ok) return { ok: false };
+    const type = String(response.headers.get('content-type') || '').split(';')[0].trim().toLowerCase();
+    if (!type.startsWith('image/')) return { ok: false };
+    const length = Number(response.headers.get('content-length') || 0);
+    if (length > 12 * 1024 * 1024) return { ok: false };
+    const bytes = Buffer.from(await response.arrayBuffer());
+    if (!bytes.length || bytes.length > 12 * 1024 * 1024) return { ok: false };
+    return { ok: true, type, data: bytes.toString('base64') };
+  } catch (_) { return { ok: false }; }
+});
+ipcMain.handle('browser:clear', async () => { try { const ses = require('electron').session.fromPartition('rejboard-ephemeral'); await ses.clearStorageData(); await ses.clearCache(); return true; } catch (_) { return false; } });
 function createWindow() {
   const w = new BrowserWindow({ width: 1320, height: 860, title: 'RejBoard', icon: path.join(__dirname, 'build', 'icon.png'), backgroundColor: '#fff7fa',
-    webPreferences: { preload: path.join(__dirname, 'preload.js'), contextIsolation: true } });
+    webPreferences: { preload: path.join(__dirname, 'preload.js'), contextIsolation: true, webviewTag: true, nodeIntegration: false, sandbox: true } });
   w.setMenuBarVisibility(false);
   lanShare.register(ipcMain, w);
   w.loadFile('index.html');
   w.webContents.setWindowOpenHandler(({ url }) => { shell.openExternal(url); return { action: 'deny' }; });
 }
 app.whenReady().then(createWindow);
+// The renderer uses a non-persistent partition for embedded browsing. Clear its in-memory
+// cookies/cache/storage when the app exits; this cannot erase data a website has on its servers.
+let finalCleanupStarted = false;
+app.on('before-quit', (event) => {
+  if (finalCleanupStarted) return;
+  event.preventDefault(); finalCleanupStarted = true;
+  (async () => { try { const ses = require('electron').session.fromPartition('rejboard-ephemeral'); await ses.clearStorageData(); await ses.clearCache(); } catch (_) {} finally { app.quit(); } })();
+});
 app.on('window-all-closed', () => app.quit());

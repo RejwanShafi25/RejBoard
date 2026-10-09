@@ -1,8 +1,8 @@
 {
   "name": "rejboard",
   "productName": "RejBoard",
-  "version": "1.2.3",
-  "description": "Local-first whiteboard and note-taking app with handwriting, PDF annotation and per-board voice recordings",
+  "version": "1.3.5",
+  "description": "Local-first whiteboard and note-taking app with handwriting, PDF annotation, voice recordings, and temporary in-app browsing/video",
   "main": "main.js",
   "author": {
     "name": "Rejwan Shafi",
