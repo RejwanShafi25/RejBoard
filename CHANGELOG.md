@@ -11,10 +11,20 @@
 - Removed the ✕ button next to Restore on the Home screen (it jumped straight into the most recent board).
 - The ✏️ new-board button now appears only on the main Home page, not in Favorites, Protected, Trash, Tags or Folders.
 - Permanently deleting a board from Trash also deletes its recordings.
+- `.docx` / `.pptx` imports are now tagged as imported content, so they are protected from invert on export. Documents imported before this version are not tagged; re-import them to protect them.
+- Service-worker cache bumped (`rw-v16`) so installed PWAs pick up the update.
+
+### Fixed
+- **Invert on export no longer inverts imported content.** With "Invert PDF colors before saving" ticked, your handwriting, shapes, text, math and paper are inverted as before, but imported images, PDF pages and imported Word/PowerPoint documents keep their original colors. The same rule applies to PNG and SVG export, which share the invert option.
+- **Importing a PDF no longer switches the canvas to Infinite.** When the note uses a fixed page size (A4, A5, A3, Letter), the canvas stays in that mode: each imported PDF page is scaled to fit and centered on its own page, starting at the page you are viewing. Pages are added automatically if the PDF has more pages than the note has left. Infinite canvases and importing from the Home screen behave as before.
+
 
 ### Notes
 - Requires microphone permission. Recordings are not included in "Save a copy" (.rjwb) files or local-network sharing.
 - Closing the app mid-recording discards that recording.
+- A transparent PNG that is protected from invert shows the original paper color behind it, not the inverted one.
+- A PDF page imported into a fixed-size note is fitted to the note's page, so it may have side margins if its shape differs from the canvas.
+
 
 
 ## [1.2.1]

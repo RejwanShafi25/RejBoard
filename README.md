@@ -1,14 +1,15 @@
 # Rejwan Whiteboard
 
-A local-first whiteboard and note-taking application for handwritten notes, diagrams, PDF annotation and lecture voice recordings. No account and no cloud: all data stays on your device (IndexedDB). Available as a website, an installable offline app (PWA) and a desktop app (Electron).
+A local-first whiteboard and note-taking app for handwritten notes, diagrams, PDF annotation and lecture voice recordings. No account and no cloud: all data stays on your device (IndexedDB). Available as a website, an installable offline app (PWA) and a desktop app (Electron).
 
-**Web app: https://rejwanshafi25.github.io/RejBoard/**
-
+**Web app:** https://rejwanshafi25.github.io/RejBoard/
 Open the link, then in Chrome/Edge click the install icon in the address bar to install it as an offline app (PWA). Boards are stored in your own browser, so they are not shared between devices.
 
-**Desktop installers (Windows, macOS, Linux): https://github.com/RejwanShafi25/RejBoard/releases/latest**
+**Desktop installers (Windows, macOS, Linux):** https://github.com/RejwanShafi25/RejBoard/releases/latest
 
 **Where are my boards stored?** In the browser's IndexedDB (not the cache). Clearing only "cached images and files" is safe; clearing "cookies and other site data" deletes boards. Use **Backup** on the home screen regularly. The desktop app stores boards in its own app-data folder.
+
+Current version: **1.2.2** (see [CHANGELOG.md](CHANGELOG.md)).
 
 ## Run it
 | Way | Steps |
@@ -18,101 +19,98 @@ Open the link, then in Chrome/Edge click the install icon in the address bar to 
 | **Desktop app (Electron)** | `npm install` → `python fetch_libs.py` (one-time, for offline LaTeX/PDF) → `npm start` |
 | **Build installers** | `npm run dist` → installers appear in `dist/` (Windows .exe, macOS .dmg, Linux AppImage; build each OS on that OS) |
 
-Tauri instead of Electron? Create a Tauri project and point `frontendDist` at this folder. The handwriting proxy
-(`main.js` / `server.py`) would need a small Rust command; everything else is plain HTML/JS.
+## Features
 
-## What's inside
-- **Home screen**: boards grid with thumbnails, nested folders (as many as you like), tags, favorites, search (titles, text, #tags), import PDF, backup/restore.
-- **Bottom dock** with a full set of pens and tools: fountain, calligraphy (angle adjustable), soft brush, ballpoint, pencil, square / chisel / round highlighters (opacity, nib angle), eraser, select, lasso, pan, laser pointer, text, sticky notes, shapes, emoji, images, undo/redo.
-- **Select tools**: click, box-select, lasso, Shift-click multi-select, 8-handle resize, move, duplicate, copy/cut/paste, delete, **group / ungroup** (Ctrl+G / Ctrl+Shift+G), **lock / unlock** (Ctrl+Shift+L), bring to front / send to back, align, center, distribute. Clicking any member selects its whole group. Locked objects can't be moved, edited, erased or deleted; they stay clickable on purpose (a click selects them so you can unlock them, Alt+click picks one even under an unlocked object) and a 🔓 *Unlock all* pill appears while anything is locked.
-- **Text**: fonts (handwriting, sans, mono, marker, serif), bold/italic/underline; typed math (`sqrt(x^2+1)/2`, `a/b`, `int_0^1 x^2 dx`) becomes a LaTeX formula; plus a manual LaTeX tool.
+### Home screen
+- Boards grid with thumbnails, search (titles, text, #tags), import PDF, backup/restore.
+- **Sidebar:** All notes · Favorites · **Protected** · Trash, then **Tags** and **Folders**. The **Folders** button shows your top-level folders as a grid (5×5 paging); click one to see its subfolders and boards, with a breadcrumb back.
+- **Folders:** unlimited nesting. Hover a folder card for ✎ rename, 🎨 color (swatches + custom), ＋ subfolder, 🗑 delete (contents move up one level). **＋ New folder** creates a folder in the one you are viewing. Drag boards onto a folder to move them.
+- **Board ⋮ menu:** favorite, copy, **Move board** (tree picker), **Edit tags**, **Lock with password** / **Remove password**, Move to Trash. Locked boards show a blurred thumbnail with a lock, are listed under **Protected**, and ask for the password before opening.
+- **Tags:** add them from the ⋮ menu or the board header; the **Tags** page lists every tag and its boards (chips on cards are clickable).
+- **Select multiple boards** (☑ Select): favorite/unfavorite, move, add tags, move to Trash or share on the network in one go. In Trash: restore or permanently delete several at once. Drag a selection onto a folder to move them all.
+- **Trash:** deleting a board moves it to Trash; restore it or empty the trash. Permanently deleting a board also deletes its recordings.
+- All prompts are in-app dialogs (browser `prompt()` does not exist in Electron).
+
+### Drawing and tools
+- **Bottom dock:** fountain, calligraphy (adjustable nib angle), soft brush, ballpoint, pencil, square / chisel / round highlighters (opacity, nib angle), eraser, select, lasso, pan, laser pointer, text, sticky notes, shapes, emoji, images, undo/redo.
+- **Select tools:** click, box-select, lasso, Shift-click multi-select, 8-handle resize, rotation handle, move, duplicate, copy/cut/paste, delete, **group / ungroup**, **lock / unlock**, bring to front / send to back, align, center, distribute. Clicking any member selects its whole group. Locked objects can't be moved, edited, erased or deleted, but stay clickable so you can unlock them (Alt+click picks one under an unlocked object). A 🔓 *Unlock all* pill appears while anything is locked.
+- **Sketch & snap** ("Fix shapes", on by default and remembered): rough circles, ellipses, rectangles (also rotated), squares, triangles, diamonds, pentagons, hexagons, straight lines, curved lines and arrows become real shapes.
+- **Dynamic connectors:** Line / Arrow / Double arrow can be curved (drag the orange mid-handle; double-click to straighten). Drag an end onto a shape's edge to attach it (green ring); attached ends follow the shapes, and a connector between two shapes bends into a smooth S-curve.
 - **Sticky notes** (small / medium / large, pastel colors), **shapes** (12 kinds, fill + line width), **emoji**.
 - **Layers** (add, rename, hide, lock, reorder, delete), **tape** (covers what is beneath; click to reveal), **pen & highlighter presets**.
-- **Paper**: white, cream, gray, black, slate, navy; plain, grid, dots, lined, Cornell; spacing & mark size sliders; auto-contrast of ink when switching light ↔ dark paper.
-- **PDF**: import and annotate on top (pages become a locked layer); multi-page PDF export follows the imported pages.
-- **Export**: PNG, SVG, PDF, selection as PNG, JSON, optional invert; **Save a copy** writes a `.rjwb` file that only this app opens.
-- **Zoom** (buttons, Ctrl+wheel, pinch, Fit), **speed mode** for big notes, **palm rejection**, **tilt shading**, stylus side-button eraser.
-- **Present mode**: fullscreen, dock stays visible, laser pointer, spotlight, timer.
-- **Settings** (⚙): appearance (language, themes), inking, canvas, reset to default, boards. Every section explains itself; every button has a hover tooltip.
-- **Voice recordings per board** (🎙 Record): record a lecture while you take notes, pause/resume, keep several recordings per board, then play, seek, change speed, rename or delete them later. Recordings stay on your device, belong to one board only, and are part of Backup / Restore, "Save a copy" (.rjwb) files and local-network sharing.
+- **Transparent ruler** with drag/rotation support for straight-line drawing.
+- **Zoom** (buttons, Ctrl+wheel, pinch, Fit), **speed mode** for big notes, **palm rejection**, **tilt shading**, stylus side-button eraser, and a Windows Ink / raw pointer mode for lower-latency pen input when Chromium exposes it.
 - **Autosave** with a live indicator (● Saving… → ✓ Saved).
-- 8 UI languages (English default) and 15 text languages.
 
-## Handwriting recognition
-Lasso-select your handwriting → **✍→T** (Canvas panel). Order tried: browser Handwriting API → Electron main process / `server.py`
-(unofficial Google Input Tools endpoint, needs internet). Swap `recognize()` in `server.py` / the `hw` handler in `main.js`
-for another engine (MyScript, a local model) at any time. Recognized text that looks like math becomes a formula.
+### Text and math
+- Fonts (handwriting, sans, mono, marker, serif), bold/italic/underline, rich text color and partial-selection formatting. Enter finishes editing; Shift+Enter inserts a line break.
+- Typed math (`sqrt(x^2+1)/2`, `a/b`, `int_0^1 x^2 dx`) becomes a LaTeX formula. Inline `$...$` is previewed while typing, and `text $O(n)$ more text` turns only `$O(n)$` into a formula, which is its own object you can select, move, resize and rotate.
+- Manual LaTeX tool with a palette: structures, Greek, symbols, computer-science and other symbols.
+- **Handwriting recognition:** lasso-select handwriting → **✍→T** (Canvas panel). Order tried: browser Handwriting API → Electron main process / `server.py` (unofficial Google Input Tools endpoint, needs internet). Swap `recognize()` in `server.py` / the `hw` handler in `main.js` for another engine (MyScript, a local model) at any time. Recognized text that looks like math becomes a formula.
+
+### Pages and paper
+- **Canvas** panel: **Infinite** (default) or A4 / A5 / A3 / Letter in Portrait/Landscape (orientation is locked while infinite). Pages stack vertically and drawing is clipped to the page. When content reaches the bottom a "Page full — add another page?" button appears.
+- **Paper:** white, cream, gray, black, slate, navy; plain, grid, dots, lined, Cornell, columns, ruled + margin, isometric dots; spacing and mark-size sliders; auto-contrast of ink when switching light ↔ dark paper.
+- **Present mode:** fullscreen, dock stays visible, laser pointer, spotlight, timer. ◀ ▶ (or arrow keys / PageUp / PageDown) change pages with a smooth camera move; 🔍 / Z zooms to the selection (or everything). Also a Pomodoro timer.
+
+### Importing documents
+- **PDF:** choose pages and quality (dpi) and arrange them as a stack, row or grid.
+  - On the Home screen, or in an **infinite** note, the pages become a locked layer and the canvas is sized to them (Home) or left infinite.
+  - In a note with a **fixed page size** (A4, A5, A3, Letter) the canvas mode is kept: each PDF page is scaled to fit and centered on its own page, starting at the page you are viewing, and pages are added if needed.
+  - Multi-page PDF export follows the page layout.
+- **DOCX / PPTX:** imported as editable text through the built-in ZIP/XML reader. Legacy binary `.doc` and `.ppt` must be converted to `.docx` / `.pptx` first.
+- **Images:** insert pictures onto the board.
+
+### Export
+- **PNG, SVG, PDF**, selection as PNG, JSON, and **Save a copy** (`.rjwb`, which only this app opens).
+- **Invert colors** (optional, for PNG / SVG / PDF): inverts your ink, shapes, text, math and paper, but **not imported content**. Images, imported PDF pages and imported Word/PowerPoint text keep their original colors. A protected transparent PNG shows the original paper color behind it. Documents imported before v1.2.3 aren't tagged as imported; re-import them to protect them.
+
+### Tables
+- ➕ → Table (3×3). Select the table, then use its bar. **Select cells** by dragging (Shift+click extends). **Resize** columns/rows by dragging a grid line; the ✥ handle at the top-left corner moves the table.
+- **Merge** / **Split** (unmerge, or split one cell into N×M), **cell background**, **borders** (all / outer / inner / top / bottom / left / right / none, with thickness and colour), **alignment** (left/centre/right, top/middle/bottom). Text wraps inside cells. Double-click (or Text tool) to edit; **Tab / Shift+Tab** jumps between cells; **Enter** moves down. Row/column insert and delete keep merges and formulas intact.
+- Numbers right-align by default; `1,000`, `$5` and `50%` are read as numbers.
+
+#### Table formulas
+Start a cell with `=`. Cells are `A1`-style (column letter + row number; top-left is A1); ranges are `A1:B5`, whole columns `A:A`. Address labels (A, B, C… / 1, 2, 3…) show on the table edge when it is selected, and while typing a formula you can click cells to insert references (Shift+click for a range). The **Σ Sum** button fills in `=SUM(...)` for the numbers above (or to the left of) the selected cell. Formulas follow their cells when rows/columns are inserted or deleted.
+
+- **Operators:** `+ - * / ^ % &` (join text) and comparisons `= <> < > <= >=`. `^` is left-associative like Excel.
+- **Functions:** SUM AVERAGE MIN MAX COUNT COUNTA MEDIAN PRODUCT ABS SQRT POWER MOD ROUND ROUNDUP ROUNDDOWN INT TRUNC FLOOR CEILING SIGN EXP LN LOG LOG10 PI IF AND OR NOT IFERROR ISERROR ISNUMBER SUMIF COUNTIF AVERAGEIF CONCAT LEN UPPER LOWER TRIM LEFT RIGHT MID. Constants `TRUE FALSE PI`.
+- **Errors:** `#DIV/0!`, `#REF!`, `#NAME?`, `#VALUE!`, `#CYCLE!`, `#ERR!`.
+
+### Voice recordings
+**🎙 Record** in the top bar: record a lecture while you take notes, pause/resume, and keep several recordings per board. Play, seek, change speed (0.75×–2×), rename or delete them later. Recordings stay on your device and belong to one board only. They are part of Backup / Restore, "Save a copy" (.rjwb) files and local-network sharing. Needs microphone permission; closing the app mid-recording discards that recording.
+
+### Languages
+8 UI languages (English default) and 15 text languages. UI text is translated at runtime: built-in strings work everywhere; for any other string the browser's on-device Translator API is used (Chrome 138+; one-time language-pack download, then fully offline) and results are cached locally. Extra languages appear in the language list when that API exists. Hover tooltips are English only.
+
+### Settings
+⚙ opens appearance (language, themes), inking, canvas, reset to default, and boards. Every section explains itself; every button has a hover tooltip.
+
+## Share boards on your local network (desktop app)
+Menu **Export / Save ▸ 📡 Share boards on local network**. Works between Windows, macOS and Linux computers on the same Wi‑Fi / LAN, both running the desktop app.
+
+1. On the receiving computer turn on **Receive boards on this computer**.
+2. On the sending computer tick the boards, pick the computer from the list (or type its IP address) and press **Send**. A live progress bar shows the transfer.
+3. Both screens show the same 6‑digit security code. The receiver checks it matches and presses **Accept**.
+
+Received boards land in a folder called *Received from <computer>*.
+
+**Encryption:** only in transit. Every transfer does a fresh X25519 key exchange and sends the data with AES‑256‑GCM (tamper‑proof); the confirmation code protects against a man‑in‑the‑middle. Boards are never stored encrypted; they stay ordinary boards on both computers. Receiving is off by default, and nothing is announced on the network until you turn it on. The first time, the OS firewall may ask to allow the app on private networks (UDP 41234 discovery, TCP 41235 transfer); allow it.
 
 ## Shortcuts
 Ctrl+Z / Ctrl+Y undo/redo · Ctrl+C/X/V/D copy/cut/paste/duplicate · Ctrl+G group · Ctrl+Shift+G ungroup · Ctrl+Shift+L lock/unlock · Ctrl+S save · Delete · +/- zoom · Esc/B in present mode.
 
 ## Files
-`index.html` (whole app) · `server.py` · `main.js`+`preload.js` (Electron) · `manifest.json`+`sw.js` (PWA) · `fetch_libs.py` · `build/icon.png`.
-
-## Pages, tables, trash
-- **Canvas** panel: Infinite (default) or A4 / A5 / A3 / Letter with Portrait/Landscape (orientation is locked while infinite). Pages stack vertically; when content reaches the bottom a "Page full — add another page?" button appears. PDF export writes one PDF page per board page.
-- **Tables**: ➕ → Table (3×3). Select the table, then use its bar. **Select cells** by dragging across them (Shift+click extends). **Resize** columns/rows by dragging a grid line; the ✥ handle at the top-left corner moves the table. **Merge** / **Split** (unmerge a merged cell, or split one cell into N×M). **Cell background** (swatches or custom colour), **borders** (all / outer / inner / top / bottom / left / right / none, with thickness and colour), **alignment** (left/centre/right, top/middle/bottom). Text wraps inside cells. Double-click (or Text tool) to edit; **Tab / Shift+Tab** jumps to the next/previous cell. Row/column insert & delete work on the selected range and keep merges and formulas intact.
-- **Table formulas**: type `=` in a cell. Cells are `A1`-style (column letter + row number, the top-left cell is A1); ranges are `A1:B3`. Operators `+ - * / ^ %`, `&` (join text) and comparisons (`= <> < > <= >=`). Functions: `SUM AVERAGE (AVG) MIN MAX COUNT PRODUCT ABS SQRT ROUND POWER MOD IF CONCAT`, constants `TRUE FALSE PI`. Errors show as `#DIV/0!`, `#REF!`, `#NAME?`, `#VALUE!`, `#CYCLE!`, `#ERR!`. The **Σ Sum** button fills in `=SUM(...)` for the numbers above (or to the left of) the selected cell. Formulas follow their cells when you insert or delete rows/columns.
-- **Papers**: plain, grid, dots, lined, Cornell, columns, ruled + margin, isometric dots.
-- **Present**: ◀ ▶ (or arrow keys / PageUp / PageDown) change pages with a smooth camera move; 🔍 / Z zooms to the selection (or everything).
-- **Trash**: deleting a board moves it to Trash (home screen); restore it or empty the trash.
-- Visible labels are translated into 8 languages; hover tooltips are English only.
+`index.html` (whole app) · `server.py` · `main.js` + `preload.js` + `lan.js` (Electron) · `manifest.json` + `sw.js` (PWA) · `fetch_libs.py` · `vendor/` (offline jsPDF, pdf.js, MathJax) · `build/icon.png` · `CHANGELOG.md`.
 
 ## Publishing on GitHub
-- **Web build**: `.github/workflows/pages.yml` deploys to GitHub Pages on every push to `main`. One-time: repo **Settings → Pages → Source: GitHub Actions**.
-- **Installers**: `.github/workflows/build.yml` builds Windows (Setup + Portable `.exe`), macOS (`.dmg`, Intel + Apple Silicon) and Linux (`.AppImage`, `.deb`, `.rpm`) and attaches them to a GitHub Release. Bump `version` in `package.json`, commit, then `git tag v1.2.0 && git push origin v1.2.0` (the tag must match the version).
-- macOS/Windows builds are unsigned: macOS may say the app is damaged (run `xattr -cr "/Applications/Rejwan Whiteboard.app"`), Windows SmartScreen may warn (More info → Run anyway).
-
-To publish: enable GitHub Pages for the web build, and push a version tag (for example `git tag v1.4.0 && git push origin v1.4.0`) to build the Windows, macOS and Linux installers automatically.
+- **Web build:** `.github/workflows/pages.yml` deploys to GitHub Pages on every push to `main`. One-time: repo **Settings → Pages → Source: GitHub Actions**.
+- **Installers:** `.github/workflows/build.yml` builds Windows (Setup + Portable `.exe`), macOS (`.dmg`, Intel + Apple Silicon) and Linux (`.AppImage`, `.deb`, `.rpm`) and attaches them to a GitHub Release. Bump `version` in `package.json`, commit, then tag and push, e.g. `git tag v1.2.3 && git push origin v1.2.3` (the tag must match the version).
+- When you change `index.html`, also bump the cache name in `sw.js` (currently `rw-v16`) so installed PWAs update.
+- macOS/Windows builds are unsigned: macOS may say the app is damaged (run `xattr -cr "/Applications/Rejwan Whiteboard.app"`), and Windows SmartScreen may warn (More info → Run anyway).
 
 ## Roadmap
-Templates (UML, flowchart, planners), smart connectors, object rotation, and handwriting-to-LaTeX recognition with a bundled model.
+Templates (UML, flowchart, planners), smart connectors, and handwriting-to-LaTeX recognition with a bundled model.
 
-## v1.1.0 update
-
-This build includes:
-- finite paper clipping so drawing stays inside selected page dimensions
-- fixed text placement and Enter-to-finish editing (Shift+Enter inserts a line break)
-- rich text color and partial-selection formatting
-- inline `$...$` math preview while typing
-- expanded LaTeX palette: structures, Greek, symbols, computer-science, and other symbols
-- folder-first home dashboard with 5x5 folder paging, nested folders, folder colors, search, drag/drop board moves, board copy and password lock
-- board hover actions for copy, move, lock and delete
-- rotation handle for selected objects and individual movement within multi-selection
-- transparent ruler with drag/rotation support for straight-line drawing
-- Pomodoro timer
-- Windows Ink/raw pointer event mode for lower-latency pen input when Chromium exposes it
-- PDF, DOCX and PPTX text import through the built-in ZIP/XML reader
-- Electron build targets for Windows NSIS + portable EXE, macOS DMG, and Linux AppImage + DEB + RPM
-
-Legacy binary `.doc` and `.ppt` files are detected and report that they need conversion to `.docx`/`.pptx`; parsing those old binary formats would require a separate legacy Office parser.
-
-## Home screen: folders, protected boards, tags (v17)
-- **Sidebar**: All notes · Favorites · **Protected** · Trash, then **Tags** and **Folders** as buttons. Folders are no longer listed in the sidebar; the **Folders** button shows your top-level folders as a grid (click one to see its subfolders and boards, with a breadcrumb back).
-- **Folder cards** (hover): ✎ rename, 🎨 color (swatches + custom), ＋ subfolder, 🗑 delete (contents move up one level). The top-bar **＋ New folder** creates a folder in the folder you are looking at.
-- **Board ⋮ menu**: favorite, copy, **Move board** (pick Home / any folder / subfolder from a tree), **Edit tags**, **Lock with password** / **Remove password**, Move to Trash. Locked boards show a blurred thumbnail with a lock, are listed under **Protected**, and ask for the password before opening.
-- **Tags**: add them from the ⋮ menu or the board header; the **Tags** page lists every tag, click one to see its boards (tag chips on cards are clickable too).
-- All prompts are in-app dialogs (browser `prompt()` does not exist in Electron).
-- Typing `text $O(n)$ more text` turns only `$O(n)$` into a formula; the formula is its own object you can select, move, resize and rotate, and the rest stays normal text.
-
-## v21 update
-- **Dynamic connectors**: Line / Arrow / Double arrow can be curved (drag the orange mid-handle; double-click it to straighten). Drag an end onto a shape's edge to attach it (green ring); attached ends follow the shapes when they move or resize, and a connector joining two shapes bends automatically into a smooth S-curve. Drag the mid-handle to override.
-- **Sketch & snap** (the "Fix shapes" toggle, now on by default and remembered): rough circles, ellipses, rectangles (also rotated), squares, triangles, diamonds, pentagons, hexagons, straight lines, curved lines and arrows become real shapes. Lines/arrows drawn between shapes become connected.
-- **Offline translation**: UI text is translated at runtime, no per-language hard-coding. Built-in strings work everywhere; for any other string the browser's on-device Translator API is used (Chrome 138+; one-time language-pack download, then fully offline) and results are cached locally. Extra languages appear in the language list when that API exists.
-
-## Share boards on your local network (desktop app)
-
-Menu **Export / Save ▸ 📡 Share boards on local network**. Works between Windows, macOS and Linux computers on the same Wi‑Fi / LAN, both running the desktop app.
-
-1. On the receiving computer turn on **Receive boards on this computer**.
-2. On the sending computer tick the boards, pick the computer from the list (or type its IP address) and press **Send**.
-3. Both screens show the same 6‑digit security code. The receiver checks it matches and presses **Accept**.
-
-Received boards land in a folder called *Received from <computer>*.
-
-**Encryption:** only in transit. Every transfer does a fresh X25519 key exchange and sends the data with AES‑256‑GCM (tamper‑proof); the confirmation code protects against a man‑in‑the‑middle. Boards are never stored encrypted — they stay ordinary boards on both computers. Receiving is off by default, and nothing is announced on the network until you turn it on. The first time, the OS firewall may ask to allow the app on private networks (UDP 41234 discovery, TCP 41235 transfer) — allow it.
-
-## Table formulas
-
-Start a cell with `=`. Cell addresses (A, B, C… / 1, 2, 3…) show on the table edge when it is selected; while typing a formula you can click cells to insert them (Shift+click for a range). Operators `+ - * / ^ % &` and comparisons; ranges `A1:B5`, whole columns `A:A`.
-Functions: SUM AVERAGE MIN MAX COUNT COUNTA MEDIAN PRODUCT ABS SQRT POWER MOD ROUND ROUNDUP ROUNDDOWN INT TRUNC FLOOR CEILING SIGN EXP LN LOG LOG10 PI IF AND OR NOT IFERROR ISERROR ISNUMBER SUMIF COUNTIF AVERAGEIF CONCAT LEN UPPER LOWER TRIM LEFT RIGHT MID.
+## License
+MIT
