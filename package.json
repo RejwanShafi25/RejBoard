@@ -1,7 +1,7 @@
 {
-  "name": "rejwan-whiteboard",
-  "productName": "Rejwan Whiteboard",
-  "version": "1.2.2",
+  "name": "rejboard",
+  "productName": "RejBoard",
+  "version": "1.2.3",
   "description": "Local-first whiteboard and note-taking app with handwriting, PDF annotation and per-board voice recordings",
   "main": "main.js",
   "author": {
@@ -19,8 +19,8 @@
     "electron-builder": "^26.15.3"
   },
   "build": {
-    "appId": "com.rejwan.whiteboard",
-    "productName": "Rejwan Whiteboard",
+    "appId": "com.rejwan.rejboard",
+    "productName": "RejBoard",
     "directories": {
       "buildResources": "build"
     },
@@ -84,12 +84,12 @@
         "releaseType": "release"
       }
     ],
-    "artifactName": "Rejwan-Whiteboard-${version}-${os}-${arch}.${ext}",
+    "artifactName": "RejBoard-${version}-${os}-${arch}.${ext}",
     "nsis": {
-      "artifactName": "Rejwan-Whiteboard-${version}-win-${arch}-Setup.${ext}"
+      "artifactName": "RejBoard-${version}-win-${arch}-Setup.${ext}"
     },
     "portable": {
-      "artifactName": "Rejwan-Whiteboard-${version}-win-${arch}-Portable.${ext}"
+      "artifactName": "RejBoard-${version}-win-${arch}-Portable.${ext}"
     }
   },
   "repository": "github:RejwanShafi25/RejBoard",

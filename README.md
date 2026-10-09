@@ -1,4 +1,4 @@
-# Rejwan Whiteboard
+# RejBoard
 
 A local-first whiteboard and note-taking app for handwritten notes, diagrams, PDF annotation and lecture voice recordings. No account and no cloud: all data stays on your device (IndexedDB). Available as a website, an installable offline app (PWA) and a desktop app (Electron).
 
@@ -9,7 +9,7 @@ Open the link, then in Chrome/Edge click the install icon in the address bar to 
 
 **Where are my boards stored?** In the browser's IndexedDB (not the cache). Clearing only "cached images and files" is safe; clearing "cookies and other site data" deletes boards. Use **Backup** on the home screen regularly. The desktop app stores boards in its own app-data folder.
 
-Current version: **1.2.2** (see [CHANGELOG.md](CHANGELOG.md)).
+Current version: **1.3.1** (see [CHANGELOG.md](CHANGELOG.md)).
 
 ## Run it
 | Way | Steps |
@@ -18,6 +18,8 @@ Current version: **1.2.2** (see [CHANGELOG.md](CHANGELOG.md)).
 | **Install as an app (PWA)** | open it from `server.py` in Chrome/Edge → click the install icon in the address bar. Works offline afterwards. |
 | **Desktop app (Electron)** | `npm install` → `python fetch_libs.py` (one-time, for offline LaTeX/PDF) → `npm start` |
 | **Build installers** | `npm run dist` → installers appear in `dist/` (Windows .exe, macOS .dmg, Linux AppImage; build each OS on that OS) |
+
+Tauri instead of Electron? Create a Tauri project and point `frontendDist` at this folder. The handwriting proxy (`main.js` / `server.py`) would need a small Rust command; everything else is plain HTML/JS.
 
 ## Features
 
@@ -36,11 +38,12 @@ Current version: **1.2.2** (see [CHANGELOG.md](CHANGELOG.md)).
 - **Select tools:** click, box-select, lasso, Shift-click multi-select, 8-handle resize, rotation handle, move, duplicate, copy/cut/paste, delete, **group / ungroup**, **lock / unlock**, bring to front / send to back, align, center, distribute. Clicking any member selects its whole group. Locked objects can't be moved, edited, erased or deleted, but stay clickable so you can unlock them (Alt+click picks one under an unlocked object). A 🔓 *Unlock all* pill appears while anything is locked.
 - **Sketch & snap** ("Fix shapes", on by default and remembered): rough circles, ellipses, rectangles (also rotated), squares, triangles, diamonds, pentagons, hexagons, straight lines, curved lines and arrows become real shapes.
 - **Dynamic connectors:** Line / Arrow / Double arrow can be curved (drag the orange mid-handle; double-click to straighten). Drag an end onto a shape's edge to attach it (green ring); attached ends follow the shapes, and a connector between two shapes bends into a smooth S-curve.
-- **Sticky notes** (small / medium / large, pastel colors), **shapes** (12 kinds, fill + line width), **emoji**.
+- **Sticky notes** (small / medium / large, pastel colors), **shapes** (flat, 3D and axes; border width, line type, corner type, border and fill color) with a live preview that always shows the whole shape and adapts to the window size, **emoji**.
 - **Layers** (add, rename, hide, lock, reorder, delete), **tape** (covers what is beneath; click to reveal), **pen & highlighter presets**.
 - **Transparent ruler** with drag/rotation support for straight-line drawing.
 - **Zoom** (buttons, Ctrl+wheel, pinch, Fit), **speed mode** for big notes, **palm rejection**, **tilt shading**, stylus side-button eraser, and a Windows Ink / raw pointer mode for lower-latency pen input when Chromium exposes it.
 - **Autosave** with a live indicator (● Saving… → ✓ Saved).
+- **Adapts to the window size:** the dock, page navigator and zoom controls stay on one row when there is room, move onto two rows when there is not, and the dock shrinks its icons before it ever scrolls. The header drops text labels on narrower windows. Works the same in a maximized, windowed or phone-sized window.
 
 ### Text and math
 - Fonts (handwriting, sans, mono, marker, serif), bold/italic/underline, rich text color and partial-selection formatting. Enter finishes editing; Shift+Enter inserts a line break.
@@ -100,14 +103,17 @@ Received boards land in a folder called *Received from <computer>*.
 ## Shortcuts
 Ctrl+Z / Ctrl+Y undo/redo · Ctrl+C/X/V/D copy/cut/paste/duplicate · Ctrl+G group · Ctrl+Shift+G ungroup · Ctrl+Shift+L lock/unlock · Ctrl+S save · Delete · +/- zoom · Esc/B in present mode.
 
+## Naming
+The app is called **RejBoard** everywhere (it was "Rejwan Whiteboard" before v1.3.0): the page title, header, installed web app (PWA), desktop window, and the installers (`RejBoard-<version>-win-x64-Setup.exe`, `-Portable.exe`, `.dmg`, `.AppImage`, `.deb`, `.rpm`). The desktop app keeps using the old data folder if it exists, so existing boards carry over.
+
 ## Files
 `index.html` (whole app) · `server.py` · `main.js` + `preload.js` + `lan.js` (Electron) · `manifest.json` + `sw.js` (PWA) · `fetch_libs.py` · `vendor/` (offline jsPDF, pdf.js, MathJax) · `build/icon.png` · `CHANGELOG.md`.
 
 ## Publishing on GitHub
 - **Web build:** `.github/workflows/pages.yml` deploys to GitHub Pages on every push to `main`. One-time: repo **Settings → Pages → Source: GitHub Actions**.
-- **Installers:** `.github/workflows/build.yml` builds Windows (Setup + Portable `.exe`), macOS (`.dmg`, Intel + Apple Silicon) and Linux (`.AppImage`, `.deb`, `.rpm`) and attaches them to a GitHub Release. Bump `version` in `package.json`, commit, then tag and push, e.g. `git tag v1.2.3 && git push origin v1.2.3` (the tag must match the version).
-- When you change `index.html`, also bump the cache name in `sw.js` (currently `rw-v16`) so installed PWAs update.
-- macOS/Windows builds are unsigned: macOS may say the app is damaged (run `xattr -cr "/Applications/Rejwan Whiteboard.app"`), and Windows SmartScreen may warn (More info → Run anyway).
+- **Installers:** `.github/workflows/build.yml` builds Windows (Setup + Portable `.exe`), macOS (`.dmg`, Intel + Apple Silicon) and Linux (`.AppImage`, `.deb`, `.rpm`) and attaches them to a GitHub Release. Bump `version` in `package.json`, commit, then tag and push, e.g. `git tag v1.3.1 && git push origin v1.3.1` (the tag must match the version).
+- When you change `index.html`, also bump the cache name in `sw.js` (currently `rw-v18`) so installed PWAs update.
+- macOS/Windows builds are unsigned: macOS may say the app is damaged (run `xattr -cr "/Applications/RejBoard.app"`), and Windows SmartScreen may warn (More info → Run anyway).
 
 ## Roadmap
 Templates (UML, flowchart, planners), smart connectors, and handwriting-to-LaTeX recognition with a bundled model.

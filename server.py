@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Open Whiteboard local server: serves the app and proxies handwriting recognition.
+"""RejBoard local server: serves the app and proxies handwriting recognition.
 Run:  python server.py   ->  http://localhost:8000   (PORT=9000 python server.py to change)"""
 import json, os, threading, urllib.request, webbrowser
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
@@ -36,6 +36,6 @@ class Handler(SimpleHTTPRequestHandler):
 if __name__ == "__main__":
     os.chdir(os.path.dirname(os.path.abspath(__file__)))
     srv = ThreadingHTTPServer(("127.0.0.1", PORT), Handler)
-    print(f"Open Whiteboard running at http://localhost:{PORT}  (Ctrl+C to stop)")
+    print(f"RejBoard running at http://localhost:{PORT}  (Ctrl+C to stop)")
     threading.Timer(0.8, lambda: webbrowser.open(f"http://localhost:{PORT}")).start()
     srv.serve_forever()
