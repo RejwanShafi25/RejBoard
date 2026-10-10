@@ -6,7 +6,7 @@ Write by hand, sketch diagrams, annotate PDFs and record lectures, with no accou
 
 [Download](https://github.com/RejwanShafi25/RejBoard/releases/latest) · [Try the web app](https://rejwanshafi25.github.io/RejBoard/) · [Changelog](CHANGELOG.md)
 
-![RejBoard overview](Screenshots/00-hero.png)
+![RejBoard overview](Screenshots/01-board.png)
 
 ## Why RejBoard
 
