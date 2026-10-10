@@ -5,6 +5,7 @@ contextBridge.exposeInMainWorld('wb', {
   docToPdf: (name, buf) => ipcRenderer.invoke('doc:toPdf', name, buf),
   clearBrowserData: () => ipcRenderer.invoke('browser:clear'),
   fetchRemoteImage: url => ipcRenderer.invoke('image:fetch-remote', url),
+  onBrowserAddImage: fn => { const h = (_e, u) => fn(u); ipcRenderer.on('browser:add-image', h); return () => ipcRenderer.removeListener('browser:add-image', h); },
   lan: {
     info: () => ipcRenderer.invoke('lan:info'),
     start: () => ipcRenderer.invoke('lan:start'),

@@ -1,6 +1,92 @@
 # RejBoard
 
-A local-first whiteboard and note-taking app for handwritten notes, diagrams, PDF annotation and lecture voice recordings. No account and no cloud: all data stays on your device (IndexedDB). Available as a website, an installable offline app (PWA) and a desktop app (Electron).
+**A free, open-source, local-first whiteboard and handwriting note-taking app.**
+
+Write by hand, sketch diagrams, annotate PDFs and record lectures, with no account and no cloud. Your boards stay on your device. RejBoard runs as a desktop app (Windows, macOS, Linux) and as an installable offline web app (PWA).
+
+[Download](https://github.com/RejwanShafi25/RejBoard/releases/latest) · [Try the web app](https://rejwanshafi25.github.io/RejBoard/) · [Changelog](CHANGELOG.md)
+
+![RejBoard overview](Screenshots/00-hero.png)
+
+## Why RejBoard
+
+I take most of my notes by hand on an Android tablet. The Android ecosystem has no shortage of handwriting apps, and each one does something well: one has an excellent pen engine, another has useful organization tools, a third handles PDFs cleverly. The problem is that the best features are usually locked behind a paywall or a subscription, and buying every app would cost far more than I was willing to spend. On top of that, most of these apps keep your notes in their own cloud.
+
+I wanted something different: a handwriting note-taking app that is **free, open source and fully local**, where your notes live on your device and nowhere else. I also wanted to use it on Windows, where, apart from OneNote, there are few handwriting-first note apps.
+
+To get there, I studied the most useful features of note-taking apps on Android, iPadOS (which I tested for a few days) and Windows, and set out to bring them together in one app.
+
+### Principles
+
+- **Local-first:** no account and no cloud sync. Your boards are stored on your own device.
+- **Free and open source:** no subscriptions and no paywalled features.
+- **Handwriting first:** a fast, pressure-sensitive pen experience, with typed text, math, shapes, tables and diagrams alongside it.
+
+### Where it stands
+
+RejBoard is built with Electron, with installers for **Windows, macOS and Linux**. The desktop app is the current focus. Android and iPadOS versions are planned, but they will take time.
+
+> **Internet use:** RejBoard works offline. A few optional features need a connection: **handwriting-to-text recognition** (it uses a Google service, see below), the in-app browser and video panel, and the one-time download of on-device translation packs. See [Offline use and privacy](#offline-use-and-privacy).
+
+## Screenshots and demos
+
+### Everything on one board
+![Handwriting, a diagram, a sticky note and a formula on one board](Screenshots/01-board.png)
+*Handwriting, shapes, sticky notes, text and LaTeX formulas on a single board.*
+
+### Home screen
+![Home screen with folders, tags and protected boards](Screenshots/02-home.png)
+*Boards grid with folders, tags, favorites, a password-protected board and the Trash.*
+
+### Pens and highlighters
+![The tool dock and pen presets](Screenshots/03-pens.png)
+*Fountain, calligraphy, brush, ballpoint, pencil and highlighter pens with adjustable presets.*
+
+### Handwriting to text
+![Handwritten words turned into typed text](Screenshots/04-handwriting-to-text.gif)
+*Lasso-select handwriting and press **✍→T**. Needs an internet connection.*
+
+### Shapes, connectors and sketch-and-snap
+![Rough sketches snapping to clean shapes with connectors](Screenshots/05-shapes.gif)
+*Rough circles, boxes and arrows snap to clean shapes; connectors follow the shapes they are attached to.*
+
+### Pages that keep your text on the page
+![Text wrapping and flowing onto the next A4 page](Screenshots/06-pages.gif)
+*On A4, A5, A3, Letter and PDF pages, long lines wrap at the page edge and overflowing text continues on the next page.*
+
+### PDF annotation
+![An imported PDF with handwritten annotations](Screenshots/07-pdf.png)
+*Import PDF pages, then write, highlight and draw directly on them.*
+
+### Tables and formulas
+![A table with merged cells and a SUM formula](Screenshots/08-tables.png)
+*Tables with merged cells, borders, cell colors and spreadsheet-style formulas.*
+
+### Linked boards
+![An @ link picker and a linked board](Screenshots/09-links.png)
+*Type `@` to link to another board or to a specific page, and jump back with the Back button.*
+
+### Voice recordings
+![The recording panel next to handwritten notes](Screenshots/10-recordings.png)
+*Record a lecture while you write; each board keeps its own recordings.*
+
+### Transparent ruler
+![Drawing a straight line along the ruler](Screenshots/11-ruler.gif)
+*A rotatable, graduated ruler for perfectly straight lines.*
+
+### In-app browser and video (desktop)
+![The in-app browser panel beside a board](Screenshots/12-browser.png)
+*Watch a lecture or look something up in a draggable panel next to your notes.*
+
+### Share on your local network
+![The local network sharing dialog with a security code](Screenshots/13-lan.png)
+*Send boards to another computer on the same network, encrypted, with a confirmation code.*
+
+### Works at any window size
+![RejBoard in a narrow window](Screenshots/14-responsive.png)
+*The dock, page navigator and header adapt to maximized, windowed and phone-sized windows.*
+
+## Get RejBoard
 
 **Web app:** https://rejwanshafi25.github.io/RejBoard/
 Open the link, then in Chrome/Edge click the install icon in the address bar to install it as an offline app (PWA). Boards are stored in your own browser, so they are not shared between devices.
@@ -9,11 +95,22 @@ Open the link, then in Chrome/Edge click the install icon in the address bar to 
 
 **Where are my boards stored?** In the browser's IndexedDB (not the cache). Clearing only "cached images and files" is safe; clearing "cookies and other site data" deletes boards. Use **Backup** on the home screen regularly. The desktop app stores boards in its own app-data folder.
 
-Current version: **1.3.2** (see [CHANGELOG.md](CHANGELOG.md)).
+Current version: **1.2.5** (see [CHANGELOG.md](CHANGELOG.md)).
 
 ## Browser image drag-and-drop
 
 When dragging an image from an embedded website, RejBoard attempts to retrieve the image and insert it onto the canvas as an image object. Some sites block access, require authentication, use expiring URLs, or deliver images in formats that cannot be fetched; in those cases the dropped URL may be inserted as a link instead. Remote image fetches are restricted to HTTP(S), image content types and a 12 MB size limit.
+
+## Offline use and privacy
+
+RejBoard stores boards, recordings and settings on your device. There is no account, no cloud sync and no analytics. These optional features use the internet:
+
+| Feature | Needs internet? | What is sent |
+|---|---|---|
+| Handwriting to text (✍→T) | **Yes** | The selected strokes, to a Google handwriting service |
+| In-app browser and video panel (desktop) | Yes | Whatever you browse; see the privacy notes below |
+| On-device translation packs | Once per language | A one-time language-pack download, then offline |
+| Drawing, text, math, tables, PDF, export, recordings, local network sharing | No | Nothing leaves your device (local sharing stays on your LAN) |
 
 ## Browser privacy and data handling
 
@@ -48,11 +145,12 @@ Tauri instead of Electron? Create a Tauri project and point `frontendDist` at th
 ### Drawing and tools
 - **Bottom dock:** fountain, calligraphy (adjustable nib angle), soft brush, ballpoint, pencil, square / chisel / round highlighters (opacity, nib angle), eraser, select, lasso, pan, laser pointer, text, sticky notes, shapes, emoji, images, undo/redo.
 - **Select tools:** click, box-select, lasso, Shift-click multi-select, 8-handle resize, rotation handle, move, duplicate, copy/cut/paste, delete, **group / ungroup**, bring to front / send to back, align, center, distribute. Clicking any member selects its whole group.
+- **Selection recovery:** **Esc** clears the selection and cancels an active gesture; the toolbar **Deselect** button does the same. Losing window focus cancels any stale gesture.
 - **Sketch & snap** ("Fix shapes", on by default and remembered): rough circles, ellipses, rectangles (also rotated), squares, triangles, diamonds, pentagons, hexagons, straight lines, curved lines and arrows become real shapes.
 - **Dynamic connectors:** Line / Arrow / Double arrow can be curved (drag the orange mid-handle; double-click to straighten). Drag an end onto a shape's edge to attach it (green ring); attached ends follow the shapes, and a connector between two shapes bends into a smooth S-curve.
 - **Sticky notes** (small / medium / large, pastel colors), **shapes** (flat, 3D and axes; border width, line type, corner type, border and fill color) with a live preview that always shows the whole shape and adapts to the window size, **emoji**.
 - **Layers** (add, rename, hide, lock, reorder, delete), **tape** (covers what is beneath; click to reveal), **pen & highlighter presets**.
-- **Transparent ruler** with drag/rotation support for straight-line drawing.
+- **Transparent ruler** with a graduated scale (0 at the centre, ticks every 10, numbers every 100) and a live angle readout. Rotate it to any angle by dragging either blue end handle (hold **Shift** for 15° steps) and move it by its centre grip or body. Start a pen or highlighter stroke along the numbered edge to draw a perfectly straight line that sits on top of the ruler; strokes started elsewhere draw freely. The performance cache stays on while the ruler is active.
 - **Zoom** (buttons, Ctrl+wheel, pinch, Fit), **speed mode** for big notes, **palm rejection**, **tilt shading**, stylus side-button eraser, and a Windows Ink / raw pointer mode for lower-latency pen input when Chromium exposes it.
 - **Autosave** with a live indicator (● Saving… → ✓ Saved).
 - **Adapts to the window size:** the dock, page navigator and zoom controls stay on one row when there is room, move onto two rows when there is not, and the dock shrinks its icons before it ever scrolls. The header drops text labels on narrower windows. Works the same in a maximized, windowed or phone-sized window.
@@ -62,16 +160,20 @@ Tauri instead of Electron? Create a Tauri project and point `frontendDist` at th
 - **Video dock button (🎬):** choose YouTube, Udemy, an online video/livestream URL, or a local video file. Web video surfaces include play/pause and ±10-second seek controls where the website exposes standard HTML media elements. Local video uses the system file picker and plays inside the panel.
 - **Udemy:** sign in on Udemy's own website inside the browser panel to access courses associated with your account. Site-specific login, DRM, payment, popup, codec and authentication behavior is controlled by Udemy and Chromium; not every website or stream is guaranteed to work perfectly.
 - **Drag content:** ordinary website drag operations may work depending on the site's implementation. Cross-site dragging is restricted by Chromium and some sites; use the site's own copy/share features when dragging is blocked.
+- **Right-click menu:** right-click inside the Browser or Video panel for context actions. Images: Add image to board, Copy image, Copy image address, Save image as. Links: Open link here, Copy link address. Selected text: Copy and Search Google. Text fields: Cut, Copy, Paste, Select all. Also Back, Forward and Reload.
+- **Address bar:** Ctrl+A selects the full URL, as in any text field.
+- **One popup at a time:** opening another panel (Paper/Grid/Pages, Emoji, Layers, Math, etc.) closes the Add video source menu.
 - **Desktop only:** embedded webviews require Electron. The browser/video dock is not available in the regular web/PWA build.
 
 ### Text and math
 - Fonts (handwriting, sans, mono, marker, serif), bold/italic/underline, rich text color and partial-selection formatting. Enter finishes editing; Shift+Enter inserts a line break.
 - Typed math (`sqrt(x^2+1)/2`, `a/b`, `int_0^1 x^2 dx`) becomes a LaTeX formula. Inline `$...$` is previewed while typing, and `text $O(n)$ more text` turns only `$O(n)$` into a formula, which is its own object you can select, move, resize and rotate.
 - Manual LaTeX tool with a palette: structures, Greek, symbols, computer-science and other symbols.
-- **Handwriting recognition:** lasso-select handwriting → **✍→T** (Canvas panel). Order tried: browser Handwriting API → Electron main process / `server.py` (unofficial Google Input Tools endpoint, needs internet). Swap `recognize()` in `server.py` / the `hw` handler in `main.js` for another engine (MyScript, a local model) at any time. Recognized text that looks like math becomes a formula.
+- **Handwriting recognition (needs an internet connection):** lasso-select handwriting → **✍→T** (Canvas panel). Recognition is done online, so it only works while you are connected to the web. Order tried: the browser's built-in Handwriting API (when the browser provides one) → Electron main process / `server.py`, which call an unofficial Google Input Tools endpoint. Your selected strokes are sent to that service to be recognized; nothing is sent unless you use this feature. Everything else in RejBoard works offline. Swap `recognize()` in `server.py` / the `hw` handler in `main.js` for another engine (MyScript, a local model) at any time. Recognized text that looks like math becomes a formula.
 
 ### Pages and paper
 - **Canvas** panel: **Infinite** (default) or A4 / A5 / A3 / Letter in Portrait/Landscape (orientation is locked while infinite). Pages stack vertically and drawing is clipped to the page. When content reaches the bottom a "Page full — add another page?" button appears.
+- **Text stays on the page.** On a paged canvas, lines wider than the page wrap at the right edge, and text that would run off the bottom (for example many Shift+Enter lines) continues at the top of the next page; a new page is added when needed. This covers plain text, rotated text, sticky notes (moved as a whole) and text containing `$formulas$`, on every paper size and orientation.
 - **Paper:** white, cream, gray, black, slate, navy; plain, grid, dots, lined, Cornell, columns, ruled + margin, isometric dots; spacing and mark-size sliders; auto-contrast of ink when switching light ↔ dark paper.
 - **Present mode:** fullscreen, dock stays visible, laser pointer, spotlight, timer. ◀ ▶ (or arrow keys / PageUp / PageDown) change pages with a smooth camera move; 🔍 / Z zooms to the selection (or everything). Also a Pomodoro timer.
 
@@ -85,6 +187,7 @@ Tauri instead of Electron? Create a Tauri project and point `frontendDist` at th
 
 ### Export
 - **PNG, SVG, PDF**, selection as PNG, JSON, and **Save a copy** (`.rjwb`, which only this app opens).
+- **Linked boards in PDF and SVG:** when the board you export links to others (with `@`), you are asked whether to put them in the file too (boards they link to come along; password-protected boards ask for their password first). In a **PDF** the linked boards follow the first board, page by page, and clicking a link jumps to the page it names. In an **SVG** they sit under the first board, and clicking a link shows that board (use the “↑ back to the first board” link to return). SVG links work when the `.svg` is opened directly in a browser; viewers that do not support SVG links (image tags, some editors) just show the boards stacked. Choosing **Only this board** exports as before.
 - **Invert colors** (optional, for PNG / SVG / PDF): inverts your ink, shapes, text, math and paper, but **not imported content**. Images, imported PDF pages and imported Word/PowerPoint text keep their original colors. A protected transparent PNG shows the original paper color behind it. Documents imported before v1.2.3 aren't tagged as imported; re-import them to protect them.
 
 ### Tables
@@ -120,7 +223,7 @@ Received boards land in a folder called *Received from <computer>*.
 **Encryption:** only in transit. Every transfer does a fresh X25519 key exchange and sends the data with AES‑256‑GCM (tamper‑proof); the confirmation code protects against a man‑in‑the‑middle. Boards are never stored encrypted; they stay ordinary boards on both computers. Receiving is off by default, and nothing is announced on the network until you turn it on. The first time, the OS firewall may ask to allow the app on private networks (UDP 41234 discovery, TCP 41235 transfer); allow it.
 
 ## Shortcuts
-Ctrl+Z / Ctrl+Y undo/redo · Ctrl+C/X/V/D copy/cut/paste/duplicate · Ctrl+G group · Ctrl+Shift+G ungroup · Ctrl+S save · Delete · +/- zoom · Esc/B in present mode.
+Ctrl+Z / Ctrl+Y undo/redo · Ctrl+C/X/V/D copy/cut/paste/duplicate · Ctrl+G group · Ctrl+Shift+G ungroup · Ctrl+S save · Ctrl+A select all board objects (canvas) or all text (text fields) · Delete · +/- zoom · Esc/B in present mode.
 
 ## Naming
 The app is called **RejBoard** everywhere (it was "Rejwan Whiteboard" before v1.3.0): the page title, header, installed web app (PWA), desktop window, and the installers (`RejBoard-<version>-win-x64-Setup.exe`, `-Portable.exe`, `.dmg`, `.AppImage`, `.deb`, `.rpm`). The desktop app keeps using the old data folder if it exists, so existing boards carry over.
@@ -128,21 +231,12 @@ The app is called **RejBoard** everywhere (it was "Rejwan Whiteboard" before v1.
 ## Files
 `index.html` (whole app) · `server.py` · `main.js` + `preload.js` + `lan.js` (Electron) · `manifest.json` + `sw.js` (PWA) · `fetch_libs.py` · `vendor/` (offline jsPDF, pdf.js, MathJax) · `build/icon.png` · `CHANGELOG.md`.
 
-## Publishing on GitHub
-- **Web build:** `.github/workflows/pages.yml` deploys to GitHub Pages on every push to `main`. One-time: repo **Settings → Pages → Source: GitHub Actions**.
-- **Installers:** `.github/workflows/build.yml` builds Windows (Setup + Portable `.exe`), macOS (`.dmg`, Intel + Apple Silicon) and Linux (`.AppImage`, `.deb`, `.rpm`) and attaches them to a GitHub Release. Bump `version` in `package.json`, commit, then tag and push, e.g. `git tag v1.3.2 && git push origin v1.3.2` (the tag must match the version).
-- When you change `index.html`, also bump the cache name in `sw.js` (currently `rw-v19`) so installed PWAs update.
+## Notes
 - macOS/Windows builds are unsigned: macOS may say the app is damaged (run `xattr -cr "/Applications/RejBoard.app"`), and Windows SmartScreen may warn (More info → Run anyway).
-
-## Roadmap
-Templates (UML, flowchart, planners), smart connectors, and handwriting-to-LaTeX recognition with a bundled model.
 
 ## License
 MIT
 
+## Credits
 
-## Selection recovery (1.3.3)
-- Press **Esc** to clear selected canvas objects and cancel an active selection gesture.
-- Click **Deselect** in the toolbar to clear selection explicitly.
-- **Ctrl+A** selects canvas objects only when the canvas is focused; it will not select all visible interface text.
-- Selection movement requires an active pointer gesture; losing window focus cancels a stale gesture.
+RejBoard is built by **Rejwan Shafi**. Claude Sonnet and GPT Astra were used to prototype parts of the app; I reviewed the result, fixed inefficiencies and corrected flaws along the way.

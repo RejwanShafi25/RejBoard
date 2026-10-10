@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.2.5]
+### Added
+- **Board links with `@`.** Type `@` inside a text or sticky note to open a picker of your other boards; click one, or keep typing its name and press Enter/Tab (arrow keys move, Esc closes). The board appears as a blue underlined `@Board name` link. Click it (Select, Lasso, Hand or Laser tool, or Ctrl/Cmd+click with any tool) to open that board.
+- **Link to one page.** Boards with several pages show a `▸ N pages` toggle in the `@` list (or press → on the row); expand it to link straight to “Notes › 3”. You can also type `Notes › 3`. Clicking the link opens that board at that page (also works for pages of the current board).
+- **Create from the list.** If no board has the name you typed, the list offers `➕ Create board “…”` (click or Tab; Enter only after you pick it with the arrow keys or mouse, so finishing a sentence never makes a board by accident).
+- **Linked from.** A board that other boards point to shows `🔗 Linked from …` beside its name; click it to jump to one of them.
+- **Linked boards travel along.** Saving a copy (`.rjwb`) and sending over the network ask whether to take the boards you link to along (including boards they link to). They travel inside the board itself; the receiving side shows a picture of each linked board, lets you untick any you do not want, and saves the rest with one Save. Links between the imported boards are re-pointed to the new copies automatically.
+- **Back button.** After opening a board through a link, a `← Back to “…”` button appears at the left of the header and returns to the previous board (it works across several hops). Opening a board from Boards/Home clears the trail.
+- **Linked boards in PDF and SVG.** Exporting a board that links to others now offers to include them. In a PDF they come after the board, page by page, and a click on a link jumps to the page it names (a link to “Notes › 3” lands on page 3 of Notes). In an SVG they sit under the board, and a click on a link shows that board, with a link back to the first board. Boards you choose not to include, locked boards whose password you do not enter, and deleted boards stay plain text. Linked boards that are password-protected ask for their password first.
+
+
+### Fixed
+- **Text and selection bars no longer overlap.** Clicking a text object shows both the text-format bar (size, colour, font, B/I/U) and the selection bar (duplicate, copy, delete…). They used to sit on top of each other; the text bar now stacks directly above the selection bar and follows it when the window is resized or the bars wrap.
+- **Text no longer disappears at the bottom of a page.** On a paged canvas (A4, A5, A3, Letter, PDF) drawing is clipped to the page, so lines added with Shift+Enter past the bottom of a page were invisible until the canvas was switched back to Infinite. Lines that do not fit now continue at the top of the next page (pages are added when needed, long text can span several pages) and a message tells you where the text went. Works for every paper size and orientation.
+- **Page overflow now covers every kind of text.** Sticky notes, rotated text and text with `$...$` formulas used to stay clipped at the bottom of a page. Sticky notes now move as a whole to the next page (and shrink if larger than a page); rotated text is split line by line using its rotated outline; formulas are laid out row by row and continue on the next page.
+- **Long lines wrap at the right edge of a page.** On A4, A5, A3, Letter and PDF pages a line that would run past the right edge now wraps at word boundaries (very long words break by character). Text clicked close to the right edge is shifted left so it keeps a usable width. Wrapping uses the real font sizes, bold/italic, and board links, and adapts to every paper size and orientation.
+
 ## [1.2.4]
 ### Added
 - **In-app Browser dock button** for a compact draggable website panel with address/search, back/forward, reload, minimize, maximize/restore and close controls.

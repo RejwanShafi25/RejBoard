@@ -1,5 +1,5 @@
 // Electron main process: opens the app and proxies handwriting recognition.
-const { app, BrowserWindow, ipcMain, shell } = require('electron');
+const { app, BrowserWindow, ipcMain, shell, Menu, clipboard } = require('electron');
 const lanShare = require('./lan');
 const path = require('path');
 const fs = require('fs');
@@ -84,6 +84,52 @@ function createWindow() {
   w.loadFile('index.html');
   w.webContents.setWindowOpenHandler(({ url }) => { shell.openExternal(url); return { action: 'deny' }; });
 }
+// Right-click menu for the in-app browser / video webview (Electron shows nothing by default).
+app.on('web-contents-created', (_e, contents) => {
+  if (contents.getType() !== 'webview') return;
+  const isWeb = u => /^https?:\/\//i.test(String(u || ''));
+  const nav = contents.navigationHistory;
+  const canBack = () => { try { return nav ? nav.canGoBack() : contents.canGoBack(); } catch (_) { return false; } };
+  const canFwd = () => { try { return nav ? nav.canGoForward() : contents.canGoForward(); } catch (_) { return false; } };
+  contents.on('context-menu', (_ev, p) => {
+    try {
+      const t = [], sep = () => { if (t.length && t[t.length - 1].type !== 'separator') t.push({ type: 'separator' }); };
+      if (p.linkURL && isWeb(p.linkURL)) {
+        t.push({ label: 'Open link here', click: () => contents.loadURL(p.linkURL) });
+        t.push({ label: 'Copy link address', click: () => clipboard.writeText(p.linkURL) });
+        sep();
+      }
+      if (p.mediaType === 'image' && p.srcURL) {
+        if (isWeb(p.srcURL)) {
+          const host = contents.hostWebContents;
+          t.push({ label: 'Add image to board', click: () => { try { host && host.send('browser:add-image', p.srcURL); } catch (_) {} } });
+        }
+        t.push({ label: 'Copy image', click: () => contents.copyImageAt(p.x, p.y) });
+        if (isWeb(p.srcURL)) t.push({ label: 'Copy image address', click: () => clipboard.writeText(p.srcURL) });
+        t.push({ label: 'Save image as…', click: () => contents.downloadURL(p.srcURL) });
+        sep();
+      }
+      if (p.isEditable) {
+        t.push({ label: 'Cut', role: 'cut', enabled: p.editFlags.canCut });
+        t.push({ label: 'Copy', role: 'copy', enabled: p.editFlags.canCopy });
+        t.push({ label: 'Paste', role: 'paste', enabled: p.editFlags.canPaste });
+        t.push({ label: 'Select all', role: 'selectAll' });
+        sep();
+      } else if (p.selectionText) {
+        t.push({ label: 'Copy', role: 'copy' });
+        const q = p.selectionText.trim().slice(0, 80);
+        t.push({ label: 'Search Google for “' + (q.length > 30 ? q.slice(0, 30) + '…' : q) + '”', click: () => contents.loadURL('https://www.google.com/search?q=' + encodeURIComponent(q)) });
+        sep();
+      }
+      t.push({ label: 'Back', enabled: canBack(), click: () => { nav ? nav.goBack() : contents.goBack(); } });
+      t.push({ label: 'Forward', enabled: canFwd(), click: () => { nav ? nav.goForward() : contents.goForward(); } });
+      t.push({ label: 'Reload', click: () => contents.reload() });
+      if (!p.isEditable && !p.selectionText) t.push({ label: 'Select all', role: 'selectAll' });
+      const host = contents.hostWebContents;
+      Menu.buildFromTemplate(t).popup({ window: host ? BrowserWindow.fromWebContents(host) : undefined });
+    } catch (_) {}
+  });
+});
 app.whenReady().then(createWindow);
 // The renderer uses a non-persistent partition for embedded browsing. Clear its in-memory
 // cookies/cache/storage when the app exits; this cannot erase data a website has on its servers.
