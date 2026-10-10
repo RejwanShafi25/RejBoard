@@ -40,6 +40,7 @@ RejBoard is built with Electron, with installers for **Windows, macOS and Linux*
 ![Home screen with folders, tags and protected boards](Screenshots/home-view-locked-note.png)
 ![Protected boards in protected section](Screenshots/protected-section-view.png)
 ![Trash Section view](Screenshots/trash-section-view.png)
+![Favorite Section view](Screenshots/favorite-section-view.png)
 *Boards grid with folders, tags, favorites, a password-protected board and the Trash.*
 
 ### Pens, highlighters and tapes
