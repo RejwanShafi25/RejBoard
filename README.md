@@ -236,7 +236,7 @@ Received boards land in a folder called *Received from <computer>*.
 Ctrl+Z / Ctrl+Y undo/redo · Ctrl+C/X/V/D copy/cut/paste/duplicate · Ctrl+G group · Ctrl+Shift+G ungroup · Ctrl+S save · Ctrl+A select all board objects (canvas) or all text (text fields) · Delete · +/- zoom · Esc/B in present mode.
 
 ## Naming
-The app is called **RejBoard** everywhere (it was "Rejwan Whiteboard" before v1.3.0): the page title, header, installed web app (PWA), desktop window, and the installers (`RejBoard-<version>-win-x64-Setup.exe`, `-Portable.exe`, `.dmg`, `.AppImage`, `.deb`, `.rpm`). The desktop app keeps using the old data folder if it exists, so existing boards carry over.
+The app is called **RejBoard** everywhere (it was "Rejwan Whiteboard" before v1.2.1): the page title, header, installed web app (PWA), desktop window, and the installers (`RejBoard-<version>-win-x64-Setup.exe`, `-Portable.exe`, `.dmg`, `.AppImage`, `.deb`, `.rpm`). The desktop app keeps using the old data folder if it exists, so existing boards carry over.
 
 ## Files
 `index.html` (whole app) · `server.py` · `main.js` + `preload.js` + `lan.js` (Electron) · `manifest.json` + `sw.js` (PWA) · `fetch_libs.py` · `vendor/` (offline jsPDF, pdf.js, MathJax) · `build/icon.png` · `CHANGELOG.md`.
