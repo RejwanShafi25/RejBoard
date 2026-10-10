@@ -34,13 +34,21 @@ RejBoard is built with Electron, with installers for **Windows, macOS and Linux*
 ![Handwriting, a diagram, a sticky note and a formula on one board](Screenshots/01-board.png)
 *Handwriting, shapes, sticky notes, text and LaTeX formulas on a single board.*
 
+![Handwriting, a diagram, a sticky note and a formula on one board in dark paper](Screenshots/01-board-dark.png)
+*Handwriting, shapes, sticky notes, text and LaTeX formulas on a single board in dark paper.*
 ### Home screen
-![Home screen with folders, tags and protected boards](Screenshots/02-home.png)
+![Home screen with folders, tags and protected boards](Screenshots/home-view-locked-note.png)
+![Protected boards in protected section](Screenshots/protected-section-view.png)
+![Trash Section view](Screenshots/trash-section-view.png)
 *Boards grid with folders, tags, favorites, a password-protected board and the Trash.*
 
-### Pens and highlighters
-![The tool dock and pen presets](Screenshots/03-pens.png)
+### Pens, highlighters and tapes
+![The tool dock and pen presets](Screenshots/03-brush-settings.png)
+![The tool dock and highlighter presets](Screenshots/03-01-highlighter-settings.png)
 *Fountain, calligraphy, brush, ballpoint, pencil and highlighter pens with adjustable presets.*
+
+![The tool dock and tape presets](Screenshots/03-02-Tape-settings.png)
+*Tapes with adjustable presets.*
 
 ### Handwriting to text
 ![Handwritten words turned into typed text](Screenshots/04-handwriting-to-text.gif)
@@ -79,11 +87,12 @@ RejBoard is built with Electron, with installers for **Windows, macOS and Linux*
 *Watch a lecture or look something up in a draggable panel next to your notes.*
 
 ### Share on your local network
+![Sharing on another pc  uder same network dialog](Screenshots/network-dialog.png)
 ![The local network sharing dialog with a security code](Screenshots/13-lan.png)
 *Send boards to another computer on the same network, encrypted, with a confirmation code.*
 
 ### Works at any window size
-![RejBoard in a narrow window](Screenshots/14-responsive.png)
+![RejBoard in a narrow window](Screenshots/responsive-view.png)
 *The dock, page navigator and header adapt to maximized, windowed and phone-sized windows.*
 
 ## Get RejBoard
