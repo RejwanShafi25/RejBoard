@@ -1,9 +1,5 @@
 # Changelog
 
-## [1.2.7]
-### Fixed
-- Fixed the MacOS build installer.
-
 ## [1.2.6]
 ### Added
 - **Infinite-canvas PDF export is always one page.** An Infinite board now exports as a single PDF page containing everything on it. Bounds account for rotated items and full pen width/glow, so nothing is clipped. Very large boards lower the pixel density (and scale the page to a size PDF viewers accept) instead of failing or cutting content off.
