@@ -2,7 +2,7 @@
 name: Build installers
 on:
   push:
-    tags: ['v*']
+    tags: ["v*"]
   workflow_dispatch:
 
 permissions:
@@ -32,7 +32,7 @@ jobs:
 
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: "3.12"
 
       # vendor/ is git-ignored, so download the offline libraries before packaging.
       - name: Fetch offline libraries
@@ -64,8 +64,17 @@ jobs:
       - name: Build installers
         run: npx electron-builder --publish never
         env:
-          # No code-signing certificates: skip auto-discovery so the macOS build does not fail/hang.
-          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+          CSC_LINK: ""
+
+      - name: Verify ad-hoc signature (macOS)
+        if: matrix.label == 'macos'
+        shell: bash
+        run: |
+          for app in dist/mac/*.app dist/mac-arm64/*.app; do
+            [ -d "$app" ] || continue
+            codesign --verify --deep --strict --verbose=2 "$app"
+            codesign -dv "$app" 2>&1 | grep -E "Signature|flags" || true
+          done
 
       - name: Upload installers
         uses: actions/upload-artifact@v4

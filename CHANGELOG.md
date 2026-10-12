@@ -1,5 +1,24 @@
 # Changelog
 
+## [1.2.6]
+### Added
+- **Created and modified dates on every board card** (Home, Favorites, Protected, folders, tags and Trash). *Modified* only changes when you edit the board's content or title; opening, favouriting, moving or locking a board does not change it. Boards made before this update show their real creation date, recovered from the board's id, and use their last save as the modified date.
+- **Sort boards** by name (A→Z / Z→A), date created or date modified (newest / oldest) from the new *Boards* selector at the top of the Home page. The choice is remembered. Default is *Modified: newest*.
+- **Sort folders** by name (A→Z / Z→A) from the new *Folders* selector wherever folders are listed. The choice is remembered.
+- **Text styling inside table cells.** The table bar has a new **Text** row: font (Handwriting, Sans, Mono, Marker, Serif), size, text colour and **B / I / U** for the selected cells, plus **Reset** (back to the table default) and **▦ All cells** (select every cell). Each cell keeps its own style, so a header row can be large, bold and red while the body stays normal. Rows grow automatically so bigger text is never clipped. The in-cell editor shows the real font and colour while you type, new rows/columns inherit the style of their neighbour, and SVG export keeps the styling. The controls follow the cell you click.
+- **Maths in table cells.** `$x^{2}$` (alone or mixed with text, e.g. `$x^{2}$ is a square`) is typeset as a formula when you finish editing a cell. With **Auto-math** on, typing `x^2/3+sqrt(y)` in a cell becomes a typeset equation, like in text boxes. Formulas wrap with the text, rows grow to fit them, and they appear in SVG export. Cells starting with `=` stay spreadsheet formulas, and plain amounts such as `$5 and $6` are not treated as maths.
+- **Border line style.** A new Solid / Dashed / Dotted selector next to border thickness and colour (board and SVG export).
+- **LaTeX button works inside tables.** With a table cell selected (or just edited), the LaTeX dock button now inserts the formula into that cell. The dialog title shows the target, e.g. `LaTeX → cell B2`; the formula is added after any text already in the cell. Without a selected cell it inserts a free-floating formula as before.
+- **Style bar for selected objects.** Selecting objects with Select / Lasso now shows a style bar just above the selection bar:
+  - **Strokes:** change the **brush** (fountain, calligraphy, soft paint, ballpoint, pencil, square / chisel / round highlighter), the **brush size** and the **line type** (solid, dashed, dotted, dash-dot, long dash, short dash). The stroke is redrawn with the new brush and width, and highlighter brushes pick up their usual opacity.
+  - **Shapes:** change **line type**, **corner type** (rounded / sharp), **border width**, **border colour** and **fill colour** (swatches, any colour, or no fill).
+  - **Colour for any selection:** a colour row (swatches plus any colour) recolours every selected stroke, shape, tape, formula, text and table. It also appears alone when you select a mix of different objects. Several strokes or several shapes can be restyled together, and every change can be undone with Ctrl+Z.
+
+### Fixed
+- **Table colour.** The main colour palette ignored tables. It now recolours the whole selected table (text, borders and per-cell text colours), and the light/dark theme switch also flips per-cell text and border colours so they stay readable.
+- **Border thickness, colour and style.** These controls did nothing until you pressed a border button. They now update the selected borders immediately (re-applying the last border mode, or **All** if none was chosen yet).
+- **Selecting a table.** Selecting a table with Select / Lasso (no cell chosen) now means the whole table: fill, text style, borders and colour apply to every cell instead of only A1, and the highlight covers the whole table. Clicking or dragging across cells still selects just those cells.
+
 ## [1.2.5]
 ### Added
 - **Board links with `@`.** Type `@` inside a text or sticky note to open a picker of your other boards; click one, or keep typing its name and press Enter/Tab (arrow keys move, Esc closes). The board appears as a blue underlined `@Board name` link. Click it (Select, Lasso, Hand or Laser tool, or Ctrl/Cmd+click with any tool) to open that board.

@@ -204,9 +204,15 @@ Tauri instead of Electron? Create a Tauri project and point `frontendDist` at th
 - ➕ → Table (3×3). Select the table, then use its bar. **Select cells** by dragging (Shift+click extends). **Resize** columns/rows by dragging a grid line; the ✥ handle at the top-left corner moves the table.
 - **Merge** / **Split** (unmerge, or split one cell into N×M), **cell background**, **borders** (all / outer / inner / top / bottom / left / right / none, with thickness and colour), **alignment** (left/centre/right, top/middle/bottom). Text wraps inside cells. Double-click (or Text tool) to edit; **Tab / Shift+Tab** jumps between cells; **Enter** moves down. Row/column insert and delete keep merges and formulas intact.
 - Numbers right-align by default; `1,000`, `$5` and `50%` are read as numbers.
-
+- **Text style per cell:** font, size, colour and bold / italic / underline for the selected cells (**Text** row of the table bar; **All cells** selects the whole table, **Reset** restores the default). Selecting a table without choosing a cell applies fill, text, border and colour changes to the whole table, and the main colour palette recolours it.
+- **Borders:** thickness, colour and a Solid / Dashed / Dotted line style update the selected borders as soon as you change them.
+- **Maths in cells:** write `$x^{2}$` (optionally mixed with text) and it is typeset when you finish editing; with Auto-math on, `x^2/3` or `sqrt(y)` become equations too. With a cell selected, the **LaTeX** dock button inserts its formula into that cell.
 #### Table formulas
 Start a cell with `=`. Cells are `A1`-style (column letter + row number; top-left is A1); ranges are `A1:B5`, whole columns `A:A`. Address labels (A, B, C… / 1, 2, 3…) show on the table edge when it is selected, and while typing a formula you can click cells to insert references (Shift+click for a range). The **Σ Sum** button fills in `=SUM(...)` for the numbers above (or to the left of) the selected cell. Formulas follow their cells when rows/columns are inserted or deleted.
+ 
+- **Operators:** `+ - * / ^ % &` (join text) and comparisons `= <> < > <= >=`. `^` is left-associative like Excel.
+- **Functions:** SUM AVERAGE MIN MAX COUNT COUNTA MEDIAN PRODUCT ABS SQRT POWER MOD ROUND ROUNDUP ROUNDDOWN INT TRUNC FLOOR CEILING SIGN EXP LN LOG LOG10 PI IF AND OR NOT IFERROR ISERROR ISNUMBER SUMIF COUNTIF AVERAGEIF CONCAT LEN UPPER LOWER TRIM LEFT RIGHT MID. Constants `TRUE FALSE PI`.
+- **Errors:** `#DIV/0!`, `#REF!`, `#NAME?`, `#VALUE!`, `#CYCLE!`, `#ERR!`.
 
 - **Operators:** `+ - * / ^ % &` (join text) and comparisons `= <> < > <= >=`. `^` is left-associative like Excel.
 - **Functions:** SUM AVERAGE MIN MAX COUNT COUNTA MEDIAN PRODUCT ABS SQRT POWER MOD ROUND ROUNDUP ROUNDDOWN INT TRUNC FLOOR CEILING SIGN EXP LN LOG LOG10 PI IF AND OR NOT IFERROR ISERROR ISNUMBER SUMIF COUNTIF AVERAGEIF CONCAT LEN UPPER LOWER TRIM LEFT RIGHT MID. Constants `TRUE FALSE PI`.

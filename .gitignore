@@ -5,3 +5,4 @@ __pycache__/
 vendor/
 .DS_Store
 fed.md
+*.zip
