@@ -1,6 +1,7 @@
 // Electron main process: opens the app and proxies handwriting recognition.
 const { app, BrowserWindow, ipcMain, shell, Menu, clipboard } = require('electron');
 const lanShare = require('./lan');
+const ocr = require('./ocr'); // on-device handwriting OCR (no network, no files)
 const path = require('path');
 const fs = require('fs');
 // The app used to be called "Rejwan Whiteboard". Electron stores boards in a folder named after the app,
@@ -14,6 +15,7 @@ ipcMain.handle('hw', async (_e, d) => {
   const j = await r.json();
   return j[0] === 'SUCCESS' ? j[1][0][1][0] : '';
 });
+ocr.register(ipcMain, app);
 // ---- Word / PowerPoint -> PDF, so the renderer can import them as rendered pages (same as a PDF) ----
 const { execFile } = require('child_process');
 const os = require('os');

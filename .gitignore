@@ -6,3 +6,5 @@ vendor/
 .DS_Store
 fed.md
 *.zip
+ocr-linux/node_modules/
+ocr-linux/tessdata/

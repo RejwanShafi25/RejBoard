@@ -2,6 +2,10 @@
 
 ## [1.2.6]
 ### Added
+- **Infinite-canvas PDF export is always one page.** An Infinite board now exports as a single PDF page containing everything on it. Bounds account for rotated items and full pen width/glow, so nothing is clipped. Very large boards lower the pixel density (and scale the page to a size PDF viewers accept) instead of failing or cutting content off.
+- **On-device handwriting recognition (offline).** New *Handwriting to text* setting with two engines: Online (Google, unchanged) or On-device. On-device draws the selected strokes to a small in-memory PNG and pipes it to Apple Vision (macOS), Windows.Media.Ocr (Windows) or Tesseract (Linux). Linux builds also bundle Tesseract.js plus English data (as an extra resource, Linux packages only) so on-device recognition works out of the box and fully offline. No network, no API key, no temp files, one job at a time, image capped at 1600 px.
+- **Laser fade time.** Double-click the laser tool to set how long the trail takes to fade (0.2-5 s) and the dot size. The trail is now a smooth, tapered, glowing curve with a bright head dot.
+- **Automatic contrast when the paper colour changes.** Switching paper (white, cream, light gray, black, slate, navy) now checks every pen stroke, shape, tape, text, sticky note, formula and table (cell text and borders) and adjusts only the colours that would be hard to read on the new paper, keeping their hue where possible. Sticky note backgrounds follow the paper too (a yellow note turns a deep yellow on dark paper and back again, and always stays distinct from the paper), and their text is checked against the note's own background, as is text in filled table cells. Pen, text and shape colours for new objects are adjusted too. Previously only a light↔dark switch recoloured, so e.g. black ink stayed invisible when changing from black to navy paper.
 - **Created and modified dates on every board card** (Home, Favorites, Protected, folders, tags and Trash). *Modified* only changes when you edit the board's content or title; opening, favouriting, moving or locking a board does not change it. Boards made before this update show their real creation date, recovered from the board's id, and use their last save as the modified date.
 - **Sort boards** by name (A→Z / Z→A), date created or date modified (newest / oldest) from the new *Boards* selector at the top of the Home page. The choice is remembered. Default is *Modified: newest*.
 - **Sort folders** by name (A→Z / Z→A) from the new *Folders* selector wherever folders are listed. The choice is remembered.
@@ -18,6 +22,11 @@
 - **Table colour.** The main colour palette ignored tables. It now recolours the whole selected table (text, borders and per-cell text colours), and the light/dark theme switch also flips per-cell text and border colours so they stay readable.
 - **Border thickness, colour and style.** These controls did nothing until you pressed a border button. They now update the selected borders immediately (re-applying the last border mode, or **All** if none was chosen yet).
 - **Selecting a table.** Selecting a table with Select / Lasso (no cell chosen) now means the whole table: fill, text style, borders and colour apply to every cell instead of only A1, and the highlight covers the whole table. Clicking or dragging across cells still selects just those cells.
+
+### Improved
+- **Smoother ink.** Pen input uses every coalesced pointer sample, redraws once per frame, and fountain/calligraphy strokes are curve-smoothed at render time (saved data is unchanged).
+- **Smoother eraser.** The eraser sweeps the gaps between pointer samples, so fast strokes no longer skip over ink.
+
 
 ## [1.2.5]
 ### Added

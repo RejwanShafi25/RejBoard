@@ -12,6 +12,8 @@
   "scripts": {
     "start": "electron .",
     "libs": "python fetch_libs.py",
+    "libs:linux": "python fetch_libs.py --linux && npm install --omit=dev --prefix ocr-linux",
+    "test:ocr": "node scripts/ocr-smoke.js",
     "dist": "electron-builder"
   },
   "devDependencies": {
@@ -28,6 +30,7 @@
       "index.html",
       "main.js",
       "lan.js",
+      "ocr.js",
       "preload.js",
       "manifest.json",
       "sw.js",
@@ -76,6 +79,20 @@
         "rpm"
       ],
       "icon": "build/icon.png",
+      "extraResources": [
+        {
+          "from": "ocr-linux/node_modules",
+          "to": "ocr/node_modules",
+          "filter": [
+            "**/*",
+            "!.bin/**"
+          ]
+        },
+        {
+          "from": "ocr-linux/tessdata",
+          "to": "ocr/tessdata"
+        }
+      ],
       "category": "Office",
       "maintainer": "Rejwan Shafi <196472099+RejwanShafi25@users.noreply.github.com>",
       "synopsis": "Local-first whiteboard and note-taking app with handwriting, PDF annotation and per-board voice recordings"

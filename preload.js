@@ -2,6 +2,7 @@ const { contextBridge, ipcRenderer } = require('electron');
 const EVENTS = ['peers', 'incoming', 'sas', 'received', 'progress'];
 contextBridge.exposeInMainWorld('wb', {
   recognize: d => ipcRenderer.invoke('hw', d),
+  ocr: (png, lang) => ipcRenderer.invoke('ocr:recognize', png, lang),
   docToPdf: (name, buf) => ipcRenderer.invoke('doc:toPdf', name, buf),
   clearBrowserData: () => ipcRenderer.invoke('browser:clear'),
   fetchRemoteImage: url => ipcRenderer.invoke('image:fetch-remote', url),

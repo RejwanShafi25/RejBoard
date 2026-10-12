@@ -61,10 +61,24 @@ jobs:
 
       - run: npm ci
 
+      # Linux only: bundle Tesseract.js + English data as an extra resource (never added to Windows/macOS builds).
+      - name: Prepare bundled OCR (Linux)
+        if: matrix.label == 'linux'
+        run: |
+          python fetch_libs.py --linux
+          npm install --omit=dev --prefix ocr-linux
+          npm run test:ocr
+
       - name: Build installers
         run: npx electron-builder --publish never
         env:
           CSC_LINK: ""
+
+      - name: Verify bundled OCR is inside the package (Linux)
+        if: matrix.label == 'linux'
+        run: |
+          test -f dist/linux-unpacked/resources/ocr/node_modules/tesseract.js/package.json
+          test -s dist/linux-unpacked/resources/ocr/tessdata/eng.traineddata
 
       - name: Verify ad-hoc signature (macOS)
         if: matrix.label == 'macos'

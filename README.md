@@ -55,6 +55,10 @@ RejBoard is built with Electron, with installers for **Windows, macOS and Linux*
 ![Handwritten words turned into typed text](Screenshots/04-handwriting-to-text.gif)
 *Lasso-select handwriting and press **✍→T**. Needs an internet connection.*
 
+**Two engines** (⚙ Settings → *Handwriting to text*):
+- **Online (Google)** - the default. Sends only the ink points to a Google handwriting service; best for cursive.
+- **On-device (offline)** - desktop app only, no network, no API key, nothing written to disk. The selected strokes are drawn to a small black-on-white image **in memory**, piped to the operating system's own OCR engine, and discarded: **Apple Vision** on macOS, **Windows.Media.Ocr** on Windows, and the system **Tesseract** (`sudo apt install tesseract-ocr`) on Linux. Nothing is bundled, so the installer does not grow. These engines are built for neat/printed handwriting; they are weaker on cursive. **Linux release builds bundle Tesseract.js plus English language data** (Linux packages only; Windows and macOS installers are unchanged), so On-device works offline with nothing to install. If the system `tesseract` command is present it is used first, which also covers other languages. For a local Linux build run `npm install && npm run libs:linux` before `npm start` / `npm run dist`.
+
 ### Shapes, connectors and sketch-and-snap
 ![Rough sketches snapping to clean shapes with connectors](Screenshots/05-shapes.gif)
 *Rough circles, boxes and arrows snap to clean shapes; connectors follow the shapes they are attached to.*
