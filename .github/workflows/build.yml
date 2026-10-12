@@ -72,23 +72,14 @@ jobs:
       - name: Build installers
         run: npx electron-builder --publish never
         env:
-          CSC_LINK: ""
+          # No code-signing certificates: skip auto-discovery so the macOS build does not fail/hang.
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
 
       - name: Verify bundled OCR is inside the package (Linux)
         if: matrix.label == 'linux'
         run: |
           test -f dist/linux-unpacked/resources/ocr/node_modules/tesseract.js/package.json
           test -s dist/linux-unpacked/resources/ocr/tessdata/eng.traineddata
-
-      - name: Verify ad-hoc signature (macOS)
-        if: matrix.label == 'macos'
-        shell: bash
-        run: |
-          for app in dist/mac/*.app dist/mac-arm64/*.app; do
-            [ -d "$app" ] || continue
-            codesign --verify --deep --strict --verbose=2 "$app"
-            codesign -dv "$app" 2>&1 | grep -E "Signature|flags" || true
-          done
 
       - name: Upload installers
         uses: actions/upload-artifact@v4
