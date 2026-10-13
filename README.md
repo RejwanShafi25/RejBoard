@@ -109,7 +109,7 @@ Open the link, then in Chrome/Edge click the install icon in the address bar to 
 
 **Where are my boards stored?** In the browser's IndexedDB (not the cache). Clearing only "cached images and files" is safe; clearing "cookies and other site data" deletes boards. Use **Backup** on the home screen regularly. The desktop app stores boards in its own app-data folder.
 
-Current version: **1.2.5** (see [CHANGELOG.md](CHANGELOG.md)).
+Current version: **1.2.6** (see [CHANGELOG.md](CHANGELOG.md)).
 
 ## Browser image drag-and-drop
 
@@ -218,17 +218,26 @@ Start a cell with `=`. Cells are `A1`-style (column letter + row number; top-lef
 - **Functions:** SUM AVERAGE MIN MAX COUNT COUNTA MEDIAN PRODUCT ABS SQRT POWER MOD ROUND ROUNDUP ROUNDDOWN INT TRUNC FLOOR CEILING SIGN EXP LN LOG LOG10 PI IF AND OR NOT IFERROR ISERROR ISNUMBER SUMIF COUNTIF AVERAGEIF CONCAT LEN UPPER LOWER TRIM LEFT RIGHT MID. Constants `TRUE FALSE PI`.
 - **Errors:** `#DIV/0!`, `#REF!`, `#NAME?`, `#VALUE!`, `#CYCLE!`, `#ERR!`.
 
-- **Operators:** `+ - * / ^ % &` (join text) and comparisons `= <> < > <= >=`. `^` is left-associative like Excel.
-- **Functions:** SUM AVERAGE MIN MAX COUNT COUNTA MEDIAN PRODUCT ABS SQRT POWER MOD ROUND ROUNDUP ROUNDDOWN INT TRUNC FLOOR CEILING SIGN EXP LN LOG LOG10 PI IF AND OR NOT IFERROR ISERROR ISNUMBER SUMIF COUNTIF AVERAGEIF CONCAT LEN UPPER LOWER TRIM LEFT RIGHT MID. Constants `TRUE FALSE PI`.
-- **Errors:** `#DIV/0!`, `#REF!`, `#NAME?`, `#VALUE!`, `#CYCLE!`, `#ERR!`.
-
 ### Voice recordings
 **🎙 Record** in the top bar: record a lecture while you take notes, pause/resume, and keep several recordings per board. Play, seek, change speed (0.75×–2×), rename or delete them later. Recordings stay on your device and belong to one board only. They are part of Backup / Restore, "Save a copy" (.rjwb) files and local-network sharing. Needs microphone permission; closing the app mid-recording discards that recording.
 
 ### Languages
-22 UI languages (English default) and 15 text languages. When you pick a UI language in Settings, its language pack is downloaded once from `locales/` in this repo, saved on your device, and used offline from then on. It translates the whole interface in both the desktop and web apps. Untranslated strings fall back to English. Delete any downloaded pack from *Settings → Appearance → Downloaded language packs*.
+RejBoard's interface is available in **22 languages** (English is the default): English, العربية (Arabic), বাংলা (Bengali), 中文 (Chinese, Simplified), Nederlands (Dutch), Français (French), Deutsch (German), हिन्दी (Hindi), Bahasa Indonesia (Indonesian), Italiano (Italian), 日本語 (Japanese), 한국어 (Korean), فارسی (Persian), Polski (Polish), Português (Portuguese), Русский (Russian), Español (Spanish), தமிழ் (Tamil), ไทย (Thai), Türkçe (Turkish), اردو (Urdu) and Tiếng Việt (Vietnamese). Text recognition and typing support covers 15 text languages.
 
-To add or improve a language, edit `locales/<code>.json` (keys are the English strings), or run `python tools/extract-strings.py` and `python tools/translate-packs.py` to regenerate and fill packs, then open a pull request.
+When you pick a UI language in Settings, its language pack is downloaded once from `locales/` in this repo, saved on your device, and used offline from then on. It translates the whole interface in both the desktop and web apps. Untranslated strings fall back to English. Delete any downloaded pack from *Settings → Appearance → Downloaded language packs*.
+
+#### A note on translation quality
+English is the source language of the interface. All other translations were generated with Meta AI's [`facebook/nllb-200-distilled-600M`](https://huggingface.co/facebook/nllb-200-distilled-600M) machine translation model (NLLB-200) and have **not yet been reviewed by native speakers**. You may therefore notice occasional inaccuracies, awkward phrasing or inconsistent terminology, particularly in short interface labels where context is limited. I apologize for any inconvenience and appreciate your understanding.
+
+#### Contributing translations
+Improving translations is one of the most valuable ways to help RejBoard, and contributions are very welcome. If you are a native or fluent speaker of a supported language:
+
+1. Fork the repository.
+2. Open `locales/<code>.json` for your language (keys are the English strings).
+3. Correct or improve the translated values. **Do not change the keys**, and keep placeholders such as `{name}` or `%s` unchanged.
+4. Open a pull request with a short description of your changes.
+
+You can also regenerate and fill packs with `python tools/extract-strings.py` and `python tools/translate-packs.py`. If you would rather not edit files, open an issue listing the strings to fix and your suggested replacements.
 
 ### Settings
 ⚙ opens appearance (language, downloaded language packs, themes), inking, canvas, reset to default, and boards. Every section explains itself; every button has a hover tooltip.
@@ -262,3 +271,5 @@ MIT
 ## Credits
 
 RejBoard is built by **Rejwan Shafi**. Claude Sonnet and GPT Astra were used to prototype parts of the app; I reviewed the result, fixed inefficiencies and corrected flaws along the way.
+
+UI translations were machine-generated with Meta AI's [NLLB-200](https://github.com/facebookresearch/fairseq/tree/nllb) (`facebook/nllb-200-distilled-600M`) and are open to community improvement; see [Languages](#languages).

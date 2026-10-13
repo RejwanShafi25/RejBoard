@@ -2,7 +2,11 @@
 
 ## [1.2.8]
 ### Added
-- Added Arabic, Spanish language suppoprt
+- **Multilingual interface.** The application is now available in 22 languages: English, Arabic, Bengali, Chinese (Simplified), Dutch, French, German, Hindi, Indonesian, Italian, Japanese, Korean, Persian, Polish, Portuguese, Russian, Spanish, Tamil, Thai, Turkish, Urdu and Vietnamese.
+- Language selection in [Settings → Language].
+
+### Notes
+- **Machine-translated strings.** The non-English translations were generated with Meta AI's `facebook/nllb-200-distilled-600M` (NLLB-200) neural machine translation model and have not yet been reviewed by native speakers. Some strings may be inaccurate, unnatural, or inconsistent in terminology. We apologize for any inconvenience and welcome corrections from the community (see *Contributing translations* in the README).
 
 ## [1.2.7]
 ### Added
