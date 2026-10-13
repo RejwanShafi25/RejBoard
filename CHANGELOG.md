@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.2.7]
+### Added
+- **Downloadable language packs.** Choosing a language in *Settings → Appearance → Language* downloads its pack once, saves it on your device, and translates the whole interface, including tooltips, placeholders and notices. It works the same in the desktop app and the web app, and offline afterwards. Packs live in `locales/` and are keyed by the English text, so no UI text is hardcoded per language. 22 languages are listed (English, Spanish, French, German, Bengali, Hindi, Arabic, Chinese, Portuguese, Italian, Russian, Japanese, Korean, Turkish, Indonesian, Vietnamese, Tamil, Persian, Urdu, Polish, Dutch, Thai). Arabic, Persian and Urdu switch the layout to right-to-left.
+- **Delete downloaded language packs.** A new *Downloaded language packs* row in Settings lists every pack on the device with a Delete button. Deleting the pack you are using switches back to English first.
+- `tools/extract-strings.py` and `tools/translate-packs.py` to rebuild `locales/en.json` and fill missing translations.
+
+### Changed
+- Language switching no longer depends on Chrome's on-device Translator API, which the desktop app doesn't have. The built-in dictionaries in `index.html` were removed in favour of pack files.
+- Strings that include changing values (for example "Grouped N objects") stay in English for now.
+
+### Fixed
+- Choosing a language in the desktop app did not translate the interface.
+
+
 ## [1.2.6]
 ### Added
 - **Infinite-canvas PDF export is always one page.** An Infinite board now exports as a single PDF page containing everything on it. Bounds account for rotated items and full pen width/glow, so nothing is clipped. Very large boards lower the pixel density (and scale the page to a size PDF viewers accept) instead of failing or cutting content off.

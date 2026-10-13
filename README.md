@@ -123,7 +123,7 @@ RejBoard stores boards, recordings and settings on your device. There is no acco
 |---|---|---|
 | Handwriting to text (✍→T) | **Yes** | The selected strokes, to a Google handwriting service |
 | In-app browser and video panel (desktop) | Yes | Whatever you browse; see the privacy notes below |
-| On-device translation packs | Once per language | A one-time language-pack download, then offline |
+| Language packs | Once per language | A one-time download of the pack file from the RejBoard GitHub repo (nothing about you is sent), then offline. Delete packs any time in Settings |
 | Drawing, text, math, tables, PDF, export, recordings, local network sharing | No | Nothing leaves your device (local sharing stays on your LAN) |
 
 ## Browser privacy and data handling
@@ -226,10 +226,12 @@ Start a cell with `=`. Cells are `A1`-style (column letter + row number; top-lef
 **🎙 Record** in the top bar: record a lecture while you take notes, pause/resume, and keep several recordings per board. Play, seek, change speed (0.75×–2×), rename or delete them later. Recordings stay on your device and belong to one board only. They are part of Backup / Restore, "Save a copy" (.rjwb) files and local-network sharing. Needs microphone permission; closing the app mid-recording discards that recording.
 
 ### Languages
-8 UI languages (English default) and 15 text languages. UI text is translated at runtime: built-in strings work everywhere; for any other string the browser's on-device Translator API is used (Chrome 138+; one-time language-pack download, then fully offline) and results are cached locally. Extra languages appear in the language list when that API exists. Hover tooltips are English only.
+22 UI languages (English default) and 15 text languages. When you pick a UI language in Settings, its language pack is downloaded once from `locales/` in this repo, saved on your device, and used offline from then on. It translates the whole interface in both the desktop and web apps. Untranslated strings fall back to English. Delete any downloaded pack from *Settings → Appearance → Downloaded language packs*.
+
+To add or improve a language, edit `locales/<code>.json` (keys are the English strings), or run `python tools/extract-strings.py` and `python tools/translate-packs.py` to regenerate and fill packs, then open a pull request.
 
 ### Settings
-⚙ opens appearance (language, themes), inking, canvas, reset to default, and boards. Every section explains itself; every button has a hover tooltip.
+⚙ opens appearance (language, downloaded language packs, themes), inking, canvas, reset to default, and boards. Every section explains itself; every button has a hover tooltip.
 
 ## Share boards on your local network (desktop app)
 Menu **Export / Save ▸ 📡 Share boards on local network**. Works between Windows, macOS and Linux computers on the same Wi‑Fi / LAN, both running the desktop app.

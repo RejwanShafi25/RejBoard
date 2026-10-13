@@ -4,6 +4,7 @@ contextBridge.exposeInMainWorld('wb', {
   recognize: d => ipcRenderer.invoke('hw', d),
   ocr: (png, lang) => ipcRenderer.invoke('ocr:recognize', png, lang),
   docToPdf: (name, buf) => ipcRenderer.invoke('doc:toPdf', name, buf),
+  i18n: { fetch: f => ipcRenderer.invoke('i18n:fetch', f) },
   clearBrowserData: () => ipcRenderer.invoke('browser:clear'),
   fetchRemoteImage: url => ipcRenderer.invoke('image:fetch-remote', url),
   onBrowserAddImage: fn => { const h = (_e, u) => fn(u); ipcRenderer.on('browser:add-image', h); return () => ipcRenderer.removeListener('browser:add-image', h); },
