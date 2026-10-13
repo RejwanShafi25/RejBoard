@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.2.8]
+### Added
+- Added Arabic language suppoprt
+
 ## [1.2.7]
 ### Added
 - **Downloadable language packs.** Choosing a language in *Settings → Appearance → Language* downloads its pack once, saves it on your device, and translates the whole interface, including tooltips, placeholders and notices. It works the same in the desktop app and the web app, and offline afterwards. Packs live in `locales/` and are keyed by the English text, so no UI text is hardcoded per language. 22 languages are listed (English, Spanish, French, German, Bengali, Hindi, Arabic, Chinese, Portuguese, Italian, Russian, Japanese, Korean, Turkish, Indonesian, Vietnamese, Tamil, Persian, Urdu, Polish, Dutch, Thai). Arabic, Persian and Urdu switch the layout to right-to-left.
