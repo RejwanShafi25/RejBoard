@@ -2,7 +2,7 @@
 
 ## [1.2.8]
 ### Added
-- Added Arabic language suppoprt
+- Added Arabic, Spanish language suppoprt
 
 ## [1.2.7]
 ### Added
