@@ -81,9 +81,14 @@ ipcMain.handle('image:fetch-remote', async (_e, rawUrl) => {
 const PACK_BASE = 'https://raw.githubusercontent.com/RejwanShafi25/RejBoard/main/locales/';
 ipcMain.handle('i18n:fetch', async (_e, file) => {
   if (!/^(index|[a-z]{2,3}(-[A-Za-z]{2,4})?)\.json$/.test(String(file))) throw new Error('bad file');
-  const r = await require('electron').net.fetch(PACK_BASE + file);
-  if (!r.ok) throw new Error('HTTP ' + r.status);
-  return await r.json();
+  // 1) the pack bundled with the app (works offline, never 404s)
+  try { return JSON.parse(fs.readFileSync(path.join(__dirname, 'locales', String(file)), 'utf8')); } catch (_) {}
+  // 2) otherwise download it from GitHub; if that fails too, answer null instead of throwing so nothing is logged as a crash
+  try {
+    const r = await require('electron').net.fetch(PACK_BASE + file);
+    if (r.ok) return await r.json();
+  } catch (_) {}
+  return null;
 });
 ipcMain.handle('browser:clear', async () => { try { const ses = require('electron').session.fromPartition('rejboard-ephemeral'); await ses.clearStorageData(); await ses.clearCache(); return true; } catch (_) { return false; } });
 function createWindow() {

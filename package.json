@@ -36,7 +36,8 @@
       "sw.js",
       "icon.svg",
       "icon-*.png",
-      "vendor/**"
+      "vendor/**",
+      "locales/**"
     ],
     "win": {
       "target": [

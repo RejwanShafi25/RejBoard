@@ -1,3 +1,11 @@
+## Unreleased
+- Moving a shape or connector now moves everything linked to it (shapes and connectors, transitively). Toggle in Settings; hold Alt to move only the selection.
+- Lines, arrows and connectors now attach to the true outline of a shape (cone, triangle, star, heart, cylinder, rotated shapes...) instead of its bounding box, so there are no gaps.
+- Text color picker now always registers a pick (e.g. black) - it follows the color of the selected text.
+- Selecting a sticky note shows its color swatches + custom picker in the text bar.
+- Paper color changes are non-destructive: original colors are remembered and restored exactly when you return to the old paper; pale fills/stickies are no longer darkened on white.
+- "Fix shapes" is now off by default.
+
 # Changelog
 
 ## [1.2.8]
