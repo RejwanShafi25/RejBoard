@@ -1,10 +1,10 @@
-// Smoke test for the bundled Tesseract.js path (run on Linux after `npm run libs:linux`).
+// Smoke test for the bundled Tesseract.js path (run after `npm run libs`; same on Windows, macOS and Linux).
 // Reads test/hello.png entirely from memory using the same code the app uses.
 const fs = require('fs'), os = require('os'), path = require('path');
 const { _test } = require('../ocr.js');
 (async () => {
   const root = _test.tessJsRoot();
-  if (!root) { console.error('FAIL: bundled tesseract.js not found (run: npm run libs:linux)'); process.exit(1); }
+  if (!root) { console.error('FAIL: bundled tesseract.js not found (run: npm run libs)'); process.exit(1); }
   const png = fs.readFileSync(path.join(__dirname, '..', 'test', 'hello.png'));
   const text = await _test.viaTesseractJs(png, 'en', os.tmpdir());
   await _test.killWorker();

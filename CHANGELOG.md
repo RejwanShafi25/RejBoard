@@ -1,12 +1,20 @@
-## Unreleased
+# Changelog
+
+## [Unreleased]
+
+### Changed
+- **One offline handwriting engine on every platform.** On-device recognition now uses a bundled Tesseract.js engine on Windows, macOS and Linux. Apple Vision, Windows.Media.Ocr and the system `tesseract` command are no longer used. All installers include the engine and English data. From source, run `npm run libs` once (replaces `npm run libs:linux`; the `ocr-linux` folder is now `ocr-engine`).
+
+### Fixed
+- Minimizing the in-app browser / video window after it had been dragged or resized only moved it instead of collapsing it; it now collapses to the title bar and restores to its exact size and position.
 - Moving a shape or connector now moves everything linked to it (shapes and connectors, transitively). Toggle in Settings; hold Alt to move only the selection.
 - Lines, arrows and connectors now attach to the true outline of a shape (cone, triangle, star, heart, cylinder, rotated shapes...) instead of its bounding box, so there are no gaps.
 - Text color picker now always registers a pick (e.g. black) - it follows the color of the selected text.
 - Selecting a sticky note shows its color swatches + custom picker in the text bar.
 - Paper color changes are non-destructive: original colors are remembered and restored exactly when you return to the old paper; pale fills/stickies are no longer darkened on white.
-- "Fix shapes" is now off by default.
-
-# Changelog
+- "Fix shapes" is now off by default
+- The LaTeX placement, the layer deletion that left imported pages visible, and Page Up/Page Down in present mode on an infinite canvas.
+- A new Added entry for dragging layers to reorder them.
 
 ## [1.2.8]
 ### Added

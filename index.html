@@ -171,7 +171,7 @@ button,select,input,textarea{border-radius:12px}
 #hs .it .nav-icon svg{display:block;margin:auto}
 /* ---- responsive layout: header collapses, dock shrinks, side widgets never overlap the dock ---- */
 #ti{flex:0 1 auto;min-width:70px;max-width:24vw}#tgs{flex:0 1 auto;min-width:60px;max-width:18vw}
-#dk{box-sizing:border-box}
+#dk{box-sizing:border-box;width:max-content}
 #dk.sm button{padding:2px 3px;font-size:17px}#dk.sm svg{width:21px;height:21px}#dk.sm{padding:5px 8px}
 #dk.xs button{padding:1px 2px;font-size:15px}#dk.xs svg{width:18px;height:18px}#dk.xs{padding:4px 6px;gap:1px}
 #dk,#zw,#pgn{will-change:auto}#pgn{z-index:11}
@@ -197,6 +197,23 @@ button,select,input,textarea{border-radius:12px}
 #hwp[hidden]{display:none}
 #hwp{flex-direction:column;align-items:flex-start;flex-wrap:nowrap;gap:9px;width:min(310px,92vw);box-sizing:border-box;padding:12px 14px;left:0;transform:none}
 #hwp small{opacity:.7;line-height:1.35}
+
+/* ---- adaptive / scalable UI ---- */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{font-size:clamp(13px,calc(.4vw + 8px),17px);overscroll-behavior:none}
+img,svg,canvas,video{max-width:100%}
+.board-card{content-visibility:auto;contain-intrinsic-size:auto 240px}
+@media(pointer:coarse){
+ #dk button{min-width:38px;min-height:38px}
+ #hdr button,#hdr select{min-height:36px;min-width:36px}
+ #zw button,#pgn button{min-width:34px;min-height:34px}
+ .pop button,.pop select{min-height:34px}
+}
+@media(max-height:480px) and (orientation:landscape){#hdr{padding-top:2px;padding-bottom:2px}#w{min-height:120px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+@media(min-width:2200px){.pop{max-width:min(720px,40vw)}}
+html.lowmem *{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;text-shadow:none!important}
+html.lowmem .pop,html.lowmem #fab,html.lowmem .board-card{box-shadow:none!important}
 </style>
 <script>window.MathJax={startup:{typeset:false}}</script>
 <script>function lib(a,b){const t=document.createElement('script');t.src=a;t.onerror=()=>{const u=document.createElement('script');u.src=b;document.head.append(u)};document.head.append(t)}
@@ -259,6 +276,30 @@ lib('vendor/tex-svg.js','https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es
 #recpill{position:fixed;left:12px;bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:60;display:flex;align-items:center;gap:8px;background:var(--pn);border:1px solid #e5484d;border-radius:999px;padding:4px 6px 4px 12px;box-shadow:0 4px 18px #0004;max-width:min(92vw,360px)}
 #recpill #recpn{cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}#recpill #recpt{font-variant-numeric:tabular-nums;font-weight:600}#recpill button{border-radius:999px;padding:2px 9px}#recpill.paused .rdot{animation:none;opacity:.35}
 </style>
+<style id="resp2">
+/* ---- responsive v2: toast above the bars, phone sidebar drawer, short-landscape header, big-screen scaling ---- */
+#ts_{bottom:calc(var(--pb,86px) + 8px);max-width:min(92vw,560px);text-align:center;pointer-events:none;box-sizing:border-box}
+#hsm,#hsb{display:none}
+#hdr::-webkit-scrollbar{display:none}
+@media(max-width:960px){#tgs{display:none}}
+#erp,#lzp{transform:none}
+#mq{top:max(8px,min(20%,calc(100vh - 470px)));max-height:calc(100vh - 16px);overflow:auto}
+@media(max-height:480px){#hdr{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;gap:3px}#hdr>*{flex-shrink:0}#ti{max-width:16vw}#sv{min-width:0}#hdr button,#hdr select{min-width:30px;padding-left:6px;padding-right:6px}}
+@media(min-width:901px){#folderGrid{grid-template-columns:repeat(auto-fill,minmax(clamp(120px,9vw,240px),1fr))}}
+@media(min-width:1500px){#grid{grid-template-columns:repeat(auto-fill,minmax(clamp(150px,11vw,300px),1fr))}}
+@media(min-width:2000px){#dk button{font-size:26px;padding:5px 7px}#dk svg{width:32px;height:32px}#dk{padding:8px 14px;border-radius:26px}#hdr button,#hdr select,#hdr input{font-size:15px}#hdr{padding:8px 14px}#hmain{padding:24px 36px}}
+@media(max-width:700px){
+#hs{display:block;position:fixed;left:0;top:0;bottom:0;z-index:46;width:min(290px,84vw);transform:translateX(-102%);visibility:hidden;transition:transform .2s ease,visibility 0s .2s;padding-top:max(12px,env(safe-area-inset-top,0px))}
+#hs.open{transform:none;visibility:visible;transition:transform .2s ease;box-shadow:8px 0 40px #0005}
+#hs.collapsed{width:min(290px,84vw);padding:12px}
+#hs.collapsed .hs-brand{display:flex}#hs.collapsed .hs-head{justify-content:flex-start}
+#hs.collapsed .it{justify-content:flex-start;padding:7px 10px}
+#hs.collapsed .it .nav-label{display:block}#hs.collapsed .it .nav-count{display:inline}#hs.collapsed .it button{display:inline-block}
+#hsm{display:flex;align-items:center;justify-content:center;position:fixed;top:max(10px,env(safe-area-inset-top,0px));left:10px;z-index:41;width:42px;height:42px;border-radius:14px;border:1px solid var(--bd);background:var(--pn);color:inherit;font-size:22px;padding:0}
+#hsb{display:block;position:fixed;inset:0;z-index:45;background:#0006;opacity:0;pointer-events:none;transition:opacity .2s}#hsb.on{opacity:1;pointer-events:auto}
+#hmain{padding:62px 14px 96px}
+}
+</style>
 </head><body>
 <div id="hdr"><button id="bkb" hidden>← Back</button><button id="bn" title="Boards — all your notes, folders and tags"><img src="icon-192.png" alt="" width="18" height="18" style="vertical-align:-4px;border-radius:4px"> <span data-i="boards">Boards</span></button><button id="nn" title="Create a new board">＋ <span data-i="newb">New</span></button><b>RejBoard</b><input id="ti" size="16" aria-label="Board title" title="Rename this board"><button id="lkf" hidden></button><button id="favnote" title="Add to favorites">☆</button><input id="tgs" size="12" placeholder="#tags, comma" title="Add tags to this board (comma separated)"><span class="chip" id="sv" role="status" title="Autosave status">✓ Saved</span><span style="flex:1"></span><button id="recb" title="Voice recordings for this board: record the class, play it back later">🎙 <span class="lb">Record</span></button><button id="cvb" title="Canvas: paper, grid, dots, pages and settings">🎨 <span data-i="canvas">Canvas</span></button><button id="exb" title="Export, save a copy, open a board file">⬆ <span data-i="export">Export</span></button><button id="prb" title="Present full screen">📽 <span data-i="present">Present</span></button><button id="stb" title="Settings">⚙</button></div>
 <div id="bars" hidden><div class="bar"><button id="hb" title="Close this panel">✕</button>
@@ -289,7 +330,7 @@ lib('vendor/tex-svg.js','https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es
 <div id="tbp" class="pp" hidden style="bottom:calc(var(--pb,86px) + 60px)"><div class="tbr"><b>Rows / columns</b><button data-b="ra">＋ Row above</button><button data-b="rb">＋ Row below</button><button data-b="cl">＋ Col left</button><button data-b="cr">＋ Col right</button><button data-b="dr">− Row</button><button data-b="dc">− Col</button></div><div class="tbr"><b>Cells</b><button data-b="mg" title="Merge the selected cells into one">⊞ Merge</button><button data-b="sp" title="Unmerge a merged cell, or split a single cell into rows / columns">⊟ Split</button><button data-b="sum" title="AutoSum the numbers above (or to the left of) the selected cell">Σ Sum</button><b>Fill</b><button class="sw" data-bgc="#fff3a3" style="background:#fff3a3" title="Cell background #fff3a3"></button><button class="sw" data-bgc="#ffd6e0" style="background:#ffd6e0" title="Cell background #ffd6e0"></button><button class="sw" data-bgc="#d6f5d6" style="background:#d6f5d6" title="Cell background #d6f5d6"></button><button class="sw" data-bgc="#d6e8ff" style="background:#d6e8ff" title="Cell background #d6e8ff"></button><button class="sw" data-bgc="#e5d6ff" style="background:#e5d6ff" title="Cell background #e5d6ff"></button><button class="sw" data-bgc="#ffe0b3" style="background:#ffe0b3" title="Cell background #ffe0b3"></button><button class="sw" data-bgc="#e0e0e0" style="background:#e0e0e0" title="Cell background #e0e0e0"></button><input type="color" id="tbbg" value="#ffe066" title="Custom cell background"><button data-b="nofill" title="Remove cell background">∅</button></div><div class="tbr"><b>Text</b><select id="tbff" title="Font of the selected cells"><option value="hand">Handwriting</option><option value="sans">Sans</option><option value="mono">Mono</option><option value="marker">Marker</option><option value="serif">Serif</option></select><label title="Text size of the selected cells" style="display:flex;align-items:center;gap:3px;font-size:12px">Size <input id="tbfs" type="range" min="8" max="96" value="18" style="width:90px"><span id="tbfsv" style="min-width:20px">18</span></label><input type="color" id="tbtc" value="#111111" title="Text color of the selected cells"><button data-tx="b" id="tbxb" title="Bold"><b>B</b></button><button data-tx="i" id="tbxi" title="Italic"><i>I</i></button><button data-tx="u" id="tbxu" title="Underline"><u>U</u></button><button data-b="txreset" title="Back to the table's default text style">Reset</button><button data-b="all" title="Select every cell of the table">▦ All cells</button></div><div class="tbr"><b>Align</b><button data-al="l" title="Align left">⇤</button><button data-al="c" title="Center">↔</button><button data-al="r" title="Align right">⇥</button><button data-av="t" title="Align top">⤒</button><button data-av="m" title="Middle">↕</button><button data-av="b" title="Align bottom">⤓</button></div><div class="tbr"><b>Borders</b><button data-bd="all">All</button><button data-bd="outer">Outer</button><button data-bd="inner">Inner</button><button data-bd="T">Top</button><button data-bd="B">Bottom</button><button data-bd="L">Left</button><button data-bd="R">Right</button><button data-bd="none" title="Remove the borders around the selected cells">None</button><button data-bd="reset" title="Back to the default thin line">Default</button></div><div class="tbr"><b>Border style</b><select id="tbbw" title="Border thickness"><option value="1">Thin</option><option value="2" selected>Medium</option><option value="4">Thick</option></select><select id="tbbs" title="Border line style"><option value="">Solid</option><option value="d">Dashed</option><option value="o">Dotted</option></select><input type="color" id="tbbc" value="#111111" title="Border color"><b>Table</b><button data-b="dup">⧉ Copy</button><button data-b="front">⬆ Front</button><button data-b="back">⬇ Back</button></div><div class="tbh">Drag across cells to select (Shift+click extends) · drag a grid line to resize · ✥ moves the table · double-click or Tab to type · formulas start with = : =SUM(A1:A3), =B2*C2, =AVERAGE(B2:B9), =IF(A1&gt;5,"hi","lo"), =SUMIF(A1:A9,"&gt;5") — letters/numbers on the table edge are the cell addresses · while typing a formula, click cells to insert them</div></div>
 <div id="pgn" class="pp" hidden style="left:12px;transform:none;bottom:14px;flex-wrap:nowrap"><button id="pg0" title="Previous page">◀</button><span id="pgl2" class="chip">1/1</span><button id="pg1" title="Next page">▶</button><button id="pgadd" title="Add another page">＋ <span data-i="page"></span></button><button id="pgfull" hidden class="on"></button></div>
 <div id="pp"><button id="zs" title="Zoom to selection (Z)">🔍</button><span id="tm" class="chip">00:00</span><button id="spb" title="Spotlight">🔦</button><button id="px" title="Exit presentation (Esc)">✕</button></div>
-<div id="hm" hidden><div id="hs"></div><div id="hmain"></div><button id="fab" title="New board">✏️</button></div><div id="rulerOverlay"><div class="ruler-body"></div></div><div id="pomo" class="pop" hidden><div class="phd" id="pomoHead"><b>⏱ Pomodoro</b><button class="pclose" id="pomoClose" title="Close timer (keeps running in the background)" aria-label="Close">✕</button></div><div class="clock" id="pomoClock" title="Double-click to type a custom time">25:00</div><div class="prow pset" id="pomoSet"><input id="pomoH" type="number" min="0" max="99" value="0" title="Hours" aria-label="Hours"><span>h</span><input id="pomoM" type="number" min="0" max="59" value="25" title="Minutes" aria-label="Minutes"><span>m</span><input id="pomoS" type="number" min="0" max="59" value="0" title="Seconds" aria-label="Seconds"><span>s</span><button id="pomoApply" title="Set the timer to this time">Set</button></div><div class="prow"><button id="pomoSub1" title="Remove 1 minute">−1 min</button><button id="pomoAdd1" title="Add 1 minute">+1 min</button><button id="pomoAdd5" title="Add 5 minutes">+5 min</button><button id="pomoAdd10" title="Add 10 minutes">+10 min</button><button id="pomoAdd60" title="Add 1 hour">+1 hr</button></div><div class="prow"><button id="pomoStart" class="on">Start</button><button id="pomoPause">Pause</button><button id="pomoReset">Reset</button><button id="pomoBreak">5 min break</button></div><div class="presz" id="pomoResize" title="Drag to resize"></div></div>
+<div id="hm" hidden><div id="hs"></div><div id="hmain"></div><button id="hsm" title="Menu" aria-label="Open menu">☰</button><div id="hsb"></div><button id="fab" title="New board">✏️</button></div><div id="rulerOverlay"><div class="ruler-body"></div></div><div id="pomo" class="pop" hidden><div class="phd" id="pomoHead"><b>⏱ Pomodoro</b><button class="pclose" id="pomoClose" title="Close timer (keeps running in the background)" aria-label="Close">✕</button></div><div class="clock" id="pomoClock" title="Double-click to type a custom time">25:00</div><div class="prow pset" id="pomoSet"><input id="pomoH" type="number" min="0" max="99" value="0" title="Hours" aria-label="Hours"><span>h</span><input id="pomoM" type="number" min="0" max="59" value="25" title="Minutes" aria-label="Minutes"><span>m</span><input id="pomoS" type="number" min="0" max="59" value="0" title="Seconds" aria-label="Seconds"><span>s</span><button id="pomoApply" title="Set the timer to this time">Set</button></div><div class="prow"><button id="pomoSub1" title="Remove 1 minute">−1 min</button><button id="pomoAdd1" title="Add 1 minute">+1 min</button><button id="pomoAdd5" title="Add 5 minutes">+5 min</button><button id="pomoAdd10" title="Add 10 minutes">+10 min</button><button id="pomoAdd60" title="Add 1 hour">+1 hr</button></div><div class="prow"><button id="pomoStart" class="on">Start</button><button id="pomoPause">Pause</button><button id="pomoReset">Reset</button><button id="pomoBreak">5 min break</button></div><div class="presz" id="pomoResize" title="Drag to resize"></div></div>
 <div id="stm" hidden></div><div id="blk" hidden></div><div id="mediaChoices" hidden></div><div id="mediaHub" hidden aria-label="In-app browser and video"><div class="mh-head" id="mediaHead"><strong id="mediaTitle">Browser</strong><button id="mediaBack" title="Back">←</button><button id="mediaForward" title="Forward">→</button><button id="mediaReload" title="Reload">↻</button><input id="mediaAddress" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Enter URL or search the web"><button id="mediaGo">Go</button><button id="mediaPlay" title="Play or pause media">▶</button><button id="mediaBack10" title="Back 10 seconds">−10s</button><button id="mediaFwd10" title="Forward 10 seconds">+10s</button><button id="mediaMin" title="Minimize">—</button><button id="mediaMax" title="Maximize / restore">□</button><button id="mediaClose" title="Close and clear temporary session">✕</button></div><div id="mediaBody" style="display:flex;flex:1;min-height:0"></div><div class="mh-foot">Temporary in-app session. Websites may still process data on their own servers.</div><div class="mh-resize-handle edge-n" data-edge="n" title="Resize from top" aria-label="Resize from top"></div>
 <div class="mh-resize-handle edge-e" data-edge="e" title="Resize from right" aria-label="Resize from right"></div>
 <div class="mh-resize-handle edge-s" data-edge="s" title="Resize from bottom" aria-label="Resize from bottom"></div>
@@ -331,7 +372,7 @@ let pals=Object.assign({'Pastel Candy':['#ffb3c6','#ffcfd2','#fde4cf','#fbf8cc',
 const cv=$('#c'),cx=cv.getContext('2d',{desynchronized:!!L('wb.st',{}).ll});let dpr=1;
 const toast=(m,ms=2800)=>{const t=$('#ts_');t.textContent=m;t.hidden=0;clearTimeout(toast.h);toast.h=setTimeout(()=>t.hidden=1,ms)};
 /* ---------- rendering ---------- */
-const IM={};function img(s){if(!IM[s]){const m=new Image();m.onload=draw;m.src=s;IM[s]=m}return IM[s]}
+const IM={};function img(s){if(!IM[s]){const m=new Image();m.decoding='async';m.onload=()=>schedDraw();m.src=s;IM[s]=m}return IM[s]}
 const wd=(s,p)=>Math.max(.6,s.size*(1-s.sens+s.sens*2*p));
 /* Catmull-Rom resample so pressure pens draw as a smooth curve instead of faceted segments (render-only; stored points untouched) */
 function smoothPts(P){const out=[P[0]],n=P.length;for(let i=0;i<n-1;i++){const p0=P[i-1]||P[i],p1=P[i],p2=P[i+1],p3=P[i+2]||P[i+1],len=Math.hypot(p2[0]-p1[0],p2[1]-p1[1]),k=Math.min(8,Math.floor(len/2.5));
@@ -593,24 +634,54 @@ function bnds(L){let a=[1e9,1e9,-1e9,-1e9];for(const i of L){let b;if(i.t=='sp')
 function clipPages(c){if(S.pg.size==='inf')return;const[pw,ph]=pdim();c.beginPath();for(let i=0;i<S.pg.n;i++)c.rect(0,i*(ph+PG_GAP),pw,ph);c.clip()}
 var rulerActive=false,rulerHook=null;
 function draw(){draw0();ov2();if(typeof renderRuler==='function')renderRuler()}
-const paint=c=>{for(const l of S.layers)if(l.vis)for(const i of S.items)if((i.ly??1)==l.id)item(c,i)};
-function mkCache(){if(!S.fast||S.items.length<150){cache=null;return}const c=document.createElement('canvas');c.width=cv.width;c.height=cv.height;const g=c.getContext('2d');g.setTransform(dpr,0,0,dpr,0,0);if(!rulerActive)bgAll(g,cv.width/dpr,cv.height/dpr,S.ox,S.oy,S.z);g.translate(S.ox,S.oy);g.scale(S.z,S.z);clipPages(g);paint(g);cache={c,ox:S.ox,oy:S.oy,nb:rulerActive}}
+/* ---- viewport culling: only items that can touch the visible area are painted ---- */
+var VP=null;
+function vpRect(){const W=cv.width/dpr,H=cv.height/dpr,m=40/S.z;return[-S.ox/S.z-m,-S.oy/S.z-m,(W-S.ox)/S.z+m,(H-S.oy)/S.z+m]}
+/* Conservative paint box of an item in board space, or null when unsure (null = always paint, never wrongly skipped). */
+function cullBox(i){
+ let x0,y0,x1,y1,p;const t=i.t;
+ if(t=='s'){const P=i.pts;if(i.xyz||i.shape3d||!P||!P.length)return null;x0=y0=1e18;x1=y1=-1e18;for(let k=0;k<P.length;k++){const q=P[k],x=q[0],y=q[1];if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y}if(!(x1>=x0))return null;p=(i.size||4)*3+16}
+ else if(t=='sp'||t=='i'||t=='m'||t=='t'||t=='l'||t=='k'){
+  if(t=='k'&&i.pts)return null;
+  if(typeof i.x!='number'||typeof i.y!='number'||typeof i.w!='number'||typeof i.h!='number')return null;
+  x0=Math.min(i.x,i.x+i.w);x1=Math.max(i.x,i.x+i.w);y0=Math.min(i.y,i.y+i.h);y1=Math.max(i.y,i.y+i.h);
+  p=t=='sp'?((i.size||6)*3+40+Math.max(x1-x0,y1-y0)*.35):t=='t'||t=='l'?((i.size||24)*.5+24):t=='k'?10:6}
+ else if(t=='tb'){const cw=i.cw,rh=i.rh;if(!Array.isArray(cw)||!Array.isArray(rh)||typeof i.x!='number'||typeof i.y!='number')return null;let w=0,h=0;for(const a of cw)w+=a;for(const a of rh)h+=a;if(!(w>0&&h>0))return null;x0=i.x;y0=i.y;x1=i.x+w;y1=i.y+h;p=16}
+ else return null;
+ x0-=p;y0-=p;x1+=p;y1+=p;
+ if(i.rot){const cx=(x0+x1)/2,cy=(y0+y1)/2,r=Math.hypot(x1-x0,y1-y0)/2;x0=cx-r;x1=cx+r;y0=cy-r;y1=cy+r}
+ return[x0,y0,x1,y1]}
+const inVP=(i,v)=>{const b=cullBox(i);return!b||(b[2]>=v[0]&&b[0]<=v[2]&&b[3]>=v[1]&&b[1]<=v[3])};
+const paint=c=>{const v=VP;VP=null;paint.drawn=0;paint.skipped=0;for(const l of S.layers)if(l.vis)for(const i of S.items)if((i.ly??1)==l.id){if(v&&!inVP(i,v)){paint.skipped++;continue}paint.drawn++;item(c,i)}};
+function mkCache(){if(!S.fast||S.items.length<150){cache=null;return}const c=document.createElement('canvas');c.width=cv.width;c.height=cv.height;const g=c.getContext('2d');g.setTransform(dpr,0,0,dpr,0,0);if(!rulerActive)bgAll(g,cv.width/dpr,cv.height/dpr,S.ox,S.oy,S.z);g.translate(S.ox,S.oy);g.scale(S.z,S.z);clipPages(g);VP=vpRect();paint(g);cache={c,ox:S.ox,oy:S.oy,nb:rulerActive}}
 function draw0(){cx.setTransform(dpr,0,0,dpr,0,0);bgAll(cx,cv.width/dpr,cv.height/dpr,S.ox,S.oy,S.z);
  if(cache){if(cache.nb&&rulerHook)rulerHook(cx);cx.setTransform(1,0,0,1,0,0);cx.drawImage(cache.c,(S.ox-cache.ox)*dpr,(S.oy-cache.oy)*dpr);cx.setTransform(dpr,0,0,dpr,0,0);cx.save();cx.translate(S.ox,S.oy);cx.scale(S.z,S.z)}
- else{if(rulerHook)rulerHook(cx);cx.save();cx.translate(S.ox,S.oy);cx.scale(S.z,S.z);clipPages(cx);paint(cx)}
+ else{if(rulerHook)rulerHook(cx);cx.save();cx.translate(S.ox,S.oy);cx.scale(S.z,S.z);clipPages(cx);VP=vpRect();paint(cx)}
  if(S.pg.size!='inf')clipPages(cx);
  if(cur)item(cx,cur);
  cx.setLineDash([5,4]);cx.strokeStyle='#3b82f6';cx.lineWidth=1;
  if(lasso){cx.beginPath();lasso.forEach((p,i)=>i?cx.lineTo(p[0],p[1]):cx.moveTo(p[0],p[1]));cx.stroke()}
  if(S.sel.length===1&&S.sel[0].t=='sp')spOverlay(cx,S.sel[0]);else if(S.sel.length){const b=bnds(S.sel);cx.strokeRect(b[0],b[1],b[2]-b[0],b[3]-b[1]);cx.setLineDash([]);cx.fillStyle='#3b82f6';{const hs=5/S.z;HD(b).forEach(q=>cx.fillRect(q[0]-hs,q[1]-hs,2*hs,2*hs));const rc=[(b[0]+b[2])/2,b[1]-28/S.z];cx.beginPath();cx.moveTo((b[0]+b[2])/2,b[1]);cx.lineTo(rc[0],rc[1]);cx.stroke();cx.beginPath();cx.arc(rc[0],rc[1],7/S.z,0,Math.PI*2);cx.fill();if(S.sel.length===1&&S.sel[0].xyz){const q=S.sel[0];Object.values(xyzHandles(q)).forEach(v=>{cx.beginPath();cx.arc(v[0],v[1],7/S.z,0,Math.PI*2);cx.fill()})}}}selExtras(cx);cx.restore()}
-function fit(){dpr=devicePixelRatio||1;const r=$('#w').getBoundingClientRect();cv.width=r.width*dpr;cv.height=r.height*dpr;cv.style.width=r.width+'px';cv.style.height=r.height+'px';draw()}
-new ResizeObserver(fit).observe($('#w'));
+/* Device class: used to size the canvas and the undo budget. navigator.deviceMemory is capped at 8 and absent on Safari/Firefox (assume 4). */
+const DEVMEM=navigator.deviceMemory||4,LOWMEM=DEVMEM<=2||(navigator.hardwareConcurrency||4)<=2;
+const PXCAP=DEVMEM<=2?2.4e6:DEVMEM<=4?6e6:14e6; /* max canvas backing pixels */
+if(LOWMEM)document.documentElement.classList.add('lowmem');
+let fitKey='';
+function fit(){const r=$('#w').getBoundingClientRect(),w=Math.max(1,Math.round(r.width)),h=Math.max(1,Math.round(r.height));let d=devicePixelRatio||1;if(w*h*d*d>PXCAP)d=Math.max(1,Math.sqrt(PXCAP/(w*h)));d=Math.round(d*100)/100;const k=w+'x'+h+'@'+d;if(k===fitKey&&cv.width)return;fitKey=k;dpr=d;cv.width=Math.round(r.width*d);cv.height=Math.round(r.height*d);cv.style.width=r.width+'px';cv.style.height=r.height+'px';cache=null;draw()}
+new ResizeObserver(fit).observe($('#w'));addEventListener('resize',fit);
+(function watchDpr(){try{const m=matchMedia('(resolution: '+(devicePixelRatio||1)+'dppx)');m.addEventListener('change',()=>{fit();if(typeof refitBottom==='function')refitBottom();watchDpr()},{once:true})}catch(_){}})();
 /* ---------- history / persistence ---------- */
-const push=()=>{hist.push(structuredClone(S.items));if(hist.length>60)hist.shift();fut=[]};
-function undo(){if(!hist.length)return;fut.push(structuredClone(S.items));S.items=hist.pop();S.sel=[];save();draw()}
-function redo(){if(!fut.length)return;hist.push(structuredClone(S.items));S.items=fut.pop();S.sel=[];save();draw()}
+/* Snapshot of the board for undo. structuredClone would duplicate every embedded image string in every snapshot; strings are immutable, so we share them by reference. */
+function cloneItems(a){const hold=[];for(let k=0;k<a.length;k++){const s=a[k].src;if(typeof s==='string'&&s.length>4096){hold.push([k,s]);a[k].src=''}}let c;try{c=structuredClone(a)}finally{for(const[k,s]of hold)a[k].src=s}for(const[k,s]of hold)c[k].src=s;let cost=0;for(const i of a)cost+=i.pts?i.pts.length*112:i.cw?i.cw.length*i.rh.length*400:200;c.__c=cost;return c}
+const HBUD=(DEVMEM<=2?40:DEVMEM<=4?96:192)*1048576;
+function trimHist(){let t=0;for(const h of hist)t+=h.__c||0;while(hist.length>3&&(hist.length>60||t>HBUD))t-=hist.shift().__c||0}
+const push=()=>{hist.push(cloneItems(S.items));trimHist();fut=[]};
+function undo(){if(!hist.length)return;fut.push(cloneItems(S.items));S.items=hist.pop();S.sel=[];save();draw()}
+function redo(){if(!fut.length)return;hist.push(cloneItems(S.items));trimHist();S.items=fut.pop();S.sel=[];save();draw()}
 const DB=new Promise(r=>{try{const q=indexedDB.open('wb',2);q.onupgradeneeded=()=>{const d=q.result;if(!d.objectStoreNames.contains('n'))d.createObjectStore('n',{keyPath:'id'});if(!d.objectStoreNames.contains('rec'))d.createObjectStore('rec',{keyPath:'id'}).createIndex('b','board')};q.onblocked=()=>{try{toast('Close other tabs of this app so it can finish updating',8000)}catch(e){}};q.onsuccess=()=>{q.result.onversionchange=()=>q.result.close();r(q.result)};q.onerror=()=>r(null)}catch(e){r(null)}});
 const tx=async(m,f)=>{const d=await DB;if(!d)return;return new Promise(r=>{try{const q=f(d.transaction('n',m).objectStore('n'));q.onsuccess=()=>r(q.result);q.onerror=()=>r()}catch(e){r()}})};
+/* Metadata-only read of the board library: streams records with a cursor and drops the heavy fields (strokes, images) immediately, so peak memory is one board instead of the whole library. */
+const txMeta=async(derive)=>{const d=await DB;if(!d)return[];return new Promise(res=>{const out=[];try{const q=d.transaction('n','readonly').objectStore('n').openCursor();q.onsuccess=()=>{const c=q.result;if(!c){res(out);return}const v=c.value,o={};for(const k in v)if(k!=='items')o[k]=v[k];try{if(derive)derive(v,o)}catch(e){}out.push(o);c.continue()};q.onerror=()=>res(out)}catch(e){res(out)}})};
 const ind=m=>{const e=$('#sv');if(e)e.textContent=m};
 /* ct = created, mt = last content change. Neither changes when a board is merely opened, favourited, moved or locked. */
 let DIRTY=false;
@@ -784,15 +855,15 @@ cv.addEventListener('pointermove',e=>{updateBrushCursor(e.clientX,e.clientY);if(
  else if(k=='rs'){const b=bnds(S.sel),h=drag.h,W=Math.max(1,b[2]-b[0]),H=Math.max(1,b[3]-b[1]);let sx=1,sy=1,ax=b[0],ay=b[1];if(h.includes('e'))sx=(p[0]-ax)/W;else if(h.includes('w')){ax=b[2];sx=(ax-p[0])/W}if(h.includes('s'))sy=(p[1]-ay)/H;else if(h.includes('n')){ay=b[3];sy=(ay-p[1])/H}sx=Math.max(.05,sx);sy=Math.max(.05,sy);if(h.length==2)sx=sy=Math.max(sx,sy);xf(S.sel,(x,y)=>[ax+(x-ax)*sx,ay+(y-ay)*sy],sx,sy)}
  else if(k=='sh'){if(S.tool=='tape'){const ts=cfg.tape?.size||18,straight=!!cfg.tape?.straight!==e.shiftKey;if(straight)drag.pts=[drag.a.slice(),p.slice()];else{const l=drag.pts[drag.pts.length-1];if(Math.hypot(p[0]-l[0],p[1]-l[1])>=Math.max(1.5,2/S.z))drag.pts.push(p.slice())}cur=drag.pts.length>1?mkTape(drag.pts,ts):null}else{cur=mkSp($('#shp').value,drag.a,p,e.shiftKey)}}
  else if(k=='pen'&&!(ST.inkRaw&&e.pointerType==='pen'))for(const v of coal(e))addPt(v,pt(v));
- if(k=='pen'||k=='er'||k=='lz')schedDraw();else draw()});
+ schedDraw()});
 const up=e=>{if(e&&e.pointerId!=null)tp.delete(e.pointerId);if(!drag)return;const k=drag.k,dg=drag;if(k=='pz'&&tp.size)return;drag=null;cache=null;ruler.lock=false;
  if(k=='pen'&&cur){let s=cur;cur=null;s=wbPost(s);if(S.snap&&!s.fx&&s.pts.length>8){const r=skSnap(s);if(r)s=r;else{const g=snap(s.pts);if(g){s.pts=g;s.sharp=1}}}push();addI(s);save()}
  else if(k=='sh'&&cur){const s=cur;cur=null;if(s.t=='k'){delete s.prev;if(!s.pts)fitTape(s)}if(s.t=='k'?(s.pts?tapeLen(s)>6:s.w>8&&s.h>8):s.t=='sp'?(s.w>3||s.h>3):true){push();addI(s);S.sel=(s.t=='sp'&&ST.rts)?[s]:[];save()}}
  else if(k=='ls'){const poly=lasso;lasso=null;S.cell=null;const px=poly.map(q=>q[0]),py=poly.map(q=>q[1]),click=Math.max(...px)-Math.min(...px)<4/S.z&&Math.max(...py)-Math.min(...py)<4/S.z;S.sel=!click&&poly.length>2?expandSel(S.items.filter(i=>act(i)&&selIn(i,poly))):[]}
  else if(k=='mv'||k=='rs'||k=='rot'||k=='xyz'||k=='er'||k=='sprs'||k=='spend'||k=='tcw'||k=='trh'){if(k=='er'&&erPending){const q=erPending;erPending=null;erase(q);drag.last=q}save();}if(ST.rts&&k=='sh')setTool('select');draw()};
-cv.addEventListener('pointerrawupdate',e=>{if(!ST.inkRaw||e.pointerType!=='pen'||!drag||drag.k!=='pen')return;for(const v of coal(e))addPt(v,pt(v));draw()});
+cv.addEventListener('pointerrawupdate',e=>{if(!ST.inkRaw||e.pointerType!=='pen'||!drag||drag.k!=='pen')return;for(const v of coal(e))addPt(v,pt(v));schedDraw()});
 cv.addEventListener('pointerup',up);cv.addEventListener('pointercancel',up);window.addEventListener('blur',()=>{drag=null;lasso=null;draw()});cv.addEventListener('contextmenu',e=>e.preventDefault());
-cv.addEventListener('wheel',e=>{e.preventDefault();if(e.ctrlKey||e.metaKey||ST.wheel){const r=cv.getBoundingClientRect();zoomAt(Math.exp(-e.deltaY*.01),e.clientX-r.left,e.clientY-r.top)}else{S.ox-=e.deltaX;S.oy-=e.deltaY;cache=null;draw()}},{passive:false});
+cv.addEventListener('wheel',e=>{e.preventDefault();if(e.ctrlKey||e.metaKey||ST.wheel){const r=cv.getBoundingClientRect();zoomAt(Math.exp(-e.deltaY*.01),e.clientX-r.left,e.clientY-r.top)}else{S.ox-=e.deltaX;S.oy-=e.deltaY;cache=null;schedDraw()}},{passive:false});
 cv.addEventListener('dblclick',e=>{const h=hit(pt(e));if(!h)return;if(h.t=='l')window.open(h.text,'_blank','noopener');else if(h.t=='k'){push();h.open=!h.open;save();draw()}else if(h.t=='tb')editCell(h,pt(e));else if(h.t=='t'||h.t=='m')editItem(h)});
 const GR='alpha beta gamma delta epsilon theta lambda mu pi sigma phi omega Delta Sigma Omega'.split(' ');
 function looksMath(s){if(s.includes('\n')||s.length>80||(s.match(/[A-Za-z]{4,}/g)||[]).length>3)return false;return /\\[a-zA-Z]+|sqrt\(|cbrt\(|\^|\b\d+\/\d+\b|\b[a-z]\/[a-z]\b|\)\/\(|\b(int|sum|lim|inf|infinity|pi|alpha|beta|gamma|delta|theta|lambda|sigma|omega)\b|<=|>=|!=|->|\+-/.test(s)}
@@ -976,7 +1047,7 @@ async function autoInlineMath(ed){
 }
 /* ===== @ board links: type @ in a text/sticky to link to another board ===== */
 function linkRefs(items){const out=[];for(const i of items||[]){if(!i||typeof i.html!=='string'||i.html.indexOf('data-board')<0)continue;const re=/<span[^>]*\sdata-board="([^"]+)"[^>]*>/g;let m;while((m=re.exec(i.html))){const pg=/data-page="(\d+)"/.exec(m[0]);out.push({id:m[1],page:pg?+pg[1]:0})}}return out}
-async function refreshBT(){const all=(await tx('readonly',s=>s.getAll()))||[];for(const k in BLINKS)delete BLINKS[k];all.forEach(r=>{if(r.folder)return;BTITLE[r.id]=r.title;if(!r.del)BLINKS[r.id]=new Set(linkRefs(r.items).map(x=>x.id))})}
+async function refreshBT(){const all=await txMeta((v,o)=>{if(!v.folder&&!v.del)o.lk=linkRefs(v.items).map(x=>x.id)});for(const k in BLINKS)delete BLINKS[k];all.forEach(r=>{if(r.folder)return;BTITLE[r.id]=r.title;if(!r.del)BLINKS[r.id]=new Set(r.lk||[])})}
 function boardLinkAt(p){for(let k=S.items.length-1;k>=0;k--){const it=S.items[k];if(it.t!=='t')continue;const rs=BLR.get(it);if(!rs||!act(it))continue;for(const r of rs)if(p[0]>=r.x&&p[0]<=r.x+r.w&&p[1]>=r.y&&p[1]<=r.y+r.h)return{id:r.id,page:r.page}}return null}
 async function createLinkedBoard(title){const rec={id:uid(),title:String(title||'Untitled').trim().slice(0,80)||'Untitled',items:[],bg:S.bg,parent:S.parent||'',fav:false,q:'',th:'',t:Date.now(),ct:Date.now(),mt:Date.now()};await tx('readwrite',s=>s.put(rec));BTITLE[rec.id]=rec.title;BLINKS[rec.id]=new Set();return rec}
 /* ---- “Linked from” chip beside the board name ---- */
@@ -1187,17 +1258,17 @@ document.querySelectorAll('[data-mtab]').forEach(b=>b.onclick=()=>{document.quer
 
 $('#mi').onclick=async()=>{const l=$('#ml').value.trim();if(!l)return;if(!medit&&mcell&&tbMathInsert(l))return;try{const o=await mkMath(l);push();if(medit){Object.assign(medit,{latex:l,srcText:undefined,...o});medit=null}else addI({t:'m',latex:l,x:mp[0],y:mp[1],color:S.color,size:cfg.math.size,...o});save();$('#mq').hidden=1;$('#ml').value='';draw()}catch(e){toast('LaTeX could not be loaded or rendered')}};
 $('#mc').onclick=()=>{medit=null;mcell=null;$('#mq b').textContent='LaTeX';$('#mq').hidden=1};
-/* ---- On-device OCR: strokes -> small black-on-white PNG (RAM only) -> OS OCR engine in the main process ---- */
+/* ---- On-device OCR: strokes -> small black-on-white PNG (RAM only) -> bundled Tesseract.js engine in the main process ---- */
 const OCR_MAXSIDE=1600,OCR_PAD=24,OCR_XH=44; /* longest side cap keeps RAM tiny; OCR_XH = target pixel height of a typical pen stroke */
-async function strokesToPng(ss){
+async function strokesToPng(ss,xh,lwm){
  const pen=ss.filter(s=>s.pts&&s.pts.length&&!(s.tool&&s.tool[0]=='h'));if(!pen.length)return null; /* highlighters would blob the text */
  const b=bnds(pen),w=Math.max(1,b[2]-b[0]),h=Math.max(1,b[3]-b[1]),med=a=>{a=a.slice().sort((x,y)=>x-y);return a[a.length>>1]||1};
  const sh=pen.map(s=>{let lo=1e9,hi=-1e9;for(const p of s.pts){if(p[1]<lo)lo=p[1];if(p[1]>hi)hi=p[1]}return Math.max(1,hi-lo)}); /* median stroke height ~ letter height */
- let k=Math.max(.4,Math.min(4,OCR_XH/med(sh)));k=Math.min(k,(OCR_MAXSIDE-2*OCR_PAD)/Math.max(w,h));
+ let k=Math.max(.4,Math.min(6,(xh||OCR_XH)/med(sh)));k=Math.min(k,(OCR_MAXSIDE-2*OCR_PAD)/Math.max(w,h));
  const W=Math.ceil(w*k)+2*OCR_PAD,H=Math.ceil(h*k)+2*OCR_PAD;
  let c=document.createElement('canvas');c.width=W;c.height=H;const g=c.getContext('2d');
  g.fillStyle='#fff';g.fillRect(0,0,W,H);g.strokeStyle='#000';g.fillStyle='#000';g.lineCap=g.lineJoin='round';
- g.lineWidth=Math.max(2.5,Math.min(9,med(pen.map(s=>s.size||3))*k)); /* ink colour/paper are ignored on purpose: OCR wants plain black on white */
+ g.lineWidth=Math.max(2.5,Math.min(9,med(pen.map(s=>s.size||3))*k))*(lwm||1); /* ink colour/paper are ignored on purpose: OCR wants plain black on white */
  g.translate(OCR_PAD-b[0]*k,OCR_PAD-b[1]*k);g.scale(k,k);g.lineWidth/=k;
  for(const s of pen){const P=s.pts;if(P.length==1){g.beginPath();g.arc(P[0][0],P[0][1],g.lineWidth/2,0,7);g.fill();continue}
   g.beginPath();g.moveTo(P[0][0],P[0][1]);for(let i=1;i<P.length-1;i++)g.quadraticCurveTo(P[i][0],P[i][1],(P[i][0]+P[i+1][0])/2,(P[i][1]+P[i+1][1])/2);g.lineTo(P.at(-1)[0],P.at(-1)[1]);g.stroke()}
@@ -1206,9 +1277,13 @@ async function strokesToPng(ss){
  return blob?new Uint8Array(await blob.arrayBuffer()):null}
 async function deviceOcr(ss){
  if(!(window.wb&&wb.ocr))return{err:'On-device recognition is only available in the desktop app. Choose "Online" in ⚙ Settings → Handwriting to text.'};
- const png=await strokesToPng(ss);if(!png)return{err:'Select pen strokes (not highlighter) to recognize'};
- const r=await wb.ocr(png,S.tl);if(!r||!r.ok)return{err:(r&&r.error)||'On-device recognition failed'};
- return{text:r.text}}
+ /* thin ink can read as nothing: if the first rendering finds no text, retry once with a bolder, larger one */
+ let last=null;
+ for(const [xh,lwm] of [[OCR_XH,1],[64,1.8]]){
+  const png=await strokesToPng(ss,xh,lwm);if(!png)return{err:'Select pen strokes (not highlighter) to recognize'};
+  const r=await wb.ocr(png,S.tl);if(!r||!r.ok)return{err:(r&&r.error)||'On-device recognition failed'};
+  last=r;if(r.text&&r.text.trim())return{text:r.text}}
+ return{text:last?last.text:''}}
 async function hw(){const ss=S.sel.filter(i=>i.t=='s');if(!ss.length)return toast('Lasso-select your handwriting first');toast('Recognizing…');
  try{const b=bnds(ss);let txt='';const dev=ST.hwEngine==='device';
   if(dev){const r=await deviceOcr(ss);if(r.err)return toast(r.err,5000);txt=r.text}
@@ -1325,21 +1400,29 @@ function fitBottom(){const dk=$('#dk'),zw0=$('#zw'),pp=$('#pp'),pg=$('#pgn');if(
  const zW=vis(zw)?zw.getBoundingClientRect().width:0,pW=vis(pg)?pg.getBoundingClientRect().width:0,lo=m+(pW?pW+gap:0),hi=vw-m-(zW?zW+gap:0)-dW;
  const dH=dk.getBoundingClientRect().height;let pb=86;
  if(lo<=hi){/* everything fits on one row: keep the dock centred, shifting only if a side widget needs the room */
-  const L=Math.max(lo,Math.min((vw-dW)/2,hi));dk.style.left=L+'px';dk.style.transform='none';
+  const Lc=(vw-dW)/2,L=Math.max(lo,Math.min(Lc,hi)),sh=Math.round(L-Lc);dk.style.left='50%';dk.style.transform=sh?`translateX(calc(-50% + ${sh}px))`:'translateX(-50%)';
   zw.style.bottom=`calc(${B}px + ${safe})`;pg.style.bottom=`calc(${B}px + ${safe})`;
  }else{/* not enough width: page navigator (left) and zoom (right) move to a row above the dock */
-  dk.style.left=Math.max(m,(vw-dW)/2)+'px';dk.style.transform='none';
+  dk.style.left='50%';dk.style.transform='translateX(-50%)';
   const up=`calc(${B+dH+8}px + ${safe})`;zw.style.bottom=up;pg.style.bottom=up;
   pb=86+(pW||zW?Math.round(Math.max(zw.getBoundingClientRect().height,pg.getBoundingClientRect().height,36))+8:0)
  }
  root.style.setProperty('--pb',(pb+Math.max(0,dH-48))+'px')}
-addEventListener('resize',()=>{fitBottom();const sp=$('#shpp');if(sp&&!sp.hidden)renderShapePreview()});
-if(window.ResizeObserver){const ro=new ResizeObserver(()=>fitBottom());['#zw','#pp','#pgn'].forEach(q=>{const e=$(q);e&&ro.observe(e)})}
+const refitBottom=()=>{fitBottom();requestAnimationFrame(fitBottom);setTimeout(fitBottom,120);setTimeout(fitBottom,400)};
+addEventListener('resize',()=>{refitBottom();const sp=$('#shpp');if(sp&&!sp.hidden)renderShapePreview()});
+if(window.ResizeObserver){const ro=new ResizeObserver(()=>fitBottom());['#zw','#pp','#pgn'].forEach(q=>{const e=$(q);e&&ro.observe(e)});ro.observe(document.documentElement)}
+if(window.visualViewport)visualViewport.addEventListener('resize',refitBottom);
+document.addEventListener('fullscreenchange',refitBottom);addEventListener('orientationchange',refitBottom);addEventListener('focus',refitBottom);
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fitBottom);
 setTimeout(fitBottom,0);
 /* the text-format bar and the selection bar are both pinned to the bottom: when both are open, stack the text bar above the selection bar so they never overlap (works for any window size, since the real heights are measured) */
 function stackPops(){const sb=$('#sb'),tp=$('#txp');if(!sb||!tp)return;if(sb.hidden||tp.hidden){tp.style.bottom='';return}const h=Math.ceil(sb.getBoundingClientRect().height);tp.style.bottom='calc(var(--pb,86px) + '+(h+8)+'px)'}
 {const ob=new MutationObserver(stackPops);['#sb','#txp'].forEach(q=>{const e=$(q);e&&ob.observe(e,{attributes:true,attributeFilter:['hidden']})});if(window.ResizeObserver){const r2=new ResizeObserver(stackPops);['#sb','#txp'].forEach(q=>{const e=$(q);e&&r2.observe(e)})}addEventListener('resize',stackPops);setTimeout(stackPops,0)}
+/* phone layout: the home sidebar becomes a slide-out drawer opened with the menu button */
+{const hs=$('#hs'),hsb=$('#hsb'),mq=matchMedia('(max-width:700px)'),openD=v=>{if(!hs)return;hs.classList.toggle('open',!!v);hsb&&hsb.classList.toggle('on',!!v)};
+$('#hsm')&&($('#hsm').onclick=()=>openD(!hs.classList.contains('open')));hsb&&(hsb.onclick=()=>openD(false));
+hs&&hs.addEventListener('click',e=>{if(!mq.matches)return;if(e.target.closest('.hs-head button')){e.stopPropagation();e.preventDefault();openD(false);return}if(e.target.closest('.it'))setTimeout(()=>openD(false),0)},true);
+(mq.addEventListener?mq.addEventListener('change',()=>{if(!mq.matches)openD(false)}):0)}
 /* ---------- UI ---------- */
 function setColor(c){S.color=c;$('#bcs').value=c;if(S.sel.length){push();S.sel.forEach(i=>colorItem(i,c));cache=null;save();draw()}swBrush()}
 const BRUSHES=['fount','calli','soft','ball','pencil','hsq','hch','hrd','tape'];
@@ -1477,6 +1560,12 @@ function align(k){push();const B=bnds(S.sel);S.sel.forEach(i=>{const b=bnds([i])
 function distrib(){if(S.sel.length<3)return toast('Select 3 or more objects');push();const a=S.sel.map(i=>[i,bnds([i])]).sort((p,q)=>p[1][0]-q[1][0]),f=a[0][1][0],l=a.at(-1)[1][2],tot=a.reduce((t,q)=>t+q[1][2]-q[1][0],0),gap=(l-f-tot)/(a.length-1);let x=f;a.forEach(([i,b])=>{const d=x-b[0];xf([i],(px,py)=>[px+d,py]);x+=b[2]-b[0]+gap});save();draw()}
 const selAct={dup:()=>{copy();paste()},copy,cut:()=>{copy();delSel()},del:()=>delSel(),front:()=>{push();S.items=S.items.filter(i=>!S.sel.includes(i)).concat(S.sel);save();draw()},back:()=>{push();S.items=S.sel.concat(S.items.filter(i=>!S.sel.includes(i)));save();draw()},grp:()=>groupSel(),ungrp:()=>ungroupSel(),dist:distrib,zsel:()=>zoomSel()};
 $('#sb').onclick=e=>{const a=e.target.closest('[data-a]')?.dataset.a;if(!a||!S.sel.length)return;(selAct[a]||(()=>align(a)))()};
+/* presentation navigation: paged canvas -> next/previous page; infinite canvas -> next/previous imported page (or one screen up/down) */
+function presNav(d,e){if(e)e.preventDefault();if(S.pg.size!='inf')return goPage(pgOf()+d);
+ const W=cv.clientWidth,H=cv.clientHeight,cx=(W/2-S.ox)/S.z,cy=(H/2-S.oy)/S.z;
+ const L=S.items.filter(i=>i.pg&&i.t=='i'&&(LY(i.ly)?.vis??1)).sort((a,b)=>(Math.round(a.y/20)-Math.round(b.y/20))||(a.x-b.x));
+ if(L.length){let k=0,best=1e18;L.forEach((i,n)=>{const q=Math.hypot(i.x+i.w/2-cx,i.y+i.h/2-cy);if(q<best){best=q;k=n}});const t=L[Math.max(0,Math.min(L.length-1,k+d))],z=Math.min(W/(t.w+60),H/(t.h+60),3);camTo(z,W/2-(t.x+t.w/2)*z,H/2-(t.y+t.h/2)*z);return}
+ camTo(S.z,S.ox,S.oy-d*H*.9)}
 function present(on){document.body.classList.toggle('pres',on);if(on){document.documentElement.requestFullscreen?.().catch(()=>{});tm0=Date.now();clearInterval(tmr);tmr=setInterval(()=>{const t=((Date.now()-tm0)/1000)|0;$('#tm').textContent=String(t/60|0).padStart(2,'0')+':'+String(t%60).padStart(2,'0')},1000);$('#bars').hidden=1}else{clearInterval(tmr);SPOT=false;document.fullscreenElement&&document.exitFullscreen?.();draw()}setTimeout(fit,200);setTimeout(fitBottom,0);setTimeout(fitBottom,250)}
 document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement&&document.body.classList.contains('pres'))present(false)});
 $('#prb').onclick=()=>present(true);$('#px').onclick=()=>present(false);$('#spb').onclick=()=>{SPOT=!SPOT;draw()};
@@ -1491,7 +1580,10 @@ var mcell=null;
 function tbMathTarget(){const t=S.sel.length==1&&S.sel[0].t=='tb'?S.sel[0]:null;if(!t||!S.cell||S.cell.it!==t)return null;tbNorm(t);const m=tbSpan(t,Math.min(S.cell.r,t.rh.length-1),Math.min(S.cell.c,t.cw.length-1));return{t,r:m.r,c:m.c}}
 function tbMathInsert(l){const{t,r,c}=mcell;tbNorm(t);if(!S.items.includes(t)){mcell=null;return false}const cur=String(t.cells[r][c]??'');if(cur[0]=='='){toast('This cell holds a formula - clear it first to add a LaTeX formula');return true}
  push();t.cells[r][c]=(cur&&!/\s$/.test(cur)?cur+' ':cur)+'$'+l.replace(/\$/g,'')+'$';tbFit(t);S.sel=[t];S.cell={it:t,r,c,r2:r+tbSpan(t,r,c).h-1,c2:c+tbSpan(t,r,c).w-1,ar:r,ac:c};save();$('#mq').hidden=1;$('#ml').value='';$('#mq b').textContent='LaTeX';mcell=null;draw();return true}
-$('#mathd').onclick=()=>{closeTransient('mq');medit=null;mcell=tbMathTarget();$('#mq b').textContent=mcell?'LaTeX \u2192 cell '+TBCOL(mcell.c)+(mcell.r+1):'LaTeX';$('#mq').hidden=0;$('#ml').focus()};$('#lyd').onclick=()=>{closeTransient('lp');const p=$('#lp');p.hidden=!p.hidden;if(!p.hidden)renderLayers()};$('#taped').onclick=()=>setTool('tape');
+/* where a LaTeX equation from the dock button lands: last canvas click if still on screen, else centre of the view (on the current page) */
+let lastCvClick=null;cv.addEventListener('pointerdown',e=>{if(e.button===0)lastCvClick=pt(e)},true);
+function mathSpot(){const W=cv.clientWidth,H=cv.clientHeight;let p=lastCvClick;if(p){const sx=p[0]*S.z+S.ox,sy=p[1]*S.z+S.oy;if(sx<0||sy<0||sx>W||sy>H)p=null}if(!p)p=[(W/2-S.ox)/S.z-60,(H/2-S.oy)/S.z-20];return paperPoint(p)}
+$('#mathd').onclick=()=>{closeTransient('mq');medit=null;mp=mathSpot();mcell=tbMathTarget();$('#mq b').textContent=mcell?'LaTeX \u2192 cell '+TBCOL(mcell.c)+(mcell.r+1):'LaTeX';$('#mq').hidden=0;$('#ml').focus()};$('#lyd').onclick=()=>{closeTransient('lp');const p=$('#lp');p.hidden=!p.hidden;if(!p.hidden)renderLayers()};$('#taped').onclick=()=>setTool('tape');
 $('#pl1').onclick=()=>{$('#fi').click();$('#plm').hidden=1};$('#pl2').onclick=()=>{startPdfImport('board');$('#plm').hidden=1};$('#pl4').onclick=()=>{pdfImportContext='board';$('#docf').click();$('#plm').hidden=1};
 $('#exm').onclick=async e=>{const x=e.target.dataset.x;if(!x)return;$('#exm').hidden=1;if(x=='fit')return fitAll();if(x=='copy')return saveCopy();if(x=='open')return $('#of').click();if(x=='lan')return lanDialog();
  if(x=='pdf'){closeTransient('pdfq');$('#pdfq').hidden=0;positionUnder($('#pdfq'),$('#exb'));return}if(x=='selpng'){if(!S.sel.length)return toast('Select something first');const keep=S.items;S.items=S.sel;const c=rexp(false,2,0,bnds(S.sel));S.items=keep;return dlf((S.title||'note')+'-selection.png',await new Promise(r=>c.toBlob(r,'image/png')))}if(x=='svg'){try{return exportAs('svg',false,await pickExportBoards('SVG'))}catch(err){console.error(err);return toast('Export failed')}}exportAs(x)};
@@ -1763,7 +1855,7 @@ const ICON_FOLDER='<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="
 const folderSvg=c=>`<svg viewBox="0 0 48 40" aria-hidden="true" fill="${c||'#e8def8'}"><path d="M4 8a4 4 0 0 1 4-4h12l5 5h15a4 4 0 0 1 4 4v19a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4V8Z"/><path d="M4 12h40" fill="none" stroke="rgba(0,0,0,.10)" stroke-width="1.5"/></svg>`;
 
 async function renderHome(){
- const all=(await tx('readonly',s=>s.getAll()))||[],F=all.filter(r=>r.folder),NA=all.filter(r=>!r.folder).sort((a,b)=>b.t-a.t),N=NA.filter(n=>!n.del),TR=NA.filter(n=>n.del),PR=N.filter(n=>n.locked),sb=$('#hs'),tags={};
+ const all=await txMeta(),F=all.filter(r=>r.folder),NA=all.filter(r=>!r.folder).sort((a,b)=>b.t-a.t),N=NA.filter(n=>!n.del),TR=NA.filter(n=>n.del),PR=N.filter(n=>n.locked),sb=$('#hs'),tags={};
  N.forEach(n=>tagList(n.tags).forEach(t=>tags[t]=(tags[t]||0)+1));
  const tagNames=Object.keys(tags).sort((a,b)=>a.localeCompare(b));
  if(HV.sec.startsWith('f:')&&!F.find(f=>f.id===HV.sec.slice(2)))HV.sec='folders'; /* folder was deleted */
@@ -1865,7 +1957,10 @@ async function renderHome(){
  const g=section(sec==='all'||isF?'Boards':sec==='fav'?'Favorite boards':sec==='trash'?'Trashed boards':sec==='protected'?'Password-protected boards':'Boards','grid');
  if(!boards.length)g.textContent=q?'No matching boards.':sec==='fav'?'No favorite boards yet.':sec==='trash'?'Trash is empty.':sec==='protected'?'No protected boards yet. Use a board’s ⋮ menu → “Lock with password”.':'No boards here yet.';
 
- const shown=boards.slice(0,200),sel=HV.sel||(HV.sel=new Set()),selOn=!!HV.selMode,bar=$('#selbar');
+ if(HV.limKey!==sec+'|'+CF+'|'+q){HV.limKey=sec+'|'+CF+'|'+q;HV.limit=0}
+ const LIMN=Math.max(200,HV.limit||0),shown=boards.slice(0,LIMN);
+ if(boards.length>LIMN){const mb=document.createElement('button');mb.className='more-boards';mb.style.cssText='grid-column:1/-1;justify-self:center;margin:8px auto;padding:10px 22px;border-radius:14px';mb.textContent='Show '+Math.min(200,boards.length-LIMN)+' more boards ('+(boards.length-LIMN)+' hidden)';mb.onclick=()=>{HV.limit=LIMN+200;renderHome()};setTimeout(()=>g.append(mb),0)}
+ const sel=HV.sel||(HV.sel=new Set()),selOn=!!HV.selMode,bar=$('#selbar');
  const refreshBar=()=>{bar.hidden=!selOn;if(!selOn)return;bar.textContent='';const picked=shown.filter(b=>sel.has(b.id)),none=!picked.length;
   const mk=(label,fn,always)=>{const b=document.createElement('button');b.textContent=label;b.disabled=none&&!always;b.onclick=fn;bar.append(b)};
   const cards=()=>g.querySelectorAll('.board-card').forEach((el,i)=>el.classList.toggle('sel',sel.has(shown[i].id)));
@@ -1885,7 +1980,7 @@ async function renderHome(){
   }};
  shown.forEach(n=>{
   const d=document.createElement('div');d.className='cd board-card'+(n.locked?' locked':'');d.draggable=sec!=='trash';d.ondragstart=e=>{e.dataTransfer.setData('text/board',n.id)};
-  const wrap=document.createElement('div');wrap.className='thumb';const im=new Image();im.alt='';im.src=n.locked?'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7':(n.th||'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7');wrap.append(im);
+  const wrap=document.createElement('div');wrap.className='thumb';const im=new Image();im.alt='';im.decoding='async';im.loading='lazy';im.src=n.locked?'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7':(n.th||'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7');wrap.append(im);
   if(n.locked){const lk=document.createElement('div');lk.className='lock-cover';lk.innerHTML=ICON_LOCK.replace('width="20" height="20"','width="46" height="46"');wrap.append(lk)}
   const t=document.createElement('div');t.style='margin-top:6px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis';t.textContent=(n.locked?'🔒 ':'')+n.title;
   const dt=document.createElement('div');dt.className='cdates';
@@ -1941,7 +2036,7 @@ function openSettings(){const m=$('#stm');m.hidden=0;m.innerHTML='';m.onclick=e=
  R('Pointer while inking',SG('ptr',[['nib','Pen nib'],['arrow','Arrow'],['cross','Crosshair']]));
  H('Canvas','How moving around and drawing on the canvas behaves.');R('Mouse wheel zoom',TG(ST,'wheel'),'Off = wheel scrolls, Ctrl+wheel zooms');R('Return to select after drawing shapes',TG(ST,'rts'),'After a shape or tape the Select tool comes back');R('Right-drag pans the canvas',TG(ST,'rdrag'));
  R('Low latency inking (restart app)',TG(ST,'ll'),'Uses a lower-latency canvas; takes effect next launch');R('Autosave',TG(ST,'auto'),'Off = save with Ctrl+S');
- H('Handwriting to text','Which engine turns selected handwriting into editable text.');R('Recognition engine',SG('hwEngine',[['online','Online (Google)'],['device','On-device (offline)']]),'Online sends only the ink points to a Google handwriting service. On-device uses Apple Vision (macOS), Windows OCR, or Tesseract (Linux): nothing leaves your computer. Desktop app only.');box.insertAdjacentHTML('beforeend','<p style="margin:4px 0 0;opacity:.65;font-size:11px">On-device engines are built for neat/printed handwriting; for cursive, Online is usually more accurate.</p>');
+ H('Handwriting to text','Which engine turns selected handwriting into editable text.');R('Recognition engine',SG('hwEngine',[['online','Online (Google)'],['device','On-device (offline)']]),'Online sends only the ink points to a Google handwriting service. On-device uses the built-in Tesseract engine (the same on Windows, macOS and Linux): nothing leaves your computer. Desktop app only.');box.insertAdjacentHTML('beforeend','<p style="margin:4px 0 0;opacity:.65;font-size:11px">The on-device engine works best on neat, separated (printed) handwriting; for cursive, Online is usually more accurate.</p>');
  H('Reset to default','Put every setting back to how it shipped. Your boards are not touched.');const rb=document.createElement('button');rb.textContent='Reset all settings';rb.onclick=()=>{if(!confirmTwice(rb))return;Object.keys(localStorage).filter(k=>k.startsWith('wb.')).forEach(k=>localStorage.removeItem(k));location.reload()};box.append(rb);
  H('Boards','Create, clear, save and open whole boards.');const bw=document.createElement('div');bw.style.cssText='display:flex;gap:6px;flex-wrap:wrap';[['＋ New board',async()=>{m.hidden=1;await newNote()}],['🧹 Clear canvas',()=>{push();S.items=[];S.sel=[];save();draw();m.hidden=1}],['💾 Save a copy',saveCopy],['📂 Open a board file',()=>$('#of').click()]].forEach(([t,f])=>{const b=document.createElement('button');b.textContent=t;b.onclick=f;bw.append(b)});box.append(bw)}
 $('#stb').onclick=()=>{closeTransient();openSettings()};
@@ -2432,7 +2527,13 @@ function renderLayers(){const p=$('#lp');p.innerHTML='<b>Layers</b> <button id="
   const mk=(t,f,on)=>{const b=document.createElement('button');b.textContent=t;if(on)b.className='on';b.onclick=()=>{f();save();renderLayers();draw()};return b};
   const n=document.createElement('input');n.value=l.name;n.size=9;n.onchange=()=>{l.name=n.value;save()};
   d.append(mk(l.id==S.ly?'●':'○',()=>S.ly=l.id,l.id==S.ly),n,mk(l.vis?'👁':'—',()=>l.vis=l.vis?0:1),mk(l.lock?'🔒':'🔓',()=>l.lock=l.lock?0:1),mk('▲',()=>{if(ix<S.layers.length-1)[S.layers[ix],S.layers[ix+1]]=[S.layers[ix+1],S.layers[ix]]}),
-   mk('✕',()=>{if(S.layers.length>1){const o=S.layers.find(q=>q.id!=l.id).id;S.items.forEach(x=>{if((x.ly??1)==l.id)x.ly=o});S.layers.splice(ix,1);if(S.ly==l.id)S.ly=S.layers[S.layers.length-1].id}}));$('#ll').append(d)})}
+   mk('✕',()=>{if(S.layers.length>1){push();const gone=new Set(S.items.filter(x=>(x.ly??1)==l.id));S.items=S.items.filter(x=>!gone.has(x));S.sel=(S.sel||[]).filter(x=>!gone.has(x));cache=null;S.layers.splice(ix,1);if(S.ly==l.id)S.ly=S.layers[S.layers.length-1].id}}));d.dataset.id=l.id;const gh=document.createElement('span');gh.textContent='\u22EE\u22EE';gh.title='Drag to reorder';gh.style.cssText='cursor:grab;touch-action:none;user-select:none;padding:0 4px;opacity:.6;font-weight:700';gh.setAttribute('aria-label','Drag to reorder layer');
+  gh.onpointerdown=ev=>{ev.preventDefault();const rows=[...$('#ll').children];let over=null,above=true;gh.setPointerCapture(ev.pointerId);d.style.opacity='.5';
+   const clr=()=>rows.forEach(r=>{r.style.boxShadow=''});
+   gh.onpointermove=m=>{clr();over=null;for(const r of rows){const b=r.getBoundingClientRect();if(m.clientY>=b.top&&m.clientY<=b.bottom){over=r;above=m.clientY<b.top+b.height/2;break}}if(!over){const f=rows[0].getBoundingClientRect();if(m.clientY<f.top){over=rows[0];above=true}else{over=rows[rows.length-1];above=false}}if(over!==d)over.style.boxShadow=above?'0 -3px 0 0 #6c8cff':'0 3px 0 0 #6c8cff'};
+   const end=m=>{gh.onpointermove=gh.onpointerup=gh.onpointercancel=null;try{gh.releasePointerCapture(ev.pointerId)}catch(_){}d.style.opacity='';clr();if(!over||over===d||m.type=='pointercancel')return;const cur=S.layers.indexOf(l);S.layers.splice(cur,1);let t=S.layers.findIndex(q=>q.id==over.dataset.id);/* list is shown top = last in array */ if(above)t+=1;S.layers.splice(t,0,l);save();renderLayers();draw()};
+   gh.onpointerup=end;gh.onpointercancel=end};
+  d.prepend(gh);$('#ll').append(d)})}
 let pdfImportDoc=null,pdfImportFile=null,pdfImportContext='board',pdfPages=[];
 function startPdfImport(context){closeTransient('pdfm');pdfImportContext=context;$('#pf').click()}
 async function openPdfImportModal(f){if(!window.pdfjsLib)return toast('PDF reader still loading — try again');try{const ws=await fetch('vendor/pdf.worker.min.js',{method:'HEAD'}).then(r=>r.ok?'vendor/pdf.worker.min.js':null).catch(()=>null);pdfjsLib.GlobalWorkerOptions.workerSrc=ws||'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';pdfImportFile=f;pdfImportDoc=await pdfjsLib.getDocument({data:await f.arrayBuffer()}).promise;const n=Math.min(pdfImportDoc.numPages,100);pdfPages=Array.from({length:n},(_,i)=>({n:i+1,selected:true,w:0,h:0,src:''}));const K=docKind(f.name);$('#pdfmt').textContent=K.label=='PDF'?'Import PDF':'Import '+K.label.toLowerCase();$('#pdfstatus').textContent=`${f.name} — ${n} ${K.unit.toLowerCase()}${n==1?'':'s'}`;renderPdfPageChooser();$('#pdfm').hidden=false;for(const p of pdfPages){const pg=await pdfImportDoc.getPage(p.n),v=pg.getViewport({scale:.28}),c=document.createElement('canvas');c.width=Math.ceil(v.width);c.height=Math.ceil(v.height);await pg.render({canvasContext:c.getContext('2d'),viewport:v}).promise;p.w=pg.getViewport({scale:1}).width;p.h=pg.getViewport({scale:1}).height;p.src=c.toDataURL('image/jpeg',.72);const el=$(`#pdfp${p.n}`);if(el)el.querySelector('img').src=p.src}$('#pdfm').hidden=false}catch(e){toast('Could not read that PDF')}}
@@ -2468,8 +2569,8 @@ window.addEventListener('keydown',e=>{
  }
 },true);
 document.addEventListener('keydown',e=>{if(/TEXTAREA|INPUT|SELECT/.test(e.target.tagName))return;const m=e.ctrlKey||e.metaKey;
- if(m&&e.key=='z'){e.preventDefault();e.shiftKey?redo():undo()}else if(m&&e.key=='y'){e.preventDefault();redo()}else if(m&&e.key=='c'&&S.sel.length){e.preventDefault();copy()}else if(m&&e.key=='x'&&S.sel.length){e.preventDefault();copy();delSel()}else if(m&&e.key=='d'){e.preventDefault();selAct.dup()}else if(m&&e.key.toLowerCase()=='g'){e.preventDefault();e.shiftKey?ungroupSel():groupSel()}else if(m&&e.key=='s'){e.preventDefault();saveNow()}else if(e.key=='Escape'&&document.body.classList.contains('pres'))present(false);else if(document.body.classList.contains('pres')&&(e.key=='ArrowRight'||e.key=='PageDown'))goPage(pgOf()+1);else if(document.body.classList.contains('pres')&&(e.key=='ArrowLeft'||e.key=='PageUp'))goPage(pgOf()-1);else if(e.key=='z'&&!m)zoomSel();else if(e.key=='Delete'||e.key=='Backspace')delSel();else if(e.key=='+'||e.key=='=')zoomAt(1.2,cv.clientWidth/2,cv.clientHeight/2);else if(e.key=='-')zoomAt(1/1.2,cv.clientWidth/2,cv.clientHeight/2)});
-(async()=>{zl();buildPops();swBrush();try{navigator.serviceWorker&&location.protocol.startsWith('http')&&navigator.serviceWorker.register('sw.js').catch(()=>{})}catch(e){}applyTheme(L('wb.th','auto'));syncPaper();i18n($('#lg').value);swBrush();setColor(S.color);setTool('fount');fit();const all=((await tx('readonly',s=>s.getAll()))||[]).filter(r=>!r.folder&&!r.del&&!r.locked).sort((a,b)=>b.t-a.t);if(all.length)await openNote(all[0]);else{await newNote();await saveNow()}showHome();try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist().catch(()=>{})}catch(e){}try{if(!window.wb&&!localStorage.getItem('wb.webnote')){localStorage.setItem('wb.webnote','1');setTimeout(()=>toast('Your boards are stored in this browser. Clearing site data deletes them, so use Backup now and then. The desktop app keeps them safer.',9000),1200)}}catch(e){}})();
+ if(m&&e.key=='z'){e.preventDefault();e.shiftKey?redo():undo()}else if(m&&e.key=='y'){e.preventDefault();redo()}else if(m&&e.key=='c'&&S.sel.length){e.preventDefault();copy()}else if(m&&e.key=='x'&&S.sel.length){e.preventDefault();copy();delSel()}else if(m&&e.key=='d'){e.preventDefault();selAct.dup()}else if(m&&e.key.toLowerCase()=='g'){e.preventDefault();e.shiftKey?ungroupSel():groupSel()}else if(m&&e.key=='s'){e.preventDefault();saveNow()}else if(e.key=='Escape'&&document.body.classList.contains('pres'))present(false);else if(document.body.classList.contains('pres')&&(e.key=='ArrowRight'||e.key=='PageDown'||e.key=='ArrowDown'))presNav(1,e);else if(document.body.classList.contains('pres')&&(e.key=='ArrowLeft'||e.key=='PageUp'||e.key=='ArrowUp'))presNav(-1,e);else if(e.key=='z'&&!m)zoomSel();else if(e.key=='Delete'||e.key=='Backspace')delSel();else if(e.key=='+'||e.key=='=')zoomAt(1.2,cv.clientWidth/2,cv.clientHeight/2);else if(e.key=='-')zoomAt(1/1.2,cv.clientWidth/2,cv.clientHeight/2)});
+(async()=>{zl();buildPops();swBrush();try{navigator.serviceWorker&&location.protocol.startsWith('http')&&navigator.serviceWorker.register('sw.js').catch(()=>{})}catch(e){}applyTheme(L('wb.th','auto'));syncPaper();i18n($('#lg').value);swBrush();setColor(S.color);setTool('fount');fit();const all=(await txMeta()).filter(r=>!r.folder&&!r.del&&!r.locked).sort((a,b)=>b.t-a.t);const first=all.length?await tx('readonly',s=>s.get(all[0].id)):null;if(first)await openNote(first);else{await newNote();await saveNow()}showHome();try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist().catch(()=>{})}catch(e){}try{if(!window.wb&&!localStorage.getItem('wb.webnote')){localStorage.setItem('wb.webnote','1');setTimeout(()=>toast('Your boards are stored in this browser. Clearing site data deletes them, so use Backup now and then. The desktop app keeps them safer.',9000),1200)}}catch(e){}})();
 /* ===== v21: dynamic connectors, sketch-to-shape, offline UI translation ===== */
 (()=>{
 const isL=i=>i&&i.t=='sp'&&LINEK.includes(i.shp),mid=(a,b)=>[(a[0]+b[0])/2,(a[1]+b[1])/2],dst=(a,b)=>Math.hypot(a[0]-b[0],a[1]-b[1]);
@@ -2727,9 +2828,9 @@ async function recUnpack(list,newBoard){let n=0;if(!Array.isArray(list))return 0
  const hub=document.getElementById('mediaHub'), choices=document.getElementById('mediaChoices'), body=document.getElementById('mediaBody'), address=document.getElementById('mediaAddress'), title=document.getElementById('mediaTitle');
  const localPicker=document.getElementById('localVideoPicker'); let view=null, localPlayer=null, localObjectUrl=null, kind='browser', lastUrl='', drag=null;
  const secureUrl=(raw)=>{let v=String(raw||'').trim();if(!v)return '';if(!/^[a-z][a-z0-9+.-]*:/i.test(v)){v=/\s/.test(v)||!v.includes('.')?'https://www.google.com/search?q='+encodeURIComponent(v):'https://'+v}try{const u=new URL(v);return ['http:','https:'].includes(u.protocol)?u.href:''}catch(_){return ''}};
- function makeVisible(t){hub.hidden=false;hub.classList.remove('minimized','maximized');title.textContent=t;document.getElementById('mediaPlay').hidden=kind==='browser';document.getElementById('mediaBack10').hidden=kind==='browser';document.getElementById('mediaFwd10').hidden=kind==='browser';}
+ function makeVisible(t){hub.hidden=false;hub.classList.remove('maximized');if(hub.classList.contains('minimized')||hub.style.bottom)unmin();title.textContent=t;document.getElementById('mediaPlay').hidden=kind==='browser';document.getElementById('mediaBack10').hidden=kind==='browser';document.getElementById('mediaFwd10').hidden=kind==='browser';}
  function showChoices(mode){if(!choices.hidden){choices.hidden=true;return}closeTransient('mediaChoices');kind=mode;choices.innerHTML='';choices.hidden=false;const opts=mode==='video'?[['＋ Add video source','video-plus']]:[['🌐 Open website','browser']];for(const [label,action] of opts){const b=document.createElement('button');b.textContent=label;b.onclick=()=>{choices.hidden=true;if(action==='video-plus'){choices.innerHTML='';choices.hidden=false;for(const [label,act] of [['▶ YouTube','youtube'],['🎓 Udemy','udemy'],['📁 Local video file','local']]){const opt=document.createElement('button');opt.textContent=label;opt.onclick=()=>{choices.hidden=true;if(act==='local'){localPicker.value='';localPicker.click();return}openSurface('video',act==='youtube'?'https://www.youtube.com/':'https://www.udemy.com/')};choices.append(opt)}return}if(action==='local'){localPicker.click();return}if(action==='youtube')openSurface('video','https://www.youtube.com/');else if(action==='udemy')openSurface('video','https://www.udemy.com/');else if(action==='browser'){const u=prompt('Enter a website URL or search phrase');if(u)openSurface('browser',u)}};choices.append(b)} }
- function closeSurface(){if(view){try{view.remove()}catch(_){}view=null}try{if(window.wb&&window.wb.clearBrowserData)window.wb.clearBrowserData()}catch(_){}if(localPlayer){try{localPlayer.pause();localPlayer.removeAttribute('src');localPlayer.load()}catch(_){}localPlayer=null}if(localObjectUrl){URL.revokeObjectURL(localObjectUrl);localObjectUrl=null}body.replaceChildren();hub.hidden=true;hub.classList.remove('minimized','maximized');address.value='';lastUrl='';title.textContent='Browser';}
+ function closeSurface(){if(view){try{view.remove()}catch(_){}view=null}try{if(window.wb&&window.wb.clearBrowserData)window.wb.clearBrowserData()}catch(_){}if(localPlayer){try{localPlayer.pause();localPlayer.removeAttribute('src');localPlayer.load()}catch(_){}localPlayer=null}if(localObjectUrl){URL.revokeObjectURL(localObjectUrl);localObjectUrl=null}body.replaceChildren();hub.hidden=true;hub.classList.remove('maximized');if(hub.classList.contains('minimized')||hub.style.bottom)unmin();address.value='';lastUrl='';title.textContent='Browser';}
  function navigate(raw){const u=secureUrl(raw);if(!u){if(typeof toast==='function')toast('Please enter a valid http(s) website URL or search phrase');return}lastUrl=u;address.value=u;if(view){view.src=u}else if(localPlayer){localPlayer.src=u;localPlayer.load()} }
  function openSurface(which, raw){closeSurface();kind=which;makeVisible(which==='video'?'Video':'Browser');if(raw)address.value=raw;view=document.createElement('webview');view.setAttribute('partition','rejboard-ephemeral');view.setAttribute('allowpopups','false');view.setAttribute('webpreferences','contextIsolation=yes, nodeIntegration=no, sandbox=yes');view.style.cssText='display:flex;width:100%;height:100%;flex:1;border:0';view.addEventListener('did-navigate',e=>{address.value=e.url;lastUrl=e.url});view.addEventListener('did-navigate-in-page',e=>{address.value=e.url;lastUrl=e.url});view.addEventListener('page-title-updated',e=>{if(e.title&&kind==='browser')title.textContent='Browser · '+e.title.slice(0,50)});view.addEventListener('dom-ready',()=>{try{view.executeJavaScript(`document.addEventListener('dragstart',e=>{const el=e.target;const img=(el&&el.closest&&el.closest('img'))||(el&&el.tagName==='IMG'?el:null);const link=(el&&el.closest&&el.closest('a'))||(el&&el.tagName==='A'?el:null);const txt=(img&&img.currentSrc)||((window.getSelection&&String(window.getSelection()))||el.innerText||el.alt||'');if(e.dataTransfer){if(txt)e.dataTransfer.setData('text/plain',txt);if(img&&(img.currentSrc||img.src)){const src=img.currentSrc||img.src;e.dataTransfer.setData('text/uri-list',src);e.dataTransfer.setData('text/plain',src)}else if(link&&link.href){e.dataTransfer.setData('text/uri-list',link.href);if(!txt)e.dataTransfer.setData('text/plain',link.href)}}},true);`)}catch(_){}});body.append(view);if(raw)navigate(raw);}
  document.getElementById('videoDockBtn').addEventListener('click',()=>showChoices('video'));document.getElementById('browserDockBtn').addEventListener('click',()=>openSurface('browser','https://www.google.com/'));
@@ -2738,8 +2839,35 @@ async function recUnpack(list,newBoard){let n=0;if(!Array.isArray(list))return 0
  const mediaCommand=(cmd)=>{try{if(view)view.executeJavaScript(`(()=>{const v=[...document.querySelectorAll('video,audio')].find(x=>x.readyState>0)||document.querySelector('video,audio');if(!v)return false;${cmd}})()`);else if(localPlayer){if(cmd.includes('currentTime'))localPlayer.currentTime=Math.max(0,localPlayer.currentTime+(cmd.includes('+')?10:-10));else if(localPlayer.paused)localPlayer.play().catch(()=>{});else localPlayer.pause()}}catch(_){}};
  document.getElementById('mediaPlay').onclick=()=>mediaCommand('if(v.paused)v.play();else v.pause();return true;');document.getElementById('mediaBack10').onclick=()=>mediaCommand('v.currentTime=Math.max(0,v.currentTime-10);return true;');document.getElementById('mediaFwd10').onclick=()=>mediaCommand('v.currentTime+=10;return true;');
  document.getElementById('mediaClose').onclick=closeSurface;let restoreFrame=null;
- document.getElementById('mediaMin').onclick=()=>{const was=hub.classList.contains('minimized');hub.classList.toggle('minimized');if(!was){const r=hub.getBoundingClientRect();hub.style.left=r.left+'px';hub.style.top='auto';hub.style.bottom='calc(75px + env(safe-area-inset-bottom,0px))';hub.style.transform='none'}else{hub.style.bottom='';hub.style.top=Math.max(0,Math.min(innerHeight-hub.offsetHeight,parseFloat(hub.style.top)||80))+'px'}};
- document.getElementById('mediaMax').onclick=()=>{if(!hub.classList.contains('maximized')){const r=hub.getBoundingClientRect();restoreFrame={left:r.left,top:r.top,width:r.width,height:r.height};hub.classList.remove('minimized');hub.style.left='';hub.style.top='';hub.style.bottom='';hub.style.width='';hub.style.height='';hub.style.transform='';hub.classList.add('maximized')}else{hub.classList.remove('maximized');if(restoreFrame){hub.style.left=restoreFrame.left+'px';hub.style.top=restoreFrame.top+'px';hub.style.width=restoreFrame.width+'px';hub.style.height=restoreFrame.height+'px';hub.style.transform='none'}restoreFrame=null}};
+ let minSaved=null,minUser=false;
+ /* The minimized bar sits centred just above the bottom dock and is re-placed whenever the app window or the dock changes size. */
+ const dockGap=()=>{try{const d=document.getElementById('dk');if(d&&d.getClientRects().length){const r=d.getBoundingClientRect();if(r.height>0)return Math.max(8,Math.round(innerHeight-r.top+8))}}catch(_){}return 75};
+ function placeMin(){
+  if(hub.hidden||!hub.classList.contains('minimized'))return;
+  hub.style.maxWidth='calc(100vw - 16px)';
+  if(minUser){const r=hub.getBoundingClientRect();hub.style.left=Math.max(0,Math.min(innerWidth-r.width,r.left))+'px';hub.style.top=Math.max(0,Math.min(innerHeight-42,r.top))+'px';return} /* the person moved it: keep it where they put it, but on screen */
+  hub.style.left='50%';hub.style.transform='translateX(-50%)';hub.style.top='auto';hub.style.bottom=dockGap()+'px';
+ }
+ function unmin(){ /* back to a normal floating frame at its remembered size and spot */
+  hub.classList.remove('minimized');const s=minSaved;minSaved=null;minUser=false;
+  hub.style.bottom='';hub.style.maxWidth='';
+  if(hub.style.height==='42px')hub.style.height=s?s.height:'';
+  if(s){hub.style.transform='none';hub.style.left=Math.max(0,Math.min(innerWidth-s.w,s.left))+'px';hub.style.top=Math.max(0,Math.min(innerHeight-Math.min(s.h,innerHeight),s.top))+'px'}
+  else{hub.style.transform='';hub.style.left='';hub.style.top=''}
+ }
+ document.getElementById('mediaMin').onclick=()=>{
+  if(!hub.classList.contains('minimized')){
+   /* leave maximized mode first so the frame can collapse cleanly */
+   if(hub.classList.contains('maximized')){hub.classList.remove('maximized');if(restoreFrame){hub.style.left=restoreFrame.left+'px';hub.style.top=restoreFrame.top+'px';hub.style.width=restoreFrame.width+'px';hub.style.height=restoreFrame.height+'px';hub.style.transform='none';restoreFrame=null}}
+   const r=hub.getBoundingClientRect();
+   /* remember the real frame: a dragged/resized window has an inline height that would otherwise beat the CSS minimized height */
+   minSaved={left:r.left,top:r.top,w:r.width,h:r.height,height:hub.style.height};minUser=false;
+   hub.classList.add('minimized');hub.style.height='42px';placeMin();
+  }else unmin();
+ };
+ window.addEventListener('resize',placeMin);
+ try{const dk=document.getElementById('dk');if(dk&&window.ResizeObserver)new ResizeObserver(placeMin).observe(dk)}catch(_){}
+ document.getElementById('mediaMax').onclick=()=>{if(!hub.classList.contains('maximized')){const r=hub.getBoundingClientRect();restoreFrame={left:r.left,top:r.top,width:r.width,height:r.height};if(hub.classList.contains('minimized')&&minSaved){restoreFrame={left:Math.max(0,Math.min(innerWidth-minSaved.w,minSaved.left)),top:Math.max(0,Math.min(innerHeight-minSaved.h,minSaved.top)),width:minSaved.w,height:minSaved.h}}minSaved=null;minUser=false;hub.style.bottom='';hub.style.maxWidth='';hub.classList.remove('minimized');hub.style.left='';hub.style.top='';hub.style.bottom='';hub.style.width='';hub.style.height='';hub.style.transform='';hub.classList.add('maximized')}else{hub.classList.remove('maximized');if(restoreFrame){hub.style.left=restoreFrame.left+'px';hub.style.top=restoreFrame.top+'px';hub.style.width=restoreFrame.width+'px';hub.style.height=restoreFrame.height+'px';hub.style.transform='none'}restoreFrame=null}};
  localPicker.addEventListener('change',()=>{const f=localPicker.files&&localPicker.files[0];if(!f)return;closeSurface();kind='video';makeVisible('Local video · '+f.name);localObjectUrl=URL.createObjectURL(f);localPlayer=document.createElement('video');localPlayer.controls=true;localPlayer.playsInline=true;localPlayer.src=localObjectUrl;localPlayer.style.cssText='width:100%;height:100%;object-fit:contain;background:#111';body.append(localPlayer);address.value='Local file: '+f.name;localPicker.value='';});
  // Drag and resize the same floating frame for both Browser and Video.
   // Side and corner handles resize from the selected edge while keeping the opposite edge anchored.
@@ -2748,6 +2876,7 @@ async function recUnpack(list,newBoard){let n=0;if(!Array.isArray(list))return 0
   function endFrameAction(){frameAction=null;try{document.body.style.userSelect=''}catch(_){}}
   head.addEventListener('pointerdown',e=>{
     if(e.button!==0||e.target.closest('button,input')||hub.classList.contains('maximized'))return;
+    if(hub.classList.contains('minimized'))minUser=true;
     const r=hub.getBoundingClientRect();
     hub.style.left=r.left+'px';hub.style.top=r.top+'px';hub.style.transform='none';
     frameAction={mode:'move',pointerId:e.pointerId,startX:e.clientX,startY:e.clientY,left:r.left,top:r.top,width:r.width,height:r.height};
@@ -2755,7 +2884,7 @@ async function recUnpack(list,newBoard){let n=0;if(!Array.isArray(list))return 0
     try{head.setPointerCapture(e.pointerId)}catch(_){}
   });
   resizeHandles.forEach(handle=>handle.addEventListener('pointerdown',e=>{
-    if(e.button!==0||hub.classList.contains('maximized'))return;
+    if(e.button!==0||hub.classList.contains('maximized')||hub.classList.contains('minimized'))return;
     const r=hub.getBoundingClientRect(), edge=handle.dataset.edge||'se';
     hub.style.left=r.left+'px';hub.style.top=r.top+'px';hub.style.transform='none';
     frameAction={mode:'resize',edge,pointerId:e.pointerId,startX:e.clientX,startY:e.clientY,left:r.left,top:r.top,width:r.width,height:r.height};
@@ -2786,7 +2915,7 @@ async function recUnpack(list,newBoard){let n=0;if(!Array.isArray(list))return 0
   document.addEventListener('pointerup',e=>{if(frameAction&&e.pointerId===frameAction.pointerId)endFrameAction()},true);
   document.addEventListener('pointercancel',e=>{if(frameAction&&e.pointerId===frameAction.pointerId)endFrameAction()},true);
   window.addEventListener('blur',endFrameAction);
-  window.addEventListener('resize',()=>{if(hub.hidden||hub.classList.contains('maximized'))return;const r=hub.getBoundingClientRect();hub.style.left=Math.max(0,Math.min(innerWidth-r.width,r.left))+'px';hub.style.top=Math.max(0,Math.min(innerHeight-42,r.top))+'px'});
+  window.addEventListener('resize',()=>{if(hub.hidden||hub.classList.contains('maximized'))return;const r=hub.getBoundingClientRect();if(hub.classList.contains('minimized'))return;hub.style.left=Math.max(0,Math.min(innerWidth-r.width,r.left))+'px';hub.style.top=Math.max(0,Math.min(innerHeight-42,r.top))+'px'});
   document.addEventListener('keydown',e=>{if(e.key==='Escape'){if(!choices.hidden)choices.hidden=true;else if(!hub.hidden)closeSurface()}});
  window.addEventListener('beforeunload',closeSurface);
 })();

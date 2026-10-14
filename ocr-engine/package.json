@@ -1,0 +1,9 @@
+{
+  "name": "rejboard-ocr-engine",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Offline handwriting OCR: tesseract.js is installed here (not in the root package.json) and shipped as an extra resource in every Windows, macOS and Linux build.",
+  "dependencies": {
+    "tesseract.js": "5.1.1"
+  }
+}

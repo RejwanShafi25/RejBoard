@@ -1,9 +1,0 @@
-{
-  "name": "rejboard-ocr-linux",
-  "version": "1.0.0",
-  "private": true,
-  "description": "Linux-only bundle: tesseract.js is installed here (not in the root package.json) and shipped as an extra resource, so Windows/macOS installers never contain it.",
-  "dependencies": {
-    "tesseract.js": "5.1.1"
-  }
-}

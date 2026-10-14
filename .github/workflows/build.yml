@@ -61,12 +61,12 @@ jobs:
 
       - run: npm ci
 
-      # Linux only: bundle Tesseract.js + English data as an extra resource (never added to Windows/macOS builds).
-      - name: Prepare bundled OCR (Linux)
-        if: matrix.label == 'linux'
+      # Every OS: bundle Tesseract.js + English data as an extra resource (the only offline handwriting engine).
+      - name: Prepare bundled OCR
+        shell: bash
         run: |
-          python fetch_libs.py --linux
-          npm install --omit=dev --prefix ocr-linux
+          python fetch_libs.py
+          npm install --omit=dev --prefix ocr-engine
           npm run test:ocr
 
       - name: Build installers
@@ -75,11 +75,16 @@ jobs:
           # No code-signing certificates: skip auto-discovery so the macOS build does not fail/hang.
           CSC_IDENTITY_AUTO_DISCOVERY: 'false'
 
-      - name: Verify bundled OCR is inside the package (Linux)
-        if: matrix.label == 'linux'
+      - name: Verify bundled OCR is inside the package
+        shell: bash
         run: |
-          test -f dist/linux-unpacked/resources/ocr/node_modules/tesseract.js/package.json
-          test -s dist/linux-unpacked/resources/ocr/tessdata/eng.traineddata
+          DIRS=$(find dist -type d \( -path '*-unpacked/resources' -o -path '*/RejBoard.app/Contents/Resources' \))
+          test -n "$DIRS" || { echo "no packaged resources folder found"; exit 1; }
+          for RES in $DIRS; do
+            echo "checking $RES"
+            test -f "$RES/ocr/node_modules/tesseract.js/package.json"
+            test -s "$RES/ocr/tessdata/eng.traineddata"
+          done
 
       - name: Upload installers
         uses: actions/upload-artifact@v4
