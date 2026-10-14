@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+
+## [1.2.9]
 ### Changed
 - **One offline handwriting engine on every platform.** On-device recognition now uses a bundled Tesseract.js engine on Windows, macOS and Linux. Apple Vision, Windows.Media.Ocr and the system `tesseract` command are no longer used. All installers include the engine and English data. From source, run `npm run libs` once (replaces `npm run libs:linux`; the `ocr-linux` folder is now `ocr-engine`).
 
