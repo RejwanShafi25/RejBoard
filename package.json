@@ -60,12 +60,6 @@
             "x64"
           ]
         }
-        // {
-        //   "target": "portable",
-        //   "arch": [
-        //     "x64"
-        //   ]
-        // }
       ],
       "signAndEditExecutable": true,
       "icon": "build/icon.ico"
