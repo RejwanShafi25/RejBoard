@@ -1,4 +1,13 @@
 # Changelog
+## [1.3.0]
+### Changed
+- **Pages overview.** New **▦ Pages** button in the page bar opens thumbnails of every page. Select one or several pages (click, Ctrl/Shift-click) to move them earlier/later (also Alt+←/→), swap two pages, copy (each copy lands right after its original, with its own groups and connector links), delete, or insert a blank page. Pages can also be dragged to reorder, and a double-click opens a page. `@` board links that point to a specific page of the board (from the same board or any other board) follow the pages when you reorder, swap or delete them; a link whose page was deleted falls back to just opening the board. All of it is undoable (Ctrl+Z restores the page count and the links too).
+
+### Fixed
+- Deleting (or trashing/locking) your last board no longer creates a new empty "Untitled" board. The board list now stays empty, and a blank board is only created once you start drawing or press **New board**. The same applies when the app is launched with no boards.
+- Pressing **+** or **-** alone zoomed the canvas. Keyboard zoom now needs **Ctrl/Cmd + +** (zoom in) and **Ctrl/Cmd + -** (zoom out), and the browser's own page zoom no longer fires on top of it.
+- Pencil brush strokes (e.g. handwritten labels) looked blurry. The pencil now has a crisp graphite grain (a light body plus device-pixel speckle) instead of three translucent, sub-pixel-offset copies, so it stays sharp at any zoom and still looks different from the ballpoint; pen-tilt pencil strokes no longer bead at segment joints, and SVG export uses a matching opacity.
+
 ## [1.2.11]
 ### Added
 - In-app desktop updates through `electron-updater`, with differential downloads where supported, opt-in automatic checks (off by default), explicit download/restart confirmation, platform-specific manual-download fallbacks, and activity guards for recording, LAN transfers and unsaved changes.
