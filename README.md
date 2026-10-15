@@ -377,6 +377,10 @@ Press **🎙 Record** in the header to record while you write. Each board keeps 
 | Save | `Ctrl+S` |
 | Select all | `Ctrl+A` |
 | Zoom | `+` / `-` |
+| Fountain / Calligraphy / Soft brush / Ballpoint / Pencil | `1` / `2` / `3` / `4` / `5` |
+| Square / Chisel / Round highlighter | `6` / `7` / `8` |
+| Text / Tape / Eraser | `T` / `W` / `E` |
+| Handwriting → text (only with handwriting selected) | `H` |
 | Clear selection, cancel gesture | `Esc` |
 | Move only the selection (ignore linked shapes) | Hold `Alt` while dragging |
 | Constrain ruler rotation to 15° | Hold `Shift` |

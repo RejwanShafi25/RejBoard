@@ -1,4 +1,11 @@
 # Changelog
+## [1.3.1]
+### Added
+- **Tool shortcuts.** `1`–`8` pick the fountain pen, calligraphy pen, soft brush, ballpoint, pencil and the square, chisel and round highlighters; `T` text, `W` tape, `E` eraser. `H` converts the selected handwriting to text and only works while handwriting is selected. Shortcuts are shown in the toolbar tooltips and ignored while typing.
+
+### Fixed
+- Pressing **Distribute evenly** (the button at the right end of the selection toolbar, previously shown as ⋯) with handwriting selected no longer spreads the letters apart. Handwriting and groups are now treated as one object each, and a toast explains when there is nothing to distribute. The button now has a clearer icon.
+
 ## [1.3.0]
 ### Changed
 - **Pages overview.** New **▦ Pages** button in the page bar opens thumbnails of every page. Select one or several pages (click, Ctrl/Shift-click) to move them earlier/later (also Alt+←/→), swap two pages, copy (each copy lands right after its original, with its own groups and connector links), delete, or insert a blank page. Pages can also be dragged to reorder, and a double-click opens a page. `@` board links that point to a specific page of the board (from the same board or any other board) follow the pages when you reorder, swap or delete them; a link whose page was deleted falls back to just opening the board. All of it is undoable (Ctrl+Z restores the page count and the links too).
