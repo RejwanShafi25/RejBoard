@@ -214,6 +214,7 @@ img,svg,canvas,video{max-width:100%}
 @media(min-width:2200px){.pop{max-width:min(720px,40vw)}}
 html.lowmem *{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;text-shadow:none!important}
 html.lowmem .pop,html.lowmem #fab,html.lowmem .board-card{box-shadow:none!important}
+#dropZone{position:fixed;inset:10px;z-index:9000;display:none;align-items:center;justify-content:center;pointer-events:none;border:3px dashed var(--ac);border-radius:18px;background:color-mix(in srgb,var(--ac) 12%,transparent);backdrop-filter:blur(2px)}#dropZone.on{display:flex}#dropZone div{display:flex;flex-direction:column;gap:6px;text-align:center;padding:16px 24px;max-width:min(90vw,520px);border-radius:14px;background:var(--pn);color:var(--fg);box-shadow:0 8px 28px #0003}#dropZone b{font-size:18px}#dropZone span{font-size:13px;opacity:.7}
 </style>
 <script>window.MathJax={startup:{typeset:false}}</script>
 <script>function lib(a,b){const t=document.createElement('script');t.src=a;t.onerror=()=>{const u=document.createElement('script');u.src=b;document.head.append(u)};document.head.append(t)}
@@ -1532,7 +1533,13 @@ addEventListener('resize',()=>{if(!p.hidden)pomoClamp()});
 /* ---------- import: images, links, LaTeX ---------- */
 const view=()=>[(cv.clientWidth/2-S.ox)/S.z-120,(cv.clientHeight/3-S.oy)/S.z];
 function addImg(f,p){return new Promise(r=>{const fr=new FileReader();fr.onload=()=>{const m=new Image();m.onload=()=>{const k=Math.min(1,480/m.naturalWidth);push();addI({t:'i',src:fr.result,x:p[0],y:p[1],w:m.naturalWidth*k,h:m.naturalHeight*k});IM[fr.result]=m;save();draw();r()};m.src=fr.result};fr.readAsDataURL(f)})}
-async function ingest(dt,p){const fs=[...dt.files].filter(f=>f.type.startsWith('image/'));if(fs.length){for(const f of fs){await addImg(f,p);p=[p[0]+20,p[1]+20]}return}
+const IMPORT_EXT=['pdf',...DOC_EXT_ALL()];function DOC_EXT_ALL(){return['docx','doc','odt','rtf','pptx','ppt','odp']}
+const isImgFile=f=>f.type.startsWith('image/')||/\.(png|jpe?g|gif|webp|bmp|svg|avif)$/i.test(f.name);
+const isDocFile=f=>IMPORT_EXT.includes(String(f.name||'').toLowerCase().split('.').pop())||f.type==='application/pdf';
+async function ingest(dt,p){const all=[...(dt.files||[])],fs=all.filter(isImgFile),docs=all.filter(f=>!isImgFile(f)&&isDocFile(f));
+ if(fs.length||docs.length){for(const f of fs){await addImg(f,p);p=[p[0]+20,p[1]+20]}
+  if(docs.length){lastCvClick=p;pdfImportContext='board';/* the page picker handles one document at a time */await importOffice(docs[0]);if(docs.length>1)toast('Imported the first document — drop the others one at a time',4500)}return}
+ if(all.length){toast('Unsupported file — drop images, PDF, Word or PowerPoint files',4000);return}
  const t=(dt.getData('text/uri-list')||dt.getData('text/plain')||'').trim().split('\n')[0];if(!t)return;
  if(/^https?:\/\//i.test(t)){try{let blob=null;if(window.wb&&wb.fetchRemoteImage){const got=await wb.fetchRemoteImage(t);if(got&&got.ok){const raw=atob(got.data);const bytes=new Uint8Array(raw.length);for(let i=0;i<raw.length;i++)bytes[i]=raw.charCodeAt(i);blob=new Blob([bytes],{type:got.type})}}if(!blob){const r=await fetch(t,{mode:'cors'});if(!r.ok)throw Error('image fetch failed');blob=await r.blob()}if(!blob.type.toLowerCase().startsWith('image/'))throw Error('not image');const fileName=(new URL(t)).pathname.split('/').pop()||'dropped-image';await addImg(new File([blob],fileName,{type:blob.type}),p);return}catch(_){/* Cross-origin or protected image URLs cannot always be imported; keep the URL as a link in that case. */}}
  push();addI(/^https?:\/\/\S+$/.test(t)?{t:'l',x:p[0],y:p[1],text:t,size:18}:{t:'t',x:p[0],y:p[1],text:t,size:cfg.text.size,color:S.color});save();draw()}
@@ -1559,7 +1566,16 @@ async function importOffice(f){try{const ext=f.name.toLowerCase().split('.').pop
 $('#docf').onchange=e=>{const f=e.target.files[0];e.target.value='';if(f)importOffice(f)};
 
 document.addEventListener('paste',e=>{if(/TEXTAREA|INPUT/.test(e.target.tagName))return;e.preventDefault();if(intern&&clip.length){paste();return}ingest(e.clipboardData,view())});
-cv.addEventListener('dragover',e=>e.preventDefault());cv.addEventListener('drop',e=>{e.preventDefault();ingest(e.dataTransfer,pt(e))});
+(function(){const dz=document.createElement('div');dz.id='dropZone';dz.setAttribute('aria-hidden','true');dz.innerHTML='<div><b>Drop to add to the board</b><span>Images appear on the board · PDF, Word and PowerPoint ask which pages to import</span></div>';document.body.appendChild(dz);let depth=0;
+ const hasFiles=e=>e.dataTransfer&&[...(e.dataTransfer.types||[])].includes('Files');
+ const hide=()=>{depth=0;dz.classList.remove('on')};
+ cv.addEventListener('dragenter',e=>{if(!hasFiles(e))return;e.preventDefault();depth++;dz.classList.add('on')});
+ cv.addEventListener('dragover',e=>{e.preventDefault();if(e.dataTransfer&&hasFiles(e))e.dataTransfer.dropEffect='copy'});
+ cv.addEventListener('dragleave',e=>{if(!hasFiles(e))return;if(--depth<=0)hide()});
+ cv.addEventListener('drop',e=>{e.preventDefault();hide();ingest(e.dataTransfer,pt(e))});
+ addEventListener('dragend',hide);addEventListener('blur',hide);
+ /* a file dropped outside the canvas must not make the browser/Electron navigate to it */
+ addEventListener('dragover',e=>{if(!cv.contains(e.target)&&hasFiles(e))e.preventDefault()});addEventListener('drop',e=>{if(!cv.contains(e.target)&&hasFiles(e))e.preventDefault()});})();
 async function mkMath(l,col=S.color,size=cfg.math.size){await MathJax.startup.promise;const s=MathJax.tex2svg(l,{display:false}).querySelector('svg'),ex=size/2,w=parseFloat(s.getAttribute('width'))*ex,h=parseFloat(s.getAttribute('height'))*ex;
  s.setAttribute('width',w);s.setAttribute('height',h);s.setAttribute('style','color:'+col);const src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(new XMLSerializer().serializeToString(s));
  await new Promise((r,j)=>{const m=img(src);m.complete&&m.naturalWidth?r():(m.onload=()=>{r();draw()},m.onerror=j)});return{src,w,h}}
@@ -1707,20 +1723,28 @@ async function svgOut(inv,extras=[]){const e=t=>String(t).replace(/[&<>"]/g,c=>(
 
 /* ---------- bottom bar layout: dock + page navigator + zoom never overlap ---------- */
 function fitBottom(){const dk=$('#dk'),zw0=$('#zw'),pp=$('#pp'),pg=$('#pgn');if(!dk)return;
- const vis=e=>e&&!e.hidden&&getComputedStyle(e).display!='none',root=document.documentElement,vw=root.clientWidth,m=8,gap=10,safe='env(safe-area-inset-bottom,0px)',B=14,zw=vis(zw0)?zw0:(vis(pp)?pp:zw0);
+ const vis=e=>e&&!e.hidden&&getComputedStyle(e).display!='none',root=document.documentElement,vw=root.clientWidth,m=8,gap=10,zw=vis(zw0)?zw0:(vis(pp)?pp:zw0);
+ /* the theme sets bottom/left with !important, so inline offsets must be !important too or they are silently ignored */
+ const setB=(e,v)=>e.style.setProperty('bottom',v,'important');
  dk.classList.remove('sm','xs');dk.style.maxWidth='none';dk.style.left='50%';dk.style.transform='translateX(-50%)';
  let dW=dk.getBoundingClientRect().width;
  for(const c of ['sm','xs']){if(dW<=vw-2*m)break;dk.classList.add(c);dW=dk.getBoundingClientRect().width}
  dk.style.maxWidth=(vw-2*m)+'px';dW=Math.min(dW,vw-2*m);
- const zW=vis(zw)?zw.getBoundingClientRect().width:0,pW=vis(pg)?pg.getBoundingClientRect().width:0,lo=m+(pW?pW+gap:0),hi=vw-m-(zW?zW+gap:0)-dW;
+ /* the dock's real resting offset from the bottom (includes theme gap + safe area) */
+ const B=Math.max(0,parseFloat(getComputedStyle(dk).bottom)||14);
+ /* reset side widgets to the dock's baseline before measuring, so earlier 'lifted' state never skews the maths */
+ if(vis(zw))setB(zw,B+'px');if(vis(pg))setB(pg,B+'px');
+ const zR=vis(zw)?zw.getBoundingClientRect():null,pR=vis(pg)?pg.getBoundingClientRect():null;
+ /* use the widgets' REAL edges (not just their widths): the theme moves them away from the screen edge */
+ const lo=Math.max(m,pR?pR.right+gap:m),hi=Math.min(vw-m,zR?zR.left-gap:vw-m)-dW;
  const dH=dk.getBoundingClientRect().height;let pb=86;
  if(lo<=hi){/* everything fits on one row: keep the dock centred, shifting only if a side widget needs the room */
   const Lc=(vw-dW)/2,L=Math.max(lo,Math.min(Lc,hi)),sh=Math.round(L-Lc);dk.style.left='50%';dk.style.transform=sh?`translateX(calc(-50% + ${sh}px))`:'translateX(-50%)';
-  zw.style.bottom=`calc(${B}px + ${safe})`;pg.style.bottom=`calc(${B}px + ${safe})`;
  }else{/* not enough width: page navigator (left) and zoom (right) move to a row above the dock */
   dk.style.left='50%';dk.style.transform='translateX(-50%)';
-  const up=`calc(${B+dH+8}px + ${safe})`;zw.style.bottom=up;pg.style.bottom=up;
-  pb=86+(pW||zW?Math.round(Math.max(zw.getBoundingClientRect().height,pg.getBoundingClientRect().height,36))+8:0)
+  const up=(B+dH+8)+'px';if(vis(zw))setB(zw,up);if(vis(pg))setB(pg,up);
+  const rowH=Math.max(vis(zw)?zw.getBoundingClientRect().height:0,vis(pg)?pg.getBoundingClientRect().height:0);
+  pb=86+(rowH?Math.round(Math.max(rowH,36))+8:0)
  }
  root.style.setProperty('--pb',(pb+Math.max(0,dH-48))+'px')}
 const refitBottom=()=>{fitBottom();requestAnimationFrame(fitBottom);setTimeout(fitBottom,120);setTimeout(fitBottom,400)};
@@ -2394,7 +2418,7 @@ function bgAll(c,W,H,ox,oy,z){if(S.pg.size=='inf')return bgfx(c,W,H,ox,oy,z);con
 function camTo(z,ox,oy){cache=null;const z0=S.z,x0=S.ox,y0=S.oy,t0=performance.now();(function f(){const k=Math.min(1,(performance.now()-t0)/320),e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2;S.z=z0+(z-z0)*e;S.ox=x0+(ox-x0)*e;S.oy=y0+(oy-y0)*e;zl();draw();if(k<1)requestAnimationFrame(f)})()}
 function pgOf(){const[,ph]=pdim(),cy=(cv.clientHeight/2-S.oy)/S.z;return Math.max(0,Math.min(S.pg.n-1,Math.floor(cy/(ph+PG_GAP))))}
 function goPage(i){if(S.pg.size=='inf')return;i=Math.max(0,Math.min(S.pg.n-1,i));const[pw,ph]=pdim(),W=cv.clientWidth,H=cv.clientHeight,z=Math.min(W/(pw+60),H/(ph+60),3);camTo(z,(W-pw*z)/2,(H-ph*z)/2-i*(ph+PG_GAP)*z)}
-function pgUi(){const pg=S.pg.size!='inf';$('#pgn').hidden=!pg;$('#cps').value=S.pg.size;$('#cpo').value=S.pg.o;$('#cpo').disabled=!pg;if(!pg)return;const[,ph]=pdim(),last=(S.pg.n-1)*(ph+PG_GAP)+ph,b=S.items.length?bnds(S.items):[0,0,0,0],f=$('#pgfull');f.hidden=b[3]<last-50;f.textContent=tr('full')}
+function pgUi(){const pg=S.pg.size!='inf';$('#pgn').hidden=!pg;try{refitBottom()}catch(_){}$('#cps').value=S.pg.size;$('#cpo').value=S.pg.o;$('#cpo').disabled=!pg;if(!pg)return;const[,ph]=pdim(),last=(S.pg.n-1)*(ph+PG_GAP)+ph,b=S.items.length?bnds(S.items):[0,0,0,0],f=$('#pgfull');f.hidden=b[3]<last-50;f.textContent=tr('full')}
 function addPage(){if(S.pg.size=='inf')return toast(tr('pickpage'));push();S.pg.n++;save();pgUi();goPage(S.pg.n-1)}
 $('#cps').onchange=e=>{S.pg.size=e.target.value;if(S.pg.n<1)S.pg.n=1;save();pgUi();if(S.pg.size=='inf')fitAll();else goPage(0);draw()};
 $('#cpo').onchange=e=>{S.pg.o=e.target.value;save();pgUi();goPage(pgOf())};

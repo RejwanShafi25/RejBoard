@@ -1,7 +1,9 @@
 # Changelog
 ## [Unreleased]
 ### Changed
+- Drag and drop files from your computer onto a board: images appear on the board; PDF, Word (.doc/.docx/.odt/.rtf) and PowerPoint (.ppt/.pptx/.odp) files open the page picker with page range and quality options. A drop overlay shows while dragging, and unsupported files get a clear message.
 - Pages overview. New ▦ Pages button in the page bar opens thumbnails of every page. Select one or several pages (click, Ctrl/Shift-click) to move them earlier/later (also Alt+←/→), swap two pages, copy (each copy lands right after its original, with its own groups and connector links), delete, or insert a blank page. Pages can also be dragged to reorder, and a double-click opens a page. @ board links that point to a specific page of the board (from the same board or any other board) follow the pages when you reorder, swap or delete them; a link whose page was deleted falls back to just opening the board. All of it is undoable (Ctrl+Z restores the page count and the links too).
+
 
 ### Fixed
 - Pressing + or - alone zoomed the canvas. Keyboard zoom now needs Ctrl/Cmd + + (zoom in) and Ctrl/Cmd + - (zoom out), and the browser's own page zoom no longer fires on top of it.
