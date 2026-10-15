@@ -2006,7 +2006,7 @@ function shapeIcon(k){const g=G[k]||G.rect,bx=(k=='rect'||k=='ell')?[3,6,22,16]:
  g(bx[0],bx[1],bx[2],bx[3],{size:1.8,fx:0,fy:ln?1:0}).forEach(p=>{if(p.tx!=null)o+=`<text x="${p.x.toFixed(1)}" y="${p.y.toFixed(1)}" font-size="${p.fs.toFixed(1)}" fill="currentColor" stroke="none" font-family="system-ui,sans-serif">${p.tx}</text>`;else o+=`<path d="${p.d}"${p.h?' stroke-dasharray="2 2"':''}/>`});
  return `<svg viewBox="0 0 28 28" width="30" height="30" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round">${o}</svg>`;
 }
-function shapeStyle(){return {lineType:S.shapeStyle?.lineType||'solid',cornerType:S.shapeStyle?.cornerType||'rounded',size:cfg.shape.size||3,border:S.shapeStyle?.border||S.color,fill:S.shapeStyle?.fill ?? S.fill ?? ''}}
+function shapeStyle(){return {conn:S.shapeStyle?.conn!==false,lineType:S.shapeStyle?.lineType||'solid',cornerType:S.shapeStyle?.cornerType||'rounded',size:cfg.shape.size||3,border:S.shapeStyle?.border||S.color,fill:S.shapeStyle?.fill ?? S.fill ?? ''}}
 function applyShapeStyle(){const st=shapeStyle();S.shapeStyle=st;Wr('wb.shapeStyle',st);if(S.sel.length===1&&(S.sel[0].t==='s'||S.sel[0].t==='sp')){Object.assign(S.sel[0],{lineType:st.lineType,cornerType:st.cornerType,size:st.size,color:st.border,fill:st.fill||undefined});if(S.sel[0].xyz||S.sel[0].shape3d){}save();draw()}else{S.color=st.border;S.fill=st.fill;save()}}
 function lineTypeIcon(k){const dash={solid:'',dashed:'stroke-dasharray="9 6"',dotted:'stroke-dasharray="1 6"',dashdot:'stroke-dasharray="10 5 2 5"',longdash:'stroke-dasharray="16 6"',shortdash:'stroke-dasharray="5 5"'}[k]||'';return `<svg viewBox="0 0 40 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" ${dash}><path d="M4 18C10 18 10 6 18 6s8 12 18 12"/></svg>`}
 function renderShapePreview(){const sh=$('#shapePreview');if(!sh)return;const wrap=sh.parentElement,pw=wrap.clientWidth,ph=wrap.clientHeight;if(pw<2||ph<2)return;
@@ -2031,6 +2031,7 @@ function buildPops(){const sh=$('#shpp');sh.classList.add('shape-panel');sh.inne
  const ct=document.createElement('div');ct.className='shape-setting';ct.innerHTML='<label>Corner type</label>';const cb=document.createElement('div');cb.className='setting-body';[['rounded','Rounded'],['sharp','Sharp']].forEach(([k,g])=>{const b=document.createElement('button');b.className='choice '+(st.cornerType===k?'on':'');b.textContent=g;b.onclick=()=>{S.shapeStyle={...shapeStyle(),cornerType:k};applyShapeStyle();buildPops()};cb.append(b)});ct.append(cb);sh.append(ct);
  const colors=document.createElement('div');colors.className='shape-setting';colors.innerHTML='<label>Border color</label>';const cr=document.createElement('div');cr.className='setting-body color-row';const palette=['#111111','#ffffff','#e03131','#2f6fed','#2f9e44','#f08c00','#9c36b5','#e58caf','#9b7dcc','#68b99b','#6fa8dc','#c8ae48'];palette.forEach(c=>cr.append(chip(c,st.border===c,()=>{S.shapeStyle={...shapeStyle(),border:c};applyShapeStyle();buildPops()})));const pick=document.createElement('input');pick.type='color';pick.title='Choose any border color';pick.setAttribute('aria-label','Custom border color');pick.style.cssText='width:34px;height:30px;padding:0;border:2px solid var(--bd);border-radius:8px;background:none;cursor:pointer';pick.value=/^#[0-9a-f]{6}$/i.test(st.border)?st.border:'#111111';pick.oninput=e=>{S.shapeStyle={...shapeStyle(),border:e.target.value};applyShapeStyle();renderShapePreview()};pick.onchange=()=>buildPops();cr.append(pick);colors.append(cr);sh.append(colors);
  const fills=document.createElement('div');fills.className='shape-setting';fills.innerHTML='<label>Fill color</label>';const fr=document.createElement('div');fr.className='setting-body color-row';fr.append(chip('',!st.fill,()=>{S.shapeStyle={...shapeStyle(),fill:''};applyShapeStyle();buildPops()}));['#ffb3c6','#ffcfd2','#fde4cf','#fbf8cc','#b9fbc0','#a0c4ff','#cdb4ff','#a2d2ff','#ffd6a5'].forEach(c=>fr.append(chip(c,st.fill===c,()=>{S.shapeStyle={...shapeStyle(),fill:c};applyShapeStyle();buildPops()})));fills.append(fr);sh.append(fills);
+ if(['line','arr','darr'].includes($('#shp').value)){const cn=document.createElement('div');cn.className='shape-setting';cn.innerHTML='<label>Connected line</label>';const cbd=document.createElement('div');cbd.className='setting-body';const tl=document.createElement('label');tl.className='tgl';tl.title='Drop an end anywhere on a shape and the line snaps to its edge and stays attached when the shape moves';tl.innerHTML='<input type="checkbox"><i></i>Connect to shapes';const ti=tl.querySelector('input');ti.checked=st.conn!==false;ti.onchange=()=>{S.shapeStyle={...shapeStyle(),conn:ti.checked};applyShapeStyle();buildPops()};cbd.append(tl);cn.append(cbd);sh.append(cn)}
  requestAnimationFrame(renderShapePreview);
 }
 const pops=t=>{$('#shpp').hidden=t!='shape';$('#stp').hidden=t!='sticky';$('#txp').hidden=t!='text'};
@@ -2234,7 +2235,7 @@ async function renderHome(){
  sb.classList.toggle('collapsed',!HOME_SIDEBAR_EXPANDED);sb.innerHTML='';
  const head=document.createElement('div');head.className='hs-head';const ham=document.createElement('button');ham.textContent='☰';ham.title='Toggle navigation';ham.onclick=()=>{HOME_SIDEBAR_EXPANDED=!HOME_SIDEBAR_EXPANDED;renderHome()};head.append(ham);const brand=document.createElement('div');brand.className='hs-brand';brand.innerHTML='<img src="icon-192.png" alt=""><span>RejBoard</span>';head.append(brand);sb.append(head);
  const go=key=>{HV.sec=key;HV.q='';HV.fp=0;HV.selMode=false;HV.sel=new Set();renderHome()};
- const it=(label,key,cnt,ind,icon,on)=>{const d=document.createElement('div');d.className='it'+(on??(HV.sec==key)?' on':'');d.title=label;d.style.paddingLeft=HOME_SIDEBAR_EXPANDED?(8+ind*16)+'px':'0';const ic=document.createElement('span');ic.className='nav-icon';if(String(icon).startsWith('<svg'))ic.innerHTML=icon;else ic.textContent=icon;d.append(ic);const l=document.createElement('span');l.className='nav-label';l.textContent=label;d.append(l);if(cnt!=null){const c=document.createElement('small');c.className='nav-count';c.textContent=cnt;d.append(c)}d.onclick=()=>go(key);sb.append(d)};
+ const it=(label,key,cnt,ind,icon,on,tip)=>{const d=document.createElement('div');d.className='it'+(on??(HV.sec==key)?' on':'');d.title=tip||label;d.style.paddingLeft=HOME_SIDEBAR_EXPANDED?(8+ind*16)+'px':'0';const ic=document.createElement('span');ic.className='nav-icon';if(String(icon).startsWith('<svg'))ic.innerHTML=icon;else ic.textContent=icon;d.append(ic);const l=document.createElement('span');l.className='nav-label';l.textContent=label;d.append(l);if(cnt!=null){const c=document.createElement('small');c.className='nav-count';c.textContent=cnt;d.append(c)}d.onclick=()=>go(key);sb.append(d)};
  const lab=(label,icon)=>{const d=document.createElement('div');d.className='hs-section-label';d.innerHTML=`<span class="section-icon">${icon}</span><span class="section-label"></span>`;d.querySelector('.section-label').textContent=label;sb.append(d)};
  const PROT=tr('protected')==='protected'?'Protected':tr('protected');
  it(tr('allnotes'),'all',N.length,0,'📒');
@@ -2243,7 +2244,11 @@ async function renderHome(){
  it(tr('trash'),'trash',TR.length,0,'🗑');
  lab('Browse','✨');
  it(tr('tags'),'tags',tagNames.length,0,ICON_TAG,HV.sec==='tags'||HV.sec.startsWith('tag:'));
- if(HOME_SIDEBAR_EXPANDED)tagNames.forEach(t=>it('#'+t,'tag:'+t,tags[t],1,'#'));
+ if(HOME_SIDEBAR_EXPANDED){ /* sidebar shows only the 3 most recently used tags (+ the open one); the Tags page lists every tag */
+  const tagT={};N.forEach(n=>{const m=boardModified(n)||n.t||0;tagList(n.tags).forEach(t=>{if(!(tagT[t]>=m))tagT[t]=m})});
+  const recent=tagNames.slice().sort((x,y)=>(tagT[y]||0)-(tagT[x]||0)||x.localeCompare(y)).slice(0,3),curTag=HV.sec.startsWith('tag:')?HV.sec.slice(4):'';
+  if(curTag&&tags[curTag]&&!recent.includes(curTag))recent.push(curTag);
+  recent.forEach(t=>it(t,'tag:'+t,tags[t],1,'#',undefined,'#'+t))}
  it(tr('folders'),'folders',rootFolders.length,0,ICON_FOLDER,HV.sec==='folders'||HV.sec.startsWith('f:'));
  if(HOME_SIDEBAR_EXPANDED){lab('Theme','🎨');const tw=document.createElement('div');tw.style.cssText='display:flex;gap:5px;flex-wrap:wrap;padding:4px 8px 8px';[...$('#ut').options].forEach(o=>{const b=document.createElement('button');b.textContent=o.textContent;b.style.fontSize='11px';if(o.value===L('wb.th','auto'))b.className='on';b.onclick=e=>{e.stopPropagation();applyTheme(o.value);renderHome()};tw.append(b)});sb.append(tw)}
 
@@ -2774,6 +2779,7 @@ function buildOsp(){const sb=$('#sb');if(!sb||$('#osp'))return;const p=document.
  const rf=row('osrf','Fill color');const nf=chip('',false,()=>osChg(()=>osShapes().forEach(i=>{delete i.fill})));nf.dataset.c='';nf.title='No fill';rf.append(nf);
  OSFILL.forEach(c=>{const b=chip(c,false,()=>osChg(()=>osShapes().forEach(i=>i.fill=c)));b.dataset.c=c;b.title=c;rf.append(b)});
  const pf=document.createElement('input');pf.type='color';pf.id='osfi';pf.title='Any fill color';pf.oninput=()=>osLive(()=>osShapes().forEach(i=>i.fill=pf.value));pf.onchange=()=>{osPushed=false};rf.append(pf);
+ const rkn=row('osrk','Connected line'),kl=document.createElement('label');kl.className='tgl';kl.title='Snap the line to the shapes at its ends and keep it attached when they move';kl.innerHTML='<input type="checkbox" id="osck"><i></i>Connect to shapes';const kc=kl.querySelector('input');kc.onchange=()=>osChg(()=>osShapes().filter(i=>['line','arr','darr'].includes(i.shp)).forEach(i=>{if(kc.checked){delete i.nc;if(window.rbLinkEnds)window.rbLinkEnds(i)}else{i.nc=true;i.lk0=i.lk1=null;i.n0=i.n1=null}}));rkn.append(kl);
  p.addEventListener('mousedown',e=>e.stopPropagation())}
 function osStack(){const p=$('#osp'),sb=$('#sb');if(!p||p.hidden)return;const h=sb.hidden?0:Math.ceil(sb.getBoundingClientRect().height);p.style.bottom='calc(var(--pb,86px) + '+(h+(h?8:0))+'px)'}
 function ospSync(blocked){const p=$('#osp');if(!p)return;const k=(blocked||textEditor)?'':osKind();if(!k){if(!p.hidden)p.hidden=true;return}
@@ -2781,6 +2787,7 @@ function ospSync(blocked){const p=$('#osp');if(!p)return;const k=(blocked||textE
  show('osrb',st);show('osrs',st||sh);show('osrl',st||sh);show('osrc',sh);show('osrf',sh);
  $('#osrs b').textContent=sh?'Border width':'Brush size';$('#osrcol b').textContent=sh?'Border color':'Color';
  const T=osTargets(k),f=T[0],ae=document.activeElement,low=v=>String(v||'').toLowerCase();
+ const isLn=sh&&T.length>0&&T.every(q=>['line','arr','darr'].includes(q.shp));show('osrk',isLn);if(isLn){const ck=$('#osck');if(ck)ck.checked=T.every(q=>!q.nc)}
  if(f){const rg=$('#ossz');rg.max=sh?Math.max(12,Math.ceil(f.size||1)):60;if(ae!==rg){rg.value=Math.round(f.size||1)}$('#osszv').textContent=Math.round(f.size||1);
   if(st&&ae!==$('#osbr'))$('#osbr').value=T.every(q=>q.tool==f.tool)?f.tool:'';
   const lt=T.every(q=>(q.lineType||'solid')==(f.lineType||'solid'))?(f.lineType||'solid'):'';p.querySelectorAll('[data-lt]').forEach(b=>b.classList.toggle('on',b.dataset.lt==lt));
@@ -3078,6 +3085,7 @@ document.addEventListener('keydown',e=>{
  const tool=KT[code];if(!tool)return;e.preventDefault();setTool(tool)});
 })();
 (async()=>{zl();buildPops();swBrush();try{navigator.serviceWorker&&location.protocol.startsWith('http')&&navigator.serviceWorker.register('sw.js').catch(()=>{})}catch(e){}applyTheme(L('wb.th','auto'));syncPaper();i18n($('#lg').value);swBrush();setColor(S.color);setTool('fount');fit();const all=(await txMeta()).filter(r=>!r.folder&&!r.del&&!r.locked).sort((a,b)=>b.t-a.t);const first=all.length?await tx('readonly',s=>s.get(all[0].id)):null;if(first)await openNote(first);else{await blankNote()}showHome();try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist().catch(()=>{})}catch(e){}try{if(!window.wb&&!localStorage.getItem('wb.webnote')){localStorage.setItem('wb.webnote','1');setTimeout(()=>toast('Your boards are stored in this browser. Clearing site data deletes them, so use Backup now and then. The desktop app keeps them safer.',9000),1200)}}catch(e){}})();
+window.rbCur=()=>cur; /* the shape being drawn: the v21 block below shadows `cur` with the UI-translation locale */
 /* ===== v21: dynamic connectors, sketch-to-shape, offline UI translation ===== */
 (()=>{
 const isL=i=>i&&i.t=='sp'&&LINEK.includes(i.shp),mid=(a,b)=>[(a[0]+b[0])/2,(a[1]+b[1])/2],dst=(a,b)=>Math.hypot(a[0]-b[0],a[1]-b[1]);
@@ -3105,9 +3113,12 @@ function edgeAt(t,c,u){const P=outl(t);if(!P)return null;let best=0,bp=null;
 function outDist(t,p){const P=outl(t);if(!P)return 1e9;let m=1e9;for(const{pl,f}of P){const n=pl.length;for(let k=1;k<=(f?n:n-1);k++)m=Math.min(m,ds(p,pl[k-1],pl[k%n]))}return m}
 function sidePts(t,b){const cx_=(b[0]+b[2])/2,cy=(b[1]+b[3])/2,c=[cx_,cy],m={n:[cx_,b[1]],s:[cx_,b[3]],e:[b[2],cy],w:[b[0],cy]};
  if(t.t=='sp')for(const k in SIDE){const e=edgeAt(t,c,SIDE[k]);if(e)m[k]=e}return m}
-function findT(p,self){const tol=14/S.z;for(const t of[...S.items].reverse()){if(!tgtOK(t,self))continue;const b=bnds([t]),dx=Math.max(b[0]-p[0],0,p[0]-b[2]),dy=Math.max(b[1]-p[1],0,p[1]-b[3]),o=Math.hypot(dx,dy),near=t.t=='sp'&&outDist(t,p)<=tol;
+const ncOf=s=>!!s&&(s.nc||(s===window.rbCur()&&S.shapeStyle&&S.shapeStyle.conn===false));
+/* is p inside the drawn shape (real outline for closed shapes, bounding box otherwise)? */
+function inside(t,p){const P=t.t=='sp'?outl(t):null;if(P){let hit=false,any=false;for(const{pl,f}of P){if(!f||pl.length<3)continue;any=true;let c=false;for(let a=0,b=pl.length-1;a<pl.length;b=a++){const A=pl[a],B=pl[b];if((A[1]>p[1])!=(B[1]>p[1])&&p[0]<(B[0]-A[0])*(p[1]-A[1])/(B[1]-A[1])+A[0])c=!c}if(c)hit=!hit}if(any)return hit}const b=bnds([t]);return p[0]>=b[0]&&p[0]<=b[2]&&p[1]>=b[1]&&p[1]<=b[3]}
+function findT(p,self){if(ncOf(self))return null;const tol=14/S.z;for(const t of[...S.items].reverse()){if(!tgtOK(t,self))continue;const b=bnds([t]),dx=Math.max(b[0]-p[0],0,p[0]-b[2]),dy=Math.max(b[1]-p[1],0,p[1]-b[3]),o=Math.hypot(dx,dy),near=t.t=='sp'&&outDist(t,p)<=tol;
  if(!near){if(o>tol)continue;
- if(!o&&Math.min(p[0]-b[0],b[2]-p[0],p[1]-b[1],b[3]-p[1])>tol)continue}
+ if(!o&&Math.min(p[0]-b[0],b[2]-p[0],p[1]-b[1],b[3]-p[1])>tol&&!inside(t,p))continue}
  const m=sidePts(t,b);let side='auto';for(const k in m)if(dst(p,m[k])<22/S.z)side=k;return{t,side}}return null}
 function anchor(t,s,to){const b=bnds([t]),c=[(b[0]+b[2])/2,(b[1]+b[3])/2];
  if(!SIDE[s]){const dx=(to[0]-c[0])/Math.max(1,b[2]-b[0]),dy=(to[1]-c[1])/Math.max(1,b[3]-b[1]);s=Math.abs(dx)>Math.abs(dy)?(dx>0?'e':'w'):(dy>0?'s':'n')}
@@ -3127,7 +3138,8 @@ function linkedCluster(sel){const byId=new Map();S.items.forEach(q=>{if(q.id)byI
   if(isL(i)){[i.lk0,i.lk1].forEach(l=>{if(l)add(byId.get(l.id))})}
   else if(i.id)for(const c of conns)if((c.lk0&&c.lk0.id===i.id)||(c.lk1&&c.lk1.id===i.id))add(c)}
  return expandSel([...out])}
-function linkEnds(o){const E=spEnds(o);[0,1].forEach(w=>{const h=findT(E[w],o);if(h)o['lk'+w]={id:(h.t.id??=uid()),s:h.side}})}
+function linkEnds(o){const E=spEnds(o);[0,1].forEach(w=>{const h=findT(E[w],o);if(h)o['lk'+w]={id:(h.t.id??=uid()),s:h.side}});if(o.lk0&&o.lk1&&o.lk0.id===o.lk1.id){o.lk0=o.lk1=null}}
+window.rbLinkEnds=linkEnds;
 const _d0=draw0;draw0=function(){relinkAll();_d0();if(HOV){const b=bnds([HOV.t]);cx.save();cx.setTransform(dpr*S.z,0,0,dpr*S.z,dpr*S.ox,dpr*S.oy);cx.strokeStyle='#22c55e';cx.fillStyle='#22c55e';cx.lineWidth=2/S.z;cx.setLineDash([6/S.z,4/S.z]);cx.strokeRect(b[0],b[1],b[2]-b[0],b[3]-b[1]);cx.setLineDash([]);const m=(b[0]+b[2])/2,n=(b[1]+b[3])/2;(()=>{const sp=sidePts(HOV.t,b);return[sp.n,sp.s,sp.w,sp.e]})().forEach(q=>{cx.beginPath();cx.arc(q[0],q[1],4/S.z,0,7);cx.fill()});cx.restore()}};
 const _so=spOverlay;spOverlay=function(c,i){_so(c,i);if(!isL(i))return;const[a,b]=spEnds(i),m=mh(i),z=S.z;c.save();c.lineWidth=1.5/z;c.fillStyle='#fff';c.strokeStyle='#f97316';c.beginPath();c.arc(m[0],m[1],6/z,0,7);c.fill();c.stroke();
  c.strokeStyle='#22c55e';[[a,i.lk0],[b,i.lk1]].forEach(([q,l])=>{if(l){c.beginPath();c.arc(q[0],q[1],9/z,0,7);c.stroke()}});c.restore()};
@@ -3141,8 +3153,8 @@ cv.addEventListener('pointermove',e=>{const p=pt(e),d=drag;HOV=null;if(!d)return
  else if(d.k=='spend'||(d.k=='sh'&&LINEK.includes($('#shp').value))){HOV=findT(p,d.item);draw()}});
 cv.addEventListener('pointerup',e=>{const d=drag;if(!d)return;
  if(d.k=='spcm')save();
- else if(d.k=='spend'){const i=d.item,h=findT(spEnds(i)[d.w],i);i['lk'+d.w]=h?{id:(h.t.id??=uid()),s:h.side}:null;if(h)i.cv=undefined}
- else if(d.k=='sh'&&cur&&isL(cur))linkEnds(cur);HOV=null},true);
+ else if(d.k=='spend'){const i=d.item,h=findT(spEnds(i)[d.w],i),oth=i['lk'+(1-d.w)],ok=h&&!(oth&&h.t.id&&oth.id===h.t.id);i['lk'+d.w]=ok?{id:(h.t.id??=uid()),s:h.side}:null;if(ok)i.cv=undefined}
+ else if(d.k=='sh'){const ln=window.rbCur();if(ln&&isL(ln)){if(ncOf(ln))ln.nc=true;else linkEnds(ln)}}HOV=null},true);
 cv.addEventListener('dblclick',e=>{const q=S.sel[0];if(S.sel.length!=1||!isL(q))return;const p=pt(e);if(dst(p,mh(q))>14/S.z)return;e.stopImmediatePropagation();push();
  if(q.cm)q.cm=null;else q.cv=q.cv===0?undefined:0;draw();save()},true);
 /* ---- sketch -> clean shape ---- */

@@ -5,6 +5,7 @@
 
 ### Fixed
 - Pressing **Distribute evenly** (the button at the right end of the selection toolbar, previously shown as ⋯) with handwriting selected no longer spreads the letters apart. Handwriting and groups are now treated as one object each, and a toast explains when there is nothing to distribute. The button now has a clearer icon.
+- The home sidebar showed a double `#` in front of tag names. It also listed every tag, which got very long with many tags; it now shows the 3 most recently used tags (plus the one you have open), and the Tags section still lists all of them.
 
 ## [1.3.0]
 ### Changed
