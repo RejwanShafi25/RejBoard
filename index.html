@@ -1724,28 +1724,20 @@ async function svgOut(inv,extras=[]){const e=t=>String(t).replace(/[&<>"]/g,c=>(
 
 /* ---------- bottom bar layout: dock + page navigator + zoom never overlap ---------- */
 function fitBottom(){const dk=$('#dk'),zw0=$('#zw'),pp=$('#pp'),pg=$('#pgn');if(!dk)return;
- const vis=e=>e&&!e.hidden&&getComputedStyle(e).display!='none',root=document.documentElement,vw=root.clientWidth,m=8,gap=10,zw=vis(zw0)?zw0:(vis(pp)?pp:zw0);
- /* the theme sets bottom/left with !important, so inline offsets must be !important too or they are silently ignored */
- const setB=(e,v)=>e.style.setProperty('bottom',v,'important');
+ const vis=e=>e&&!e.hidden&&getComputedStyle(e).display!='none',root=document.documentElement,vw=root.clientWidth,m=8,gap=10,safe='env(safe-area-inset-bottom,0px)',B=14,zw=vis(zw0)?zw0:(vis(pp)?pp:zw0);
  dk.classList.remove('sm','xs');dk.style.maxWidth='none';dk.style.left='50%';dk.style.transform='translateX(-50%)';
  let dW=dk.getBoundingClientRect().width;
  for(const c of ['sm','xs']){if(dW<=vw-2*m)break;dk.classList.add(c);dW=dk.getBoundingClientRect().width}
  dk.style.maxWidth=(vw-2*m)+'px';dW=Math.min(dW,vw-2*m);
- /* the dock's real resting offset from the bottom (includes theme gap + safe area) */
- const B=Math.max(0,parseFloat(getComputedStyle(dk).bottom)||14);
- /* reset side widgets to the dock's baseline before measuring, so earlier 'lifted' state never skews the maths */
- if(vis(zw))setB(zw,B+'px');if(vis(pg))setB(pg,B+'px');
- const zR=vis(zw)?zw.getBoundingClientRect():null,pR=vis(pg)?pg.getBoundingClientRect():null;
- /* use the widgets' REAL edges (not just their widths): the theme moves them away from the screen edge */
- const lo=Math.max(m,pR?pR.right+gap:m),hi=Math.min(vw-m,zR?zR.left-gap:vw-m)-dW;
+ const zW=vis(zw)?zw.getBoundingClientRect().width:0,pW=vis(pg)?pg.getBoundingClientRect().width:0,lo=m+(pW?pW+gap:0),hi=vw-m-(zW?zW+gap:0)-dW;
  const dH=dk.getBoundingClientRect().height;let pb=86;
  if(lo<=hi){/* everything fits on one row: keep the dock centred, shifting only if a side widget needs the room */
   const Lc=(vw-dW)/2,L=Math.max(lo,Math.min(Lc,hi)),sh=Math.round(L-Lc);dk.style.left='50%';dk.style.transform=sh?`translateX(calc(-50% + ${sh}px))`:'translateX(-50%)';
+  zw.style.bottom=`calc(${B}px + ${safe})`;pg.style.bottom=`calc(${B}px + ${safe})`;
  }else{/* not enough width: page navigator (left) and zoom (right) move to a row above the dock */
   dk.style.left='50%';dk.style.transform='translateX(-50%)';
-  const up=(B+dH+8)+'px';if(vis(zw))setB(zw,up);if(vis(pg))setB(pg,up);
-  const rowH=Math.max(vis(zw)?zw.getBoundingClientRect().height:0,vis(pg)?pg.getBoundingClientRect().height:0);
-  pb=86+(rowH?Math.round(Math.max(rowH,36))+8:0)
+  const up=`calc(${B+dH+8}px + ${safe})`;zw.style.bottom=up;pg.style.bottom=up;
+  pb=86+(pW||zW?Math.round(Math.max(zw.getBoundingClientRect().height,pg.getBoundingClientRect().height,36))+8:0)
  }
  root.style.setProperty('--pb',(pb+Math.max(0,dH-48))+'px')}
 const refitBottom=()=>{fitBottom();requestAnimationFrame(fitBottom);setTimeout(fitBottom,120);setTimeout(fitBottom,400)};
@@ -1941,7 +1933,8 @@ const lanSize=n=>n<1024?n+' B':n<1048576?(n/1024).toFixed(1)+' KB':(n/1048576).t
 const lanBar=()=>{const fill=lanEl('div',{style:'height:100%;width:0;background:linear-gradient(90deg,#60a5fa,#3b82f6);border-radius:8px;transition:width .15s'}),pct=lanEl('span',{style:'font-weight:600;min-width:44px;text-align:right'},'0%'),txt=lanEl('div',{style:'font-size:12px;opacity:.8;margin-bottom:4px'}),track=lanEl('div',{style:'flex:1;height:14px;background:rgba(128,128,128,.25);border-radius:8px;overflow:hidden'},fill),row=lanEl('div',{style:'display:flex;gap:8px;align-items:center'},track,pct),box=lanEl('div',{style:'margin-top:8px'},txt,row);
  box.set=(label,sent,total)=>{const p=total?Math.min(100,Math.floor(sent/total*100)):100;fill.style.width=p+'%';pct.textContent=p+'%';txt.textContent=label+' — '+lanSize(sent)+' of '+lanSize(total)};return box};
 let lanSendBar=null,lanRecvBar=null,lanRecvHide=0;
-if(window.wb&&wb.lan)wb.lan.on('progress',d=>{if(d.role=='send'){if(lanSendBar){lanSendBar.hidden=false;lanSendBar.set('Sending',d.sent,d.total)}return}
+if(window.wb&&wb.lan)wb.lan.on('progress',d=>{if(d.role=='send'){window.__rejLanTransfer=true;if(lanSendBar){lanSendBar.hidden=false;lanSendBar.set('Sending',d.sent,d.total)}return}
+ window.__rejLanTransfer=true;
  if(!lanRecvBar){lanRecvBar=lanBar();Object.assign(lanRecvBar.style,{position:'fixed',left:'50%',bottom:'24px',transform:'translateX(-50%)',width:'min(420px,90vw)',background:'#fff',color:'#222',padding:'12px 14px',borderRadius:12,boxShadow:'0 6px 24px rgba(0,0,0,.25)',zIndex:99999,margin:0});document.body.append(lanRecvBar)}
  lanRecvBar.hidden=false;lanRecvBar.set('Receiving from '+d.name,d.sent,d.total);clearTimeout(lanRecvHide);lanRecvHide=setTimeout(()=>lanRecvBar.hidden=true,d.sent>=d.total?1500:15000)});
 async function lanImport(from,payload){let d;try{d=JSON.parse(payload)}catch(e){return toast('The received data was not valid')}
@@ -1958,7 +1951,7 @@ async function lanImport(from,payload){let d;try{d=JSON.parse(payload)}catch(e){
  try{if(!$('#hm').hidden)renderHome()}catch(e){}}
 if(window.wb&&wb.lan){
  wb.lan.on('incoming',async d=>{const ok=await askConfirm('📥 Incoming boards','“'+d.name+'” ('+d.host+') wants to send you '+d.count+' board'+(d.count==1?'':'s')+' ('+lanSize(d.size)+'). Security code: '+d.code+'. Accept only if the SAME code is shown on the sender’s screen.','Accept',false);wb.lan.respond(d.sid,ok)});
- wb.lan.on('received',d=>lanImport(d.from,d.payload));
+ wb.lan.on('received',d=>{window.__rejLanTransfer=false;lanImport(d.from,d.payload)});
 }
 async function lanDialog(pre){
  if(!window.wb||!wb.lan){await dlg({title:'📡 Local network share',msg:'Sharing over the local network needs the desktop app (Windows, macOS or Linux), because browsers cannot open network connections between computers. Install the desktop app on both computers and open this menu there.',hideOk:true,cancel:'OK'});return}
@@ -1972,7 +1965,7 @@ async function lanDialog(pre){
  const send=async peer=>{if(busy)return;if(!sel.size)return setStatus('Select at least one board to send first.');busy=true;
   try{let extra=[];{const ex=await linkedBoardsOf([...sel]);if(ex.length&&await dlg({title:'🔗 Linked boards',msg:'The board'+(sel.size==1?'':'s')+' you are sending link'+(sel.size==1?'s':'')+' to '+ex.length+' other board'+(ex.length==1?'':'s')+': '+linkedNames(ex)+'. Send '+(ex.length==1?'it':'them')+' along so the links still work on the other computer? It will show a picture of each one and let them untick any they do not want.',ok:'Send along',cancel:'Only selected'}))extra=await packBoards(ex)}
    setStatus('Connecting to '+(peer.name||peer.host)+'…');const recs=[];for(const id of sel){const r=await tx('readonly',s=>s.get(id));if(r)recs.push({...r,recs:await recPack(id)})}if(extra.length&&recs.length)recs[0].linked=extra;
-   const res=await wb.lan.send({host:peer.host,port:peer.port,name:peer.name},JSON.stringify({app:'rejboard',v:1,boards:recs}),recs.length);
+   window.__rejLanTransfer=true;const res=await wb.lan.send({host:peer.host,port:peer.port,name:peer.name},JSON.stringify({app:'rejboard',v:1,boards:recs}),recs.length);window.__rejLanTransfer=false;
    if(res.ok)bar.set('Sent',1,1);setStatus(res.ok?'✅ Sent '+res.count+' board'+(res.count==1?'':'s')+(extra.length?' + '+extra.length+' linked':'')+' to '+(peer.name||peer.host)+'.':'⚠️ '+res.error)}catch(e){setStatus('⚠️ '+(e.message||e))}busy=false};
  const drawPeers=list=>{peersBox.textContent='';if(!list.length){peersBox.append(lanEl('div',{style:'font-size:12px;opacity:.7'},'No computers found yet. On the other computer open this same menu and turn on “Receive boards”. Both must be on the same Wi-Fi / network.'));return}
   for(const p of list)peersBox.append(lanEl('div',{style:'display:flex;gap:8px;align-items:center'},lanEl('span',{style:'flex:1'},'💻 '+p.name+'  ('+p.host+')'),lanEl('button',{textContent:'Send ▶',onclick:()=>send(p)})))};
@@ -2406,6 +2399,25 @@ function openSettings(){const m=$('#stm');m.hidden=0;m.innerHTML='';m.onclick=e=
  H('Canvas','How moving around and drawing on the canvas behaves.');R('Mouse wheel zoom',TG(ST,'wheel'),'Off = wheel scrolls, Ctrl+wheel zooms');R('Return to select after drawing shapes',TG(ST,'rts'),'After a shape or tape the Select tool comes back');R('Right-drag pans the canvas',TG(ST,'rdrag'));
  R('Low latency inking (restart app)',TG(ST,'ll'),'Uses a lower-latency canvas; takes effect next launch');R('Autosave',TG(ST,'auto'),'Off = save with Ctrl+S');
  H('Handwriting to text','Which engine turns selected handwriting into editable text.');R('Recognition engine',SG('hwEngine',[['online','Online (Google)'],['device','On-device (offline)']]),'Online sends only the ink points to a Google handwriting service. On-device uses the built-in Tesseract engine (the same on Windows, macOS and Linux): nothing leaves your computer. Desktop app only.');box.insertAdjacentHTML('beforeend','<p style="margin:4px 0 0;opacity:.65;font-size:11px">The on-device engine works best on neat, separated (printed) handwriting; for cursive, Online is usually more accurate.</p>');
+ H('Updates','Check for RejBoard updates. Checks contact GitHub over HTTPS only when you ask or enable automatic checks.');
+ const updateBox=document.createElement('div');updateBox.style.cssText='display:flex;flex-direction:column;gap:8px;min-width:0';
+ const updateVersion=document.createElement('div');updateVersion.textContent='Current version: …';updateVersion.setAttribute('role','status');
+ const updateStatusLine=document.createElement('div');updateStatusLine.textContent='Not checked yet';updateStatusLine.style.opacity='.75';
+ const updateButtons=document.createElement('div');updateButtons.style.cssText='display:flex;gap:8px;flex-wrap:wrap';
+ const checkBtn=document.createElement('button');checkBtn.textContent='Check for updates';
+ const downloadBtn=document.createElement('button');downloadBtn.textContent='Download';downloadBtn.hidden=true;downloadBtn.className='on';
+ const laterBtn=document.createElement('button');laterBtn.textContent='Later';laterBtn.hidden=true;
+ const installBtn=document.createElement('button');installBtn.textContent='Restart to update';installBtn.hidden=true;installBtn.className='on';
+ const releaseBtn=document.createElement('button');releaseBtn.textContent='Download the new version from GitHub';releaseBtn.hidden=true;
+ const autoWrap=document.createElement('label');autoWrap.style.cssText='display:flex;align-items:center;gap:8px;flex-wrap:wrap';
+ const autoCheck=document.createElement('input');autoCheck.type='checkbox';autoCheck.checked=localStorage.getItem('wb.updates.auto')==='true';
+ const autoText=document.createElement('span');autoText.textContent='Check for updates automatically';autoWrap.append(autoCheck,autoText);
+ updateButtons.append(checkBtn,downloadBtn,laterBtn,installBtn,releaseBtn);updateBox.append(updateVersion,autoWrap,updateButtons,updateStatusLine);box.append(updateBox);
+ const releases='https://github.com/RejwanShafi25/RejBoard/releases/latest';let latestUpdateState=null;
+ const updateStatusText=(s)=>{latestUpdateState=s;const reason=s.reason;downloadBtn.hidden=s.status!=='available';laterBtn.hidden=s.status!=='available';installBtn.hidden=s.status!=='ready';releaseBtn.hidden=!(s.policy&&!s.policy.enabled)||!!(s.policy&&s.policy.enabled);if(s.status==='checking')updateStatusLine.textContent='Checking for updates…';else if(s.status==='up-to-date')updateStatusLine.textContent='You are up to date.';else if(s.status==='available')updateStatusLine.textContent='Version '+(s.availableVersion||'')+' is available. Download it now?';else if(s.status==='downloading')updateStatusLine.textContent='Downloading '+(s.percent||0)+'%';else if(s.status==='ready')updateStatusLine.textContent='Update ready to install.'+(s.blocked?' Finish recording/transfers and save your work first.':'');else if(s.status==='error')updateStatusLine.textContent=({offline:'Could not reach GitHub. Check your internet connection.', 'rate-limit':'GitHub temporarily limited update checks. Try again later.',checksum:'The downloaded update failed its integrity check and was rejected.',failed:'Update failed. RejBoard will continue working normally.'})[reason]||'Update failed. RejBoard will continue working normally.';else if(s.status==='idle')updateStatusLine.textContent='Not checked yet';if(s.policy&&!s.policy.enabled){updateStatusLine.textContent=({portable:'Portable builds cannot update in-app.', 'linux-package':'Linux .deb/.rpm packages cannot update in-app.','unsigned-mac':'This unsigned macOS build cannot update in-app.','development':'Updates are available in packaged builds only.'})[s.policy.reason]||'Use GitHub Releases to get the latest version.';releaseBtn.hidden=false;}}
+ if(window.wb&&wb.updates){wb.updates.getVersion().then(v=>updateVersion.textContent='Current version: '+v);wb.updates.onStatus(updateStatusText);checkBtn.onclick=async()=>{updateStatusLine.textContent='Checking for updates…';const r=await wb.updates.check();if(!r.ok){if(r.releasesUrl){updateStatusText({status:'idle',policy:{enabled:false,reason:r.reason}})}else updateStatusText({status:'error',reason:r.reason||'failed'})}};downloadBtn.onclick=async()=>{downloadBtn.disabled=true;updateStatusLine.textContent='Starting download…';const r=await wb.updates.download();downloadBtn.disabled=false;if(!r.ok)updateStatusText({status:'error',reason:r.reason||'failed'})};laterBtn.onclick=()=>{downloadBtn.hidden=true;laterBtn.hidden=true;updateStatusLine.textContent='Update postponed. You can check again later.'};installBtn.onclick=async()=>{if(DIRTY)await saveNow();pushUpdateActivity();const r=await wb.updates.install();if(!r.ok)updateStatusLine.textContent=r.reason==='busy'?'Save your work and finish any recording or LAN transfer before restarting.':'The update is not ready yet.'};releaseBtn.onclick=()=>window.open(releases,'_blank','noopener');autoCheck.onchange=()=>{localStorage.setItem('wb.updates.auto',String(autoCheck.checked));if(autoCheck.checked&&window.wb&&wb.updates)wb.updates.check()};}
+ const pushUpdateActivity=()=>({recording:!!(typeof RC!=='undefined'&&(RC.mr||RC.busy)),lanTransfer:!!window.__rejLanTransfer,unsavedChanges:!!(typeof DIRTY!=='undefined'&&DIRTY)});
+ if(window.wb&&wb.updates){document.addEventListener('visibilitychange',pushUpdateActivity);window.addEventListener('beforeunload',()=>{if(DIRTY)saveNow()});}
  H('Reset to default','Put every setting back to how it shipped. Your boards are not touched.');const rb=document.createElement('button');rb.textContent='Reset all settings';rb.onclick=()=>{if(!confirmTwice(rb))return;Object.keys(localStorage).filter(k=>k.startsWith('wb.')).forEach(k=>localStorage.removeItem(k));location.reload()};box.append(rb);
  H('Boards','Create, clear, save and open whole boards.');const bw=document.createElement('div');bw.style.cssText='display:flex;gap:6px;flex-wrap:wrap';[['＋ New board',async()=>{m.hidden=1;await newNote()}],['🧹 Clear canvas',()=>{push();S.items=[];S.sel=[];save();draw();m.hidden=1}],['💾 Save a copy',saveCopy],['📂 Open a board file',()=>$('#of').click()]].forEach(([t,f])=>{const b=document.createElement('button');b.textContent=t;b.onclick=f;bw.append(b)});box.append(bw);
  /* bento: group every heading + its rows into a tile */
@@ -2419,7 +2431,7 @@ function bgAll(c,W,H,ox,oy,z){if(S.pg.size=='inf')return bgfx(c,W,H,ox,oy,z);con
 function camTo(z,ox,oy){cache=null;const z0=S.z,x0=S.ox,y0=S.oy,t0=performance.now();(function f(){const k=Math.min(1,(performance.now()-t0)/320),e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2;S.z=z0+(z-z0)*e;S.ox=x0+(ox-x0)*e;S.oy=y0+(oy-y0)*e;zl();draw();if(k<1)requestAnimationFrame(f)})()}
 function pgOf(){const[,ph]=pdim(),cy=(cv.clientHeight/2-S.oy)/S.z;return Math.max(0,Math.min(S.pg.n-1,Math.floor(cy/(ph+PG_GAP))))}
 function goPage(i){if(S.pg.size=='inf')return;i=Math.max(0,Math.min(S.pg.n-1,i));const[pw,ph]=pdim(),W=cv.clientWidth,H=cv.clientHeight,z=Math.min(W/(pw+60),H/(ph+60),3);camTo(z,(W-pw*z)/2,(H-ph*z)/2-i*(ph+PG_GAP)*z)}
-function pgUi(){const pg=S.pg.size!='inf';$('#pgn').hidden=!pg;try{refitBottom()}catch(_){}$('#cps').value=S.pg.size;$('#cpo').value=S.pg.o;$('#cpo').disabled=!pg;if(!pg)return;const[,ph]=pdim(),last=(S.pg.n-1)*(ph+PG_GAP)+ph,b=S.items.length?bnds(S.items):[0,0,0,0],f=$('#pgfull');f.hidden=b[3]<last-50;f.textContent=tr('full')}
+function pgUi(){const pg=S.pg.size!='inf';$('#pgn').hidden=!pg;$('#cps').value=S.pg.size;$('#cpo').value=S.pg.o;$('#cpo').disabled=!pg;if(!pg)return;const[,ph]=pdim(),last=(S.pg.n-1)*(ph+PG_GAP)+ph,b=S.items.length?bnds(S.items):[0,0,0,0],f=$('#pgfull');f.hidden=b[3]<last-50;f.textContent=tr('full')}
 function addPage(){if(S.pg.size=='inf')return toast(tr('pickpage'));push();S.pg.n++;save();pgUi();goPage(S.pg.n-1)}
 $('#cps').onchange=e=>{S.pg.size=e.target.value;if(S.pg.n<1)S.pg.n=1;save();pgUi();if(S.pg.size=='inf')fitAll();else goPage(0);draw()};
 $('#cpo').onchange=e=>{S.pg.o=e.target.value;save();pgUi();goPage(pgOf())};
@@ -3535,6 +3547,16 @@ function close(){
  if(mut){cache=null;draw();goPage(Math.min(first,nP()-1))}}
 document.getElementById('pgov-btn').onclick=open;
 window.openPagesOverview=open;
+})();
+</script>
+<script>
+// Update lifecycle bridge: keep all update feedback inside Settings → Updates.
+// This listener only handles the save request before installation; it creates no floating notifications.
+(()=>{
+ if(!(window.wb&&wb.updates))return;
+ wb.updates.onStatus(s=>{
+   if(s.status==='flush-save'&&typeof DIRTY!=='undefined'&&DIRTY&&typeof saveNow==='function')saveNow();
+ });
 })();
 </script>
 </body></html>

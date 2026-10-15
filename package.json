@@ -1,7 +1,7 @@
 {
   "name": "rejboard",
   "productName": "RejBoard",
-  "version": "1.2.10",
+  "version": "1.2.11",
   "description": "Local-first whiteboard and note-taking app with handwriting, PDF annotation, voice recordings, and temporary in-app browsing/video",
   "main": "main.js",
   "author": {
@@ -13,7 +13,8 @@
     "start": "electron .",
     "libs": "python fetch_libs.py && cd ocr-engine && npm install --omit=dev --ignore-scripts",
     "test:ocr": "node scripts/ocr-smoke.js",
-    "dist": "electron-builder"
+    "dist": "electron-builder",
+    "test:updates": "node test-update-policy.js"
   },
   "devDependencies": {
     "electron": "^44.5.1",
@@ -36,7 +37,8 @@
       "icon.svg",
       "icon-*.png",
       "vendor/**",
-      "locales/**"
+      "locales/**",
+      "update-policy.js"
     ],
     "extraResources": [
       {
@@ -80,13 +82,19 @@
             "x64",
             "arm64"
           ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
         }
       ],
       "icon": "build/icon.png",
       "category": "public.app-category.productivity",
       "identity": null,
-      "hardenedRuntime": false,
-      "gatekeeperAssess": false
+      "hardenedRuntime": false
     },
     "linux": {
       "target": [
@@ -117,5 +125,9 @@
   "homepage": "https://github.com/RejwanShafi25/RejBoard",
   "allowScripts": {
     "electron@44.5.1": true
+  },
+  "dependencies": {
+    "electron-updater": "^6.6.2",
+    "lodash.isequal": "^4.5.0"
   }
 }

@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build:
@@ -70,9 +70,6 @@ jobs:
           (cd ocr-engine && npm install --omit=dev)
           npm run test:ocr
 
-      # The OCR folder must hold real files only (the .bin folder is skipped: its links are not packaged).
-      # A link in there (npm can create one back to the project)
-      # makes 7-Zip walk the whole repo in a loop on Windows, so fail fast instead of hanging.
       - name: Check OCR folder has no links
         shell: bash
         run: |
@@ -80,11 +77,49 @@ jobs:
           LINKS=$(find ocr-engine/node_modules -path ocr-engine/node_modules/.bin -prune -o -type l -print)
           if [ -n "$LINKS" ]; then echo "Unexpected links in ocr-engine/node_modules:"; echo "$LINKS"; exit 1; fi
 
-      - name: Build installers
-        run: npx electron-builder --publish never
+      - name: Build and publish installers (tag build)
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: npx electron-builder --publish always
         env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # No code-signing certificates: skip auto-discovery so the macOS build does not fail/hang.
           CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+
+      - name: Build installers (manual non-tag build)
+        if: ${{ !startsWith(github.ref, 'refs/tags/v') }}
+        run: npx electron-builder --publish never
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+
+      - name: Verify update metadata and artifact names (tag builds)
+        if: startsWith(github.ref, 'refs/tags/v')
+        shell: bash
+        run: |
+          case "${{ matrix.label }}" in
+            windows) META=latest.yml ;;
+            macos) META=latest-mac.yml ;;
+            linux) META=latest-linux.yml ;;
+          esac
+          test -s "dist/$META" || { echo "Missing dist/$META"; exit 1; }
+          node - <<'NODE'
+          const fs = require('fs');
+          const path = require('path');
+          const yaml = require('js-yaml');
+          const metaName = process.env.META || ({windows:'latest.yml',macos:'latest-mac.yml',linux:'latest-linux.yml'})[process.env.PLATFORM];
+          const meta = yaml.load(fs.readFileSync(path.join('dist', metaName), 'utf8'));
+          const files = Array.isArray(meta.files) ? meta.files : (meta.path ? [{url: meta.path}] : []);
+          if (!files.length) throw new Error(`${metaName} contains no downloadable file entries`);
+          for (const item of files) {
+            const name = path.basename(item.url || item.path || '');
+            if (!name || !fs.existsSync(path.join('dist', name))) throw new Error(`${metaName} references missing artifact: ${name}`);
+            if (/\.(exe|AppImage|zip)$/i.test(name) && !fs.existsSync(path.join('dist', name + '.blockmap'))) {
+              throw new Error(`Missing differential blockmap for ${name}`);
+            }
+            console.log(`${metaName}: ${name}`);
+          }
+          NODE
+        env:
+          PLATFORM: ${{ matrix.label }}
 
       - name: Verify bundled OCR is inside the package
         shell: bash
@@ -97,20 +132,8 @@ jobs:
             test -s "$RES/ocr/tessdata/eng.traineddata"
           done
 
-      - name: Upload installers
-        uses: actions/upload-artifact@v4
-        with:
-          name: installers-${{ matrix.label }}
-          if-no-files-found: error
-          path: |
-            dist/*.exe
-            dist/*.dmg
-            dist/*.AppImage
-            dist/*.deb
-            dist/*.rpm
-
-  release:
-    name: Publish GitHub Release
+  release-notes:
+    name: Update release notes
     needs: build
     if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
@@ -118,27 +141,14 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
-
-      - uses: actions/download-artifact@v4
-        with:
-          pattern: installers-*
-          merge-multiple: true
-          path: release-files
-
-      - name: List files
-        run: ls -lh release-files
-
       - name: Extract changelog for this version
         shell: bash
         run: |
           VER="${GITHUB_REF_NAME#v}"
-          awk -v v="$VER" '$0 ~ "^## \\[" v "\\]" {f=1; next} /^## \[/ {f=0} f' CHANGELOG.md > release-notes.md
+          awk -v v="$VER" '$0 ~ "^## \\[" v "\\]" {f=1; next} /^## \[/{f=0} f' CHANGELOG.md > release-notes.md
           test -s release-notes.md || { echo "No CHANGELOG.md section for $VER"; exit 1; }
-          cat release-notes.md
-
       - uses: softprops/action-gh-release@v2
         with:
           body_path: release-notes.md
-          files: release-files/*
-          generate_release_notes: true
-          fail_on_unmatched_files: true
+          generate_release_notes: false
+          fail_on_unmatched_files: false

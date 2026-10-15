@@ -4,6 +4,8 @@ const lanShare = require('./lan');
 const ocr = require('./ocr'); // on-device handwriting OCR (no network, no files)
 const path = require('path');
 const fs = require('fs');
+const { autoUpdater } = require('electron-updater');
+const { canAutoUpdate, canInstallNow, RELEASES_URL } = require('./update-policy');
 // The app used to be called "Rejwan Whiteboard". Electron stores boards in a folder named after the app,
 // so keep using the old folder when it exists; otherwise renaming would make existing boards disappear.
 try { const old = path.join(app.getPath('appData'), 'Rejwan Whiteboard'), cur = path.join(app.getPath('appData'), 'RejBoard');
@@ -91,9 +93,67 @@ ipcMain.handle('i18n:fetch', async (_e, file) => {
   return null;
 });
 ipcMain.handle('browser:clear', async () => { try { const ses = require('electron').session.fromPartition('rejboard-ephemeral'); await ses.clearStorageData(); await ses.clearCache(); return true; } catch (_) { return false; } });
+// ---- Secure in-app updates ----
+let macSigned = false;
+if (process.platform === 'darwin' && app.isPackaged) { try { require('child_process').execFileSync('codesign', ['--verify', '--deep', '--strict', path.resolve(path.dirname(process.execPath), '..', '..')], { stdio: 'ignore' }); macSigned = true; } catch (_) {} }
+const updatePolicy = canAutoUpdate({ platform: process.platform, env: process.env, isPackaged: app.isPackaged, macSigned });
+let updateWindow = null, updateState = { status: 'idle', version: app.getVersion(), policy: updatePolicy, releasesUrl: RELEASES_URL }, updateActivity = { recording: false, lanTransfer: false, unsavedChanges: false };
+let updateCheckRunning = false, updateReady = false;
+function updateStatus(patch) {
+  updateState = { ...updateState, ...patch };
+  try { if (updateWindow && !updateWindow.isDestroyed()) updateWindow.webContents.send('updates:status', updateState); } catch (_) {}
+}
+const writeUpdateLog = (level, args) => { try { const dir = app.getPath('logs'); fs.mkdirSync(dir, { recursive: true }); fs.appendFileSync(path.join(dir, 'updates.log'), new Date().toISOString() + ' [' + level + '] ' + args.map(v => { try { return typeof v === 'string' ? v : JSON.stringify(v); } catch (_) { return String(v); } }).join(' ') + '\n'); } catch (_) {} };
+if (updatePolicy.enabled && app.isPackaged) {
+  autoUpdater.autoDownload = false;
+  autoUpdater.autoInstallOnAppQuit = true;
+  autoUpdater.allowDowngrade = false;
+  autoUpdater.allowPrerelease = false;
+  autoUpdater.logger = { info: (...a) => { console.info('[electron-updater]', ...a); writeUpdateLog('info', a); }, warn: (...a) => { console.warn('[electron-updater]', ...a); writeUpdateLog('warn', a); }, error: (...a) => { console.error('[electron-updater]', ...a); writeUpdateLog('error', a); }, debug: (...a) => { console.debug('[electron-updater]', ...a); writeUpdateLog('debug', a); } };
+  autoUpdater.on('checking-for-update', () => updateStatus({ status: 'checking' }));
+  autoUpdater.on('update-available', info => updateStatus({ status: 'available', availableVersion: info.version }));
+  autoUpdater.on('update-not-available', () => updateStatus({ status: 'up-to-date' }));
+  autoUpdater.on('download-progress', p => updateStatus({ status: 'downloading', percent: Math.max(0, Math.min(100, Math.round(p.percent || 0)))}));
+  autoUpdater.on('update-downloaded', info => { updateReady = true; updateStatus({ status: 'ready', availableVersion: info.version }); });
+  autoUpdater.on('error', err => {
+    const msg = String(err && err.message || '');
+    const reason = /rate.?limit|API rate limit/i.test(msg) ? 'rate-limit' : /checksum|sha512|digest/i.test(msg) ? 'checksum' : /ENOTFOUND|offline|network|ECONN|ETIMEDOUT/i.test(msg) ? 'offline' : 'failed';
+    updateStatus({ status: 'error', reason });
+    console.warn('[updates]', reason, msg.slice(0, 300));
+  });
+}
+ipcMain.handle('updates:version', () => app.getVersion());
+ipcMain.handle('updates:check', async () => {
+  if (!updatePolicy.enabled || !app.isPackaged) return { ok: false, reason: updatePolicy.reason, releasesUrl: RELEASES_URL };
+  if (updateCheckRunning) return { ok: true, status: updateState.status };
+  updateCheckRunning = true;
+  try { await autoUpdater.checkForUpdates(); return { ok: true }; }
+  catch (e) { return { ok: false, reason: 'failed' }; }
+  finally { updateCheckRunning = false; }
+});
+ipcMain.handle('updates:download', async () => {
+  if (!updatePolicy.enabled || !app.isPackaged) return { ok: false, reason: updatePolicy.reason, releasesUrl: RELEASES_URL };
+  try { await autoUpdater.downloadUpdate(); return { ok: true }; } catch (_) { return { ok: false, reason: 'failed' }; }
+});
+ipcMain.handle('updates:activity', (_e, activity) => {
+  updateActivity = { recording: !!activity?.recording, lanTransfer: !!activity?.lanTransfer, unsavedChanges: !!activity?.unsavedChanges };
+  if (updatePolicy.enabled) autoUpdater.autoInstallOnAppQuit = canInstallNow(updateActivity);
+  return canInstallNow(updateActivity);
+});
+ipcMain.handle('updates:install', async () => {
+  if (!updateReady) return { ok: false, reason: 'not-ready' };
+  if (!canInstallNow(updateActivity)) return { ok: false, reason: 'busy' };
+  // Flush autosave before asking electron-updater to restart.
+  try { updateWindow && !updateWindow.isDestroyed() && updateWindow.webContents.send('updates:flush-save'); } catch (_) {}
+  setTimeout(() => { if (canInstallNow(updateActivity)) autoUpdater.quitAndInstall(false, true); }, 350);
+  return { ok: true };
+});
+ipcMain.on('updates:renderer-ready', e => { updateWindow = BrowserWindow.fromWebContents(e.sender); e.sender.send('updates:status', { ...updateState, policy: updatePolicy, releasesUrl: RELEASES_URL }); });
+
 function createWindow() {
   const w = new BrowserWindow({ width: 1320, height: 860, title: 'RejBoard', icon: path.join(__dirname, 'build', 'icon.png'), backgroundColor: '#fff7fa',
     webPreferences: { preload: path.join(__dirname, 'preload.js'), contextIsolation: true, webviewTag: true, nodeIntegration: false, sandbox: true } });
+  updateWindow = w;
   w.setMenuBarVisibility(false);
   lanShare.register(ipcMain, w);
   w.loadFile('index.html');
@@ -150,6 +210,7 @@ app.whenReady().then(createWindow);
 // cookies/cache/storage when the app exits; this cannot erase data a website has on its servers.
 let finalCleanupStarted = false;
 app.on('before-quit', (event) => {
+  if (updateReady) { autoUpdater.autoInstallOnAppQuit = canInstallNow(updateActivity); if (!canInstallNow(updateActivity)) updateStatus({ status: 'ready', blocked: true }); }
   if (finalCleanupStarted) return;
   event.preventDefault(); finalCleanupStarted = true;
   (async () => { try { const ses = require('electron').session.fromPartition('rejboard-ephemeral'); await ses.clearStorageData(); await ses.clearCache(); } catch (_) {} finally { app.quit(); } })();

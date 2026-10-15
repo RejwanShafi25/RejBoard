@@ -7,6 +7,13 @@ contextBridge.exposeInMainWorld('wb', {
   i18n: { fetch: f => ipcRenderer.invoke('i18n:fetch', f) },
   clearBrowserData: () => ipcRenderer.invoke('browser:clear'),
   fetchRemoteImage: url => ipcRenderer.invoke('image:fetch-remote', url),
+  updates: {
+    getVersion: () => ipcRenderer.invoke('updates:version'),
+    check: () => ipcRenderer.invoke('updates:check'),
+    download: () => ipcRenderer.invoke('updates:download'),
+    install: () => ipcRenderer.invoke('updates:install'),
+    onStatus: (fn, getActivity) => { const h = (_e, state) => fn(state); const flush = () => fn({ status: 'flush-save' }); ipcRenderer.on('updates:status', h); ipcRenderer.on('updates:flush-save', flush); ipcRenderer.send('updates:renderer-ready'); const timer = typeof getActivity === 'function' ? setInterval(() => { try { ipcRenderer.invoke('updates:activity', getActivity()).catch(() => {}); } catch (_) {} }, 700) : null; return () => { ipcRenderer.removeListener('updates:status', h); ipcRenderer.removeListener('updates:flush-save', flush); if (timer) clearInterval(timer); }; }
+  },
   onBrowserAddImage: fn => { const h = (_e, u) => fn(u); ipcRenderer.on('browser:add-image', h); return () => ipcRenderer.removeListener('browser:add-image', h); },
   lan: {
     info: () => ipcRenderer.invoke('lan:info'),
