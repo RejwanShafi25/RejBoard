@@ -1,13 +1,5 @@
 # Changelog
 
-## [Unreleased]
-### Changed
-- **Bento UI across the whole app.** Home, sidebar, folders, tags, boards, the board header, canvas, tool dock, zoom controls, pop-ups, dialogs and Settings now share one bento-style tile design (rounded tiles, soft shadows, a mosaic of wide and regular board tiles, colour-tinted folder tiles). All 12 themes, the light/dark modes and the phone layout are supported; no board data or features changed.
-
-### Fixed
-- Minimizing the in-app browser / video window after it had been dragged or resized only moved it instead of collapsing it; it now collapses to the title bar and restores to its exact size and position.
-
-
 ## [1.2.9]
 ### Changed
 - **One offline handwriting engine on every platform.** On-device recognition now uses a bundled Tesseract.js engine on Windows, macOS and Linux. Apple Vision, Windows.Media.Ocr and the system `tesseract` command are no longer used (because they were not working perfectly all the time). All installers include the engine and English data. From source, run `npm run libs` once (replaces `npm run libs:linux`; the `ocr-linux` folder is now `ocr-engine`).
