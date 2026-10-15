@@ -589,7 +589,7 @@ html.lowmem .mdl,html.lowmem #stm{backdrop-filter:none!important}
 <div id="exm" class="pp" hidden style="flex-direction:column;align-items:stretch"><button data-x="png">🖼 Export board as PNG</button><button data-x="svg">✏️ Export board as SVG</button><button data-x="pdf">📕 Export as PDF</button><button data-x="selpng">🔲 Export selection as PNG</button><button data-x="fit">⛶ Fit everything on the paper</button><button data-x="copy">💾 Save a copy (.rjwb — opens only in this app)</button><button data-x="open">📂 Open a board file</button><button data-x="lan">📡 Share boards on local network (encrypted)…</button></div>
 <div id="sb" class="pp" hidden><button data-a="dup" title="Duplicate (Ctrl+D)">⧉</button><button data-a="copy" title="Copy (Ctrl+C)">📋</button><button data-a="cut" title="Cut (Ctrl+X)">✂️</button><button data-a="del" title="Delete">🗑</button><button data-a="front" title="Bring to front">⬆</button><button data-a="back" title="Send to back">⬇</button><button data-a="grp" title="Group (Ctrl+G)">▣</button><button data-a="ungrp" title="Ungroup (Ctrl+Shift+G)">▢</button><span class="sep"></span><button data-a="L" title="Align left">⇤</button><button data-a="H" title="Center horizontally">⇔</button><button data-a="R" title="Align right">⇥</button><button data-a="T" title="Align top">⤒</button><button data-a="V" title="Center vertically">⇕</button><button data-a="D" title="Align bottom">⤓</button><button data-a="zsel" title="Zoom to selection (Z)">🔍</button><button data-a="dist" title="Distribute evenly (3+ objects)">⋯</button></div>
 <div id="tbp" class="pp" hidden style="bottom:calc(var(--pb,86px) + 60px)"><div class="tbr"><b>Rows / columns</b><button data-b="ra">＋ Row above</button><button data-b="rb">＋ Row below</button><button data-b="cl">＋ Col left</button><button data-b="cr">＋ Col right</button><button data-b="dr">− Row</button><button data-b="dc">− Col</button></div><div class="tbr"><b>Cells</b><button data-b="mg" title="Merge the selected cells into one">⊞ Merge</button><button data-b="sp" title="Unmerge a merged cell, or split a single cell into rows / columns">⊟ Split</button><button data-b="sum" title="AutoSum the numbers above (or to the left of) the selected cell">Σ Sum</button><b>Fill</b><button class="sw" data-bgc="#fff3a3" style="background:#fff3a3" title="Cell background #fff3a3"></button><button class="sw" data-bgc="#ffd6e0" style="background:#ffd6e0" title="Cell background #ffd6e0"></button><button class="sw" data-bgc="#d6f5d6" style="background:#d6f5d6" title="Cell background #d6f5d6"></button><button class="sw" data-bgc="#d6e8ff" style="background:#d6e8ff" title="Cell background #d6e8ff"></button><button class="sw" data-bgc="#e5d6ff" style="background:#e5d6ff" title="Cell background #e5d6ff"></button><button class="sw" data-bgc="#ffe0b3" style="background:#ffe0b3" title="Cell background #ffe0b3"></button><button class="sw" data-bgc="#e0e0e0" style="background:#e0e0e0" title="Cell background #e0e0e0"></button><input type="color" id="tbbg" value="#ffe066" title="Custom cell background"><button data-b="nofill" title="Remove cell background">∅</button></div><div class="tbr"><b>Text</b><select id="tbff" title="Font of the selected cells"><option value="hand">Handwriting</option><option value="sans">Sans</option><option value="mono">Mono</option><option value="marker">Marker</option><option value="serif">Serif</option></select><label title="Text size of the selected cells" style="display:flex;align-items:center;gap:3px;font-size:12px">Size <input id="tbfs" type="range" min="8" max="96" value="18" style="width:90px"><span id="tbfsv" style="min-width:20px">18</span></label><input type="color" id="tbtc" value="#111111" title="Text color of the selected cells"><button data-tx="b" id="tbxb" title="Bold"><b>B</b></button><button data-tx="i" id="tbxi" title="Italic"><i>I</i></button><button data-tx="u" id="tbxu" title="Underline"><u>U</u></button><button data-b="txreset" title="Back to the table's default text style">Reset</button><button data-b="all" title="Select every cell of the table">▦ All cells</button></div><div class="tbr"><b>Align</b><button data-al="l" title="Align left">⇤</button><button data-al="c" title="Center">↔</button><button data-al="r" title="Align right">⇥</button><button data-av="t" title="Align top">⤒</button><button data-av="m" title="Middle">↕</button><button data-av="b" title="Align bottom">⤓</button></div><div class="tbr"><b>Borders</b><button data-bd="all">All</button><button data-bd="outer">Outer</button><button data-bd="inner">Inner</button><button data-bd="T">Top</button><button data-bd="B">Bottom</button><button data-bd="L">Left</button><button data-bd="R">Right</button><button data-bd="none" title="Remove the borders around the selected cells">None</button><button data-bd="reset" title="Back to the default thin line">Default</button></div><div class="tbr"><b>Border style</b><select id="tbbw" title="Border thickness"><option value="1">Thin</option><option value="2" selected>Medium</option><option value="4">Thick</option></select><select id="tbbs" title="Border line style"><option value="">Solid</option><option value="d">Dashed</option><option value="o">Dotted</option></select><input type="color" id="tbbc" value="#111111" title="Border color"><b>Table</b><button data-b="dup">⧉ Copy</button><button data-b="front">⬆ Front</button><button data-b="back">⬇ Back</button></div><div class="tbh">Drag across cells to select (Shift+click extends) · drag a grid line to resize · ✥ moves the table · double-click or Tab to type · formulas start with = : =SUM(A1:A3), =B2*C2, =AVERAGE(B2:B9), =IF(A1&gt;5,"hi","lo"), =SUMIF(A1:A9,"&gt;5") — letters/numbers on the table edge are the cell addresses · while typing a formula, click cells to insert them</div></div>
-<div id="pgn" class="pp" hidden style="left:12px;transform:none;bottom:14px;flex-wrap:nowrap"><button id="pg0" title="Previous page">◀</button><span id="pgl2" class="chip">1/1</span><button id="pg1" title="Next page">▶</button><button id="pgadd" title="Add another page">＋ <span data-i="page"></span></button><button id="pgfull" hidden class="on"></button></div>
+<div id="pgn" class="pp" hidden style="left:12px;transform:none;bottom:14px;flex-wrap:nowrap"><button id="pg0" title="Previous page">◀</button><span id="pgl2" class="chip">1/1</span><button id="pg1" title="Next page">▶</button><button id="pgov-btn" title="Pages overview — rearrange, copy and delete pages">▦ Pages</button><button id="pgadd" title="Add another page">＋ <span data-i="page"></span></button><button id="pgfull" hidden class="on"></button></div>
 <div id="pp"><button id="zs" title="Zoom to selection (Z)">🔍</button><span id="tm" class="chip">00:00</span><button id="spb" title="Spotlight">🔦</button><button id="px" title="Exit presentation (Esc)">✕</button></div>
 <div id="hm" hidden><div id="hs"></div><div id="hmain"></div><button id="hsm" title="Menu" aria-label="Open menu">☰</button><div id="hsb"></div><button id="fab" title="New board">✏️</button></div><div id="rulerOverlay"><div class="ruler-body"></div></div><div id="pomo" class="pop" hidden><div class="phd" id="pomoHead"><b>⏱ Pomodoro</b><button class="pclose" id="pomoClose" title="Close timer (keeps running in the background)" aria-label="Close">✕</button></div><div class="clock" id="pomoClock" title="Double-click to type a custom time">25:00</div><div class="prow pset" id="pomoSet"><input id="pomoH" type="number" min="0" max="99" value="0" title="Hours" aria-label="Hours"><span>h</span><input id="pomoM" type="number" min="0" max="59" value="25" title="Minutes" aria-label="Minutes"><span>m</span><input id="pomoS" type="number" min="0" max="59" value="0" title="Seconds" aria-label="Seconds"><span>s</span><button id="pomoApply" title="Set the timer to this time">Set</button></div><div class="prow"><button id="pomoSub1" title="Remove 1 minute">−1 min</button><button id="pomoAdd1" title="Add 1 minute">+1 min</button><button id="pomoAdd5" title="Add 5 minutes">+5 min</button><button id="pomoAdd10" title="Add 10 minutes">+10 min</button><button id="pomoAdd60" title="Add 1 hour">+1 hr</button></div><div class="prow"><button id="pomoStart" class="on">Start</button><button id="pomoPause">Pause</button><button id="pomoReset">Reset</button><button id="pomoBreak">5 min break</button></div><div class="presz" id="pomoResize" title="Drag to resize"></div></div>
 <div id="stm" hidden></div><div id="blk" hidden></div><div id="mediaChoices" hidden></div><div id="mediaHub" hidden aria-label="In-app browser and video"><div class="mh-head" id="mediaHead"><strong id="mediaTitle">Browser</strong><button id="mediaBack" title="Back">←</button><button id="mediaForward" title="Forward">→</button><button id="mediaReload" title="Reload">↻</button><input id="mediaAddress" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Enter URL or search the web"><button id="mediaGo">Go</button><button id="mediaPlay" title="Play or pause media">▶</button><button id="mediaBack10" title="Back 10 seconds">−10s</button><button id="mediaFwd10" title="Forward 10 seconds">+10s</button><button id="mediaMin" title="Minimize">—</button><button id="mediaMax" title="Maximize / restore">□</button><button id="mediaClose" title="Close and clear temporary session">✕</button></div><div id="mediaBody" style="display:flex;flex:1;min-height:0"></div><div class="mh-foot">Temporary in-app session. Websites may still process data on their own servers.</div><div class="mh-resize-handle edge-n" data-edge="n" title="Resize from top" aria-label="Resize from top"></div>
@@ -639,14 +639,17 @@ const wd=(s,p)=>Math.max(.6,s.size*(1-s.sens+s.sens*2*p));
 function smoothPts(P){const out=[P[0]],n=P.length;for(let i=0;i<n-1;i++){const p0=P[i-1]||P[i],p1=P[i],p2=P[i+1],p3=P[i+2]||P[i+1],len=Math.hypot(p2[0]-p1[0],p2[1]-p1[1]),k=Math.min(8,Math.floor(len/2.5));
   for(let j=1;j<=k;j++){const t=j/(k+1),t2=t*t,t3=t2*t,f=(a,b,c,d)=>.5*(2*b+(-a+c)*t+(2*a-5*b+4*c-d)*t2+(-a+3*b-3*c+d)*t3);out.push([f(p0[0],p1[0],p2[0],p3[0]),f(p0[1],p1[1],p2[1],p3[1]),p1[2]+(p2[2]-p1[2])*t,(p1[3]||0)+((p2[3]||0)-(p1[3]||0))*t])}
   out.push(p2)}return out}
+var _PGT={};
+/* seeded speckle tile in the stroke colour; pattern is counter-scaled so grain stays ~1 device pixel at any zoom */
+function pencilGrain(c,col){let T=_PGT[col];if(!T){const n=64,a=document.createElement('canvas'),b=document.createElement('canvas');a.width=a.height=b.width=b.height=n;const g=a.getContext('2d'),h=b.getContext('2d'),d=h.createImageData(n,n);let r=12345;for(let k=0;k<n*n;k++){r=(r*1664525+1013904223)>>>0;const v=r/4294967296;d.data[k*4+3]=v<.28?35:Math.round(120+v*135)}h.putImageData(d,0,0);g.fillStyle=col;g.fillRect(0,0,n,n);g.globalCompositeOperation='destination-in';g.drawImage(b,0,0);T=_PGT[col]=a}const P=c.createPattern(T,'repeat');try{P.setTransform(new DOMMatrix().scale(1/(c.getTransform().a||1)))}catch(_){}return P}
 function stroke(c,s){let P=s.pts;const z=s.size,t=s.tool;if((t=='fount'||t=='calli')&&!s.sharp&&P.length>2)P=smoothPts(P);c.strokeStyle=c.fillStyle=s.color;c.lineCap=(s.cornerType||'rounded')==='sharp'?'butt':'round';c.lineJoin=(s.cornerType||'rounded')==='sharp'?'miter':'round';const dashes={solid:[],dashed:[10,7],dotted:[2,7],dashdot:[10,5,2,5],longdash:[18,7],shortdash:[5,5]};const lt=s.lineType||'solid',dk=s.pl?Math.max(1,z/4):1,pat=(dashes[lt]||[]).map(v=>v*dk),tot=pat.reduce((a,b)=>a+b,0),seg=!!s.pl&&tot>0&&(t=='fount'||t=='calli'||((t=='pencil'||t=='soft')&&s.tl));c.setLineDash(seg?[]:pat);
  const D=[0];if(seg)for(let i=1;i<P.length;i++)D.push(D[i-1]+Math.hypot(P[i][0]-P[i-1][0],P[i][1]-P[i-1][1]));
  const parts=i=>{if(!seg)return[[0,1]];const d0=D[i-1],d1=D[i],Ln=d1-d0;if(Ln<=0)return[[0,1]];const out=[];for(let b0=Math.floor(d0/tot)*tot;b0<d1;b0+=tot){let a=b0;for(let j=0;j<pat.length;j++){const e=a+pat[j];if(j%2==0){const s0=Math.max(a,d0),s1=Math.min(e,d1);if(s1>s0)out.push([(s0-d0)/Ln,(s1-d0)/Ln])}a=e}}return out};
  if(P.length==1){c.globalAlpha=t[0]=='h'?(s.opacity??35)/100:1;c.beginPath();c.arc(P[0][0],P[0][1],z/2,0,7);c.fill();return}
  const path=()=>{c.beginPath();c.moveTo(P[0][0],P[0][1]);if(s.sharp){P.forEach(q=>c.lineTo(q[0],q[1]));return}for(let i=1;i<P.length-1;i++)c.quadraticCurveTo(P[i][0],P[i][1],(P[i][0]+P[i+1][0])/2,(P[i][1]+P[i+1][1])/2);c.lineTo(P.at(-1)[0],P.at(-1)[1])};
  if(t=='ball'){c.lineWidth=z;path();if(s.fill){c.save();c.fillStyle=s.fill;c.fill();c.restore()}c.stroke()}
- else if((t=='pencil'||t=='soft')&&s.tl){c.globalAlpha=t=='soft'?.8:.85;if(t=='soft'){c.shadowColor=s.color;c.shadowBlur=z*.6}for(let i=1;i<P.length;i++){c.lineWidth=z*(.5+(P[i][3]||0)*1.6);const A=P[i-1],B=P[i];for(const[a,b]of parts(i)){c.beginPath();c.moveTo(A[0]+(B[0]-A[0])*a,A[1]+(B[1]-A[1])*a);c.lineTo(A[0]+(B[0]-A[0])*b,A[1]+(B[1]-A[1])*b);c.stroke()}}}
- else if(t=='pencil'){c.globalAlpha=.45;for(let k=0;k<3;k++){c.save();c.translate((k-1)*.5,(1-k)*.4);c.lineWidth=z*(.6+k*.2);path();c.stroke();c.restore()}}
+ else if((t=='pencil'||t=='soft')&&s.tl){c.globalAlpha=t=='soft'?.8:1;if(t=='pencil')c.strokeStyle=pencilGrain(c,s.color);if(t=='soft'){c.shadowColor=s.color;c.shadowBlur=z*.6}for(let i=1;i<P.length;i++){c.lineWidth=z*(.5+(P[i][3]||0)*1.6);const A=P[i-1],B=P[i];for(const[a,b]of parts(i)){c.beginPath();c.moveTo(A[0]+(B[0]-A[0])*a,A[1]+(B[1]-A[1])*a);c.lineTo(A[0]+(B[0]-A[0])*b,A[1]+(B[1]-A[1])*b);c.stroke()}}}
+ else if(t=='pencil'){/* graphite: light body + crisp device-pixel grain (not blurry copies), so it differs from the solid ballpoint */c.globalAlpha=.5;c.lineWidth=z*.9;path();c.stroke();c.globalAlpha=1;c.strokeStyle=pencilGrain(c,s.color);c.lineWidth=z*1.1;path();c.stroke();c.strokeStyle=s.color}
  else if(t=='soft'){c.globalAlpha=(s.opacity??70)/100;c.shadowColor=s.color;c.shadowBlur=z*.9;c.lineWidth=z;path();c.stroke()}
  else if(t=='hch'){const a=(s.ang??45)*Math.PI/180,nx=Math.cos(a)*z/2,ny=Math.sin(a)*z/2,th=Math.max(2,z*.22)/2,mx=-Math.sin(a)*th,my=Math.cos(a)*th,C=[[nx+mx,ny+my],[-nx+mx,-ny+my],[-nx-mx,-ny-my],[nx-mx,ny-my]],P2=new Path2D(),poly=q=>{let ar=0;for(let i=0;i<q.length;i++){const u=q[i],v=q[(i+1)%q.length];ar+=u[0]*v[1]-v[0]*u[1]}if(ar<0)q.reverse();P2.moveTo(q[0][0],q[0][1]);for(let i=1;i<q.length;i++)P2.lineTo(q[i][0],q[i][1]);P2.closePath()};
  P.forEach((p,i)=>{poly(C.map(k=>[p[0]+k[0],p[1]+k[1]]));if(i){const o=P[i-1];for(let j=0;j<4;j++){const k=C[j],l=C[(j+1)%4];poly([[o[0]+k[0],o[1]+k[1]],[p[0]+k[0],p[1]+k[1]],[p[0]+l[0],p[1]+l[1]],[o[0]+l[0],o[1]+l[1]]])}}});c.globalAlpha=.35;c.fill(P2)}
@@ -981,12 +984,12 @@ new ResizeObserver(fit).observe($('#w'));addEventListener('resize',fit);
 (function watchDpr(){try{const m=matchMedia('(resolution: '+(devicePixelRatio||1)+'dppx)');m.addEventListener('change',()=>{fit();if(typeof refitBottom==='function')refitBottom();watchDpr()},{once:true})}catch(_){}})();
 /* ---------- history / persistence ---------- */
 /* Snapshot of the board for undo. structuredClone would duplicate every embedded image string in every snapshot; strings are immutable, so we share them by reference. */
-function cloneItems(a){const hold=[];for(let k=0;k<a.length;k++){const s=a[k].src;if(typeof s==='string'&&s.length>4096){hold.push([k,s]);a[k].src=''}}let c;try{c=structuredClone(a)}finally{for(const[k,s]of hold)a[k].src=s}for(const[k,s]of hold)c[k].src=s;let cost=0;for(const i of a)cost+=i.pts?i.pts.length*112:i.cw?i.cw.length*i.rh.length*400:200;c.__c=cost;return c}
+function cloneItems(a){const hold=[];for(let k=0;k<a.length;k++){const s=a[k].src;if(typeof s==='string'&&s.length>4096){hold.push([k,s]);a[k].src=''}}let c;try{c=structuredClone(a)}finally{for(const[k,s]of hold)a[k].src=s}for(const[k,s]of hold)c[k].src=s;let cost=0;for(const i of a)cost+=i.pts?i.pts.length*112:i.cw?i.cw.length*i.rh.length*400:200;c.__c=cost;delete c.__pn;delete c.__lk;return c}
 const HBUD=(DEVMEM<=2?40:DEVMEM<=4?96:192)*1048576;
 function trimHist(){let t=0;for(const h of hist)t+=h.__c||0;while(hist.length>3&&(hist.length>60||t>HBUD))t-=hist.shift().__c||0}
 const push=()=>{hist.push(cloneItems(S.items));trimHist();fut=[]};
-function undo(){if(!hist.length)return;fut.push(cloneItems(S.items));S.items=hist.pop();S.sel=[];save();draw()}
-function redo(){if(!fut.length)return;hist.push(cloneItems(S.items));trimHist();S.items=fut.pop();S.sel=[];save();draw()}
+function undo(){if(!hist.length)return;const h=hist.pop(),f=cloneItems(S.items);if(h.__pn!=null){f.__pn=S.pg.n;S.pg.n=h.__pn;pgUi()}if(h.__lk){f.__lk=h.__lk;window.__pgLk&&window.__pgLk(h.__lk,true)}fut.push(f);S.items=h;S.sel=[];save();draw()}
+function redo(){if(!fut.length)return;const h=fut.pop(),f=cloneItems(S.items);if(h.__pn!=null){f.__pn=S.pg.n;S.pg.n=h.__pn;pgUi()}if(h.__lk){f.__lk=h.__lk;window.__pgLk&&window.__pgLk(h.__lk,false)}hist.push(f);trimHist();S.items=h;S.sel=[];save();draw()}
 const DB=new Promise(r=>{try{const q=indexedDB.open('wb',2);q.onupgradeneeded=()=>{const d=q.result;if(!d.objectStoreNames.contains('n'))d.createObjectStore('n',{keyPath:'id'});if(!d.objectStoreNames.contains('rec'))d.createObjectStore('rec',{keyPath:'id'}).createIndex('b','board')};q.onblocked=()=>{try{toast('Close other tabs of this app so it can finish updating',8000)}catch(e){}};q.onsuccess=()=>{q.result.onversionchange=()=>q.result.close();r(q.result)};q.onerror=()=>r(null)}catch(e){r(null)}});
 const tx=async(m,f)=>{const d=await DB;if(!d)return;return new Promise(r=>{try{const q=f(d.transaction('n',m).objectStore('n'));q.onsuccess=()=>r(q.result);q.onerror=()=>r()}catch(e){r()}})};
 /* Metadata-only read of the board library: streams records with a cursor and drops the heavy fields (strokes, images) immediately, so peak memory is one board instead of the whole library. */
@@ -1679,7 +1682,7 @@ function svgBoard(inv){const b=S.items.length?bnds(S.items):[0,0,800,600],m=40,x
  let o=`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${PAP[S.bg]}"/>`;
  if(S.items.some(i=>i&&typeof i.html==='string'&&i.html.indexOf('data-board')>=0))rexp(false,.1);
  for(const l of S.layers)if(l.vis)for(const i of S.items){if((i.ly??1)!=l.id)continue;
-  if(i.t=='sp')o+=spSvg(i);else if(i.t=='s'){const av=i.pts.reduce((a,q)=>a+q[2],0)/i.pts.length,wv=i.tool=='fount'||i.tool=='calli'?i.size*(1-i.sens+i.sens*2*av):i.size;o+=`<path d="M${i.pts.map(q=>q[0].toFixed(1)+' '+q[1].toFixed(1)).join('L')}" fill="none" stroke="${i.color}" stroke-width="${wv.toFixed(1)}" stroke-linecap="${i.tool=='hsq'?'square':'round'}" stroke-linejoin="round" opacity="${i.tool[0]=='h'?.35:i.tool=='pencil'?.6:1}"/>`}
+  if(i.t=='sp')o+=spSvg(i);else if(i.t=='s'){const av=i.pts.reduce((a,q)=>a+q[2],0)/i.pts.length,wv=i.tool=='fount'||i.tool=='calli'?i.size*(1-i.sens+i.sens*2*av):i.size;o+=`<path d="M${i.pts.map(q=>q[0].toFixed(1)+' '+q[1].toFixed(1)).join('L')}" fill="none" stroke="${i.color}" stroke-width="${wv.toFixed(1)}" stroke-linecap="${i.tool=='hsq'?'square':'round'}" stroke-linejoin="round" opacity="${i.tool[0]=='h'?.35:i.tool=='pencil'?.85:1}"/>`}
   else if(i.t=='i'||i.t=='m')o+=`<image x="${i.x}" y="${i.y}" width="${i.w}" height="${i.h}" href="${i.src}"${inv&&i.t=='i'?' style="filter:invert(1)"':''}/>`;
   else if(i.t=='tb')o+=tbSvg(i,e);
   else if(i.t=='k'&&i.pts){if(!i.open){const pd=6,k=2,cv=document.createElement('canvas');cv.width=Math.ceil((i.w+pd*2)*k);cv.height=Math.ceil((i.h+pd*2)*k);const x=cv.getContext('2d');x.scale(k,k);x.translate(pd-i.x,pd-i.y);tapePath(x,i);o+=`<image x="${i.x-pd}" y="${i.y-pd}" width="${i.w+pd*2}" height="${i.h+pd*2}" href="${cv.toDataURL()}"/>`}}else if(i.t=='k'){if(!i.open){if(i.st&&i.st!='solid'){const pd=6,k=3,cv=document.createElement('canvas');cv.width=Math.ceil((i.w+pd*2)*k);cv.height=Math.ceil((i.h+pd*2)*k);const x=cv.getContext('2d');x.scale(k,k);tapeDraw(x,Object.assign({},i,{x:pd,y:pd}));o+=`<image x="${i.x-pd}" y="${i.y-pd}" width="${i.w+pd*2}" height="${i.h+pd*2}" href="${cv.toDataURL()}"/>`}else o+=`<rect x="${i.x}" y="${i.y}" width="${i.w}" height="${i.h}" fill="${i.color}"/>`}}
@@ -2957,6 +2960,7 @@ $('#deselectAll').onclick=()=>{clearCanvasSelection();cv.focus({preventScroll:tr
 cv.addEventListener('pointerdown',()=>{try{cv.focus({preventScroll:true})}catch(_){}},true);
 window.addEventListener('pointerup',()=>{if(drag&&drag.k!=='pen'&&drag.k!=='sh')return;/* preserve in-progress drawing */},true);
 window.addEventListener('keydown',e=>{
+ if(window.__pgKey&&window.__pgKey(e))return;
  const tag=(e.target&&e.target.tagName)||'';
  if(e.key==='Escape'&&!/INPUT|TEXTAREA|SELECT/.test(tag)){
    if(document.body.classList.contains('pres'))return;
@@ -2971,7 +2975,7 @@ window.addEventListener('keydown',e=>{
  }
 },true);
 document.addEventListener('keydown',e=>{if(/TEXTAREA|INPUT|SELECT/.test(e.target.tagName))return;const m=e.ctrlKey||e.metaKey;
- if(m&&e.key=='z'){e.preventDefault();e.shiftKey?redo():undo()}else if(m&&e.key=='y'){e.preventDefault();redo()}else if(m&&e.key=='c'&&S.sel.length){e.preventDefault();copy()}else if(m&&e.key=='x'&&S.sel.length){e.preventDefault();copy();delSel()}else if(m&&e.key=='d'){e.preventDefault();selAct.dup()}else if(m&&e.key.toLowerCase()=='g'){e.preventDefault();e.shiftKey?ungroupSel():groupSel()}else if(m&&e.key=='s'){e.preventDefault();saveNow()}else if(e.key=='Escape'&&document.body.classList.contains('pres'))present(false);else if(document.body.classList.contains('pres')&&(e.key=='ArrowRight'||e.key=='PageDown'||e.key=='ArrowDown'))presNav(1,e);else if(document.body.classList.contains('pres')&&(e.key=='ArrowLeft'||e.key=='PageUp'||e.key=='ArrowUp'))presNav(-1,e);else if(e.key=='z'&&!m)zoomSel();else if(e.key=='Delete'||e.key=='Backspace')delSel();else if(e.key=='+'||e.key=='=')zoomAt(1.2,cv.clientWidth/2,cv.clientHeight/2);else if(e.key=='-')zoomAt(1/1.2,cv.clientWidth/2,cv.clientHeight/2)});
+ if(m&&e.key=='z'){e.preventDefault();e.shiftKey?redo():undo()}else if(m&&e.key=='y'){e.preventDefault();redo()}else if(m&&e.key=='c'&&S.sel.length){e.preventDefault();copy()}else if(m&&e.key=='x'&&S.sel.length){e.preventDefault();copy();delSel()}else if(m&&e.key=='d'){e.preventDefault();selAct.dup()}else if(m&&e.key.toLowerCase()=='g'){e.preventDefault();e.shiftKey?ungroupSel():groupSel()}else if(m&&e.key=='s'){e.preventDefault();saveNow()}else if(e.key=='Escape'&&document.body.classList.contains('pres'))present(false);else if(document.body.classList.contains('pres')&&(e.key=='ArrowRight'||e.key=='PageDown'||e.key=='ArrowDown'))presNav(1,e);else if(document.body.classList.contains('pres')&&(e.key=='ArrowLeft'||e.key=='PageUp'||e.key=='ArrowUp'))presNav(-1,e);else if(e.key=='z'&&!m)zoomSel();else if(e.key=='Delete'||e.key=='Backspace')delSel();else if(m&&(e.key=='+'||e.key=='='||e.key=='Add')){e.preventDefault();zoomAt(1.2,cv.clientWidth/2,cv.clientHeight/2)}else if(m&&(e.key=='-'||e.key=='_'||e.key=='Subtract')){e.preventDefault();zoomAt(1/1.2,cv.clientWidth/2,cv.clientHeight/2)}});
 (async()=>{zl();buildPops();swBrush();try{navigator.serviceWorker&&location.protocol.startsWith('http')&&navigator.serviceWorker.register('sw.js').catch(()=>{})}catch(e){}applyTheme(L('wb.th','auto'));syncPaper();i18n($('#lg').value);swBrush();setColor(S.color);setTool('fount');fit();const all=(await txMeta()).filter(r=>!r.folder&&!r.del&&!r.locked).sort((a,b)=>b.t-a.t);const first=all.length?await tx('readonly',s=>s.get(all[0].id)):null;if(first)await openNote(first);else{await newNote();await saveNow()}showHome();try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist().catch(()=>{})}catch(e){}try{if(!window.wb&&!localStorage.getItem('wb.webnote')){localStorage.setItem('wb.webnote','1');setTimeout(()=>toast('Your boards are stored in this browser. Clearing site data deletes them, so use Backup now and then. The desktop app keeps them safer.',9000),1200)}}catch(e){}})();
 /* ===== v21: dynamic connectors, sketch-to-shape, offline UI translation ===== */
 (()=>{
@@ -3320,6 +3324,145 @@ async function recUnpack(list,newBoard){let n=0;if(!Array.isArray(list))return 0
   window.addEventListener('resize',()=>{if(hub.hidden||hub.classList.contains('maximized'))return;const r=hub.getBoundingClientRect();if(hub.classList.contains('minimized'))return;hub.style.left=Math.max(0,Math.min(innerWidth-r.width,r.left))+'px';hub.style.top=Math.max(0,Math.min(innerHeight-42,r.top))+'px'});
   document.addEventListener('keydown',e=>{if(e.key==='Escape'){if(!choices.hidden)choices.hidden=true;else if(!hub.hidden)closeSurface()}});
  window.addEventListener('beforeunload',closeSurface);
+})();
+</script>
+
+<script>
+/* ===== Pages overview: see every page, swap / reorder, copy, delete, add blank ===== */
+(()=>{
+const st=document.createElement('style');st.textContent=`
+#pgov{z-index:95}
+#pgov .pgb{background:var(--pn);border:1px solid var(--bd);border-radius:18px;box-shadow:0 20px 60px #0005;width:min(1100px,100%);max-height:100%;display:flex;flex-direction:column;overflow:hidden}
+#pgov .pgh{display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:10px 12px;border-bottom:1px solid var(--bd)}
+#pgov .pgh b{font-size:15px;margin-right:6px}
+#pgov .pgh .sp{flex:1}
+#pgov .pgh button{min-height:34px;padding:0 10px}
+#pgov .pgh button[disabled]{opacity:.4;pointer-events:none}
+#pgov .pgg{overflow:auto;padding:14px;display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px;align-content:start;min-height:160px}
+#pgov .pgc{position:relative;border:2px solid transparent;border-radius:12px;padding:6px 6px 4px;cursor:pointer;text-align:center;user-select:none;-webkit-user-select:none}
+#pgov .pgc:hover{background:color-mix(in srgb,currentColor 7%,transparent)}
+#pgov .pgc.on{border-color:#ff6b9d;background:color-mix(in srgb,#ff6b9d 14%,transparent)}
+#pgov .pgc.dro{border-color:#4ecdc4;border-style:dashed}
+#pgov .pgt{background:#fff;border-radius:6px;box-shadow:0 2px 10px #0003;overflow:hidden;min-height:60px;display:flex}
+#pgov .pgt canvas{width:100%;height:auto;display:block}
+#pgov .pgn{font-size:12px;margin-top:5px;opacity:.85}
+#pgov .pgf{padding:8px 14px;font-size:12px;opacity:.75;border-top:1px solid var(--bd)}
+`;document.head.appendChild(st);
+let ov=null,sel=new Set(),anchor=0,mut=false,io=null,dragFrom=-1;
+const nP=()=>Math.max(1,S.pg.n|0),pitch=()=>pdim()[1]+PG_GAP;
+window.__pgKey=e=>{
+ if(!ov)return false;
+ const k=e.key,m=e.ctrlKey||e.metaKey;
+ if(k==='Escape'){e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();close();return true}
+ if(k==='Delete'||k==='Backspace'){e.preventDefault();doDelete()}
+ else if(m&&k.toLowerCase()==='a'){e.preventDefault();sel=new Set(Array.from({length:nP()},(_,i)=>i));paint()}
+ else if(m&&k.toLowerCase()==='z'){e.preventDefault();e.shiftKey?redo():undo();afterChange(true)}
+ else if(m&&k.toLowerCase()==='y'){e.preventDefault();redo();afterChange(true)}
+ else if(k==='ArrowLeft'&&e.altKey){e.preventDefault();doMove(-1)}
+ else if(k==='ArrowRight'&&e.altKey){e.preventDefault();doMove(1)}
+ e.stopPropagation();if(!m||k.toLowerCase()!=='r')e.stopImmediatePropagation();return true};
+/* which page each item lives on: by the item's centre, clamped to the board */
+function byPage(){const pt=pitch(),n=nP(),g=Array.from({length:n},()=>[]);for(const i of S.items){const b=bnds([i]);let p=Math.floor(((b[1]+b[3])/2)/pt);p=Math.max(0,Math.min(n-1,p));g[p].push(i)}return g}
+/* ---- @board links that target a page of THIS board follow the pages when they are reordered / deleted ---- */
+const esc=t=>String(t).replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+function relinkHtml(html,bid,map){
+ const re=new RegExp('<span[^>]*\\sdata-board="'+esc(bid)+'"[^>]*>[\\s\\S]*?</span>','g');
+ return html.replace(re,sp=>{const m=/data-page="(\d+)"/.exec(sp);if(!m)return sp;const old=+m[1];if(!map.has(old))return sp;const nw=map.get(old);if(nw===old)return sp;
+  if(nw>0)return sp.replace(/data-page="\d+"/,'data-page="'+nw+'"').replace(/(›\s*)\d+(\s*<\/span>)$/,'$1'+nw+'$2');
+  return sp.replace(/\sdata-page="\d+"/,'').replace(/\s*›\s*\d+(\s*<\/span>)$/,'$1')}) /* page deleted: the link falls back to just opening the board */}
+function relinkCurrent(map){const mk='data-board="'+S.id+'"';for(const i of S.items)if(typeof i.html==='string'&&i.html.indexOf(mk)>=0)i.html=relinkHtml(i.html,S.id,map)}
+/* other boards live in IndexedDB; returns the exact edits so Undo/Redo can replay them */
+async function relinkOthers(map){
+ const d=await DB,bid=S.id,mk='data-board="'+bid+'"',recs=[];if(!d)return recs;
+ return new Promise(res=>{try{const t=d.transaction('n','readwrite'),q=t.objectStore('n').openCursor();
+  q.onsuccess=()=>{const c=q.result;if(!c)return;const v=c.value;
+   if(v&&v.id!==bid&&!v.folder&&Array.isArray(v.items)){let ch=false;for(const i of v.items){if(typeof i.html==='string'&&i.html.indexOf(mk)>=0){const nh=relinkHtml(i.html,bid,map);if(nh!==i.html){recs.push({b:v.id,before:i.html,after:nh});i.html=nh;ch=true}}}if(ch)c.update(v)}
+   c.continue()};
+  t.oncomplete=()=>res(recs);t.onerror=t.onabort=()=>res(recs)}catch(_){res(recs)}})}
+window.__pgLk=async(recs,undo)=>{const d=await DB;if(!d||!recs||!recs.length)return;const by=new Map();for(const r of recs){if(!by.has(r.b))by.set(r.b,[]);by.get(r.b).push(r)}
+ try{const t=d.transaction('n','readwrite'),os=t.objectStore('n');
+  for(const[id,list]of by){const g=os.get(id);g.onsuccess=()=>{const v=g.result;if(!v||!Array.isArray(v.items))return;let ch=false;
+   for(const r of list){const from=undo?r.after:r.before,to=undo?r.before:r.after,it=v.items.find(i=>i.html===from);if(it){it.html=to;ch=true}}
+   if(ch)os.put(v)}}}catch(_){}};
+/* spec: new page list, each {p:oldPage} (move), {p:oldPage,copy:1} (duplicate) or {blank:1} */
+function rebuild(spec){
+ const pt=pitch(),g=byPage(),keep=new Set(),clones=[];
+ spec.forEach((e,q)=>{if(e.blank||!e.copy)return;const src=g[e.p]||[];if(!src.length)return;
+  const c=cloneItems(src),ids=new Map(),gm={};
+  c.forEach(i=>{if(i.id){const nid=newGid();ids.set(i.id,nid);i.id=nid}if(i.g)i.g=gm[i.g]||(gm[i.g]=newGid())});
+  c.forEach(i=>{for(const k of['lk0','lk1']){if(i[k]){const t=ids.get(i[k].id);if(t)i[k].id=t;else{i[k]=null;i[k=='lk0'?'n0':'n1']=null}}}});
+  xf(c,(x,y)=>[x,y+(q-e.p)*pt]);clones.push(...c)});
+ spec.forEach((e,q)=>{if(e.blank||e.copy)return;const src=g[e.p]||[];src.forEach(i=>keep.add(i));xf(src,(x,y)=>[x,y+(q-e.p)*pt])});
+ S.items=S.items.filter(i=>keep.has(i)).concat(clones);S.pg.n=spec.length;S.sel=[];
+}
+function commit(spec,newSel){
+ if(S.pg.size=='inf')return;
+ push();const ent=hist.at(-1);ent.__pn=S.pg.n;
+ const map=new Map();for(let k=0;k<S.pg.n;k++){const q=spec.findIndex(e=>!e.blank&&!e.copy&&e.p===k);map.set(k+1,q<0?0:q+1)}
+ rebuild(spec);relinkCurrent(map);relinkOthers(map).then(r=>{if(r.length)ent.__lk=r});mut=true;sel=new Set(newSel);cache=null;save();pgUi();draw();paint()}
+function afterChange(){sel=new Set([...sel].filter(i=>i<nP()));if(!sel.size)sel.add(0);mut=true;cache=null;pgUi();draw();paint()}
+const ord=()=>Array.from({length:nP()},(_,i)=>i);
+function doMove(d){
+ if(!sel.size)return;const o=ord(),n=o.length;
+ if(d<0){for(let k=1;k<n;k++)if(sel.has(o[k])&&!sel.has(o[k-1]))[o[k],o[k-1]]=[o[k-1],o[k]]}
+ else{for(let k=n-2;k>=0;k--)if(sel.has(o[k])&&!sel.has(o[k+1]))[o[k],o[k+1]]=[o[k+1],o[k]]}
+ if(o.every((v,i)=>v===i))return;
+ commit(o.map(p=>({p})),o.map((p,i)=>sel.has(p)?i:-1).filter(i=>i>=0))}
+function doSwap(){
+ if(sel.size!==2)return;const[a,b]=[...sel].sort((x,y)=>x-y),o=ord();[o[a],o[b]]=[o[b],o[a]];
+ commit(o.map(p=>({p})),[a,b])}
+function doCopy(){
+ if(!sel.size)return;const spec=[],ns=[];
+ for(let k=0;k<nP();k++){spec.push({p:k});if(sel.has(k)){ns.push(spec.length);spec.push({p:k,copy:1})}}
+ commit(spec,ns);toast(ns.length>1?ns.length+' pages copied':'Page copied')}
+function doDelete(){
+ if(!sel.size)return;if(sel.size>=nP())return toast('A board needs at least one page');
+ const cnt=sel.size,first=Math.min(...sel),spec=ord().filter(k=>!sel.has(k)).map(p=>({p}));
+ commit(spec,[Math.min(first,spec.length-1)]);toast((cnt>1?cnt+' pages':'Page')+' deleted — press Ctrl+Z to undo',3600)}
+function doBlank(){
+ const at=sel.size?Math.max(...sel)+1:nP(),o=ord().map(p=>({p}));o.splice(at,0,{blank:1});commit(o,[at])}
+function dropOn(t){
+ if(dragFrom<0)return;const moving=sel.has(dragFrom)?[...sel].sort((a,b)=>a-b):[dragFrom];
+ if(moving.includes(t)){dragFrom=-1;return}
+ const others=ord().filter(p=>!moving.includes(p)),tp=others.indexOf(t),idx=t<moving[0]?tp:tp+1,o=others.slice(0,idx).concat(moving,others.slice(idx));
+ dragFrom=-1;if(o.every((v,i)=>v===i))return;
+ commit(o.map(p=>({p})),o.map((p,i)=>moving.includes(p)?i:-1).filter(i=>i>=0))}
+function paint(){
+ if(!ov)return;const g=ov.querySelector('.pgg'),top=g.scrollTop,n=nP(),[pw,ph]=pdim(),pt=pitch();
+ if(io)io.disconnect();
+ io=new IntersectionObserver(es=>{for(const en of es){if(!en.isIntersecting)continue;const el=en.target;io.unobserve(el);const i=+el.parentNode.dataset.i;
+   setTimeout(()=>{if(!ov||!el.isConnected)return;try{const c=rexp(false,1,240,[0,i*pt,pw,i*pt+ph]);el.innerHTML='';el.appendChild(c)}catch(_){el.textContent='…'}},0)}},{root:g,rootMargin:'300px'});
+ g.innerHTML='';
+ for(let i=0;i<n;i++){const d=document.createElement('div');d.className='pgc'+(sel.has(i)?' on':'');d.dataset.i=i;d.draggable=true;
+  d.innerHTML='<div class="pgt" style="aspect-ratio:'+pw+'/'+ph+'"></div><div class="pgn">Page '+(i+1)+'</div>';
+  d.onclick=e=>{if(e.shiftKey){const a=Math.min(anchor,i),b=Math.max(anchor,i);sel=new Set();for(let k=a;k<=b;k++)sel.add(k)}else if(e.ctrlKey||e.metaKey){sel.has(i)?sel.delete(i):sel.add(i);anchor=i;if(!sel.size)sel.add(i)}else{sel=new Set([i]);anchor=i}paintSel()};
+  d.ondblclick=()=>{close();goPage(i)};
+  d.ondragstart=e=>{dragFrom=i;if(!sel.has(i)){sel=new Set([i]);anchor=i;paintSel()}try{e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain','pg'+i)}catch(_){}};
+  d.ondragover=e=>{if(dragFrom<0)return;e.preventDefault();d.classList.add('dro')};
+  d.ondragleave=()=>d.classList.remove('dro');
+  d.ondrop=e=>{e.preventDefault();d.classList.remove('dro');dropOn(i)};
+  d.ondragend=()=>{dragFrom=-1;g.querySelectorAll('.dro').forEach(x=>x.classList.remove('dro'))};
+  g.appendChild(d);io.observe(d.firstChild)}
+ g.scrollTop=top;paintSel()}
+function paintSel(){
+ if(!ov)return;ov.querySelectorAll('.pgc').forEach(d=>d.classList.toggle('on',sel.has(+d.dataset.i)));
+ const n=nP(),k=sel.size,q=s=>ov.querySelector(s),dis=(s,v)=>q(s).disabled=v,o=[...sel];
+ q('.pgs').textContent=k?(k==1?'Page '+(o[0]+1)+' selected':k+' pages selected'):'Nothing selected';
+ dis('#pgm0',!k||Math.min(...o)===0);dis('#pgm1',!k||Math.max(...o)===n-1);dis('#pgsw',k!==2);dis('#pgcp',!k);dis('#pgdl',!k||k>=n)}
+function open(){
+ if(S.pg.size=='inf')return toast('Switch to a page size (A4, Letter…) to use pages');
+ if(ov)return;mut=false;sel=new Set([pgOf()]);anchor=pgOf();
+ ov=document.createElement('div');ov.id='pgov';ov.className='mdl';
+ ov.innerHTML='<div class="pgb" role="dialog" aria-label="Pages"><div class="pgh"><b>Pages</b><button id="pgm0" title="Move earlier (Alt+←)">◀ Earlier</button><button id="pgm1" title="Move later (Alt+→)">Later ▶</button><button id="pgsw" title="Select exactly two pages to swap them">⇄ Swap</button><button id="pgcp" title="Duplicate the selected pages">⧉ Copy</button><button id="pgdl" title="Delete the selected pages (Del)">🗑 Delete</button><button id="pgbl" title="Insert a blank page after the selection">＋ Blank</button><span class="sp"></span><span class="chip pgs"></span><button id="pgx" title="Close (Esc)">✕</button></div><div class="pgg"></div><div class="pgf">Click to select · Ctrl/Shift-click for several · drag to reorder · double-click to open a page · Ctrl+Z undoes</div></div>';
+ ov.addEventListener('mousedown',e=>{if(e.target===ov)close()});
+ document.body.appendChild(ov);
+ const b=id=>ov.querySelector(id);b('#pgx').onclick=close;b('#pgm0').onclick=()=>doMove(-1);b('#pgm1').onclick=()=>doMove(1);b('#pgsw').onclick=doSwap;b('#pgcp').onclick=doCopy;b('#pgdl').onclick=doDelete;b('#pgbl').onclick=doBlank;
+ paint();const c=ov.querySelector('.pgc.on');if(c)c.scrollIntoView({block:'center'})}
+function close(){
+ if(!ov)return;if(io)io.disconnect();const first=sel.size?Math.min(...sel):0;ov.remove();ov=null;
+ if(mut){cache=null;draw();goPage(Math.min(first,nP()-1))}}
+document.getElementById('pgov-btn').onclick=open;
+window.openPagesOverview=open;
 })();
 </script>
 </body></html>

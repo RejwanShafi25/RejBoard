@@ -6,5 +6,6 @@ vendor/
 .DS_Store
 fed.md
 *.zip
+*.rar
 ocr-engine/node_modules/
 ocr-engine/tessdata/
