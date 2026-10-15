@@ -1,7 +1,7 @@
 {
   "name": "rejboard",
   "productName": "RejBoard",
-  "version": "1.2.9",
+  "version": "1.2.10",
   "description": "Local-first whiteboard and note-taking app with handwriting, PDF annotation, voice recordings, and temporary in-app browsing/video",
   "main": "main.js",
   "author": {
@@ -42,7 +42,12 @@
       {
         "from": "ocr-engine/node_modules",
         "to": "ocr/node_modules",
-        "filter": ["**/*", "!.bin/**", "!rejboard", "!rejboard/**"]
+        "filter": [
+          "**/*",
+          "!.bin/**",
+          "!rejboard",
+          "!rejboard/**"
+        ]
       },
       {
         "from": "ocr-engine/tessdata",
@@ -53,6 +58,12 @@
       "target": [
         {
           "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
           "arch": [
             "x64"
           ]

@@ -1,4 +1,12 @@
 # Changelog
+## [1.2.10]
+### Changed
+- **Bento UI across the whole app.** Home, sidebar, folders, tags, boards, the board header, canvas, tool dock, zoom controls, pop-ups, dialogs and Settings now share one bento-style tile design (rounded tiles, soft shadows, a mosaic of wide and regular board tiles, colour-tinted folder tiles). All 12 themes, the light/dark modes and the phone layout are supported; no board data or features changed.
+- Added windows portable build.
+
+### Fixed
+- Minimizing the in-app browser / video window after it had been dragged or resized only moved it instead of collapsing it; it now collapses to the title bar and restores to its exact size and position.
+
 
 ## [1.2.9]
 ### Changed
