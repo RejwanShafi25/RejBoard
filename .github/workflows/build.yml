@@ -70,13 +70,14 @@ jobs:
           (cd ocr-engine && npm install --omit=dev)
           npm run test:ocr
 
-      # The OCR folder must hold real files only. A link in there (npm can create one back to the project)
+      # The OCR folder must hold real files only (the .bin folder is skipped: its links are not packaged).
+      # A link in there (npm can create one back to the project)
       # makes 7-Zip walk the whole repo in a loop on Windows, so fail fast instead of hanging.
       - name: Check OCR folder has no links
         shell: bash
         run: |
           du -sh ocr-engine/node_modules ocr-engine/tessdata
-          LINKS=$(find ocr-engine/node_modules -type l)
+          LINKS=$(find ocr-engine/node_modules -path ocr-engine/node_modules/.bin -prune -o -type l -print)
           if [ -n "$LINKS" ]; then echo "Unexpected links in ocr-engine/node_modules:"; echo "$LINKS"; exit 1; fi
 
       - name: Build installers
