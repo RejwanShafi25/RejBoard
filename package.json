@@ -22,6 +22,7 @@
   "build": {
     "appId": "com.rejwan.rejboard",
     "productName": "RejBoard",
+    "compression": "store",
     "directories": {
       "buildResources": "build"
     },
