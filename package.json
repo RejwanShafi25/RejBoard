@@ -22,7 +22,6 @@
   "build": {
     "appId": "com.rejwan.rejboard",
     "productName": "RejBoard",
-    "compression": "store",
     "directories": {
       "buildResources": "build"
     },
@@ -39,20 +38,6 @@
       "vendor/**",
       "locales/**"
     ],
-    "extraResources": [
-      {
-        "from": "ocr-engine/node_modules",
-        "to": "ocr/node_modules",
-        "filter": [
-          "**/*",
-          "!.bin/**"
-        ]
-      },
-      {
-        "from": "ocr-engine/tessdata",
-        "to": "ocr/tessdata"
-      }
-    ],
     "win": {
       "target": [
         {
@@ -66,6 +51,20 @@
       "icon": "build/icon.ico"
     },
     "mac": {
+      "extraResources": [
+      {
+        "from": "ocr-engine/node_modules",
+        "to": "ocr/node_modules",
+        "filter": [
+          "**/*",
+          "!.bin/**"
+        ]
+      },
+      {
+        "from": "ocr-engine/tessdata",
+        "to": "ocr/tessdata"
+      }
+    ],
       "target": [
         {
           "target": "dmg",
@@ -82,6 +81,20 @@
       "gatekeeperAssess": false
     },
     "linux": {
+      "extraResources": [
+      {
+        "from": "ocr-engine/node_modules",
+        "to": "ocr/node_modules",
+        "filter": [
+          "**/*",
+          "!.bin/**"
+        ]
+      },
+      {
+        "from": "ocr-engine/tessdata",
+        "to": "ocr/tessdata"
+      }
+    ],
       "target": [
         "AppImage",
         "deb",

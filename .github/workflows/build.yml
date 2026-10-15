@@ -11,7 +11,7 @@ permissions:
 jobs:
   build:
     name: Build (${{ matrix.label }})
-    timeout-minutes: 30
+    timeout-minutes: 25
     strategy:
       fail-fast: false
       matrix:
@@ -70,6 +70,15 @@ jobs:
           npm install --omit=dev --prefix ocr-engine
           npm run test:ocr
 
+      # Diagnostic: shows what actually gets bundled as OCR on the runner.
+      - name: OCR payload info
+        shell: bash
+        run: |
+          du -sh ocr-engine/node_modules ocr-engine/tessdata
+          find ocr-engine/node_modules -type f | wc -l
+          find ocr-engine/node_modules -type l | head
+          find ocr-engine -type f -size +10M
+
       - name: Build installers
         run: npx electron-builder --publish never
         env:
@@ -78,6 +87,7 @@ jobs:
           DEBUG: electron-builder
 
       - name: Verify bundled OCR is inside the package
+        if: matrix.label != 'windows'
         shell: bash
         run: |
           DIRS=$(find dist -type d \( -path '*-unpacked/resources' -o -path '*/RejBoard.app/Contents/Resources' \))
