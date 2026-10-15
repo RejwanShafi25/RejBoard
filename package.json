@@ -38,20 +38,7 @@
       "vendor/**",
       "locales/**"
     ],
-    "win": {
-      "target": [
-        {
-          "target": "nsis",
-          "arch": [
-            "x64"
-          ]
-        }
-      ],
-      "signAndEditExecutable": true,
-      "icon": "build/icon.ico"
-    },
-    "mac": {
-      "extraResources": [
+    "extraResources": [
       {
         "from": "ocr-engine/node_modules",
         "to": "ocr/node_modules",
@@ -65,6 +52,19 @@
         "to": "ocr/tessdata"
       }
     ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "signAndEditExecutable": true,
+      "icon": "build/icon.ico"
+    },
+    "mac": {
       "target": [
         {
           "target": "dmg",
@@ -81,20 +81,6 @@
       "gatekeeperAssess": false
     },
     "linux": {
-      "extraResources": [
-      {
-        "from": "ocr-engine/node_modules",
-        "to": "ocr/node_modules",
-        "filter": [
-          "**/*",
-          "!.bin/**"
-        ]
-      },
-      {
-        "from": "ocr-engine/tessdata",
-        "to": "ocr/tessdata"
-      }
-    ],
       "target": [
         "AppImage",
         "deb",

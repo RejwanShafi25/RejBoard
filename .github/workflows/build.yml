@@ -26,6 +26,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Windows runners scan every file Defender sees, which can make packaging thousands of files extremely slow.
+      - name: Turn off Defender real-time scan (Windows)
+        if: matrix.label == 'windows'
+        shell: pwsh
+        continue-on-error: true
+        run: Set-MpPreference -DisableRealtimeMonitoring $true
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -87,7 +94,6 @@ jobs:
           DEBUG: electron-builder
 
       - name: Verify bundled OCR is inside the package
-        if: matrix.label != 'windows'
         shell: bash
         run: |
           DIRS=$(find dist -type d \( -path '*-unpacked/resources' -o -path '*/RejBoard.app/Contents/Resources' \))
