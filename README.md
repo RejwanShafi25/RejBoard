@@ -7,7 +7,7 @@
 **A local-first whiteboard and handwriting note-taking app.**
 Write, sketch, annotate PDFs and record lectures. No account, no cloud, no subscription.
 
-[![Version](https://img.shields.io/badge/version-1.2.8-e8679b)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-1.2.11-e8679b)](CHANGELOG.md)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![Platforms](https://img.shields.io/badge/desktop-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey)](https://github.com/RejwanShafi25/RejBoard/releases/latest)
 [![PWA](https://img.shields.io/badge/web-installable%20PWA-5a0fc8)](https://rejwanshafi25.github.io/RejBoard/)
