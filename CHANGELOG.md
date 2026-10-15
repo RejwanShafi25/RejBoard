@@ -1,4 +1,12 @@
 # Changelog
+## [1.2.11]
+### Added
+- In-app desktop updates through `electron-updater`, with differential downloads where supported, opt-in automatic checks (off by default), explicit download/restart confirmation, platform-specific manual-download fallbacks, and activity guards for recording, LAN transfers and unsaved changes.
+- GitHub Release publishing for platform update metadata and blockmaps; macOS ZIP target and future code-signing/notarization guidance.
+
+### Security and privacy
+- Update checks use HTTPS and are made only after a manual check or explicit opt-in. Pre-releases and downgrades are disabled; update checksum verification remains enabled.
+
 ## [Unreleased]
 ### Changed
 - Drag and drop files from your computer onto a board: images appear on the board; PDF, Word (.doc/.docx/.odt/.rtf) and PowerPoint (.ppt/.pptx/.odp) files open the page picker with page range and quality options. A drop overlay shows while dragging, and unsupported files get a clear message.

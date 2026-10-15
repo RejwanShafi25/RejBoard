@@ -7,7 +7,7 @@
 **A local-first whiteboard and handwriting note-taking app.**
 Write, sketch, annotate PDFs and record lectures. No account, no cloud, no subscription.
 
-[![Version](https://img.shields.io/badge/version-1.2.10-e8679b)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-1.2.8-e8679b)](CHANGELOG.md)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![Platforms](https://img.shields.io/badge/desktop-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey)](https://github.com/RejwanShafi25/RejBoard/releases/latest)
 [![PWA](https://img.shields.io/badge/web-installable%20PWA-5a0fc8)](https://rejwanshafi25.github.io/RejBoard/)
@@ -178,6 +178,13 @@ RejBoard has no account system, no telemetry and no analytics. Only the optional
 | In-app browser and video panel (desktop) | Required | Whatever you browse. See the notes below. |
 | UI language packs | Once per language, if not bundled | A request for a pack file from this repository. Nothing about you is sent. |
 | Local-network sharing | LAN only | Boards you choose to send, encrypted in transit, to a computer you select. |
+| Update check (desktop, opt-in) | HTTPS to GitHub Releases | Your IP address and installed app version. Only when you press **Check for updates** or enable **Check for updates automatically** in Settings → Updates. Automatic checks are off by default. |
+
+### Desktop app updates
+
+In **Settings → Updates**, check manually or enable optional startup checks (off by default). Update metadata and downloads come from GitHub Releases over HTTPS. Windows NSIS installers and Linux AppImage builds support in-app updates with differential downloads where the release blockmaps allow it. Windows Portable builds and Linux `.deb`/`.rpm` packages must be updated manually from [GitHub Releases](https://github.com/RejwanShafi25/RejBoard/releases/latest). Unsigned macOS builds also use the Releases page. Update checks disclose the request IP address and app version to GitHub; no board content is sent.
+
+**Enabling macOS auto-updates later:** (1) enrol in the Apple Developer Program; (2) create a Developer ID Application certificate and securely export it as a `.p12`; (3) configure signing and hardened runtime entitlements, then notarize and staple the app; (4) add the certificate and password as encrypted CI secrets (for example `CSC_LINK` and `CSC_KEY_PASSWORD`) and provide Apple notarization credentials as GitHub Actions secrets; (5) enable signed macOS builds and verify the signed `.app` and ZIP on a clean Mac. Never turn off signature verification. The ZIP target is already configured alongside DMG for this preparation.
 
 ### Handwriting to text
 
@@ -494,7 +501,7 @@ Installers are written to `dist/`. Build each OS on that OS. Artifacts are named
 
 | Workflow | Trigger | What it does |
 |---|---|---|
-| **Build installers** (`build.yml`) | Push of a `v*` tag, or manual | Builds on Windows, macOS and Linux. Verifies that the tag matches `package.json`, fetches offline libraries, runs the OCR smoke test, packages, and **verifies the OCR engine and language data are inside every package** before uploading. On a tag, publishes a GitHub Release with notes taken from the matching `CHANGELOG.md` section. |
+| **Build installers** (`build.yml`) | Push of a `v*` tag, or manual | Builds and publishes on Windows, macOS and Linux from matching `v*` tags. Verifies that the tag matches `package.json`, fetches offline libraries, runs the OCR smoke test, packages, and **verifies the OCR engine and language data are inside every package**. `electron-builder` publishes platform installers, update metadata and blockmaps to the same GitHub Release using `GITHUB_TOKEN`. |
 | **Deploy web build** (`pages.yml`) | Push to `main`, or manual | Assembles the PWA with offline libraries and deploys it to GitHub Pages. |
 
 ### Cutting a release

@@ -1,0 +1,13 @@
+'use strict';
+const assert = require('node:assert/strict');
+const { canAutoUpdate, canInstallNow, RELEASES_URL } = require('./update-policy');
+assert.equal(canAutoUpdate({ platform: 'win32', env: {}, isPackaged: true }).enabled, true);
+assert.equal(canAutoUpdate({ platform: 'win32', env: { PORTABLE_EXECUTABLE_DIR: 'C:/portable' }, isPackaged: true }).reason, 'portable');
+assert.equal(canAutoUpdate({ platform: 'linux', env: { APPIMAGE: '/tmp/app.AppImage' }, isPackaged: true }).enabled, true);
+assert.equal(canAutoUpdate({ platform: 'linux', env: {}, isPackaged: true }).reason, 'linux-package');
+assert.equal(canAutoUpdate({ platform: 'darwin', env: {}, isPackaged: true }).reason, 'unsigned-mac');
+assert.equal(canAutoUpdate({ platform: 'darwin', env: {}, isPackaged: true, macSigned: true }).enabled, true);
+assert.equal(canAutoUpdate({ platform: 'win32', env: {}, isPackaged: false }).releasesUrl, RELEASES_URL);
+assert.equal(canInstallNow({}), true);
+for (const key of ['recording', 'lanTransfer', 'unsavedChanges']) assert.equal(canInstallNow({ [key]: true }), false, key);
+console.log('update-policy tests passed');
