@@ -11,7 +11,7 @@
   "license": "MIT",
   "scripts": {
     "start": "electron .",
-    "libs": "python fetch_libs.py && npm install --omit=dev --prefix ocr-engine --ignore-scripts",
+    "libs": "python fetch_libs.py && cd ocr-engine && npm install --omit=dev --ignore-scripts",
     "test:ocr": "node scripts/ocr-smoke.js",
     "dist": "electron-builder"
   },
@@ -42,10 +42,7 @@
       {
         "from": "ocr-engine/node_modules",
         "to": "ocr/node_modules",
-        "filter": [
-          "**/*",
-          "!.bin/**"
-        ]
+        "filter": ["**/*", "!.bin/**", "!rejboard", "!rejboard/**"]
       },
       {
         "from": "ocr-engine/tessdata",

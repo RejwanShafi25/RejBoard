@@ -26,13 +26,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Windows runners scan every file Defender sees, which can make packaging thousands of files extremely slow.
-      - name: Turn off Defender real-time scan (Windows)
-        if: matrix.label == 'windows'
-        shell: pwsh
-        continue-on-error: true
-        run: Set-MpPreference -DisableRealtimeMonitoring $true
-
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -74,24 +67,23 @@ jobs:
         shell: bash
         run: |
           python fetch_libs.py
-          npm install --omit=dev --prefix ocr-engine
+          (cd ocr-engine && npm install --omit=dev)
           npm run test:ocr
 
-      # Diagnostic: shows what actually gets bundled as OCR on the runner.
-      - name: OCR payload info
+      # The OCR folder must hold real files only. A link in there (npm can create one back to the project)
+      # makes 7-Zip walk the whole repo in a loop on Windows, so fail fast instead of hanging.
+      - name: Check OCR folder has no links
         shell: bash
         run: |
           du -sh ocr-engine/node_modules ocr-engine/tessdata
-          find ocr-engine/node_modules -type f | wc -l
-          find ocr-engine/node_modules -type l | head
-          find ocr-engine -type f -size +10M
+          LINKS=$(find ocr-engine/node_modules -type l)
+          if [ -n "$LINKS" ]; then echo "Unexpected links in ocr-engine/node_modules:"; echo "$LINKS"; exit 1; fi
 
       - name: Build installers
         run: npx electron-builder --publish never
         env:
           # No code-signing certificates: skip auto-discovery so the macOS build does not fail/hang.
           CSC_IDENTITY_AUTO_DISCOVERY: 'false'
-          DEBUG: electron-builder
 
       - name: Verify bundled OCR is inside the package
         shell: bash
