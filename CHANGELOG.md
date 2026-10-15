@@ -7,16 +7,6 @@
 ### Security and privacy
 - Update checks use HTTPS and are made only after a manual check or explicit opt-in. Pre-releases and downgrades are disabled; update checksum verification remains enabled.
 
-## [Unreleased]
-### Changed
-- Drag and drop files from your computer onto a board: images appear on the board; PDF, Word (.doc/.docx/.odt/.rtf) and PowerPoint (.ppt/.pptx/.odp) files open the page picker with page range and quality options. A drop overlay shows while dragging, and unsupported files get a clear message.
-- Pages overview. New ▦ Pages button in the page bar opens thumbnails of every page. Select one or several pages (click, Ctrl/Shift-click) to move them earlier/later (also Alt+←/→), swap two pages, copy (each copy lands right after its original, with its own groups and connector links), delete, or insert a blank page. Pages can also be dragged to reorder, and a double-click opens a page. @ board links that point to a specific page of the board (from the same board or any other board) follow the pages when you reorder, swap or delete them; a link whose page was deleted falls back to just opening the board. All of it is undoable (Ctrl+Z restores the page count and the links too).
-
-
-### Fixed
-- Pressing + or - alone zoomed the canvas. Keyboard zoom now needs Ctrl/Cmd + + (zoom in) and Ctrl/Cmd + - (zoom out), and the browser's own page zoom no longer fires on top of it.
-- Pencil brush strokes (e.g. handwritten labels) looked blurry. The pencil now has a crisp graphite grain (a light body plus device-pixel speckle) instead of three translucent, sub-pixel-offset copies, so it stays sharp at any zoom and still looks different from the ballpoint; pen-tilt pencil strokes no longer bead at segment joints, and SVG export uses a matching opacity.
-
 ## [1.2.10]
 ### Changed
 - **Bento UI across the whole app.** Home, sidebar, folders, tags, boards, the board header, canvas, tool dock, zoom controls, pop-ups, dialogs and Settings now share one bento-style tile design (rounded tiles, soft shadows, a mosaic of wide and regular board tiles, colour-tinted folder tiles). All 12 themes, the light/dark modes and the phone layout are supported; no board data or features changed.
