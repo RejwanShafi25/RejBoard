@@ -2,10 +2,12 @@
 ## [1.3.1]
 ### Added
 - **Tool shortcuts.** `1`–`8` pick the fountain pen, calligraphy pen, soft brush, ballpoint, pencil and the square, chisel and round highlighters; `T` text, `W` tape, `E` eraser. `H` converts the selected handwriting to text and only works while handwriting is selected. Shortcuts are shown in the toolbar tooltips and ignored while typing.
+- **Connected lines.** Lines, arrows and double arrows have a new **Connect to shapes** toggle (shape options and the selected line's style bar). Drop an end anywhere on a shape and it snaps to the shape's edge and follows it when the shape moves; turn it off to keep a line free.
 
 ### Fixed
 - Pressing **Distribute evenly** (the button at the right end of the selection toolbar, previously shown as ⋯) with handwriting selected no longer spreads the letters apart. Handwriting and groups are now treated as one object each, and a toast explains when there is nothing to distribute. The button now has a clearer icon.
 - The home sidebar showed a double `#` in front of tag names. It also listed every tag, which got very long with many tags; it now shows the 3 most recently used tags (plus the one you have open), and the Tags section still lists all of them.
+- Newly drawn lines and arrows never connected to shapes automatically, and had to be dragged by hand; they now connect when drawn.
 
 ## [1.3.0]
 ### Changed

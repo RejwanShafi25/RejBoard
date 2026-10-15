@@ -2442,10 +2442,11 @@ function bgAll(c,W,H,ox,oy,z){if(S.pg.size=='inf')return bgfx(c,W,H,ox,oy,z);con
 function camTo(z,ox,oy){cache=null;const z0=S.z,x0=S.ox,y0=S.oy,t0=performance.now();(function f(){const k=Math.min(1,(performance.now()-t0)/320),e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2;S.z=z0+(z-z0)*e;S.ox=x0+(ox-x0)*e;S.oy=y0+(oy-y0)*e;zl();draw();if(k<1)requestAnimationFrame(f)})()}
 function pgOf(){const[,ph]=pdim(),cy=(cv.clientHeight/2-S.oy)/S.z;return Math.max(0,Math.min(S.pg.n-1,Math.floor(cy/(ph+PG_GAP))))}
 function goPage(i){if(S.pg.size=='inf')return;i=Math.max(0,Math.min(S.pg.n-1,i));const[pw,ph]=pdim(),W=cv.clientWidth,H=cv.clientHeight,z=Math.min(W/(pw+60),H/(ph+60),3);camTo(z,(W-pw*z)/2,(H-ph*z)/2-i*(ph+PG_GAP)*z)}
-function pgUi(){const pg=S.pg.size!='inf';$('#pgn').hidden=!pg;$('#cps').value=S.pg.size;$('#cpo').value=S.pg.o;$('#cpo').disabled=!pg;if(!pg)return;const[,ph]=pdim(),last=(S.pg.n-1)*(ph+PG_GAP)+ph,b=S.items.length?bnds(S.items):[0,0,0,0],f=$('#pgfull');f.hidden=b[3]<last-50;f.textContent=tr('full')}
+function pgUi(){const pg=S.pg.size!='inf';$('#pgn').hidden=!pg;$('#cps').value=S.pg.size;$('#cpo').value=S.pg.size=='pdf'?((S.pg.w||800)>(S.pg.h||1100)?'l':'p'):S.pg.o;$('#cpo').disabled=!pg;if(!pg)return;const[,ph]=pdim(),last=(S.pg.n-1)*(ph+PG_GAP)+ph,b=S.items.length?bnds(S.items):[0,0,0,0],f=$('#pgfull');f.hidden=b[3]<last-50;f.textContent=tr('full')}
 function addPage(){if(S.pg.size=='inf')return toast(tr('pickpage'));push();S.pg.n++;save();pgUi();goPage(S.pg.n-1)}
 $('#cps').onchange=e=>{S.pg.size=e.target.value;if(S.pg.n<1)S.pg.n=1;save();pgUi();if(S.pg.size=='inf')fitAll();else goPage(0);draw()};
-$('#cpo').onchange=e=>{S.pg.o=e.target.value;save();pgUi();goPage(pgOf())};
+$('#cpo').onchange=e=>{const o=e.target.value;if(S.pg.size=='pdf'){const w=S.pg.w||800,h=S.pg.h||1100;if(w!==h&&(o=='l')!==(w>h)){S.pg.w=h;S.pg.h=w}} /* PDF pages carry their own w/h, so rotating means swapping them */
+ S.pg.o=o;save();pgUi();goPage(pgOf())};
 $('#apg').onclick=$('#pgadd').onclick=$('#pgfull').onclick=addPage;$('#pg0').onclick=()=>goPage(pgOf()-1);$('#pg1').onclick=()=>goPage(pgOf()+1);$('#zs').onclick=()=>zoomSel();
 function zoomSel(){const L=S.sel.length?S.sel:S.items;if(!L.length)return;const b=bnds(L),W=cv.clientWidth,H=cv.clientHeight,z=Math.max(ZMIN,Math.min(6,.85*Math.min(W/Math.max(1,b[2]-b[0]),H/Math.max(1,b[3]-b[1])))),mx=(b[0]+b[2])/2,my=(b[1]+b[3])/2;camTo(z,W/2-mx*z,H/2-my*z)}
 /* ======================= v1.3: groups, better tables ======================= */
