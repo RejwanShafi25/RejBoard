@@ -11,6 +11,7 @@ permissions:
 jobs:
   build:
     name: Build (${{ matrix.label }})
+    timeout-mintes: 30
     strategy:
       fail-fast: false
       matrix:
@@ -74,6 +75,7 @@ jobs:
         env:
           # No code-signing certificates: skip auto-discovery so the macOS build does not fail/hang.
           CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+          DEBUG: electron-builder
 
       - name: Verify bundled OCR is inside the package
         shell: bash

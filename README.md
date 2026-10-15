@@ -240,7 +240,15 @@ Locking a board hides its thumbnail, lists it under **Protected** and asks for t
 - **Board menu:** favorite, copy, move (tree picker), edit tags, lock / unlock, move to Trash.
 - Autosave with a live indicator.
 
-![Home screen](Screenshots/home-view-locked-note.png)
+![Home screen](Screenshots/02-home.png) Home Section view
+
+![Favorite screen](Screenshots/02-favorite-section-view.png) Favorite section view
+
+![Protected screen](Screenshots/02-protected-section-view.png) Protected section view
+
+![Trash screen](Screenshots/02-trash-section-view.png) Trash section view
+
+![Tag screen](Screenshots/02-protected-section-view.png) Tag section view
 
 </details>
 

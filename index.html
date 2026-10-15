@@ -552,6 +552,14 @@ body.pres #w{border-radius:0;border:0;box-shadow:none}
 html.lowmem .mdl,html.lowmem #stm{backdrop-filter:none!important}
 
 .board-card.mopen{content-visibility:visible!important;contain:none!important}
+
+/* layers panel: keep every button (incl. delete ✕) inside the panel */
+#lp{box-sizing:border-box;max-height:min(70vh,520px);overflow-y:auto;overflow-x:hidden}
+#lp .nc{gap:4px;padding:5px;margin:5px 0;min-width:0;box-sizing:border-box}
+#lp .nc input{flex:1 1 0;min-width:0;width:auto;box-sizing:border-box;padding:4px 6px}
+#lp .nc button{flex:0 0 auto;width:28px;height:28px;padding:0;display:inline-flex;align-items:center;justify-content:center;line-height:1;font-size:13px;overflow:visible}
+#lp .nc button:last-child{color:#e5484d;font-weight:700;font-size:15px;border:1px solid color-mix(in srgb,#e5484d 55%,var(--bd))!important;background:color-mix(in srgb,#e5484d 12%,var(--pn))!important}
+#lp .nc>span{flex:0 0 auto;padding:0 2px!important}
 </style>
 </head><body>
 <div id="hdr"><div class="hd hd-nav"><button id="bkb" hidden>← Back</button><button id="bn" title="Boards — all your notes, folders and tags"><img src="icon-192.png" alt="" width="18" height="18" style="vertical-align:-4px;border-radius:4px"> <span data-i="boards">Boards</span></button><button id="nn" title="Create a new board">＋ <span data-i="newb">New</span></button></div><div class="hd hd-doc"><b class="hd-brand">RejBoard</b><input id="ti" size="16" aria-label="Board title" title="Rename this board"><button id="lkf" hidden></button><button id="favnote" title="Add to favorites">☆</button><input id="tgs" size="12" placeholder="#tags, comma" title="Add tags to this board (comma separated)"><span class="chip" id="sv" role="status" title="Autosave status">✓ Saved</span></div><div class="hd hd-act"><button id="recb" title="Voice recordings for this board: record the class, play it back later">🎙 <span class="lb">Record</span></button><button id="cvb" title="Canvas: paper, grid, dots, pages and settings">🎨 <span data-i="canvas">Canvas</span></button><button id="exb" title="Export, save a copy, open a board file">⬆ <span data-i="export">Export</span></button><button id="prb" title="Present full screen">📽 <span data-i="present">Present</span></button><button id="stb" title="Settings">⚙</button></div></div>
@@ -601,11 +609,11 @@ html.lowmem .mdl,html.lowmem #stm{backdrop-filter:none!important}
  <div class="row" id="tpw" style="display:none;flex-wrap:wrap;gap:4px"></div>
  <div class="row"><button id="rulerDock" title="Toggle transparent ruler">📏 Ruler</button><input type="color" id="bcs" title="Pick any color"><button id="bac" title="Add color to palette">＋</button><span id="bsws" style="display:flex;gap:4px;flex-wrap:wrap"></span><span class="sep"></span><select id="bpl"></select><input id="bpn" placeholder="palette name" size="9"><button id="bsp" title="Save palette">💾</button></div>
 </div>
-<div id="hwp" class="pp" hidden aria-label="Handwriting help"><b>✍ Handwriting help</b><label class="tgl"><input type="checkbox" id="hwal"><i></i>Align letters</label><small>When on, everything you handwrite with a pen is snapped onto a straight baseline as you write, so your letters and lines stay level and tidy.</small></div>
+<div id="hwp" class="pp" hidden aria-label="Handwriting help"><b>✍ Handwriting help</b><button id="hwsel" type="button" class="on" style="width:100%;padding:8px 10px">Align selected handwriting</button><small>Select handwriting with the Select or Lasso tool, then press this. Works with capitals, small letters and any mix of both, on one or several lines.</small></div>
 <div id="lzp" class="pp" hidden aria-label="Laser settings"><label>Fade time <input id="lzfd" type="range" min="200" max="5000" step="100" value="1000"> <span id="lzfv">1.0s</span></label><label>Size <input id="lzsz" type="range" min="2" max="16" value="5"></label></div>
 <div id="erp" class="pp" hidden aria-label="Eraser settings"><label>Size <input id="ersz" type="range" min="2" max="80" value="16"></label><label><input id="erobj" type="checkbox" checked> Erase entire object</label><label><input id="erhl" type="checkbox"> Highlighter only</label><label><input id="ertp" type="checkbox"> Tape only</label></div>
 <div id="pdfq" class="pop" hidden><label style="display:block;margin-bottom:8px"><input type="checkbox" id="pdfinv"> Invert PDF colors before saving</label><div style="display:flex;gap:6px;justify-content:flex-end"><button id="pdfcancel">Cancel</button><button id="pdfsave" class="on">Save PDF</button></div></div>
-<div id="pdfm" hidden><div class="inner"><div style="display:flex;gap:8px;align-items:center"><b id="pdfmt" style="font-size:17px;flex:1">Import PDF</b><button id="pdfmx">✕</button></div><div id="pdfstatus" style="opacity:.7;margin-top:4px"></div><div class="opts" style="margin-top:10px"><label><input type="radio" name="pdfscope" value="all" checked> All pages</label><label><input type="radio" name="pdfscope" value="custom"> Custom range</label><input id="pdfrange" placeholder="e.g. 1-3,5,8-10" style="min-width:190px" disabled><label>Quality <select id="pdfqly"><option value="144">Standard (144 dpi)</option><option value="216">High (216 dpi)</option><option value="300">Maximum (300 dpi)</option></select></label><label>Arrange <select id="pdfarr"><option value="stack">Stacked</option><option value="row">Row</option><option value="grid">Grid</option></select></label></div><div style="display:flex;gap:6px;margin-top:8px"><button id="pdfall" type="button">Select all</button><button id="pdfnone" type="button">Select none</button><span style="flex:1"></span><button id="pdfdo" class="on">Import selected pages</button></div><div id="pdfpages" class="pages"></div></div></div>
+<div id="pdfm" hidden><div class="inner"><div style="display:flex;gap:8px;align-items:center"><b id="pdfmt" style="font-size:17px;flex:1">Import PDF</b><button id="pdfmx">✕</button></div><div id="pdfstatus" style="opacity:.7;margin-top:4px"></div><div class="opts" style="margin-top:10px"><label><input type="radio" name="pdfscope" value="all" checked> All pages</label><label><input type="radio" name="pdfscope" value="custom"> Custom range</label><input id="pdfrange" placeholder="e.g. 1-3,5,8-10" style="min-width:190px"><label>Quality <select id="pdfqly"><option value="144">Standard (144 dpi)</option><option value="216">High (216 dpi)</option><option value="300">Maximum (300 dpi)</option></select></label><label>Arrange <select id="pdfarr"><option value="stack">Stacked</option><option value="row">Row</option><option value="grid">Grid</option></select></label></div><div style="display:flex;gap:6px;margin-top:8px"><button id="pdfall" type="button">Select all</button><button id="pdfnone" type="button">Select none</button><span style="flex:1"></span><button id="pdfdo" class="on">Import selected pages</button></div><div id="pdfpages" class="pages"></div></div></div>
 <div id="mq" class="pop" hidden><b>LaTeX</b><br><textarea id="ml" placeholder="Type LaTeX…"></textarea><div id="mathTabs" style="display:flex;gap:4px;margin-top:7px"><button data-mtab="structures" class="on">Structures</button><button data-mtab="greek">Greek</button><button data-mtab="symbols">Symbols</button><button data-mtab="cs">Computer Science</button><button data-mtab="other">Other</button></div><div id="mathPalette" style="display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin-top:6px"></div><div id="mathPreview" style="min-height:44px;padding:8px;border-radius:10px;background:var(--bg);margin-top:7px;overflow:auto"></div><br><button id="mi" class="on">Insert</button> <button id="mc">Cancel</button></div>
 <div id="np" class="pop" hidden></div><div id="ts_" hidden></div>
 <script>
@@ -833,55 +841,103 @@ function fitHL(s){
   s.pts=[A,B];s.fx=1}
  return s}
 function fitTape(s){const c=cfg.tape;if(!c||!c.fit||s.w<s.h)return;const b=findBand(s.x,s.x+s.w,s.y,s.y+s.h,s.h);if(b){s.y=b.top;s.h=Math.min(160,Math.max(8,b.h))}}
-/* Align letters: keep handwriting on one straight baseline.
-   The baseline is estimated from ALL letters of the line (never from the first one alone), and letters written
-   earlier are re-aligned whenever the estimate improves. Dots, crossbars and apostrophes travel with their letter. */
+/* Align letters: put handwriting on one straight baseline.
+   Every stroke of a line remembers its ORIGINAL position; each time the line changes the whole line is solved again
+   from scratch, so the result never depends on the order the letters were written in.
+   Capitals, ascenders and x-height letters all sit on the baseline by their bottoms; g j p q y hang below it
+   (their body, not their tail, is put on the baseline). Dots, crossbars and punctuation travel with their letter. */
+function hwMed(a){const b=[...a].sort((x,y)=>x-y);return b.length?b[(b.length-1)>>1]:0}
+function hwEnt(s,t0,t1){let x0=1e9,x1=-1e9,y0=1e9,y1=-1e9;for(const q of s.pts){if(q[0]<x0)x0=q[0];if(q[0]>x1)x1=q[0];if(q[1]<y0)y0=q[1];if(q[1]>y1)y1=q[1]}return{s,x0,x1,y0,y1,dy:0,t0,t1}}
+/* pure solver: fills e.want for every entry of L.ent; returns {R,B} (timed=false when there is no timing, e.g. a selection) */
+function hwSolve(E,timed){
+ const n=E.length;if(!n)return null;
+ const hs=E.map(e=>e.y1-e.y0).sort((a,b)=>a-b),R=hs[Math.min(n-1,Math.round((n-1)*.75))];
+ for(const e of E)e.want=0;
+ if(!(R>0))return null;
+ const order=E.slice().sort((a,b)=>timed?a.t0-b.t0:a.x0-b.x0),big=[],tiny=[];
+ for(const e of order)(e.y1-e.y0>=.35*R?big:tiny).push(e);
+ if(!big.length)return null;
+ /* strokes -> letters */
+ const G=[];
+ for(const e of big){const g=G[G.length-1];let join=false;
+  if(g&&(!timed||e.t0-g.t1<600)){const ov=Math.min(g.x1,e.x1)-Math.max(g.x0,e.x0),mw=Math.min(g.x1-g.x0,e.x1-e.x0);join=ov>=-.06*R&&ov>=.4*mw}
+  if(join){g.s.push(e);g.x0=Math.min(g.x0,e.x0);g.x1=Math.max(g.x1,e.x1);g.y0=Math.min(g.y0,e.y0);g.y1=Math.max(g.y1,e.y1);g.t1=Math.max(g.t1,e.t1)}
+  else G.push({s:[e],ex:[],x0:e.x0,x1:e.x1,y0:e.y0,y1:e.y1,t1:e.t1})}
+ const gap=(g,e)=>Math.max(0,g.x0-e.x1,e.x0-g.x1);
+ const loose=[];
+ for(const e of tiny){let best=null,bd=1e9;
+  for(const g of G){const d=gap(g,e),gh=g.y1-g.y0;if(d<=.2*R&&e.y1<=g.y1-.3*gh&&d<bd){bd=d;best=g}}
+  if(best)best.ex.push(e);else loose.push(e)}
+ /* baseline = the level most letter bottoms share. Candidates are scored by how many letters would float above or sink below it
+    (letters that hang deep below it count only a little: they may be g j p q y), so a line made mostly of descenders still finds the true baseline */
+ const tol=.2*R,clusterOf=(arr,c)=>hwMed(arr.filter(k=>Math.abs(k.y1-c)<=tol).map(k=>k.y1));
+ const baseOf=(arr,desc)=>{let best=null,bc=1e9;
+  for(const g of arr){const c=clusterOf(arr,g.y1);let cost=0;
+   for(const k of arr){const dp=k.y1-c,hh=k.y1-k.y0;if(dp<-tol)cost+=1;else if(dp>tol)cost+=(desc&&dp>.22*hh)?.15:1}
+   if(cost<bc-1e-9||(Math.abs(cost-bc)<1e-9&&c<best)){bc=cost;best=c}}
+  return best};
+ const descQ=(g,B,mh)=>{const hh=g.y1-g.y0,dp=g.y1-B;return(dp>.2*hh&&hh>=1.2*mh&&dp>.1*R)||(dp>.26*hh&&hh>=.75*mh&&dp>.15*R)||dp>.42*hh};
+ let nd=G.slice(),B=baseOf(G,true);
+ for(let it=0;it<5;it++){
+  const mh=hwMed(nd.map(g=>g.y1-g.y0)),nn=G.filter(g=>!descQ(g,B,mh));
+  if(!nn.length)break;
+  const nb=baseOf(nn,false),same=nn.length===nd.length&&nn.every(g=>nd.includes(g));
+  nd=nn;if(same&&Math.abs(nb-B)<.5){B=nb;break}B=nb}
+ const isD=g=>!nd.includes(g);
+ /* x-height of the line (the short letters), used to find where a descender's body ends */
+ const nh=nd.map(g=>g.y1-g.y0).sort((a,b)=>a-b);let XH=0;
+ if(nh.length){const lo=nh.filter(v=>v<=nh[0]*1.35),hi=nh.filter(v=>v>nh[0]*1.35),ml=hwMed(lo);
+  if(hi.length&&hwMed(hi)>=1.4*ml)XH=ml;else XH=-ml}                /* negative = "probably x-height, unconfirmed" */
+ const bodyBottom=g=>{const hh=g.y1-g.y0;let f=.62;
+  if(XH>0)f=XH/hh;else if(XH<0){const r=hh/-XH;if(r>=1.35&&r<=2.1)f=-XH/hh}
+  f=Math.max(.45,Math.min(.8,f));return g.y0+f*hh};
+ for(const g of G){let d=B-(isD(g)?bodyBottom(g):g.y1);if(Math.abs(d)>R)d=0;g.d=d;for(const e of g.s.concat(g.ex))e.want=d}
+ for(const e of loose){let best=G[0],bd=1e9;for(const g of G){const d=gap(g,e);if(d<bd){bd=d;best=g}}
+  let d=best.d;const y=e.y1+d;if(y>=B-.3*R&&y<=B+.15*R)d=B-e.y1;e.want=d}
+ return{R,B}}
+function hwApply(E){let moved=false;
+ for(const e of E){const diff=e.want-e.dy;if(Math.abs(diff)<.01)continue;for(const q of e.s.pts)q[1]+=diff;e.dy=e.want;moved=true}return moved}
 function alignHW(s){
  const P=s.pts;if(!P||!P.length)return;
- let x0=1e9,x1=-1e9,y0=1e9,y1=-1e9;for(const q of P){x0=Math.min(x0,q[0]);x1=Math.max(x1,q[0]);y0=Math.min(y0,q[1]);y1=Math.max(y1,q[1])}
- const h=y1-y0,w=x1-x0,start=HWs||performance.now(),end=performance.now(),cy=(y0+y1)/2,lm=a=>{const b=[...a].sort((x,y)=>x-y);return b.length?b[(b.length-1)>>1]:0};
- let L=HW.line;const sc0=L?L.scale:0;
- if(L&&sc0>0&&(h>4*sc0||w>14*sc0))return;                      /* drawings and underlines are not letters */
- if(!L||start-L.t>8000||x1<L.left-1.5*sc0||cy>L.base+1.6*sc0||cy<L.base-2.4*sc0)L=HW.line={groups:[],left:x0,t:end,base:y1,scale:0};
- /* forget letters that were erased, replaced or moved since they were aligned */
- const alive=st=>S.items.includes(st),bot=k=>{let m=-1e9;for(const st of k.strokes)if(alive(st))for(const q of st.pts)if(q[1]>m)m=q[1];return m};
- L.groups=L.groups.filter(k=>k.strokes.some(alive)&&(k.free||Math.abs(bot(k)-(k.y1+k.applied))<2));
- const sc1=L.scale,B1=L.base,tiny=sc1>0&&h<.45*sc1,gapTo=k=>Math.max(0,k.x0-x1,x0-k.x1);
- if(tiny){                                                       /* dot, crossbar, apostrophe, full stop, comma */
-  let best=null,bd=1e9;for(const k of L.groups){if(k.free)continue;const d=gapTo(k);if(d<bd){bd=d;best=k}}
-  if(best&&bd<=.35*sc1&&y1<B1-.25*sc1)best.extras.push(s);        /* belongs to the letter it sits on, even if added after the word */
-  else{const low=y1>=B1-.25*sc1,fol=best&&bd<=2*sc1?best:null,mode=low&&y1<=B1+.12*sc1?'snap':fol?'follow':'none';
-   L.groups.push({free:1,mode,strokes:[s],extras:[],x0,x1,y0,y1,follow:fol,applied:mode==='follow'?fol.applied:0,t:end})}}
- else{
-  const last=L.groups.filter(k=>!k.free).at(-1),tol=.35*Math.min(sc1||h,h);
-  if(last&&start-last.t<600&&x0<=last.x1+tol&&x1>=last.x0-tol){   /* another stroke of the same letter */
-   const ga=last.applied;last.strokes.push(s);last.x0=Math.min(last.x0,x0);last.x1=Math.max(last.x1,x1);last.y0=Math.min(last.y0,y0-ga);last.y1=Math.max(last.y1,y1-ga);last.t=end}
-  else L.groups.push({strokes:[s],extras:[],x0,x1,y0,y1,t:end,applied:0})}
- L.left=Math.min(L.left,x0);L.t=end;
- const lt=L.groups.filter(k=>!k.free);
- if(lt.length){
-  const sc=lm(lt.map(k=>k.y1-k.y0))||sc1||h;L.scale=sc;
-  /* g, j, p, q, y hang well below the baseline: the part under it is a large share of the letter's own height (a letter that is just a little low is not one) */
-  const hs=lt.map(k=>k.y1-k.y0).sort((a,b)=>a-b),xh=hs[Math.floor((hs.length-1)*.25)]||sc;   /* x-height: most letters are x-height letters */
-  const isD=(k,B)=>{const hh=k.y1-k.y0,dp=k.y1-B;return hh>1.3*xh&&dp>.3*hh&&dp<1.2*sc};     /* taller than a normal letter AND well below the baseline */
-  const B0=lm(lt.map(k=>k.y1)),nd=lt.filter(k=>!isD(k,B0)),flat=nd.map(k=>k.y1),nb=flat.length?lm(flat):B0;
-  if(lt.length<=2||Math.abs(nb-L.base)>.04*sc)L.base=nb;
-  const B=L.base,dOf=k=>{let d;if(isD(k,B)){d=(B-xh)-k.y0;if(Math.abs(d)>.8*sc)d=0}else{d=B-k.y1;if(Math.abs(d)>1.2*sc)d=0}return d};
-  const dFree=k=>k.mode==='snap'?B-k.y1:k.mode==='follow'&&L.groups.includes(k.follow)?dOf(k.follow):0;
-  for(const k of L.groups){const d=k.free?dFree(k):dOf(k),diff=d-k.applied;if(Math.abs(diff)<.01)continue;
-   for(const st of k.strokes.concat(k.extras))if(st===s||alive(st))for(const q of st.pts)q[1]+=diff;
-   k.applied=d}
-  cache=null}}
-function wbPost(s){try{if(s.tool&&s.tool[0]=='h')return fitHL(s);if(isPen(s.tool)&&S.hwAlign)alignHW(s)}catch(e){console.warn(e)}return s}
+ const now=performance.now(),start=HWs||now;let L=HW.line;
+ const cur=hwEnt(s,start,now),h=cur.y1-cur.y0,w=cur.x1-cur.x0,cy=(cur.y0+cur.y1)/2;
+ if(L){/* forget strokes that were erased, replaced or moved since they were aligned */
+  L.ent=L.ent.filter(e=>{if(!S.items.includes(e.s))return false;let a=1e9,b=-1e9;for(const q of e.s.pts){if(q[0]<a)a=q[0];if(q[1]>b)b=q[1]}return Math.abs(b-(e.y1+e.dy))<2&&Math.abs(a-e.x0)<2});
+  if(!L.ent.length)L=HW.line=null}
+ const R0=L?L.R:0;
+ if(L&&R0>0&&(h>4*R0||w>14*R0))return;                          /* drawings and underlines are not letters */
+ if(!L||start-L.t>8000||cur.x1<L.left-1.5*R0||cy>L.B+1.6*R0||cy<L.B-2.4*R0)L=HW.line={ent:[],left:cur.x0,t:now,B:cur.y1,R:0};
+ L.ent.push(cur);L.left=Math.min(L.left,cur.x0);L.t=now;
+ const r=hwSolve(L.ent,true);if(r){L.R=r.R;L.B=r.B}
+ if(hwApply(L.ent))cache=null}
+/* Align the handwriting that is currently selected (any mix of capitals / small letters, several lines at once) */
+function alignSelectedHW(items){
+ const pen=items.filter(i=>i.t=='s'&&isPen(i.tool)&&i.pts&&i.pts.length&&!i.xyz&&!i.shape3d);if(!pen.length)return 0;
+ const ent=pen.map((s,k)=>hwEnt(s,k,k)),hs=ent.map(e=>e.y1-e.y0).sort((a,b)=>a-b),R=hs[Math.min(hs.length-1,Math.round((hs.length-1)*.75))];
+ if(!(R>0))return 0;
+ const letters=ent.filter(e=>{const h=e.y1-e.y0,w=e.x1-e.x0;return h>=.35*R&&h<=4*R&&w<=14*R}).sort((a,b)=>(a.y0+a.y1)-(b.y0+b.y1));
+ const lines=[];
+ for(const e of letters){const c=(e.y0+e.y1)/2,ln=lines.find(l=>c>=l.y0-.15*R&&c<=l.y1+.15*R);
+  if(ln){ln.ent.push(e);ln.y0=Math.min(ln.y0,e.y0);ln.y1=Math.max(ln.y1,e.y1)}else lines.push({ent:[e],y0:e.y0,y1:e.y1})}
+ for(const e of ent){const h=e.y1-e.y0,w=e.x1-e.x0;if(h>=.35*R||w>14*R)continue;       /* dots, crossbars, punctuation */
+  const c=(e.y0+e.y1)/2;let best=null,bd=1e9;
+  for(const l of lines){if(c<l.y0-.5*R||c>l.y1+.3*R)continue;const d=Math.abs(c-(l.y0+l.y1)/2);if(d<bd){bd=d;best=l}}
+  if(best)best.ent.push(e)}
+ let n=0;for(const l of lines){if(l.ent.length<1)continue;hwSolve(l.ent,false);if(hwApply(l.ent))n+=l.ent.length}
+ HW.line=null;cache=null;return n}
+
+function wbPost(s){try{if(s.tool&&s.tool[0]=='h')return fitHL(s);}catch(e){console.warn(e)}return s}
 function lineUI(){const w=$('#lnb');w.innerHTML='';const cur=cfg[S.tool]?.lineType||'solid';[['solid','Solid'],['dashed','Dashed'],['dotted','Dotted']].forEach(([k,n])=>{const b=document.createElement('button');b.title=n;b.className=k==cur?'on':'';b.innerHTML=lineTypeIcon(k);b.onclick=()=>{const c=cfg[S.tool];if(!c)return;c.lineType=k;Wr('wb.cfg',cfg);lineUI()};w.append(b)})}
 $('#hlst').onchange=e=>{const c=cfg[S.tool];if(c){c.straight=e.target.checked;Wr('wb.cfg',cfg)}};
 $('#hlfit').onchange=e=>{const c=cfg[S.tool];if(c){c.fit=e.target.checked;Wr('wb.cfg',cfg)}};
 $('#tpfit').onchange=e=>{const c=cfg.tape;if(c){c.fit=e.target.checked;Wr('wb.cfg',cfg)}};$('#tpst').onchange=e=>{const c=cfg.tape;if(c){c.straight=e.target.checked;Wr('wb.cfg',cfg)}};
-S.hwAlign=!!L('wb.hwAlign',false);
-function syncHw(){$('#hwh').classList.toggle('on',!!S.hwAlign);$('#hwal').checked=!!S.hwAlign}
-$('#hwal').onchange=e=>{S.hwAlign=e.target.checked;Wr('wb.hwAlign',S.hwAlign);HW.line=null;HW.grp=null;syncHw();toast(S.hwAlign?'Align letters on — your handwriting snaps to a straight baseline':'Align letters off')};
+function syncHw(){}
+$('#hwsel').onclick=()=>{const sel=(S.sel||[]).filter(i=>i&&i.t=='s'&&isPen(i.tool));if(!sel.length)return toast('Select some handwriting first (Select or Lasso tool), then press Align selected handwriting');push();let n=0;try{n=alignSelectedHW(sel)}catch(e){console.warn(e)}if(!n){hist.pop();return toast('Nothing to align — that selection is already level')}save();draw();toast('Aligned '+sel.length+' handwriting stroke'+(sel.length==1?'':'s'))};
 syncHw();
-function openHwPopup(b){const p=$('#hwp'),was=!p.hidden;closeTransient();if(was)return;syncHw();p.hidden=false;const r=b.getBoundingClientRect(),w=p.getBoundingClientRect().width,h=p.getBoundingClientRect().height;p.style.transform='none';p.style.bottom='auto';p.style.left=Math.max(8,Math.min(innerWidth-w-8,r.left+r.width/2-w/2))+'px';p.style.top=Math.max(8,r.top-h-10)+'px'}
+function placeHwPopup(){const p=$('#hwp'),b=$('#hwh');if(!p||p.hidden||!b)return;const r=b.getBoundingClientRect();if(!r.width&&!r.height){p.hidden=true;return}p.style.transform='none';p.style.bottom='auto';p.style.left='0px';p.style.top='0px';const pr=p.getBoundingClientRect(),w=pr.width,h=pr.height;p.style.left=Math.max(8,Math.min(innerWidth-w-8,r.left+r.width/2-w/2))+'px';p.style.top=Math.max(8,Math.min(innerHeight-h-8,r.top-h-10))+'px'}
+function openHwPopup(b){const p=$('#hwp'),was=!p.hidden;closeTransient();if(was)return;syncHw();p.hidden=false;placeHwPopup()}
+/* keep the popup glued to its button when the window is resized, maximised or goes full screen (the dock re-flows after the resize) */
+(()=>{let t=0;const again=()=>{placeHwPopup();clearTimeout(t);t=setTimeout(placeHwPopup,150)};window.addEventListener('resize',again);document.addEventListener('fullscreenchange',again);if(window.ResizeObserver){const d=$('#dk');if(d)new ResizeObserver(again).observe(d)}})();
 function item(c,i){c.save();let rb=null;if(i.rot){const b=bnds([i]);rb=[(b[0]+b[2])/2,(b[1]+b[3])/2];c.translate(rb[0],rb[1]);c.rotate(i.rot);c.translate(-rb[0],-rb[1]);}if(i.t=='tb')tbl(c,i);else if(i.t=='sp')drawSp(c,i);else if(i.t=='s'&&i.xyz)drawXYZ(c,i);else if(i.t=='s'&&i.shape3d)drawShape3D(c,i);else if(i.t=='k'&&i.pts)tapePath(c,i);else if(i.t=='k'){c.fillStyle=i.color;if(i.open){c.globalAlpha=.18;c.fillRect(i.x,i.y,i.w,i.h);c.globalAlpha=1}else if(i.st&&i.st!='solid'){tapeDraw(c,i)}else{c.fillRect(i.x,i.y,i.w,i.h);c.fillStyle='rgba(0,0,0,.08)';for(let x=i.x;x<i.x+i.w;x+=14)c.fillRect(x,i.y,6,i.h)}}else if(i.t=='s')stroke(c,i);else if(i.t=='t'&&i.sticky)drawSticky(c,i);else if(i.t=='i'||i.t=='m'){const m=img(i.src);if(m.complete&&m.naturalWidth)c.drawImage(m,i.x,i.y,i.w,i.h)}else txt(c,i,1);c.restore()}
 function bnds(L){let a=[1e9,1e9,-1e9,-1e9];for(const i of L){let b;if(i.t=='sp')b=spAabb(i);else if(i.t=='s'&&i.xyz){const o=i.xyz,ox=o.ox??i.x,oy=o.oy??i.y,dx=(o.zLen||35)*.72,dy=(o.zLen||35)*.55;b=[ox,oy-(o.zLen||35)*.55,ox+(o.xLen||120)+10,oy+(o.yLen||90)+10]}else if(i.t=='s'){const r=i.size/2;b=i.pts.reduce((m,p)=>[Math.min(m[0],p[0]-r),Math.min(m[1],p[1]-r),Math.max(m[2],p[0]+r),Math.max(m[3],p[1]+r)],[1e9,1e9,-1e9,-1e9])}else{if(i.t=='t'||i.t=='l')txt(cx,i,0);b=[i.x,i.y,i.x+i.w,i.y+i.h]}a=[Math.min(a[0],b[0]),Math.min(a[1],b[1]),Math.max(a[2],b[2]),Math.max(a[3],b[3])]}return a}
 function clipPages(c){if(S.pg.size==='inf')return;const[pw,ph]=pdim();c.beginPath();for(let i=0;i<S.pg.n;i++)c.rect(0,i*(ph+PG_GAP),pw,ph);c.clip()}
@@ -2821,14 +2877,71 @@ function renderLayers(){const p=$('#lp');p.innerHTML='<b>Layers</b> <button id="
    const end=m=>{gh.onpointermove=gh.onpointerup=gh.onpointercancel=null;try{gh.releasePointerCapture(ev.pointerId)}catch(_){}d.style.opacity='';clr();if(!over||over===d||m.type=='pointercancel')return;const cur=S.layers.indexOf(l);S.layers.splice(cur,1);let t=S.layers.findIndex(q=>q.id==over.dataset.id);/* list is shown top = last in array */ if(above)t+=1;S.layers.splice(t,0,l);save();renderLayers();draw()};
    gh.onpointerup=end;gh.onpointercancel=end};
   d.prepend(gh);$('#ll').append(d)})}
-let pdfImportDoc=null,pdfImportFile=null,pdfImportContext='board',pdfPages=[];
+let pdfImportDoc=null,pdfImportFile=null,pdfImportContext='board',pdfPages=[],pdfThumbRun=0;
 function startPdfImport(context){closeTransient('pdfm');pdfImportContext=context;$('#pf').click()}
-async function openPdfImportModal(f){if(!window.pdfjsLib)return toast('PDF reader still loading — try again');try{const ws=await fetch('vendor/pdf.worker.min.js',{method:'HEAD'}).then(r=>r.ok?'vendor/pdf.worker.min.js':null).catch(()=>null);pdfjsLib.GlobalWorkerOptions.workerSrc=ws||'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';pdfImportFile=f;pdfImportDoc=await pdfjsLib.getDocument({data:await f.arrayBuffer()}).promise;const n=Math.min(pdfImportDoc.numPages,100);pdfPages=Array.from({length:n},(_,i)=>({n:i+1,selected:true,w:0,h:0,src:''}));const K=docKind(f.name);$('#pdfmt').textContent=K.label=='PDF'?'Import PDF':'Import '+K.label.toLowerCase();$('#pdfstatus').textContent=`${f.name} — ${n} ${K.unit.toLowerCase()}${n==1?'':'s'}`;renderPdfPageChooser();$('#pdfm').hidden=false;for(const p of pdfPages){const pg=await pdfImportDoc.getPage(p.n),v=pg.getViewport({scale:.28}),c=document.createElement('canvas');c.width=Math.ceil(v.width);c.height=Math.ceil(v.height);await pg.render({canvasContext:c.getContext('2d'),viewport:v}).promise;p.w=pg.getViewport({scale:1}).width;p.h=pg.getViewport({scale:1}).height;p.src=c.toDataURL('image/jpeg',.72);const el=$(`#pdfp${p.n}`);if(el)el.querySelector('img').src=p.src}$('#pdfm').hidden=false}catch(e){toast('Could not read that PDF')}}
-function renderPdfPageChooser(){const g=$('#pdfpages');g.innerHTML='';pdfPages.forEach(p=>{const d=document.createElement('div');d.className='page'+(p.selected?' on':'');d.id='pdfp'+p.n;const U=docKind(pdfImportFile&&pdfImportFile.name).unit;d.innerHTML=`<img alt="${U} ${p.n}"><span>${U} ${p.n}</span>`;d.onclick=()=>{p.selected=!p.selected;d.classList.toggle('on',p.selected)};g.append(d)});$('#pdfall').onclick=()=>{pdfPages.forEach(p=>p.selected=true);g.querySelectorAll('.page').forEach(x=>x.classList.add('on'))};$('#pdfnone').onclick=()=>{pdfPages.forEach(p=>p.selected=false);g.querySelectorAll('.page').forEach(x=>x.classList.remove('on'))};document.querySelectorAll('input[name=pdfscope]').forEach(r=>r.onchange=()=>{$('#pdfrange').disabled=r.value!='custom';if(r.value=='custom')$('#pdfrange').focus()})}
-function parsePdfRange(raw,max){const out=new Set();for(const part of raw.split(',').map(x=>x.trim()).filter(Boolean)){if(/^\d+$/.test(part)){const n=+part;if(n>=1&&n<=max)out.add(n)}else{const m=part.match(/^(\d+)\s*-\s*(\d+)$/);if(m){let a=+m[1],b=+m[2];if(a>b)[a,b]=[b,a];for(let i=Math.max(1,a);i<=Math.min(max,b);i++)out.add(i)}}}return[...out].sort((a,b)=>a-b)}
-async function importSelectedPdf(){const scope=document.querySelector('input[name=pdfscope]:checked').value;let selected=pdfPages.filter(p=>p.selected).map(p=>p.n);if(scope=='custom'){selected=parsePdfRange($('#pdfrange').value,pdfPages.length).filter(n=>pdfPages[n-1].selected);if(!selected.length)return toast('Choose at least one valid page')};if(!selected.length)return toast('Choose at least one page');const dpi=+$('#pdfqly').value,arr=$('#pdfarr').value;$('#pdfm').hidden=true;try{const scale=dpi/72,imgs=[];for(let ix=0;ix<selected.length;ix++){const n=selected[ix],pg=await pdfImportDoc.getPage(n),v=pg.getViewport({scale}),c=document.createElement('canvas');c.width=Math.ceil(v.width);c.height=Math.ceil(v.height);await pg.render({canvasContext:c.getContext('2d'),viewport:v}).promise;imgs.push({n,w:pg.getViewport({scale:1}).width*1.3,h:pg.getViewport({scale:1}).height*1.3,src:c.toDataURL('image/jpeg',.92)})}const gap=24,cols=arr=='grid'?Math.max(1,Math.ceil(Math.sqrt(imgs.length))):arr=='row'?imgs.length:1,rows=arr=='grid'?Math.ceil(imgs.length/cols):1;const pw=imgs[0].w,ph=imgs[0].h,totalW=cols*pw+(cols-1)*gap,totalH=rows*ph+(rows-1)*gap,id=Date.now();push();S.layers.unshift({id,name:docKind(pdfImportFile.name).pre+pdfImportFile.name.slice(0,12),vis:1,lock:1});imgs.forEach((im,i)=>{const col=arr=='stack'?0:i%cols,row=arr=='stack'?i:i==0?0:Math.floor(i/cols);S.items.push({t:'i',src:im.src,x:col*(pw+gap),y:row*(ph+gap),w:im.w,h:im.h,ly:id,pg:i+1})});S.items.forEach(i=>i.src&&img(i.src));if(pdfImportContext=='home'){S.pg={size:'pdf',o:'p',n:1,w:arr=='stack'?pw:totalW,h:arr=='stack'?selected.length*ph+(selected.length-1)*gap:totalH};pgUi();goPage(0)}else if(S.pg.size!='inf'){/* keep the current canvas mode: fit each PDF page onto its own page of the note */const[pw2,ph2]=pdim(),pitch=ph2+PG_GAP,cy=(cv.clientHeight/2-S.oy)/S.z,st=Math.max(0,Math.min(S.pg.n-1,Math.floor(cy/pitch))),added=S.items.slice(-imgs.length);added.forEach((it,k)=>{const f=Math.min(pw2/it.w,ph2/it.h),w=it.w*f,h=it.h*f;it.w=w;it.h=h;it.x=(pw2-w)/2;it.y=(st+k)*pitch+(ph2-h)/2});S.pg.n=Math.max(S.pg.n,st+imgs.length);pgUi();goPage(st)}else{S.pg={size:'inf',o:'p',n:1};pgUi();fitAll()}save();draw();{const K=docKind(pdfImportFile.name);toast(`Imported ${selected.length} ${K.label=='PDF'?'PDF page':K.unit.toLowerCase()}${selected.length==1?'':'s'} at ${dpi} dpi`)}}catch(e){toast('Could not import the selected PDF pages')}}
+function pdfSetScope(v){const r=document.querySelector('input[name=pdfscope][value="'+v+'"]');if(r)r.checked=true}
+function pdfSyncThumbs(){pdfPages.forEach(p=>{const el=$('#pdfp'+p.n);if(el)el.classList.toggle('on',!!p.selected)})}
+async function openPdfImportModal(f){if(!window.pdfjsLib)return toast('PDF reader still loading — try again');try{const ws=await fetch('vendor/pdf.worker.min.js',{method:'HEAD'}).then(r=>r.ok?'vendor/pdf.worker.min.js':null).catch(()=>null);pdfjsLib.GlobalWorkerOptions.workerSrc=ws||'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';pdfImportFile=f;pdfImportDoc=await pdfjsLib.getDocument({data:await f.arrayBuffer()}).promise;const n=Math.min(pdfImportDoc.numPages,500);pdfPages=Array.from({length:n},(_,i)=>({n:i+1,selected:true,w:0,h:0,src:''}));const K=docKind(f.name);$('#pdfmt').textContent=K.label=='PDF'?'Import PDF':'Import '+K.label.toLowerCase();$('#pdfstatus').textContent=`${f.name} — ${pdfImportDoc.numPages} ${K.unit.toLowerCase()}${pdfImportDoc.numPages==1?'':'s'}`;pdfSetScope('all');$('#pdfrange').value='';renderPdfPageChooser();$('#pdfm').hidden=false;const run=++pdfThumbRun;for(const p of pdfPages){if(run!==pdfThumbRun||p.n>150)break;try{const pg=await pdfImportDoc.getPage(p.n),v=pg.getViewport({scale:.28}),c=document.createElement('canvas');c.width=Math.ceil(v.width);c.height=Math.ceil(v.height);await pg.render({canvasContext:c.getContext('2d'),viewport:v}).promise;p.w=pg.getViewport({scale:1}).width;p.h=pg.getViewport({scale:1}).height;p.src=c.toDataURL('image/jpeg',.72);const el=$(`#pdfp${p.n}`);if(el)el.querySelector('img').src=p.src}catch(_){}}}catch(e){console.error(e);toast('Could not read that PDF')}}
+function renderPdfPageChooser(){const g=$('#pdfpages');g.innerHTML='';pdfPages.forEach(p=>{const d=document.createElement('div');d.className='page'+(p.selected?' on':'');d.id='pdfp'+p.n;const U=docKind(pdfImportFile&&pdfImportFile.name).unit;d.innerHTML=`<img alt="${U} ${p.n}"><span>${U} ${p.n}</span>`;d.onclick=()=>{p.selected=!p.selected;d.classList.toggle('on',p.selected);pdfSetScope('all');$('#pdfrange').value=''};g.append(d)});
+ $('#pdfall').onclick=()=>{pdfPages.forEach(p=>p.selected=true);pdfSyncThumbs();pdfSetScope('all');$('#pdfrange').value=''};
+ $('#pdfnone').onclick=()=>{pdfPages.forEach(p=>p.selected=false);pdfSyncThumbs();pdfSetScope('all');$('#pdfrange').value=''};
+ const rg=$('#pdfrange');rg.disabled=false;
+ /* the range box is always usable: clicking or typing in it switches to "Custom range" and highlights the pages it names */
+ const live=()=>{pdfSetScope('custom');const raw=rg.value.trim();if(!raw)return;const list=parsePdfRange(raw,pdfPages.length);pdfPages.forEach(p=>p.selected=list.includes(p.n));pdfSyncThumbs();rg.style.outline=list.length?'':'2px solid #e5484d'};
+ rg.oninput=live;rg.onfocus=()=>pdfSetScope('custom');rg.onkeydown=e=>{e.stopPropagation();if(e.key=='Enter'){e.preventDefault();importSelectedPdf()}};
+ document.querySelectorAll('input[name=pdfscope]').forEach(r=>r.onchange=()=>{if(r.value=='custom'){rg.focus();if(rg.value.trim())live()}else{rg.style.outline='';pdfPages.forEach(p=>p.selected=true);pdfSyncThumbs()}})}
+/* "1-3,5,8-10" · "1 - 3; 5" · "2 to 4" · "7-" (to the end) · "-3" (from the start) */
+function parsePdfRange(raw,max){const out=new Set(),t=String(raw||'').replace(/[\u2012-\u2015\u2212]/g,'-').replace(/\bto\b/gi,'-').replace(/\s*-\s*/g,'-');
+ for(const part of t.split(/[,;\s]+/).filter(Boolean)){
+  if(/^\d+$/.test(part)){const n=+part;if(n>=1&&n<=max)out.add(n);continue}
+  const m=part.match(/^(\d*)-(\d*)$/);if(!m||(!m[1]&&!m[2]))continue;
+  let a=m[1]?+m[1]:1,b=m[2]?+m[2]:max;if(a>b)[a,b]=[b,a];
+  for(let i=Math.max(1,a);i<=Math.min(max,b);i++)out.add(i)}
+ return[...out].sort((a,b)=>a-b)}
+function pdfChosen(){const scope=document.querySelector('input[name=pdfscope]:checked').value,raw=$('#pdfrange').value.trim();
+ if(scope=='custom'||raw){if(!raw)return{err:'Type a page range, for example 1-3,5,8-10'};const list=parsePdfRange(raw,pdfPages.length);if(!list.length)return{err:`No valid pages in "${raw}" — this file has ${pdfPages.length}`};return{list}}
+ return{list:pdfPages.filter(p=>p.selected).map(p=>p.n)}}
+async function importSelectedPdf(){const ch=pdfChosen();if(ch.err)return toast(ch.err);const selected=ch.list;if(!selected.length)return toast('Choose at least one page');
+ const dpi=+$('#pdfqly').value,arr=$('#pdfarr').value,home=pdfImportContext=='home',file=pdfImportFile,doc=pdfImportDoc,KD=docKind(file.name);
+ $('#pdfm').hidden=true;pdfThumbRun++;toast(`Importing ${selected.length} ${KD.unit.toLowerCase()}${selected.length==1?'':'s'} …`,120000);
+ try{const scale=dpi/72,PX=96/72,imgs=[];
+  for(const n of selected){const pg=await doc.getPage(n),v=pg.getViewport({scale}),c=document.createElement('canvas');c.width=Math.ceil(v.width);c.height=Math.ceil(v.height);await pg.render({canvasContext:c.getContext('2d'),viewport:v}).promise;const v1=pg.getViewport({scale:1});imgs.push({n,w:v1.width*PX,h:v1.height*PX,src:c.toDataURL('image/jpeg',.92)});c.width=c.height=0}
+  const gap=24,pw=imgs[0].w,ph=imgs[0].h,id=Date.now(),lname=KD.pre+file.name.slice(0,12);
+  if(home){/* importing from the home screen always makes a NEW board whose pages match the document */
+   await newNote();const base=file.name.replace(/\.[^.]+$/,'')||'Imported';S.title=base;$('#ti').value=base;try{BTITLE[S.id]=base}catch(_){}}
+  push();S.layers.unshift({id,name:lname,vis:1,lock:1});
+  const put=(im,x,y,w,h,k)=>S.items.push({t:'i',src:im.src,x,y,w,h,ly:id,pg:k+1});
+  if(home){
+   if(arr=='stack'){/* paged board: page size = document size, one board page per document page */
+    const match=(a,b)=>Math.abs(a-b)<=Math.max(2,.012*b);let size='pdf',o='p';
+    for(const k of Object.keys(PSZ)){const[a,b]=PSZ[k];if(match(pw,a)&&match(ph,b)){size=k;o='p';break}if(match(pw,b)&&match(ph,a)){size=k;o='l';break}}
+    S.pg=size=='pdf'?{size:'pdf',o:'p',n:imgs.length,w:Math.round(pw),h:Math.round(ph)}:{size,o,n:imgs.length};
+    const[bw,bh]=pdim(),pitch=bh+PG_GAP;
+    imgs.forEach((im,k)=>{const f=Math.min(bw/im.w,bh/im.h),w=im.w*f,h=im.h*f;put(im,(bw-w)/2,k*pitch+(bh-h)/2,w,h,k)})}
+   else{/* row / grid: one board exactly as big as the arranged document */
+    const cols=arr=='row'?imgs.length:Math.max(1,Math.ceil(Math.sqrt(imgs.length))),rows=Math.ceil(imgs.length/cols);
+    imgs.forEach((im,k)=>put(im,(k%cols)*(pw+gap),Math.floor(k/cols)*(ph+gap),im.w,im.h,k));
+    S.pg={size:'pdf',o:'p',n:1,w:Math.round(cols*pw+(cols-1)*gap),h:Math.round(rows*ph+(rows-1)*gap)}}
+   S.items.forEach(i=>i.src&&img(i.src));pgUi();goPage(0)}
+  else if(S.pg.size!='inf'){/* open board with pages: fit each document page onto its own board page */
+   const[bw,bh]=pdim(),pitch=bh+PG_GAP,cy=(cv.clientHeight/2-S.oy)/S.z,st=Math.max(0,Math.min(S.pg.n-1,Math.floor(cy/pitch)));
+   imgs.forEach((im,k)=>{const f=Math.min(bw/im.w,bh/im.h),w=im.w*f,h=im.h*f;put(im,(bw-w)/2,(st+k)*pitch+(bh-h)/2,w,h,k)});
+   S.items.forEach(i=>i.src&&img(i.src));S.pg.n=Math.max(S.pg.n,st+imgs.length);pgUi();goPage(st)}
+  else{/* open infinite board: lay the pages out on the canvas */
+   const cols=arr=='grid'?Math.max(1,Math.ceil(Math.sqrt(imgs.length))):arr=='row'?imgs.length:1;
+   const rows=Math.ceil(imgs.length/cols),tw=cols*pw+(cols-1)*gap,th=(arr=='stack'?imgs.length:rows)*ph+((arr=='stack'?imgs.length:rows)-1)*gap;
+   /* drop the document where the user last clicked on the canvas (or the middle of the screen if that is out of view) */
+   let ax=(cv.clientWidth/2-S.ox)/S.z,ay=(cv.clientHeight/2-S.oy)/S.z;
+   if(typeof lastCvClick!=='undefined'&&lastCvClick){const sx=lastCvClick[0]*S.z+S.ox,sy=lastCvClick[1]*S.z+S.oy;if(sx>=0&&sx<=cv.clientWidth&&sy>=0&&sy<=cv.clientHeight){ax=lastCvClick[0];ay=lastCvClick[1]}}
+   const ox0=ax-tw/2,oy0=ay-th/2;
+   imgs.forEach((im,k)=>put(im,ox0+(arr=='stack'?0:k%cols)*(pw+gap),oy0+(arr=='stack'?k:Math.floor(k/cols))*(ph+gap),im.w,im.h,k));
+   S.items.forEach(i=>i.src&&img(i.src));S.pg={size:'inf',o:'p',n:1};pgUi();cache=null;
+   /* keep the view where it is so the document appears under the click; zoom out only if it is bigger than the screen */
+   {const f=Math.min(1,.9*cv.clientWidth/(tw*S.z),.9*cv.clientHeight/(th*S.z));if(f<1){const z=S.z*f;S.ox=cv.clientWidth/2-ax*z;S.oy=cv.clientHeight/2-ay*z;S.z=z;zl()}}}
+  save();draw();$('#ts_').hidden=1;toast(`Imported ${selected.length} ${KD.label=='PDF'?'PDF page':KD.unit.toLowerCase()}${selected.length==1?'':'s'}${home?' into a new board':''} at ${dpi} dpi`)}
+ catch(e){console.error(e);$('#ts_').hidden=1;toast('Could not import the selected pages')}}
 $('#pf').onchange=e=>{const f=e.target.files[0];e.target.value='';f&&openPdfImportModal(f)};
-$('#pdfmx').onclick=()=>$('#pdfm').hidden=true;$('#pdfdo').onclick=importSelectedPdf;
+$('#pdfmx').onclick=()=>{pdfThumbRun++;$('#pdfm').hidden=true};$('#pdfdo').onclick=importSelectedPdf;
 
 $('#u2').onclick=undo;$('#r2').onclick=redo;$('#zi').onclick=()=>zoomAt(1.25,cv.clientWidth/2,cv.clientHeight/2);$('#zo').onclick=()=>zoomAt(.8,cv.clientWidth/2,cv.clientHeight/2);$('#zp').onclick=()=>{cache=null;S.z=1;zl();draw()};$('#zf').onclick=fitAll;
 
