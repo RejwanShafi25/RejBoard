@@ -8,6 +8,8 @@
 - Pressing **Distribute evenly** (the button at the right end of the selection toolbar, previously shown as ⋯) with handwriting selected no longer spreads the letters apart. Handwriting and groups are now treated as one object each, and a toast explains when there is nothing to distribute. The button now has a clearer icon.
 - The home sidebar showed a double `#` in front of tag names. It also listed every tag, which got very long with many tags; it now shows the 3 most recently used tags (plus the one you have open), and the Tags section still lists all of them.
 - Newly drawn lines and arrows never connected to shapes automatically, and had to be dragged by hand; they now connect when drawn.
+- Pasting copied objects sometimes seemed to do nothing: they were put back at their original position, which could be off-screen or outside the current page. Paste now places them where you last clicked (or the centre of the view), on the page you are on in page mode. Ctrl/Cmd+C and X also work with Caps Lock and non-Latin keyboard layouts.
+- Deleting a layer (e.g. an imported PDF) no longer leaves an invisible, still-selectable area behind, and Undo now restores the layer along with its items.
 
 ## [1.3.0]
 ### Changed

@@ -25,7 +25,7 @@ button,select,input,textarea{font:inherit;color:var(--fg);background:var(--pn);b
 button{cursor:pointer}button.on{background:var(--ac);color:var(--acf,#fff);border-color:var(--ac)}
 input[type=range]{padding:0;width:90px}input[type=color]{padding:0;width:30px;height:26px}
 .sw{width:22px;height:22px;padding:0;border-radius:50%}.sep{width:1px;height:20px;background:var(--bd)}
-#w{flex:1;position:relative;overflow:hidden;min-height:200px}#c{position:absolute;left:0;top:0;touch-action:none}.brush-cursor{position:absolute;left:0;top:0;width:20px;height:20px;border:1.5px solid currentColor;border-radius:50%;transform:translate(-50%,-50%);pointer-events:none;z-index:9;display:none;box-sizing:border-box;opacity:.9}.brush-cursor.on{display:block}
+#w{flex:1;position:relative;overflow:hidden;min-height:200px;direction:ltr}#c{direction:ltr}/* RTL interface languages must not mirror the board: canvas text inherits CSS direction (start-aligned text jumped to the right) */#c{position:absolute;left:0;top:0;touch-action:none}.brush-cursor{position:absolute;left:0;top:0;width:20px;height:20px;border:1.5px solid currentColor;border-radius:50%;transform:translate(-50%,-50%);pointer-events:none;z-index:9;display:none;box-sizing:border-box;opacity:.9}.brush-cursor.on{display:block}
 .pop{position:fixed;z-index:20;background:var(--pn);border:1px solid var(--bd);border-radius:10px;padding:12px;box-shadow:0 8px 30px #0005}
 #mq{left:50%;top:20%;transform:translateX(-50%);width:min(440px,92vw)}#mq textarea{width:100%;box-sizing:border-box;height:80px;font-family:monospace}
 #np{right:8px;top:60px;bottom:8px;width:min(400px,94vw);overflow:auto}#dock{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(10px + env(safe-area-inset-bottom,0px));z-index:12;display:flex;gap:4px;align-items:center;background:var(--pn);border:1px solid var(--bd);border-radius:999px;padding:4px 10px;box-shadow:0 4px 18px #0004}#sv{font-size:12px;opacity:.85;min-width:92px}
@@ -142,6 +142,9 @@ button,select,input,textarea{border-radius:12px}
 #rulerOverlay{position:absolute;left:0;top:0;pointer-events:none;display:none;z-index:8;filter:drop-shadow(0 2px 3px #0003)}
 #rulerOverlay.on{display:block}.ruler-body{pointer-events:auto;cursor:move;position:absolute;height:44px;border:1px solid color-mix(in srgb,var(--ac) 70%,#fff);background:color-mix(in srgb,var(--pn) 62%,transparent);backdrop-filter:blur(3px);border-radius:10px}.ruler-mark{position:absolute;top:0;width:1px;height:12px;background:var(--fg);opacity:.35}.ruler-mark.long{height:20px}.ruler-label{position:absolute;right:8px;top:4px;font:11px system-ui;opacity:.65}
 #pomo{left:calc(50% - 170px);top:18%;width:340px;height:300px;min-width:230px;min-height:210px;max-width:96vw;max-height:96vh;box-sizing:border-box;display:flex;flex-direction:column;gap:6px;text-align:center;overflow:hidden;padding:8px 10px 14px;touch-action:none}#pomo[hidden]{display:none!important}#pomo .phd{display:flex;align-items:center;justify-content:space-between;cursor:move;user-select:none;-webkit-user-select:none;touch-action:none;padding:2px 0}#pomo .phd b{flex:1;text-align:left;padding-left:2px}#pomo .pclose{width:28px;height:28px;padding:0;line-height:1;font-size:16px;border-radius:50%;cursor:pointer}#pomo .clock{flex:1 1 auto;min-height:0;display:flex;align-items:center;justify-content:center;font:700 58px ui-monospace,monospace;margin:0;cursor:text;white-space:nowrap;user-select:none;-webkit-user-select:none}#pomo .prow{display:flex;gap:5px;justify-content:center;flex-wrap:wrap;align-items:center}#pomo .prow button{padding:4px 8px;font-size:12px;cursor:pointer}#pomo .pset input{width:46px;padding:4px 2px;text-align:center;font:600 14px ui-monospace,monospace;border:1px solid var(--bd);border-radius:6px;background:transparent;color:inherit;box-sizing:border-box}#pomo .pset span{font-size:12px;opacity:.7}#pomo .presz{position:absolute;right:0;bottom:0;width:18px;height:18px;cursor:nwse-resize;touch-action:none;background:linear-gradient(135deg,transparent 0 50%,var(--bd) 50% 58%,transparent 58% 70%,var(--bd) 70% 78%,transparent 78%);border-bottom-right-radius:10px}
+/* mixed Latin/Arabic text: let each label pick its own direction so '#tag', counts and dates stay in order in RTL languages */
+.cardtags button,.tagchip,#htitle,#hm .folder-card .sub,#hm .cdates>div,#hm .it>span{unicode-bidi:plaintext}
+#hchips b{unicode-bidi:isolate}
 #folderGrid{display:grid;grid-template-columns:repeat(5,minmax(120px,1fr));gap:12px;margin:14px 0 24px}.folder-card{position:relative;border:1px solid var(--bd);border-radius:14px;padding:14px;background:var(--pn);min-height:100px;cursor:pointer;overflow:hidden}.folder-card .folder-actions{position:absolute;right:6px;top:6px;display:none;gap:4px}.folder-card:hover .folder-actions{display:flex}.folder-card .folder-color{width:48px;height:40px;margin-bottom:8px;display:flex;align-items:center;justify-content:center;filter:drop-shadow(0 2px 2px rgba(0,0,0,.12))}.folder-card .folder-color svg{width:40px;height:34px;display:block}.folder-card .sub{opacity:.65;font-size:12px}.home-section{border-top:1px solid var(--bd);padding-top:12px}.board-card{position:relative}.board-card .ac{opacity:0;transition:.15s}.board-card:hover .ac{opacity:1}
 @media(max-width:900px){#folderGrid{grid-template-columns:repeat(3,minmax(100px,1fr))}}@media(max-width:600px){#folderGrid{grid-template-columns:repeat(2,minmax(100px,1fr))}}
 
@@ -968,7 +971,7 @@ function cullBox(i){
 const inVP=(i,v)=>{const b=cullBox(i);return!b||(b[2]>=v[0]&&b[0]<=v[2]&&b[3]>=v[1]&&b[1]<=v[3])};
 const paint=c=>{const v=VP;VP=null;paint.drawn=0;paint.skipped=0;for(const l of S.layers)if(l.vis)for(const i of S.items)if((i.ly??1)==l.id){if(v&&!inVP(i,v)){paint.skipped++;continue}paint.drawn++;item(c,i)}};
 function mkCache(){if(!S.fast||S.items.length<150){cache=null;return}const c=document.createElement('canvas');c.width=cv.width;c.height=cv.height;const g=c.getContext('2d');g.setTransform(dpr,0,0,dpr,0,0);if(!rulerActive)bgAll(g,cv.width/dpr,cv.height/dpr,S.ox,S.oy,S.z);g.translate(S.ox,S.oy);g.scale(S.z,S.z);clipPages(g);VP=vpRect();paint(g);cache={c,ox:S.ox,oy:S.oy,nb:rulerActive}}
-function draw0(){cx.setTransform(dpr,0,0,dpr,0,0);bgAll(cx,cv.width/dpr,cv.height/dpr,S.ox,S.oy,S.z);
+function draw0(){cx.direction='ltr';cx.setTransform(dpr,0,0,dpr,0,0);bgAll(cx,cv.width/dpr,cv.height/dpr,S.ox,S.oy,S.z);
  if(cache){if(cache.nb&&rulerHook)rulerHook(cx);cx.setTransform(1,0,0,1,0,0);cx.drawImage(cache.c,(S.ox-cache.ox)*dpr,(S.oy-cache.oy)*dpr);cx.setTransform(dpr,0,0,dpr,0,0);cx.save();cx.translate(S.ox,S.oy);cx.scale(S.z,S.z)}
  else{if(rulerHook)rulerHook(cx);cx.save();cx.translate(S.ox,S.oy);cx.scale(S.z,S.z);clipPages(cx);VP=vpRect();paint(cx)}
  if(S.pg.size!='inf')clipPages(cx);
@@ -990,8 +993,8 @@ function cloneItems(a){const hold=[];for(let k=0;k<a.length;k++){const s=a[k].sr
 const HBUD=(DEVMEM<=2?40:DEVMEM<=4?96:192)*1048576;
 function trimHist(){let t=0;for(const h of hist)t+=h.__c||0;while(hist.length>3&&(hist.length>60||t>HBUD))t-=hist.shift().__c||0}
 const push=()=>{hist.push(cloneItems(S.items));trimHist();fut=[]};
-function undo(){if(!hist.length)return;const h=hist.pop(),f=cloneItems(S.items);if(h.__pn!=null){f.__pn=S.pg.n;S.pg.n=h.__pn;pgUi()}if(h.__lk){f.__lk=h.__lk;window.__pgLk&&window.__pgLk(h.__lk,true)}fut.push(f);S.items=h;S.sel=[];save();draw()}
-function redo(){if(!fut.length)return;const h=fut.pop(),f=cloneItems(S.items);if(h.__pn!=null){f.__pn=S.pg.n;S.pg.n=h.__pn;pgUi()}if(h.__lk){f.__lk=h.__lk;window.__pgLk&&window.__pgLk(h.__lk,false)}hist.push(f);trimHist();S.items=h;S.sel=[];save();draw()}
+function undo(){if(!hist.length)return;const h=hist.pop(),f=cloneItems(S.items);if(h.__pn!=null){f.__pn=S.pg.n;S.pg.n=h.__pn;pgUi()}if(h.__lk){f.__lk=h.__lk;window.__pgLk&&window.__pgLk(h.__lk,true)}if(h.__ly){f.__ly={l:S.layers.map(q=>({...q})),a:S.ly};S.layers=h.__ly.l;S.ly=h.__ly.a;cache=null;try{renderLayers()}catch(_){}}fut.push(f);S.items=h;S.sel=[];save();draw()}
+function redo(){if(!fut.length)return;const h=fut.pop(),f=cloneItems(S.items);if(h.__pn!=null){f.__pn=S.pg.n;S.pg.n=h.__pn;pgUi()}if(h.__lk){f.__lk=h.__lk;window.__pgLk&&window.__pgLk(h.__lk,false)}if(h.__ly){f.__ly={l:S.layers.map(q=>({...q})),a:S.ly};S.layers=h.__ly.l;S.ly=h.__ly.a;cache=null;try{renderLayers()}catch(_){}}hist.push(f);trimHist();S.items=h;S.sel=[];save();draw()}
 const DB=new Promise(r=>{try{const q=indexedDB.open('wb',2);q.onupgradeneeded=()=>{const d=q.result;if(!d.objectStoreNames.contains('n'))d.createObjectStore('n',{keyPath:'id'});if(!d.objectStoreNames.contains('rec'))d.createObjectStore('rec',{keyPath:'id'}).createIndex('b','board')};q.onblocked=()=>{try{toast('Close other tabs of this app so it can finish updating',8000)}catch(e){}};q.onsuccess=()=>{q.result.onversionchange=()=>q.result.close();r(q.result)};q.onerror=()=>r(null)}catch(e){r(null)}});
 const tx=async(m,f)=>{const d=await DB;if(!d)return;return new Promise(r=>{try{const q=f(d.transaction('n',m).objectStore('n'));q.onsuccess=()=>r(q.result);q.onerror=()=>r()}catch(e){r()}})};
 /* Metadata-only read of the board library: streams records with a cursor and drops the heavy fields (strokes, images) immediately, so peak memory is one board instead of the whole library. */
@@ -1047,7 +1050,7 @@ const pt=e=>{const r=cv.getBoundingClientRect();return[(e.clientX-r.left-S.ox)/S
 
 const pip=(p,P)=>{let c=0;for(let i=0,j=P.length-1;i<P.length;j=i++)if((P[i][1]>p[1])!=(P[j][1]>p[1])&&p[0]<(P[j][0]-P[i][0])*(p[1]-P[i][1])/(P[j][1]-P[i][1])+P[i][0])c=!c;return c};
 const selIn=(i,poly)=>{if(i.t=='s')return i.pts.some(p=>pip(p,poly));const b=bnds([i]);return pip([(b[0]+b[2])/2,(b[1]+b[3])/2],poly)||[[b[0],b[1]],[b[2],b[1]],[b[2],b[3]],[b[0],b[3]]].some(q=>pip(q,poly))||poly.some(q=>q[0]>b[0]&&q[0]<b[2]&&q[1]>b[1]&&q[1]<b[3])};
-const LY=id=>S.layers.find(l=>l.id==(id??1)),act=i=>{const l=LY(i.ly);return!l||(l.vis&&!l.lock)},addI=it=>{it.ly??=S.ly;S.items.push(it)};
+const LY=id=>S.layers.find(l=>l.id==(id??1)),act=i=>{const l=LY(i.ly);return!!l&&l.vis&&!l.lock},addI=it=>{it.ly??=S.ly;S.items.push(it)};
 function xf(L,fn,sx=1,sy=sx){const k=Math.sqrt(sx*sy);for(const i of L){if(i.t=='sp'){const c=fn(i.x+i.w/2,i.y+i.h/2);i.w*=sx;i.h*=sy;i.x=c[0]-i.w/2;i.y=c[1]-i.h/2;continue}if(i.xyz){const o=i.xyz;o.ox=o.ox??i.x;o.oy=o.oy??i.y;[o.ox,o.oy]=fn(o.ox,o.oy);o.xLen*=sx;o.yLen*=sy;o.zLen*=k;i.x=o.ox;i.y=o.oy;continue}if(i.t=='k'&&i.pts){i.pts.forEach(p=>{[p[0],p[1]]=fn(p[0],p[1])});i.size*=k;tapeBB(i);continue}if(i.t=='s'){i.pts.forEach(p=>{[p[0],p[1]]=fn(p[0],p[1])});i.size*=k}else if(i.rot){const b=bnds([i]),c=[(b[0]+b[2])/2,(b[1]+b[3])/2];const q=fn(c[0],c[1]);i.x+=q[0]-c[0];i.y+=q[1]-c[1]}else{[i.x,i.y]=fn(i.x,i.y);i.w*=sx;i.h*=sy;if(i.size)i.size*=k;if(i.t=='tb'){i.cw=i.cw.map(v=>v*sx);i.rh=i.rh.map(v=>v*sy);i.fs*=k}}}}
 const rotPoint=(p,cx,cy,a)=>{const dx=p[0]-cx,dy=p[1]-cy,co=Math.cos(a),si=Math.sin(a);return[cx+dx*co-dy*si,cy+dx*si+dy*co]};
 const itemCenter=i=>{const b=bnds([i]);return[(b[0]+b[2])/2,(b[1]+b[3])/2]};
@@ -1568,7 +1571,7 @@ async function importOffice(f){try{const ext=f.name.toLowerCase().split('.').pop
  $('#ts_').hidden=1;await openPdfImportModal(pf)}catch(e){console.error(e);$('#ts_').hidden=1;toast('Could not read that document')}}
 $('#docf').onchange=e=>{const f=e.target.files[0];e.target.value='';if(f)importOffice(f)};
 
-document.addEventListener('paste',e=>{if(/TEXTAREA|INPUT/.test(e.target.tagName))return;e.preventDefault();if(intern&&clip.length){paste();return}ingest(e.clipboardData,view())});
+document.addEventListener('paste',e=>{if(/TEXTAREA|INPUT/.test(e.target.tagName))return;e.preventDefault();if(intern&&clip.length){paste();return}ingest(e.clipboardData,pastePoint())});
 (function(){const dz=document.createElement('div');dz.id='dropZone';dz.setAttribute('aria-hidden','true');dz.innerHTML='<div><b>Drop to add to the board</b><span>Images appear on the board · PDF, Word and PowerPoint ask which pages to import</span></div>';document.body.appendChild(dz);let depth=0;
  const hasFiles=e=>e.dataTransfer&&[...(e.dataTransfer.types||[])].includes('Files');
  const hide=()=>{depth=0;dz.classList.remove('on')};
@@ -1733,12 +1736,14 @@ function fitBottom(){const dk=$('#dk'),zw0=$('#zw'),pp=$('#pp'),pg=$('#pgn');if(
  dk.style.maxWidth=(vw-2*m)+'px';dW=Math.min(dW,vw-2*m);
  const zW=vis(zw)?zw.getBoundingClientRect().width:0,pW=vis(pg)?pg.getBoundingClientRect().width:0,lo=m+(pW?pW+gap:0),hi=vw-m-(zW?zW+gap:0)-dW;
  const dH=dk.getBoundingClientRect().height;let pb=86;
+ /* the themes force #pgn's bottom with !important, so an inline value must be !important too or the page bar stays hidden behind the dock */
+ const setB=(e,px)=>e&&e.style.setProperty('bottom',px+'px','important'),dB=Math.max(0,Math.round(innerHeight-dk.getBoundingClientRect().bottom));
  if(lo<=hi){/* everything fits on one row: keep the dock centred, shifting only if a side widget needs the room */
   const Lc=(vw-dW)/2,L=Math.max(lo,Math.min(Lc,hi)),sh=Math.round(L-Lc);dk.style.left='50%';dk.style.transform=sh?`translateX(calc(-50% + ${sh}px))`:'translateX(-50%)';
-  zw.style.bottom=`calc(${B}px + ${safe})`;pg.style.bottom=`calc(${B}px + ${safe})`;
+  setB(zw,dB);setB(pg,dB);
  }else{/* not enough width: page navigator (left) and zoom (right) move to a row above the dock */
   dk.style.left='50%';dk.style.transform='translateX(-50%)';
-  const up=`calc(${B+dH+8}px + ${safe})`;zw.style.bottom=up;pg.style.bottom=up;
+  const up=Math.round(innerHeight-dk.getBoundingClientRect().top+8);setB(zw,up);setB(pg,up);
   pb=86+(pW||zW?Math.round(Math.max(zw.getBoundingClientRect().height,pg.getBoundingClientRect().height,36))+8:0)
  }
  root.style.setProperty('--pb',(pb+Math.max(0,dH-48))+'px')}
@@ -1888,15 +1893,28 @@ function ov2(){sbSync();if(textEditor||spEditing){$('#sb').hidden=true}else $('#
  if(lz.length)drawLaser();
  if(SPOT&&document.body.classList.contains('pres')){const r=cv.getBoundingClientRect();cx.save();   cx.beginPath();cx.rect(0,0,W,H);cx.moveTo(mxy[0]-r.left+120,mxy[1]-r.top);cx.arc(mxy[0]-r.left,mxy[1]-r.top,120,0,Math.PI*2,true);cx.closePath();cx.fillStyle='rgba(0,0,0,.65)';cx.fill('evenodd');cx.restore()}}
 cv.addEventListener('pointermove',e=>{mxy=[e.clientX,e.clientY];if(SPOT)draw()});
-const copy=()=>{clip=structuredClone(S.sel);intern=true};document.addEventListener('copy',()=>intern=false);
-function paste(){if(!clip.length)return;push();const n=structuredClone(clip),gm={};n.forEach(i=>{if(i.g)i.g=gm[i.g]||(gm[i.g]=newGid())});xf(n,(x,y)=>[x+24,y+24]);n.forEach(addI);S.sel=n;clip=structuredClone(n);save();draw()}
+const copy=()=>{clip=structuredClone(S.sel);intern=true;PCN=0};document.addEventListener('copy',()=>intern=false);
+/* Paste lands where you last clicked (or the centre of the view if that spot is off-screen), and in page mode on the page you are on, kept inside that page.
+   near=true (Duplicate) keeps the old behaviour: a copy just beside the original. */
+let LASTC=null,PCN=0;
+cv.addEventListener('pointerdown',e=>{const r=cv.getBoundingClientRect();LASTC=[(e.clientX-r.left-S.ox)/S.z,(e.clientY-r.top-S.oy)/S.z];PCN=0},true);
+function pastePoint(){const W=cv.clientWidth,H=cv.clientHeight,on=q=>{const x=q[0]*S.z+S.ox,y=q[1]*S.z+S.oy;return x>=0&&x<=W&&y>=0&&y<=H};
+ let p=LASTC&&on(LASTC)?LASTC.slice():[(W/2-S.ox)/S.z,(H/2-S.oy)/S.z];
+ if(S.pg.size!='inf'){const[pw,ph]=pdim(),pitch=ph+PG_GAP,i=Math.max(0,Math.min(S.pg.n-1,Math.floor(p[1]/pitch))),y0=i*pitch;if(!(p[0]>=0&&p[0]<=pw&&p[1]>=y0&&p[1]<=y0+ph)){const c=pgOf(),cy=c*pitch;p=[pw/2,cy+ph/2]}}
+ return p}
+function paste(near){if(!clip.length)return;push();const n=structuredClone(clip),gm={};n.forEach(i=>{if(i.g)i.g=gm[i.g]||(gm[i.g]=newGid())});
+ let dx=24,dy=24;
+ if(!near){const B=bnds(n),p=pastePoint(),st=24*PCN++;dx=p[0]-(B[0]+B[2])/2+st;dy=p[1]-(B[1]+B[3])/2+st;
+  if(S.pg.size!='inf'){const[pw,ph]=pdim(),pitch=ph+PG_GAP,i=Math.max(0,Math.min(S.pg.n-1,Math.floor(p[1]/pitch))),y0=i*pitch,w=B[2]-B[0],h=B[3]-B[1],clamp=(v,lo,hi)=>hi<lo?lo:Math.max(lo,Math.min(hi,v));
+   dx=clamp(B[0]+dx,0,pw-w)-B[0];dy=clamp(B[1]+dy,y0,y0+ph-h)-B[1]}}
+ xf(n,(x,y)=>[x+dx,y+dy]);n.forEach(addI);S.sel=n;clip=structuredClone(n);save();draw()}
 function align(k){push();const B=bnds(S.sel);S.sel.forEach(i=>{const b=bnds([i]);let dx=0,dy=0;if(k=='L')dx=B[0]-b[0];if(k=='R')dx=B[2]-b[2];if(k=='T')dy=B[1]-b[1];if(k=='D')dy=B[3]-b[3];if(k=='H')dx=(B[0]+B[2])/2-(b[0]+b[2])/2;if(k=='V')dy=(B[1]+B[3])/2-(b[1]+b[3])/2;xf([i],(x,y)=>[x+dx,y+dy])});save();draw()}
 function distrib(){ /* spread whole objects evenly; a group, or all loose handwriting strokes together, counts as ONE object so letters are never pulled apart */
  const U=[],hw=[],gm=new Map();for(const i of S.sel){if(i.g){let u=gm.get(i.g);if(!u){u=[];gm.set(i.g,u);U.push(u)}u.push(i)}else if(i.t=='s'&&isPen(i.tool)&&!i.xyz&&!i.shape3d)hw.push(i);else U.push([i])}
  if(hw.length)U.push(hw);
  if(U.length<3)return toast(hw.length&&U.length<3?'Distribute spreads separate objects. Handwriting is kept as it is.':'Select 3 or more objects');
  push();const a=U.map(u=>[u,bnds(u)]).sort((p,q)=>p[1][0]-q[1][0]),f=a[0][1][0],l=Math.max(...a.map(q=>q[1][2])),tot=a.reduce((t,q)=>t+q[1][2]-q[1][0],0),gap=(l-f-tot)/(a.length-1);let x=f;a.forEach(([u,b])=>{const d=x-b[0];if(Math.abs(d)>.01)xf(u,(px,py)=>[px+d,py]);x+=b[2]-b[0]+gap});save();draw()}
-const selAct={dup:()=>{copy();paste()},copy,cut:()=>{copy();delSel()},del:()=>delSel(),front:()=>{push();S.items=S.items.filter(i=>!S.sel.includes(i)).concat(S.sel);save();draw()},back:()=>{push();S.items=S.sel.concat(S.items.filter(i=>!S.sel.includes(i)));save();draw()},grp:()=>groupSel(),ungrp:()=>ungroupSel(),dist:distrib,zsel:()=>zoomSel()};
+const selAct={dup:()=>{copy();paste(true)},copy,cut:()=>{copy();delSel()},del:()=>delSel(),front:()=>{push();S.items=S.items.filter(i=>!S.sel.includes(i)).concat(S.sel);save();draw()},back:()=>{push();S.items=S.sel.concat(S.items.filter(i=>!S.sel.includes(i)));save();draw()},grp:()=>groupSel(),ungrp:()=>ungroupSel(),dist:distrib,zsel:()=>zoomSel()};
 $('#sb').onclick=e=>{const a=e.target.closest('[data-a]')?.dataset.a;if(!a||!S.sel.length)return;(selAct[a]||(()=>align(a)))()};
 /* presentation navigation: paged canvas -> next/previous page; infinite canvas -> next/previous imported page (or one screen up/down) */
 function presNav(d,e){if(e)e.preventDefault();if(S.pg.size!='inf')return goPage(pgOf()+d);
@@ -1994,12 +2012,12 @@ async function lanDialog(pre){
  offs.forEach(f=>f&&f());lanSendBar=null;
 }
 
-async function openBoardFile(f){const t=await f.text();if(!t.startsWith('RJWB1:'))return toast('That is not a RejBoard file');try{const n=JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(t.slice(6)),c=>c.charCodeAt(0))));await saveNow();
+async function openBoardFile(f,stay){const t=await f.text();if(!t.startsWith('RJWB1:'))return toast('That is not a RejBoard file');try{const n=JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(t.slice(6)),c=>c.charCodeAt(0))));await saveNow();
  const extras=(Array.isArray(n.linked)?n.linked:[]).filter(x=>x&&typeof x==='object'&&!x.folder&&Array.isArray(x.items)&&x.id).slice(0,200);
  const chosen=extras.length?await pickLinked(extras,n.title||'This board'):[];
  const newId=uid(),map={};if(n.src)map[n.src]=newId;let k=0;for(const b of chosen)map[b.id]=uid()+(k++);
  let nl=0;if(chosen.length){const fid=uid();await tx('readwrite',s=>s.put({id:fid,folder:1,name:('Linked with “'+(n.title||'board')+'”').slice(0,60),parent:CF,color:'#cdeffd',t:Date.now()}));await writeImported(chosen,map,fid);nl=chosen.length;refreshBT().then(()=>lfUi())}
- n.id=newId;n.t=n.ct=n.mt=Date.now();n.parent=CF;delete n.linked;delete n.src;n.items=relinkItems(n.items,map);const rr=n.recs;delete n.recs;const nr=await recUnpack(rr,n.id);await openNote(n);save();toast('Board opened'+(nl?' with '+nl+' linked board'+(nl==1?'':'s')+' (folder “Linked with …”)':'')+(nr?' and '+nr+' voice recording'+(nr==1?'':'s'):''))}catch(x){toast('Could not open that file')}}
+ n.id=newId;n.t=n.ct=n.mt=Date.now();n.parent=CF;delete n.linked;delete n.src;n.items=relinkItems(n.items,map);const rr=n.recs;delete n.recs;const nr=await recUnpack(rr,n.id);if(stay)await tx('readwrite',s=>s.put(n));else{await openNote(n);save()}toast((stay?'Board imported: '+(n.title||'Untitled'):'Board opened')+(nl?' with '+nl+' linked board'+(nl==1?'':'s')+' (folder “Linked with …”)':'')+(nr?' and '+nr+' voice recording'+(nr==1?'':'s'):''))}catch(x){toast('Could not open that file')}}
 const SHP=[['rect','Rectangle'],['ell','Ellipse'],['tri','Triangle'],['rtri','Right triangle'],['dia','Diamond'],['pent','Pentagon'],['hex','Hexagon'],['oct','Octagon'],['star','Star'],['line','Line'],['arr','Arrow'],['darr','Double arrow'],['cyl','Cylinder'],['cone','Cone'],['sphere','Sphere'],['cube','Cube'],['prism','Prism'],['xyz','XYZ Plane'],['trap','Trapezoid'],['para','Parallelogram'],['heart','Heart'],['cross','Cross'],['cloud','Cloud'],['hexagram','Hexagram']],PASTEL=['#ffb3c6','#ffe08a','#b9fbc0','#a2d2ff','#e4c1f9','#ffd6a5'];
 const chip=(c,on,f)=>{const b=document.createElement('button');b.className='sw'+(on?' on':'');b.style.background=c||'repeating-linear-gradient(45deg,#ddd 0 4px,#fff 4px 8px)';b.onclick=f;return b};
 function shapeIcon(k){const g=G[k]||G.rect,bx=(k=='rect'||k=='ell')?[3,6,22,16]:[4,4,20,20],ln=LINEK.includes(k);let o='';
@@ -2115,6 +2133,16 @@ document.addEventListener('selectionchange',()=>{if(!textEditor)return;const sl=
 $('#txcolor').addEventListener('mousedown',()=>saveEditorRange());[['#tb_','b'],['#ti_','i'],['#tu_','u']].forEach(([id,k])=>$(id).onclick=e=>applyTextFormat(k,textEditor?null:(S.sel[0]?.[k]?0:1)));
 $('#txp').addEventListener('mousedown',e=>e.stopPropagation());
 /* ---- home screen ---- */
+/* ---- drag & drop .rjwb board files onto the home screen to import them ---- */
+(()=>{let depth=0,busy=false;const hm=()=>$('#hm'),home=()=>{const h=hm();return h&&!h.hidden},files=e=>!!e.dataTransfer&&[...(e.dataTransfer.types||[])].includes('Files'),off=()=>{depth=0;hm()&&hm().classList.remove('rb-drop')};
+addEventListener('dragenter',e=>{if(!home()||!files(e))return;e.preventDefault();depth++;hm().classList.add('rb-drop')},true);
+addEventListener('dragover',e=>{if(!home()||!files(e))return;e.preventDefault();e.dataTransfer.dropEffect='copy'},true);
+addEventListener('dragleave',e=>{if(!home()||!files(e))return;if(--depth<=0)off()},true);
+addEventListener('drop',async e=>{if(!home()||!files(e))return;e.preventDefault();e.stopPropagation();off();if(busy)return;
+ const all=[...e.dataTransfer.files],fl=all.filter(f=>/\.rjwb$/i.test(f.name));
+ if(!fl.length)return toast('Drop a RejBoard file (.rjwb) to import it');
+ busy=true;try{for(const f of fl)await openBoardFile(f,true);if(all.length>fl.length)toast('Only .rjwb files can be imported here');await renderHome()}finally{busy=false}},true);
+const st=document.createElement('style');st.textContent="#hm.rb-drop::after{content:'Drop .rjwb files to import';position:absolute;inset:10px;z-index:50;display:flex;align-items:center;justify-content:center;border:3px dashed #6ea8ff;border-radius:24px;background:color-mix(in srgb,var(--bg) 78%,#6ea8ff 22%);font:700 22px system-ui,sans-serif;color:inherit;pointer-events:none}";document.head.append(st)})();
 async function showHome(){closeMediaHub();closeTransient();$('#hm').hidden=0;renderHome()}
 async function hashPass(v){if(crypto?.subtle){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(v));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}let h=2166136261;for(const ch of v){h^=ch.charCodeAt(0);h=Math.imul(h,16777619)}return (h>>>0).toString(16)}
 /* ---- in-app dialogs (window.prompt/confirm are not available in Electron) ---- */
@@ -2235,7 +2263,7 @@ async function renderHome(){
  sb.classList.toggle('collapsed',!HOME_SIDEBAR_EXPANDED);sb.innerHTML='';
  const head=document.createElement('div');head.className='hs-head';const ham=document.createElement('button');ham.textContent='☰';ham.title='Toggle navigation';ham.onclick=()=>{HOME_SIDEBAR_EXPANDED=!HOME_SIDEBAR_EXPANDED;renderHome()};head.append(ham);const brand=document.createElement('div');brand.className='hs-brand';brand.innerHTML='<img src="icon-192.png" alt=""><span>RejBoard</span>';head.append(brand);sb.append(head);
  const go=key=>{HV.sec=key;HV.q='';HV.fp=0;HV.selMode=false;HV.sel=new Set();renderHome()};
- const it=(label,key,cnt,ind,icon,on,tip)=>{const d=document.createElement('div');d.className='it'+(on??(HV.sec==key)?' on':'');d.title=tip||label;d.style.paddingLeft=HOME_SIDEBAR_EXPANDED?(8+ind*16)+'px':'0';const ic=document.createElement('span');ic.className='nav-icon';if(String(icon).startsWith('<svg'))ic.innerHTML=icon;else ic.textContent=icon;d.append(ic);const l=document.createElement('span');l.className='nav-label';l.textContent=label;d.append(l);if(cnt!=null){const c=document.createElement('small');c.className='nav-count';c.textContent=cnt;d.append(c)}d.onclick=()=>go(key);sb.append(d)};
+ const it=(label,key,cnt,ind,icon,on,tip)=>{const d=document.createElement('div');d.className='it'+(on??(HV.sec==key)?' on':'');d.title=tip||label;if(/^(tag|f):/.test(String(key)))d.classList.add('notrans'); /* tag and folder names are the user's own words: never translate them */d.style.paddingLeft=HOME_SIDEBAR_EXPANDED?(8+ind*16)+'px':'0';const ic=document.createElement('span');ic.className='nav-icon';if(String(icon).startsWith('<svg'))ic.innerHTML=icon;else ic.textContent=icon;d.append(ic);const l=document.createElement('span');l.className='nav-label';l.textContent=label;d.append(l);if(cnt!=null){const c=document.createElement('small');c.className='nav-count';c.textContent=cnt;d.append(c)}d.onclick=()=>go(key);sb.append(d)};
  const lab=(label,icon)=>{const d=document.createElement('div');d.className='hs-section-label';d.innerHTML=`<span class="section-icon">${icon}</span><span class="section-label"></span>`;d.querySelector('.section-label').textContent=label;sb.append(d)};
  const PROT=tr('protected')==='protected'?'Protected':tr('protected');
  it(tr('allnotes'),'all',N.length,0,'📒');
@@ -2265,7 +2293,7 @@ async function renderHome(){
  const m=$('#hmain');
  m.innerHTML=`<div class="bt-head"><div class="bt bt-hero"><div><h2 id="htitle"></h2><div class="bt-chips" id="hchips"></div></div><input id="hq" placeholder="${tr('search')}"></div><div class="bt-actions">${(!special&&sec!=='folders')?'<button id="hnew" class="pri">＋ New board</button>':''}${canFolder?'<button id="hfolder">＋ New folder</button>':''}${(!special&&sec!=='folders')?'<button id="hpdf">📄 PDF / DOCX / PPTX</button>':''}${(sec!=='tags'&&sec!=='folders')?`<button id="hsel"${HV.selMode?' class="on"':''}>${HV.selMode?'✕ Done selecting':'☑ Select'}</button>`:''}<button id="hbk">⬇ Backup</button><button id="hrs">⬆ Restore</button>${sec==='trash'?'<button id="hempty" class="dng">🗑 Empty trash</button>':''}${sortUi?`<div class="srt-tile">${sortUi}</div>`:''}</div></div><div id="selbar" hidden></div><div id="crumb"></div><div id="hbody"></div>`;
  /* quick-jump chips in the hero tile */
- {const ch=$('#hchips');[['📒',tr('allnotes'),'all',N.length],['⭐',tr('favs'),'fav',N.filter(n=>n.fav).length],['📁',tr('folders'),'folders',rootFolders.length],['🗑',tr('trash'),'trash',TR.length]].forEach(([ic,lb,key,c])=>{const b=document.createElement('button');b.type='button';if(HV.sec===key)b.style.background='var(--pn)';const i1=document.createElement('span');i1.textContent=ic;const n1=document.createElement('b');n1.textContent=' '+c+' ';const l1=document.createElement('span');l1.textContent=lb;b.append(i1,n1,l1);b.onclick=()=>go(key);ch.append(b)})}
+ {const ch=$('#hchips');[['📒',tr('allnotes'),'all',N.length],['⭐',tr('favs'),'fav',N.filter(n=>n.fav).length],['📁',tr('folders'),'folders',rootFolders.length],['🗑',tr('trash'),'trash',TR.length]].forEach(([ic,lb,key,c])=>{const b=document.createElement('button');b.type='button';if(HV.sec===key)b.style.background='var(--pn)';const i1=document.createElement('span');i1.textContent=ic;const n1=document.createElement('b');n1.textContent=c;n1.style.margin='0 .4em';const l1=document.createElement('span');l1.textContent=lb;b.append(i1,n1,l1);b.onclick=()=>go(key);ch.append(b)})}
  $('#htitle').textContent=title;
  const hq=$('#hq');hq.value=HV.q;hq.oninput=()=>{HV.q=hq.value;const p=hq.selectionStart;renderHome().then(()=>{const e=$('#hq');e.focus();try{e.setSelectionRange(p,p)}catch(_){}})};
  if($('#hfs'))$('#hfs').onchange=e=>{Wr('wb.fsort',e.target.value);HV.fp=0;renderHome()};
@@ -2970,7 +2998,7 @@ function renderLayers(){const p=$('#lp');p.innerHTML='<b>Layers</b> <button id="
   const mk=(t,f,on)=>{const b=document.createElement('button');b.textContent=t;if(on)b.className='on';b.onclick=()=>{f();save();renderLayers();draw()};return b};
   const n=document.createElement('input');n.value=l.name;n.size=9;n.onchange=()=>{l.name=n.value;save()};
   d.append(mk(l.id==S.ly?'●':'○',()=>S.ly=l.id,l.id==S.ly),n,mk(l.vis?'👁':'—',()=>l.vis=l.vis?0:1),mk(l.lock?'🔒':'🔓',()=>l.lock=l.lock?0:1),mk('▲',()=>{if(ix<S.layers.length-1)[S.layers[ix],S.layers[ix+1]]=[S.layers[ix+1],S.layers[ix]]}),
-   mk('✕',()=>{if(S.layers.length>1){push();const gone=new Set(S.items.filter(x=>(x.ly??1)==l.id));S.items=S.items.filter(x=>!gone.has(x));S.sel=(S.sel||[]).filter(x=>!gone.has(x));cache=null;S.layers.splice(ix,1);if(S.ly==l.id)S.ly=S.layers[S.layers.length-1].id}}));d.dataset.id=l.id;const gh=document.createElement('span');gh.textContent='\u22EE\u22EE';gh.title='Drag to reorder';gh.style.cssText='cursor:grab;touch-action:none;user-select:none;padding:0 4px;opacity:.6;font-weight:700';gh.setAttribute('aria-label','Drag to reorder layer');
+   mk('✕',()=>{if(S.layers.length>1){push();hist[hist.length-1].__ly={l:S.layers.map(q=>({...q})),a:S.ly};const gone=new Set(S.items.filter(x=>(x.ly??1)==l.id));S.items=S.items.filter(x=>!gone.has(x));S.layers.splice(ix,1);if(S.ly==l.id)S.ly=S.layers[S.layers.length-1].id;S.items=S.items.filter(x=>LY(x.ly));S.sel=(S.sel||[]).filter(x=>S.items.includes(x));S.cell=null;cache=null}}));d.dataset.id=l.id;const gh=document.createElement('span');gh.textContent='\u22EE\u22EE';gh.title='Drag to reorder';gh.style.cssText='cursor:grab;touch-action:none;user-select:none;padding:0 4px;opacity:.6;font-weight:700';gh.setAttribute('aria-label','Drag to reorder layer');
   gh.onpointerdown=ev=>{ev.preventDefault();const rows=[...$('#ll').children];let over=null,above=true;gh.setPointerCapture(ev.pointerId);d.style.opacity='.5';
    const clr=()=>rows.forEach(r=>{r.style.boxShadow=''});
    gh.onpointermove=m=>{clr();over=null;for(const r of rows){const b=r.getBoundingClientRect();if(m.clientY>=b.top&&m.clientY<=b.bottom){over=r;above=m.clientY<b.top+b.height/2;break}}if(!over){const f=rows[0].getBoundingClientRect();if(m.clientY<f.top){over=rows[0];above=true}else{over=rows[rows.length-1];above=false}}if(over!==d)over.style.boxShadow=above?'0 -3px 0 0 #6c8cff':'0 3px 0 0 #6c8cff'};
@@ -3073,7 +3101,7 @@ window.addEventListener('keydown',e=>{
 },true);
 document.addEventListener('keydown',e=>{if(/TEXTAREA|INPUT|SELECT/.test(e.target.tagName))return;const m=e.ctrlKey||e.metaKey;
  if((e.key=='Enter'||e.key=='F2')&&!m&&S.tool=='select'&&S.sel.length==1&&spLabelable(S.sel[0])&&!textEditor&&!spEditing&&!e.target.isContentEditable){e.preventDefault();editShapeText(S.sel[0]);return}
- if(m&&e.key=='z'){e.preventDefault();e.shiftKey?redo():undo()}else if(m&&e.key=='y'){e.preventDefault();redo()}else if(m&&e.key=='c'&&S.sel.length){e.preventDefault();copy()}else if(m&&e.key=='x'&&S.sel.length){e.preventDefault();copy();delSel()}else if(m&&e.key=='d'){e.preventDefault();selAct.dup()}else if(m&&e.key.toLowerCase()=='g'){e.preventDefault();e.shiftKey?ungroupSel():groupSel()}else if(m&&e.key=='s'){e.preventDefault();saveNow()}else if(e.key=='Escape'&&document.body.classList.contains('pres'))present(false);else if(document.body.classList.contains('pres')&&(e.key=='ArrowRight'||e.key=='PageDown'||e.key=='ArrowDown'))presNav(1,e);else if(document.body.classList.contains('pres')&&(e.key=='ArrowLeft'||e.key=='PageUp'||e.key=='ArrowUp'))presNav(-1,e);else if(e.key=='z'&&!m)zoomSel();else if(e.key=='Delete'||e.key=='Backspace')delSel();else if(m&&(e.key=='+'||e.key=='='||e.key=='Add')){e.preventDefault();zoomAt(1.2,cv.clientWidth/2,cv.clientHeight/2)}else if(m&&(e.key=='-'||e.key=='_'||e.key=='Subtract')){e.preventDefault();zoomAt(1/1.2,cv.clientWidth/2,cv.clientHeight/2)}});
+ if(m&&e.key=='z'){e.preventDefault();e.shiftKey?redo():undo()}else if(m&&e.key=='y'){e.preventDefault();redo()}else if(m&&(e.key=='c'||e.key=='C'||e.code=='KeyC')&&!e.shiftKey&&S.sel.length){e.preventDefault();copy()}else if(m&&(e.key=='x'||e.key=='X'||e.code=='KeyX')&&!e.shiftKey&&S.sel.length){e.preventDefault();copy();delSel()}else if(m&&e.key=='d'){e.preventDefault();selAct.dup()}else if(m&&e.key.toLowerCase()=='g'){e.preventDefault();e.shiftKey?ungroupSel():groupSel()}else if(m&&e.key=='s'){e.preventDefault();saveNow()}else if(e.key=='Escape'&&document.body.classList.contains('pres'))present(false);else if(document.body.classList.contains('pres')&&(e.key=='ArrowRight'||e.key=='PageDown'||e.key=='ArrowDown'))presNav(1,e);else if(document.body.classList.contains('pres')&&(e.key=='ArrowLeft'||e.key=='PageUp'||e.key=='ArrowUp'))presNav(-1,e);else if(e.key=='z'&&!m)zoomSel();else if(e.key=='Delete'||e.key=='Backspace')delSel();else if(m&&(e.key=='+'||e.key=='='||e.key=='Add')){e.preventDefault();zoomAt(1.2,cv.clientWidth/2,cv.clientHeight/2)}else if(m&&(e.key=='-'||e.key=='_'||e.key=='Subtract')){e.preventDefault();zoomAt(1/1.2,cv.clientWidth/2,cv.clientHeight/2)}});
 /* ---- single-key tool shortcuts: 1-8 pens & highlighters, T text, W tape, E eraser, H handwriting -> text (only with handwriting selected) ---- */
 (()=>{const KT={Digit1:'fount',Digit2:'calli',Digit3:'soft',Digit4:'ball',Digit5:'pencil',Digit6:'hsq',Digit7:'hch',Digit8:'hrd',KeyT:'text',KeyW:'tape',KeyE:'erase'};
 document.addEventListener('keydown',e=>{
@@ -3201,7 +3229,8 @@ const packList=()=>{try{return Object.keys(localStorage).filter(k=>k.startsWith(
 async function removePack(l){if(cur==l)await setLang('en');try{localStorage.removeItem(PK+l)}catch(_){}}
 window.__packs={list:packList,remove:removePack};
 const skipEl=el=>{for(let p=el;p;p=p.parentElement){if(/^(SCRIPT|STYLE|TEXTAREA|CANVAS|CODE|SVG)$/i.test(p.tagName)||p.isContentEditable||p.classList.contains('notrans'))return true;if(p.tagName=='OPTION'&&(p.value in LN||p.value in TLN))return true;if(p.id=='hm'&&/title|name|tag|crumb|snip/i.test(el.className||el.parentElement.className||''))return true}return false};
-function one(k){const t=dict[k];if(t)return t;if(/[A-Za-z]{2}/.test(k)&&k.length<140)miss.add(k);return null}
+const iso=t=>document.body.dir=='rtl'&&/[\u0590-\u08FF]/.test(t)&&/[A-Za-z]/.test(t)?t.replace(/[A-Za-z][A-Za-z0-9]*(?:[ \u2192\/.\-]+[A-Za-z0-9\u2192][A-Za-z0-9\u2192]*)*/g,m=>'\u2066'+m+'\u2069'):t;
+function one(k){const t=dict[k];if(t)return iso(t);if(/[A-Za-z]{2}/.test(k)&&k.length<140)miss.add(k);return null}
 function sweep(){const w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT),ns=[];while(w.nextNode())ns.push(w.currentNode);
  for(const n of ns){const v=n.nodeValue;
   if(n.__t!=null&&n.__t===v){if(cur=='en'){n.nodeValue=n.__s;n.__t=null}else{const t=one(n.__s.trim());if(t){const o=n.__s.replace(n.__s.trim(),t);if(o!==v)n.nodeValue=n.__t=o}}continue}
