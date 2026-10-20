@@ -12,7 +12,7 @@ contextBridge.exposeInMainWorld('wb', {
     list: () => ipcRenderer.invoke('sync:list'),
     read: n => ipcRenderer.invoke('sync:read', n),
     write: (n, t) => ipcRenderer.invoke('sync:write', n, t),
-    remove: n => ipcRenderer.invoke('sync:remove', n)
+    remove: (n, ownerId) => ipcRenderer.invoke('sync:remove', n, ownerId)
   },
   app: {
     ready: () => ipcRenderer.send('app:ready'),

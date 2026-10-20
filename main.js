@@ -119,7 +119,13 @@ ipcMain.handle('sync:write', (_e, name, text) => { // write to a temp file first
   const d = syncDir(); if (!d || !syncName(name) || typeof text !== 'string') return false;
   const tmp = path.join(d, '.' + name + '.tmp'); try { fs.writeFileSync(tmp, text); fs.renameSync(tmp, path.join(d, name)); return true; } catch (_) { try { fs.unlinkSync(tmp); } catch (__) {} return false; }
 });
-ipcMain.handle('sync:remove', (_e, name) => { const d = syncDir(); if (!d || !syncName(name)) return false; try { fs.unlinkSync(path.join(d, name)); return true; } catch (_) { return false; } });
+ipcMain.handle('sync:remove', (_e, name, ownerId) => { const d = syncDir(); if (!d || !syncName(name)) return false; try {
+  const p = path.join(d, name);
+  if (ownerId) { // lock files: only delete our own, never one another PC took over
+    let cur = null; try { cur = JSON.parse(fs.readFileSync(p, 'utf8')); } catch (_) { return false; }
+    if (!cur || cur.id !== ownerId) return false;
+  }
+  fs.unlinkSync(p); return true; } catch (_) { return false; } });
 // ---- Secure in-app updates ----
 let macSigned = false;
 if (process.platform === 'darwin' && app.isPackaged) { try { require('child_process').execFileSync('codesign', ['--verify', '--deep', '--strict', path.resolve(path.dirname(process.execPath), '..', '..')], { stdio: 'ignore' }); macSigned = true; } catch (_) {} }

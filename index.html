@@ -3546,7 +3546,7 @@ async function sfAcquire(){
  SF.beat=setInterval(async()=>{const c=await sfLockRead();if(c&&c.id!==sfMid()){SF.held=false;clearInterval(SF.beat);toast('⚠ “'+(c.host||'Another PC')+'” took over the sync folder',6000);return}await sfBeatNow()},SF_BEAT);
  return true}
 async function sfRelease(){clearInterval(SF.beat);if(!SF.held)return;SF.held=false;try{const l=await sfLockRead();if(l&&l.id===sfMid())await sfRemove(SF_LOCK)}catch(e){}}
-window.addEventListener('pagehide',()=>{if(SF.held&&sfDesk()){SF.held=false;wb.sync.remove(SF_LOCK)}});
+window.addEventListener('pagehide',()=>{if(SF.held&&sfDesk()){SF.held=false;clearInterval(SF.beat);wb.sync.remove(SF_LOCK,sfMid())}});
 /* pack / parse */
 async function sfPack(id){const r=await tx('readonly',s=>s.get(id));if(!r||r.folder)return null;const o={...r,recs:await recPack(id),src:id,app:'RejBoard'};delete o.linked;
  return{name:sfFileName(r),title:r.title,text:'RJWB1:'+b64(JSON.stringify(o))}}
