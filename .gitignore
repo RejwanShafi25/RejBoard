@@ -7,5 +7,6 @@ vendor/
 fed.md
 *.zip
 *.rar
+.claude
 ocr-engine/node_modules/
 ocr-engine/tessdata/

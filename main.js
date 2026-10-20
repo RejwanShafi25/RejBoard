@@ -10,6 +10,9 @@ const { canAutoUpdate, canInstallNow, RELEASES_URL } = require('./update-policy'
 // so keep using the old folder when it exists; otherwise renaming would make existing boards disappear.
 try { const old = path.join(app.getPath('appData'), 'Rejwan Whiteboard'), cur = path.join(app.getPath('appData'), 'RejBoard');
   if (fs.existsSync(old) && !fs.existsSync(cur)) app.setPath('userData', old); } catch (e) {}
+// End-to-end smoke test (npm run test:smoke): development checkouts only, always on a throw-away profile so real boards are never touched.
+const SMOKE = process.env.REJBOARD_SMOKE === '1' && !app.isPackaged;
+if (SMOKE) app.setPath('userData', fs.mkdtempSync(path.join(require('os').tmpdir(), 'rejboard-smoke-')));
 const URL_ = 'https://inputtools.google.com/request?ime=handwriting&app=mobilesearch&cs=1&oe=UTF-8'; // unofficial; swap for another engine if needed
 ipcMain.handle('hw', async (_e, d) => {
   const body = { options: 'enable_pre_space', requests: [{ writing_guide: { writing_area_width: d.w, writing_area_height: d.h }, ink: d.ink, language: d.lang === 'zh' ? 'zh_CN' : d.lang }] };
@@ -175,11 +178,12 @@ ipcMain.on('updates:renderer-ready', e => { updateWindow = BrowserWindow.fromWeb
 
 function createWindow() {
   const w = new BrowserWindow({ width: 1320, height: 860, title: 'RejBoard', icon: path.join(__dirname, 'build', 'icon.png'), backgroundColor: '#fff7fa',
-    webPreferences: { preload: path.join(__dirname, 'preload.js'), contextIsolation: true, webviewTag: true, nodeIntegration: false, sandbox: true } });
+    webPreferences: { preload: path.join(__dirname, 'preload.js'), contextIsolation: true, webviewTag: true, nodeIntegration: false, sandbox: true, backgroundThrottling: !SMOKE } });
   updateWindow = w;
   w.setMenuBarVisibility(false);
   lanShare.register(ipcMain, w);
   w.loadFile('index.html');
+  if (SMOKE) require('./scripts/smoke-main.js')(w, app);
   w.webContents.setWindowOpenHandler(({ url }) => { shell.openExternal(url); return { action: 'deny' }; });
 }
 // Right-click menu for the in-app browser / video webview (Electron shows nothing by default).

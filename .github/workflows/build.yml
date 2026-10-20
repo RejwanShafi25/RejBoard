@@ -62,6 +62,9 @@ jobs:
 
       - run: npm ci
 
+      - name: Unit tests
+        run: npm test
+
       # Every OS: bundle Tesseract.js + English data as an extra resource (the only offline handwriting engine).
       - name: Prepare bundled OCR
         shell: bash

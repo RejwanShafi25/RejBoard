@@ -12,6 +12,8 @@
   "scripts": {
     "start": "electron .",
     "libs": "python fetch_libs.py && cd ocr-engine && npm install --omit=dev --ignore-scripts",
+    "test": "node --test \"test/*.test.js\"",
+    "test:smoke": "node scripts/run-smoke.js",
     "test:ocr": "node scripts/ocr-smoke.js",
     "dist": "electron-builder",
     "test:updates": "node test-update-policy.js"
@@ -28,6 +30,7 @@
     },
     "files": [
       "index.html",
+      "board-core.js",
       "main.js",
       "lan.js",
       "ocr.js",

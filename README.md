@@ -164,6 +164,8 @@ The web build stores boards in your browser's IndexedDB, so they are not shared 
 
 Use **Backup** on the home screen regularly. Backups include voice recordings.
 
+**Compact board storage.** Boards are saved with each stroke's points packed into one array, which makes saving crowded boards several times faster. Boards written this way cannot be opened by older versions of RejBoard. Before installing an older version, turn **Settings → Storage → Compact board storage** Off: every board is converted back to the classic format (and stays that way until you turn it On again). A **Backup** file is always in the classic format and works with every version.
+
 ### Using a synced folder (OneDrive, Google Drive, Dropbox, Nextcloud)
 
 Never put the app's live database folder (`%APPDATA%\RejBoard`) inside a synced folder. Instead, back boards up as **one file per board** and open them on a second PC:
@@ -479,6 +481,8 @@ npm start
 |---|---|
 | `npm start` | Launch the Electron app from source. |
 | `npm run libs` | Fetch `vendor/` libraries, download English OCR data, and install Tesseract.js into `ocr-engine/`. |
+| `npm test` | Unit tests (Node's built-in runner, no extra dependencies): Undo/Redo, the stored board format, the screen-cache fingerprint, the eraser pre-filter, a performance budget, and packaging checks. Takes a couple of seconds. |
+| `npm run test:smoke` | End-to-end test: launches the real desktop app on a throw-away profile and drives it (crowded board, drawing, scrolling, zooming, lasso, eraser, Undo/Redo, storage round trip). Your own boards are never touched. Needs a display (`xvfb-run` on headless Linux). |
 | `npm run test:ocr` | Smoke test of the bundled OCR path against `test/hello.png`. |
 | `npm run dist` | Build installers for the current OS into `dist/`. |
 
@@ -487,6 +491,7 @@ npm start
 ```
 .
 ├── index.html            # the application
+├── board-core.js         # pure board logic (history, storage format, cache fingerprint); unit-tested
 ├── main.js  preload.js   # Electron main process and bridge
 ├── ocr.js  lan.js        # on-device OCR, LAN sharing
 ├── sw.js  manifest.json  # PWA
@@ -496,7 +501,8 @@ npm start
 ├── ocr-engine/           # Tesseract.js package + tessdata (fetched)
 ├── vendor/               # MathJax, jsPDF, pdf.js (fetched)
 ├── tools/                # string extraction and translation scripts
-├── scripts/  test/       # OCR smoke test and fixture
+├── scripts/              # end-to-end smoke test (smoke-page.js), OCR smoke test
+├── test/                 # unit tests (*.test.js), OCR fixture
 ├── build/                # app icons for packaging
 ├── Screenshots/          # README assets
 └── .github/workflows/    # CI: installers and GitHub Pages
@@ -516,8 +522,9 @@ Installers are written to `dist/`. Build each OS on that OS. Artifacts are named
 
 | Workflow | Trigger | What it does |
 |---|---|---|
-| **Build installers** (`build.yml`) | Push of a `v*` tag, or manual | Builds and publishes on Windows, macOS and Linux from matching `v*` tags. Verifies that the tag matches `package.json`, fetches offline libraries, runs the OCR smoke test, packages, and **verifies the OCR engine and language data are inside every package**. `electron-builder` publishes platform installers, update metadata and blockmaps to the same GitHub Release using `GITHUB_TOKEN`. |
-| **Deploy web build** (`pages.yml`) | Push to `main`, or manual | Assembles the PWA with offline libraries and deploys it to GitHub Pages. |
+| **Build installers** (`build.yml`) | Push of a `v*` tag, or manual | Builds and publishes on Windows, macOS and Linux from matching `v*` tags. Verifies that the tag matches `package.json`, fetches offline libraries, runs the unit tests and the OCR smoke test, packages, and **verifies the OCR engine and language data are inside every package**. `electron-builder` publishes platform installers, update metadata and blockmaps to the same GitHub Release using `GITHUB_TOKEN`. |
+| **Tests** (`test.yml`) | Push to `main`, pull requests, or manual | Runs the unit tests on Linux and the end-to-end desktop smoke test on Windows. |
+| **Deploy web build** (`pages.yml`) | Push to `main`, or manual | Runs the unit tests, then assembles the PWA with offline libraries and deploys it to GitHub Pages. |
 
 ### Cutting a release
 

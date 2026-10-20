@@ -28,6 +28,14 @@ jobs:
         with:
           python-version: '3.12'
 
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # never publish a website that fails the automated tests
+      - name: Run unit tests
+        run: node --test "test/*.test.js"
+
       # vendor/ is git-ignored; download MathJax / jsPDF / pdf.js so the site works offline.
       - name: Fetch offline libraries
         run: python fetch_libs.py
@@ -35,10 +43,10 @@ jobs:
       - name: Assemble site
         run: |
           mkdir _site
-          cp index.html manifest.json sw.js icon.svg icon-192.png icon-512.png _site/
+          cp index.html board-core.js manifest.json sw.js icon.svg icon-192.png icon-512.png _site/
           cp -r vendor _site/vendor
           touch _site/.nojekyll
-          for f in index.html manifest.json sw.js vendor/tex-svg.js vendor/jspdf.umd.min.js vendor/pdf.min.js vendor/pdf.worker.min.js; do
+          for f in index.html board-core.js manifest.json sw.js vendor/tex-svg.js vendor/jspdf.umd.min.js vendor/pdf.min.js vendor/pdf.worker.min.js; do
             test -s "_site/$f" || { echo "missing $f"; exit 1; }
           done
 

@@ -1,0 +1,44 @@
+# Run the automated tests on every push to main and on every pull request.
+name: Tests
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  unit:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      # board logic (history, storage format, screen-cache fingerprint, eraser pre-filter) + packaging checks. No dependencies to install.
+      - run: node --test "test/*.test.js"
+      - run: node test-update-policy.js
+
+  smoke:
+    name: Desktop smoke test (Windows)
+    runs-on: windows-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python fetch_libs.py
+      - run: npm ci
+      - run: npm install --omit=dev
+        working-directory: ocr-engine
+      # Launches the real app on a throw-away profile and drives it: crowded board, drawing, scrolling, zooming, lasso, eraser, undo/redo, storage round trip.
+      - run: npm run test:smoke
