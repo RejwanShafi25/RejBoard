@@ -14,6 +14,10 @@ contextBridge.exposeInMainWorld('wb', {
     write: (n, t) => ipcRenderer.invoke('sync:write', n, t),
     remove: n => ipcRenderer.invoke('sync:remove', n)
   },
+  app: {
+    ready: () => ipcRenderer.send('app:ready'),
+    board: t => ipcRenderer.send('app:board', String(t || ''))
+  },
   fetchRemoteImage: url => ipcRenderer.invoke('image:fetch-remote', url),
   updates: {
     getVersion: () => ipcRenderer.invoke('updates:version'),

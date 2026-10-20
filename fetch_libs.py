@@ -3,7 +3,8 @@
 import os, sys, urllib.request
 C = "https://cdnjs.cloudflare.com/ajax/libs/"
 LIBS = {"tex-svg.js": C + "mathjax/3.2.2/es5/tex-svg.min.js", "jspdf.umd.min.js": C + "jspdf/2.5.1/jspdf.umd.min.js",
-        "pdf.min.js": C + "pdf.js/3.11.174/pdf.min.js", "pdf.worker.min.js": C + "pdf.js/3.11.174/pdf.worker.min.js"}
+        "pdf.min.js": C + "pdf.js/3.11.174/pdf.min.js", "pdf.worker.min.js": C + "pdf.js/3.11.174/pdf.worker.min.js",
+        "math.min.js": C + "mathjs/15.2.0/math.min.js", "nerdamer.all.min.js": "https://cdn.jsdelivr.net/npm/nerdamer@1.1.13/all.min.js"}
 d = os.path.join(os.path.dirname(os.path.abspath(__file__)), "vendor"); os.makedirs(d, exist_ok=True)
 for n, u in LIBS.items():
     print("downloading", n); urllib.request.urlretrieve(u, os.path.join(d, n))

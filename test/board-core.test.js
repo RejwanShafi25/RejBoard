@@ -298,3 +298,80 @@ test('performance budget on a 3,000-stroke / 210,000-point board', () => {
   assert.ok(td < 1500, 'dbPack ' + td);
   assert.ok(tp < tc, 'packing must stay faster than a structuredClone of the board');
 });
+
+/* ---------------- Shift = straight line ---------------- */
+test('shiftSnap puts near-level, near-upright and near-diagonal lines exactly on the axis', () => {
+  const a = [100, 200];
+  assert.deepEqual(C.shiftSnap(a, [400, 205]), [400, 200], 'near level (right)');
+  assert.deepEqual(C.shiftSnap(a, [-300, 195]), [-300, 200], 'near level (left)');
+  assert.deepEqual(C.shiftSnap(a, [104, 500]), [100, 500], 'near upright (down)');
+  assert.deepEqual(C.shiftSnap(a, [97, -100]), [100, -100], 'near upright (up)');
+  const d = C.shiftSnap(a, [300, 390]);
+  assert.ok(Math.abs((d[0] - a[0]) - (d[1] - a[1])) < 1e-9, 'near 45 degrees');
+  const e = C.shiftSnap(a, [300, 15]);
+  assert.ok(Math.abs((e[0] - a[0]) + (e[1] - a[1])) < 1e-9, 'near the other diagonal');
+  assert.ok(e[0] > a[0] && e[1] < a[1], 'and in the right direction');
+});
+
+test('shiftSnap leaves clearly slanted lines alone', () => {
+  const a = [0, 0], p = [300, 100]; // about 18 degrees
+  assert.equal(C.shiftSnap(a, p), p);
+  assert.equal(C.shiftSnap(a, a), a, 'zero-length line is returned as is');
+  assert.deepEqual(C.shiftSnap(a, [1000, 1]), [1000, 0]);
+});
+
+test('shiftSnap tolerance is adjustable', () => {
+  const a = [0, 0], p = [300, 30]; // about 5.7 degrees
+  assert.deepEqual(C.shiftSnap(a, p), [300, 0]);
+  assert.equal(C.shiftSnap(a, p, 3), p);
+});
+
+test('shiftSnap results are exactly level / upright, so ruled lines stay parallel', () => {
+  const ys = new Set(), xs = new Set();
+  for (let k = 0; k < 50; k++) {
+    ys.add(C.shiftSnap([10, 77], [500 + k, 77 + (k % 5)])[1]);
+    xs.add(C.shiftSnap([42, 10], [42 + (k % 4), 900 + k])[0]);
+  }
+  assert.equal(ys.size, 1); assert.equal(xs.size, 1);
+});
+
+/* ---------------- board index and start-up ---------------- */
+test('metaOf keeps everything except the items, and never reads a lazy items getter', () => {
+  let touched = false;
+  const rec = { id: 'b', title: 'T', th: 'data:x', t: 5, tags: 'a,b', fav: true };
+  Object.defineProperty(rec, 'items', { enumerable: true, get() { touched = true; return []; } });
+  const m = C.metaOf(rec, ['x', 'y']);
+  assert.equal(touched, false);
+  assert.deepEqual(m, { id: 'b', title: 'T', th: 'data:x', t: 5, tags: 'a,b', fav: true, lk: ['x', 'y'] });
+  assert.equal('items' in C.metaOf({ id: 1, items: [1, 2, 3] }), false);
+  assert.equal('lk' in C.metaOf({ id: 1 }), false);
+});
+
+test('pickStart opens the last board when it is usable, else the newest usable one', () => {
+  const metas = [
+    { id: 'a', t: 10 }, { id: 'b', t: 30 }, { id: 'c', t: 20, locked: true }, { id: 'd', t: 50, del: 1 }, { id: 'f', t: 99, folder: 1 }, { id: 'e', t: 25 }
+  ];
+  assert.equal(C.pickStart('a', metas), 'a', 'last board wins even if older');
+  assert.equal(C.pickStart('c', metas), 'b', 'locked last board is skipped');
+  assert.equal(C.pickStart('d', metas), 'b', 'trashed last board is skipped');
+  assert.equal(C.pickStart('f', metas), 'b', 'a folder is not a board');
+  assert.equal(C.pickStart('gone', metas), 'b', 'missing last board');
+  assert.equal(C.pickStart(null, metas), 'b', 'no last board: newest usable');
+  assert.equal(C.pickStart(null, []), null);
+  assert.equal(C.pickStart('x', [{ id: 'x', locked: 1 }]), null, 'nothing usable at all');
+});
+
+test('boardSig notices edits to a graph object', () => {
+  const g = () => ({ t: 'gr', x: 10, y: 20, w: 480, h: 360, fns: [{ text: 'y = sin(x)', color: '#2563eb', on: true }], params: { a: { v: 1, min: -10, max: 10 } }, view: { x0: -10, x1: 10, y0: -7.5, y1: 7.5 }, opt: { grid: true }, ly: 1 });
+  const base = C.boardSig([g()], []);
+  assert.equal(C.boardSig([g()], []), base);
+  const edit = f => { const o = g(); f(o); return C.boardSig([o], []); };
+  assert.notEqual(edit(o => { o.fns[0].text = 'y = cos(x)'; }), base, 'function text');
+  assert.notEqual(edit(o => { o.fns[0].color = '#dc2626'; }), base, 'colour');
+  assert.notEqual(edit(o => { o.fns[0].on = false; }), base, 'hidden');
+  assert.notEqual(edit(o => { o.params.a.v = 2; }), base, 'slider value');
+  assert.notEqual(edit(o => { o.view.x1 = 12; }), base, 'view');
+  assert.notEqual(edit(o => { o.opt.grid = false; }), base, 'option');
+  assert.notEqual(edit(o => { o.fns.push({ text: 'x', color: '#000', on: true }); }), base, 'added function');
+  assert.notEqual(edit(o => { o.w = 600; }), base, 'size');
+});

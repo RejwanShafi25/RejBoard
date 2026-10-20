@@ -20,7 +20,9 @@
   },
   "devDependencies": {
     "electron": "^44.5.1",
-    "electron-builder": "^26.15.3"
+    "electron-builder": "^26.15.3",
+    "mathjs": "^15.2.0",
+    "nerdamer": "^1.1.13"
   },
   "build": {
     "appId": "com.rejwan.rejboard",
@@ -30,7 +32,10 @@
     },
     "files": [
       "index.html",
+      "splash.html",
       "board-core.js",
+      "math-engine.js",
+      "graph-core.js",
       "main.js",
       "lan.js",
       "ocr.js",

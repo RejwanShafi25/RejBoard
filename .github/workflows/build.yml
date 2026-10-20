@@ -42,7 +42,7 @@ jobs:
       - name: Check vendor files
         shell: bash
         run: |
-          for f in tex-svg.js jspdf.umd.min.js pdf.min.js pdf.worker.min.js; do
+          for f in tex-svg.js jspdf.umd.min.js pdf.min.js pdf.worker.min.js math.min.js nerdamer.all.min.js; do
             test -s "vendor/$f" || { echo "missing vendor/$f"; exit 1; }
           done
 

@@ -258,6 +258,7 @@
       if (typeof i.text === 'string') mix(i.text.length);
       if (typeof i.src === 'string') mix(i.src.length);
       if (Array.isArray(i.cells)) { mix(i.cells.length); for (const r of i.cells) if (Array.isArray(r)) { mix(r.length); for (const c of r) if (typeof c === 'string') mix(c.length); } }
+      if (Array.isArray(i.fns)) { const js = JSON.stringify([i.fns, i.params, i.view, i.opt]); mix(js.length); for (let q = 0; q < js.length; q++) mix(js.charCodeAt(q)); }
       if (Array.isArray(i.cw)) mix(num(i.cw.reduce((x, y) => x + y, 0)));
       if (Array.isArray(i.rh)) mix(num(i.rh.reduce((x, y) => x + y, 0)));
     }
@@ -292,8 +293,43 @@
     return p[0] >= b[0] - m && p[0] <= b[2] + m && p[1] >= b[1] - m && p[1] <= b[3] + m;
   }
 
+  /* ---------- board index and start-up ---------- */
+  /* The small record kept in the board index: everything about a board except its (possibly huge) items, plus the ids of the boards it links to. */
+  function metaOf(v, lk) {
+    const m = {};
+    for (const k in v) if (k !== 'items') m[k] = v[k]; // for-in never touches a lazy `items` getter
+    if (lk) m.lk = lk;
+    return m;
+  }
+
+  /* Which board to open at start-up: the one that was open last if it is still there and usable, else the most recently changed usable one. */
+  function pickStart(lastId, metas) {
+    const usable = r => r && !r.folder && !r.del && !r.locked;
+    if (lastId) { const r = metas.find(x => x.id === lastId); if (usable(r)) return r.id; }
+    let best = null;
+    for (const r of metas) if (usable(r) && (!best || (r.t || 0) > (best.t || 0))) best = r;
+    return best ? best.id : null;
+  }
+
+  /* ---------- straight lines (hold Shift while drawing) ---------- */
+  /* Point p snapped onto the line from a that is level, upright or at 45 degrees, when it is within tolDeg of one (otherwise p unchanged).
+     p is projected onto that line, so the end stays right under the pointer along the line, and level / upright results are exact
+     (no 1e-16 drift): ruled staves and guitar tabs come out truly parallel. */
+  const AXES = [[1, 0], [Math.SQRT1_2, Math.SQRT1_2], [0, 1], [-Math.SQRT1_2, Math.SQRT1_2], [-1, 0], [-Math.SQRT1_2, -Math.SQRT1_2], [0, -1], [Math.SQRT1_2, -Math.SQRT1_2]];
+  function shiftSnap(a, p, tolDeg) {
+    const dx = p[0] - a[0], dy = p[1] - a[1];
+    if (!(Math.hypot(dx, dy) > 1e-9)) return p;
+    const step = Math.PI / 4, ang = Math.atan2(dy, dx), k = Math.round(ang / step);
+    if (Math.abs(ang - k * step) > (tolDeg == null ? 7 : tolDeg) * Math.PI / 180) return p;
+    const i = ((k % 8) + 8) % 8;
+    if (i === 0 || i === 4) return [p[0], a[1]]; // level
+    if (i === 2 || i === 6) return [a[0], p[1]]; // upright
+    const d = AXES[i], t = dx * d[0] + dy * d[1];
+    return [a[0] + t * d[0], a[1] + t * d[1]];
+  }
+
   return {
-    flatten, inflate, packItems, unpackItems, trimHist, addEntry, addIdx, pushDeep, pushAdd, undoStep, redoStep,
+    metaOf, pickStart, shiftSnap, flatten, inflate, packItems, unpackItems, trimHist, addEntry, addIdx, pushDeep, pushAdd, undoStep, redoStep,
     dbPackItems, dbUnpackItems, dbPackRec, dbLazy, dbOut, boardSig, sameSet, strokeNear
   };
 });

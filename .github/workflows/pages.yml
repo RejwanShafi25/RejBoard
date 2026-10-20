@@ -33,6 +33,8 @@ jobs:
           node-version: 22
 
       # never publish a website that fails the automated tests
+      - name: Install test dependencies
+        run: npm ci --ignore-scripts
       - name: Run unit tests
         run: node --test "test/*.test.js"
 
@@ -43,10 +45,10 @@ jobs:
       - name: Assemble site
         run: |
           mkdir _site
-          cp index.html board-core.js manifest.json sw.js icon.svg icon-192.png icon-512.png _site/
+          cp index.html board-core.js math-engine.js graph-core.js manifest.json sw.js icon.svg icon-192.png icon-512.png _site/
           cp -r vendor _site/vendor
           touch _site/.nojekyll
-          for f in index.html board-core.js manifest.json sw.js vendor/tex-svg.js vendor/jspdf.umd.min.js vendor/pdf.min.js vendor/pdf.worker.min.js; do
+          for f in index.html board-core.js math-engine.js graph-core.js manifest.json sw.js vendor/tex-svg.js vendor/jspdf.umd.min.js vendor/pdf.min.js vendor/pdf.worker.min.js vendor/math.min.js vendor/nerdamer.all.min.js; do
             test -s "_site/$f" || { echo "missing $f"; exit 1; }
           done
 

@@ -12,6 +12,7 @@ try { const old = path.join(app.getPath('appData'), 'Rejwan Whiteboard'), cur = 
   if (fs.existsSync(old) && !fs.existsSync(cur)) app.setPath('userData', old); } catch (e) {}
 // End-to-end smoke test (npm run test:smoke): development checkouts only, always on a throw-away profile so real boards are never touched.
 const SMOKE = process.env.REJBOARD_SMOKE === '1' && !app.isPackaged;
+const SPLASH_TEST = SMOKE && process.env.REJBOARD_SMOKE_SPLASH === '1'; // smoke test of the start-up window: the page is loaded late on purpose
 if (SMOKE) app.setPath('userData', fs.mkdtempSync(path.join(require('os').tmpdir(), 'rejboard-smoke-')));
 const URL_ = 'https://inputtools.google.com/request?ime=handwriting&app=mobilesearch&cs=1&oe=UTF-8'; // unofficial; swap for another engine if needed
 ipcMain.handle('hw', async (_e, d) => {
@@ -176,13 +177,41 @@ ipcMain.handle('updates:install', async () => {
 });
 ipcMain.on('updates:renderer-ready', e => { updateWindow = BrowserWindow.fromWebContents(e.sender); e.sender.send('updates:status', { ...updateState, policy: updatePolicy, releasesUrl: RELEASES_URL }); });
 
+/* ---- start-up window ----
+   The main window is created hidden and shown only once the page has opened its board. If that takes more than a moment (a slow computer, a big board,
+   a boards library on a cloud drive) a small window with the logo shows meanwhile and names the board being opened, which is remembered from last time. */
+let mainWin = null, mainShown = false, splash = null, splashTimer = 0, failTimer = 0, lastBoardTitle = null;
+const lastBoardFile = () => path.join(app.getPath('userData'), 'last-board.json');
+const readLastBoard = () => { try { const t = JSON.parse(fs.readFileSync(lastBoardFile(), 'utf8')).title; return typeof t === 'string' ? t.slice(0, 80) : ''; } catch (_) { return ''; } };
+ipcMain.on('app:board', (_e, title) => { try { title = String(title || '').slice(0, 80); if (title === lastBoardTitle) return; lastBoardTitle = title; fs.writeFileSync(lastBoardFile(), JSON.stringify({ title })); } catch (_) {} });
+function showMain() {
+  if (mainShown || !mainWin || mainWin.isDestroyed()) return;
+  mainShown = true; clearTimeout(splashTimer); clearTimeout(failTimer);
+  if (splash && !splash.isDestroyed()) splash.destroy();
+  splash = null; mainWin.show(); mainWin.focus();
+}
+ipcMain.on('app:ready', showMain);
 function createWindow() {
-  const w = new BrowserWindow({ width: 1320, height: 860, title: 'RejBoard', icon: path.join(__dirname, 'build', 'icon.png'), backgroundColor: '#fff7fa',
+  const w = new BrowserWindow({ width: 1320, height: 860, title: 'RejBoard', icon: path.join(__dirname, 'build', 'icon.png'), backgroundColor: '#fff7fa', show: false,
     webPreferences: { preload: path.join(__dirname, 'preload.js'), contextIsolation: true, webviewTag: true, nodeIntegration: false, sandbox: true, backgroundThrottling: !SMOKE } });
-  updateWindow = w;
+  updateWindow = w; mainWin = w; mainShown = false;
+  if (!SMOKE || SPLASH_TEST) {
+    splashTimer = setTimeout(() => {
+      if (mainShown) return;
+      try {
+        splash = new BrowserWindow({ width: 360, height: 230, frame: false, resizable: false, maximizable: false, minimizable: false, fullscreenable: false, skipTaskbar: true, show: false, backgroundColor: '#fff7fa',
+          icon: path.join(__dirname, 'build', 'icon.png'), webPreferences: { sandbox: true, contextIsolation: true, nodeIntegration: false } });
+        splash.setMenuBarVisibility(false);
+        splash.loadFile('splash.html', { query: { board: readLastBoard() } });
+        splash.once('ready-to-show', () => { if (!mainShown && splash && !splash.isDestroyed()) splash.show(); });
+      } catch (_) { splash = null; }
+    }, 400);
+    failTimer = setTimeout(showMain, 12000); // never leave the user without a window, even if the page never reports in
+    w.webContents.once('did-fail-load', showMain);
+  }
   w.setMenuBarVisibility(false);
   lanShare.register(ipcMain, w);
-  w.loadFile('index.html');
+  if (SPLASH_TEST) setTimeout(() => { try { w.loadFile('index.html'); } catch (_) {} }, 2500); else w.loadFile('index.html');
   if (SMOKE) require('./scripts/smoke-main.js')(w, app);
   w.webContents.setWindowOpenHandler(({ url }) => { shell.openExternal(url); return { action: 'deny' }; });
 }

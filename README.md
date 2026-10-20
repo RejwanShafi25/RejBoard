@@ -186,12 +186,15 @@ RejBoard has no account system, no telemetry and no analytics. Only the optional
 | Feature | Network | What leaves your device |
 |---|---|---|
 | Drawing, text, math, tables, PDF, export, recordings | None | Nothing |
+| Equation solver, graph plotter | None | Nothing (computed on your device; the libraries are bundled and only fetched from a CDN if the bundled copy is missing). |
 | Handwriting to text, **On-device** engine | None | Nothing. Strokes are rasterized in memory, recognized by a bundled engine and discarded. |
 | Handwriting to text, **Online** engine (default) | Required | The ink points of the selected strokes, sent to an unofficial Google Input Tools endpoint. |
 | In-app browser and video panel (desktop) | Required | Whatever you browse. See the notes below. |
 | UI language packs | Once per language, if not bundled | A request for a pack file from this repository. Nothing about you is sent. |
 | Local-network sharing | LAN only | Boards you choose to send, encrypted in transit, to a computer you select. |
 | Update check (desktop, opt-in) | HTTPS to GitHub Releases | Your IP address and installed app version. Only when you press **Check for updates** or enable **Check for updates automatically** in Settings → Updates. Automatic checks are off by default. |
+
+**Start-up window.** The desktop app remembers the title of the board you had open last in a tiny file (`last-board.json`) in its data folder, so the start-up window can say which board it is opening. Nothing else is stored there and it never leaves your device.
 
 ### Desktop app updates
 
@@ -273,6 +276,18 @@ Locking a board hides its thumbnail, lists it under **Protected** and asks for t
 </details>
 
 <details>
+<summary><b>Math tools: equation solver and graph plotter</b></summary>
+
+- **Equation solver** (🧮 in the dock): **Solve**, **Differentiate**, **Integrate** (indefinite and definite), **Simplify**, **Expand**, **Factor**, **Limit** and **Calculate**, each with step-by-step working rendered as equations.
+  - Equations: linear, quadratic (exact roots, radicals and complex roots), higher-degree polynomials (rational roots divided out first), rational equations (roots that zero a denominator are discarded), radicals, exponentials, logarithms, absolute values and trig (general solutions with the period). Systems: one equation per line or separated by `;`, solved by Gaussian elimination with exact fractions, or by substitution when one equation is nonlinear.
+  - Every answer is checked: solutions are substituted back, derivatives are compared with a numeric derivative, integrals are differentiated again. When no exact method exists the answer falls back to labelled numeric roots instead of failing.
+  - **Insert answer / Insert steps on board** add the result as equation objects (steps are grouped, one Undo removes them); **Copy text** and **Copy LaTeX** are there too.
+- **Graph plotter** (📈 in the dock): graphs are board objects. Type `y = f(x)`, an equation such as `x^2 + y^2 = 9`, a polar curve `r = 1 + cos(theta)` or a parametric pair `(cos(3t), sin(2t))`. Any extra letter (`a`, `b`, `k`...) becomes a **slider** (with an animate button), intersections are found and labelled, and the view zooms and pans (wheel, drag, pinch). Double-click a graph on the board to edit it. Graphs export with the board (PNG, PDF, SVG).
+- The math libraries (mathjs, Nerdamer) are loaded only when you use a math tool or open a board that has a graph, so start-up stays fast. They are downloaded by `python fetch_libs.py` and bundled in the installer, so everything works offline.
+
+</details>
+
+<details>
 <summary><b>Pens, highlighters, tapes and tools</b></summary>
 
 - **Dock:** fountain, calligraphy (adjustable nib angle), soft brush, ballpoint, pencil, square / chisel / round highlighters, eraser, select, lasso, pan, laser pointer, text, sticky notes, shapes, emoji, images, undo / redo.
@@ -280,6 +295,7 @@ Locking a board hides its thumbnail, lists it under **Protected** and asks for t
 - **Tape** covers what is beneath it; click to reveal.
 - **Laser pointer** with configurable fade time (0.2–5 s) and dot size.
 - **Input:** pressure and tilt, palm rejection, stylus side-button eraser, Windows Ink / raw pointer mode for lower latency, coalesced pointer sampling with render-time curve smoothing.
+- **Straight lines:** hold `Shift` while drawing with any pen, the pencil or a highlighter to get a straight line. Close to level, upright or 45° it snaps exactly onto that direction, so ruled staves and guitar tabs come out truly parallel.
 - **Zoom** with buttons, Ctrl + wheel, pinch and Fit; **speed mode** for very large boards.
 
 | Pens | Highlighters | Tapes |
@@ -397,6 +413,7 @@ Press **🎙 Record** in the header to record while you write. Each board keeps 
 | Clear selection, cancel gesture | `Esc` |
 | Move only the selection (ignore linked shapes) | Hold `Alt` while dragging |
 | Constrain ruler rotation to 15° | Hold `Shift` |
+| Draw a straight line (snaps to level / upright / 45°) | Hold `Shift` while drawing |
 | Present mode: change page | `←` `→` / `PageUp` `PageDown` |
 
 On macOS, use `Cmd` in place of `Ctrl`.

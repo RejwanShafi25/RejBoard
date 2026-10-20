@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>RejBoard</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+  html,body{margin:0;height:100%}
+  body{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;box-sizing:border-box;border:1px solid #f0cfdb;
+    background:#fff7fa;color:#4a3340;font:14px/1.4 "Segoe UI",system-ui,-apple-system,sans-serif;-webkit-app-region:drag;user-select:none;overflow:hidden}
+  img{width:68px;height:68px}
+  h1{margin:0;font-size:20px;font-weight:700;letter-spacing:.2px}
+  p{margin:0;max-width:300px;text-align:center;opacity:.8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .bar{width:150px;height:3px;border-radius:3px;background:#f3dbe5;overflow:hidden;margin-top:6px}
+  .bar::after{content:"";display:block;width:40%;height:100%;border-radius:3px;background:#e8679b;animation:slide 1.1s ease-in-out infinite}
+  @keyframes slide{0%{transform:translateX(-100%)}100%{transform:translateX(250%)}}
+  @media (prefers-color-scheme:dark){body{background:#1d1a1e;color:#f2e6ec;border-color:#3a2f37}.bar{background:#3a2f37}}
+  @media (prefers-reduced-motion:reduce){.bar::after{animation:none;width:100%}}
+</style>
+</head>
+<body>
+  <img src="icon-192.png" alt="">
+  <h1>RejBoard</h1>
+  <p id="msg">Starting…</p>
+  <div class="bar"></div>
+  <script>
+    /* The name of the board being opened is passed by the main process (the board that was open last time). textContent only: never markup. */
+    var b = new URLSearchParams(location.search).get('board');
+    document.getElementById('msg').textContent = b ? 'Opening “' + b + '”…' : 'Starting…';
+  </script>
+</body>
+</html>

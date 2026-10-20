@@ -62,3 +62,42 @@ test('the core logic lives only in board-core.js (no stale copies in the page)',
 test('the npm scripts the docs promise exist', () => {
   for (const s of ['start', 'test', 'test:smoke', 'dist']) assert.ok(pkg.scripts[s], `npm script "${s}" is missing`);
 });
+
+test('every page the desktop app opens is packaged', () => {
+  const main = read('main.js');
+  const pages = [...main.matchAll(/loadFile\('([^']+)'/g)].map(m => m[1]);
+  assert.ok(pages.includes('index.html') && pages.includes('splash.html'));
+  const files = pkg.build.files.map(globToRe);
+  for (const p of pages) assert.ok(files.some(re => re.test(p)), `package.json build.files is missing ${p}`);
+  assert.ok(files.some(re => re.test('icon-192.png')), 'the start-up window needs icon-192.png');
+});
+
+test('the start-up window only ever writes the board name as text', () => {
+  const splash = read('splash.html');
+  assert.ok(splash.includes('textContent'));
+  assert.ok(!/innerHTML|document\.write|eval\(/.test(splash), 'no markup injection from the board name');
+});
+
+test('every vendor library the page loads is downloaded by fetch_libs.py and checked by CI', () => {
+  const loaded = new Set([...html.matchAll(/'(vendor\/[A-Za-z0-9._-]+\.js)'/g)].map(m => m[1].replace('vendor/', '')));
+  assert.ok(loaded.size >= 6, 'found the vendor libraries the page references: ' + [...loaded]);
+  const fetchPy = read('fetch_libs.py'), pages = read('.github/workflows/pages.yml'), build = read('.github/workflows/build.yml');
+  for (const f of loaded) {
+    assert.ok(fetchPy.includes('"' + f + '"'), `fetch_libs.py does not download ${f}`);
+    assert.ok(pages.includes('vendor/' + f), `pages.yml does not check vendor/${f}`);
+    if (/pdf|jspdf|tex-svg|math|nerdamer/.test(f)) assert.ok(build.includes(f), `build.yml does not check ${f}`);
+  }
+});
+
+test('the math libraries used in the app are the same versions the tests run against', () => {
+  const fetchPy = read('fetch_libs.py');
+  assert.ok(fetchPy.includes('mathjs/' + pkg.devDependencies.mathjs.replace(/^[^\d]*/, '') + '/'), 'mathjs version in fetch_libs.py differs from package.json');
+  assert.ok(fetchPy.includes('nerdamer@' + pkg.devDependencies.nerdamer.replace(/^[^\d]*/, '') + '/'), 'nerdamer version in fetch_libs.py differs from package.json');
+  assert.ok(html.includes('mathjs/' + pkg.devDependencies.mathjs.replace(/^[^\d]*/, '') + '/math.min.js'), 'CDN fallback version for mathjs differs');
+  assert.ok(html.includes('nerdamer@' + pkg.devDependencies.nerdamer.replace(/^[^\d]*/, '') + '/all.min.js'), 'CDN fallback version for nerdamer differs');
+});
+
+test('the math tools are not loaded at start-up', () => {
+  assert.ok(!/<script[^>]+src="vendor\/(math|nerdamer)/.test(html), 'math.min.js / nerdamer must be loaded lazily');
+  assert.ok(!/lib\('vendor\/(math|nerdamer)/.test(html));
+});

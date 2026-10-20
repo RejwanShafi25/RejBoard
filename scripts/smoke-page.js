@@ -56,6 +56,29 @@
   const lrOn = await tx('readonly', s => s.get('smoke-board'));
   ok('compact storage on converts again, still unchanged', nOn >= 1 && JSON.stringify(lrOn.items) === planJson);
 
+  /* ----- the board index (start-up and My boards read this instead of every board) ----- */
+  await IDXREADY;
+  ok('board index is in use', IDXOK === true);
+  const hasId = (list, id) => list.some(r => r.id === id);
+  const m0 = (await txMeta()).find(r => r.id === 'smoke-board');
+  ok('index entry exists and carries no strokes', m0 && m0.title === 'smoke' && !('items' in m0));
+  await idxRebuild(); // the legacy board above was written straight to the database (like an older version would), so the index is refreshed first
+  const scanned = await txMetaScan(), indexed = await txMeta();
+  const brief = l => l.map(r => r.id + '|' + r.title + '|' + r.t + '|' + (r.lk || []).join('+')).sort().join(',');
+  ok('index matches a full scan of the boards', brief(scanned) === brief(indexed));
+  await tx('readwrite', s => s.put({ id: 'smoke-link', title: 'links', t: Date.now(), bg: 'white', items: [{ t: 't', x: 0, y: 0, w: 10, h: 10, html: '<span class="bl" data-board="some-other-board">@x</span>' }] }));
+  await sleep(150);
+  const linkMeta = (await txMeta()).find(r => r.id === 'smoke-link');
+  ok('new board appears in the index with its links', linkMeta && (linkMeta.lk || []).includes('some-other-board'));
+  await tx('readwrite', s => s.delete('smoke-link')); await sleep(150);
+  ok('deleted board leaves the index', !hasId(await txMeta(), 'smoke-link'));
+  await idxWrite([], ['smoke-board']);
+  ok('(simulated damage) entry removed from the index', !hasId(await idxAll(), 'smoke-board'));
+  await idxCheck();
+  ok('index repairs itself when it disagrees with the boards', hasId(await idxAll(), 'smoke-board'));
+  const lastBoard = L('wb.last', null);
+  ok('last opened board is remembered for the next start', typeof lastBoard === 'string' && lastBoard.length > 0);
+
   /* ----- Settings -> Storage switch (the downgrade safety valve), through the real button ----- */
   const rawBoard = () => new Promise(res => DB.then(d => { const q = d.transaction('n').objectStore('n').get('smoke-board'); q.onsuccess = () => res(q.result); }));
   openSettings(); await sleep(300);
@@ -170,8 +193,53 @@
   ok('zoom frames stay cheap', out.perf.zoomFrames.avg < 80, JSON.stringify(out.perf.zoomFrames));
   ok('lasso frames stay cheap', out.perf.lassoFrames.avg < 80, JSON.stringify(out.perf.lassoFrames));
 
+  /* ----- math tools: solver with steps, graph plotter as a board object ----- */
+  const libsEarly = typeof window.math === 'undefined' && typeof window.nerdamer === 'undefined';
+  ok('math libraries stay unloaded until a math tool is used (fast start-up)', libsEarly);
+  setTool('select'); S.sel = []; S.items = items.slice(0, 20); S.ox = 0; S.oy = -1500; S.z = 1; draw();
+  document.getElementById('solvd').click();
+  for (let i = 0; i < 80 && !(window.math && window.nerdamer && MT.eng); i++) await sleep(100);
+  ok('equation solver opens and loads its libraries', !document.getElementById('solvp').hidden && !!MT.eng);
+  document.getElementById('sv_in').value = 'x^2 - 5x + 6 = 0'; document.getElementById('sv_go').click();
+  for (let i = 0; i < 60 && !document.querySelector('#sv_out .mta'); i++) await sleep(100);
+  const svTxt = (document.getElementById('sv_out') || {}).innerText || '';
+  ok('solver shows steps and the answer x = 2, x = 3', document.querySelectorAll('#sv_out .mts').length >= 5 && /2/.test(svTxt) && /3/.test(svTxt) && !!document.querySelector('#sv_out .mta svg'));
+  document.getElementById('sv_in').value = '2x + y = 5; x - y = 1'; document.getElementById('sv_go').click(); await sleep(900);
+  ok('solver handles a linear system', !!document.querySelector('#sv_out .mta') && SOLV.last && SOLV.last.ok && SOLV.last.solutions.join() === '2,1', SOLV.last && SOLV.last.solutions);
+  const nBefore = S.items.length;
+  await solvInsert(true);
+  ok('"Insert steps" adds grouped equation objects to the board', S.items.length > nBefore + 3 && new Set(S.items.slice(nBefore).map(i => i.g)).size === 1 && S.items.slice(nBefore).every(i => i.t === 'm'), S.items.length - nBefore);
+  document.getElementById('solvp').hidden = true;
+  undo(); ok('Undo removes the inserted steps in one go', S.items.length === nBefore, S.items.length + ' vs ' + nBefore);
+  for (const [mode, inp] of [['diff', 'x^2*sin(x)'], ['int', 'x^2+3x'], ['factor', 'x^3-6x^2+11x-6'], ['simplify', '(x^2-1)/(x-1)'], ['limit', 'sin(x)/x']]) { const r = MT.eng.run(mode, inp, {}); ok('solver mode ' + mode + ' works in the app', r.ok, r.error); }
+
+  document.getElementById('graphd').click();
+  for (let i = 0; i < 50 && (!GED.model || document.getElementById('graphp').hidden); i++) await sleep(100);
+  ok('graph plotter opens with two example functions', !document.getElementById('graphp').hidden && GED.model.fns.length === 2);
+  const gcalc = grCompute(GED.model, 400, 300, 400);
+  ok('it draws both curves and finds their intersections', gcalc.curves.length === 2 && gcalc.inter.length === 2, gcalc.inter.length);
+  GED.model.fns.push({ text: 'x^2 + y^2 = a', color: '#16a34a', on: true }); grSync(true); grRender();
+  ok('a letter in a function becomes a slider', !!GED.model.params.a && document.querySelectorAll('#gr_sl input[type=range]').length === 1);
+  GED.model.params.a.v = 9; grRender();
+  const circle = grCompute(GED.model, 400, 300, 400).curves.find(c => c.curve.kind === 'impl');
+  ok('moving the slider redraws the circle (radius 3)', circle && circle.geo.lines.length > 20 && circle.geo.lines.every(([p]) => Math.abs(Math.hypot(p[0], p[1]) - 3) < 0.2));
+  document.getElementById('gr_ok').click(); await sleep(300);
+  const gItem = S.items.find(i => i.t === 'gr');
+  ok('"Add to board" puts a graph object on the board', !!gItem && gItem.fns.length === 3 && gItem.params.a.v === 9);
+  const sigBefore = lcSig(); gItem.view = { x0: -3, x1: 3, y0: -2, y1: 2 };
+  ok('the screen cache notices a graph edit', lcSig() !== sigBefore);
+  await saveNow(); const stored = await tx('readonly', s => s.get('smoke-board'));
+  ok('the graph survives saving and reopening', (stored.items.find(i => i.t === 'gr') || {}).fns && stored.items.find(i => i.t === 'gr').fns[2].text === 'x^2 + y^2 = a');
+  let exportOk = true; try { const ec = rexp(0, 0, 200); exportOk = ec && ec.width > 0; } catch (e) { exportOk = false; }
+  ok('exporting a board with a graph works', exportOk);
+  const gx = (gItem.x + gItem.w / 2) * S.z + S.ox + rr.left, gy = (gItem.y + gItem.h / 2) * S.z + S.oy + rr.top;
+  cv.dispatchEvent(new MouseEvent('dblclick', { clientX: gx, clientY: gy, bubbles: true })); await sleep(700);
+  ok('double-clicking the graph reopens the editor', !document.getElementById('graphp').hidden && document.getElementById('gr_title').textContent === 'Edit graph');
+  document.getElementById('gr_cancel').click();
+
   /* ----- clean up ----- */
   await tx('readwrite', s => s.delete('smoke-board')); await tx('readwrite', s => s.delete('smoke-legacy'));
+  await sleep(150); ok('index forgets the deleted test boards', !hasId(await txMeta(), 'smoke-board') && !hasId(await txMeta(), 'smoke-legacy'));
   ok('no uncaught errors', out.errors.length === 0, out.errors.join(' | '));
   return out;
 })()

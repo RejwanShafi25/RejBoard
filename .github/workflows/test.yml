@@ -19,7 +19,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      # board logic (history, storage format, screen-cache fingerprint, eraser pre-filter) + packaging checks. No dependencies to install.
+          cache: npm
+      # --ignore-scripts: the unit tests need mathjs / nerdamer but not the Electron binary
+      - run: npm ci --ignore-scripts
+      # board logic, equation solver, graph plotter, storage format, screen-cache fingerprint, packaging checks
       - run: node --test "test/*.test.js"
       - run: node test-update-policy.js
 
