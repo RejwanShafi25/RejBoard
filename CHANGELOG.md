@@ -1,5 +1,5 @@
 # Changelog
-## [Unreleased]
+## [1.3.2]
 ### Added
 - **Equation solver** (🧮 in the dock) with step-by-step working: solve equations and systems, differentiate, integrate (indefinite and definite), simplify, expand, factor, limits and plain calculation. Exact answers where possible (fractions, radicals, complex roots, general trig solutions), every answer is checked, and an equation with no closed form falls back to labelled numeric roots. Insert the answer or the grouped steps on the board.
 - **Graph plotter** (📈 in the dock): graphs are board objects. Explicit `y = f(x)`, implicit `x^2 + y^2 = 9`, polar `r = f(theta)` and parametric `(cos(t), sin(2t))` curves, sliders for any extra letter (with animation), labelled intersections, zoom and pan, double-click to edit; included in PNG / PDF / SVG exports. The math libraries load only when used.

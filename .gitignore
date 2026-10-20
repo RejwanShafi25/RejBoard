@@ -7,6 +7,8 @@ vendor/
 fed.md
 *.zip
 *.rar
-.claude
+.claude/
 ocr-engine/node_modules/
 ocr-engine/tessdata/
+
+promo/
