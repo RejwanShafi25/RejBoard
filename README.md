@@ -164,6 +164,17 @@ The web build stores boards in your browser's IndexedDB, so they are not shared 
 
 Use **Backup** on the home screen regularly. Backups include voice recordings.
 
+### Using a synced folder (OneDrive, Google Drive, Dropbox, Nextcloud)
+
+Never put the app's live database folder (`%APPDATA%\RejBoard`) inside a synced folder. Instead, back boards up as **one file per board** and open them on a second PC:
+
+- **Save:** on the home screen, tick boards with **☑ Select** and press **☁ Save to sync folder** (or use a board's **⋮ → Save to sync folder**). **☁ Sync folder → Back up all boards** saves every board. The first time, pick a folder inside your OneDrive / Google Drive / Dropbox / Nextcloud directory.
+- **Files:** each board becomes `Title [id].rjwb` (the same format as *Save a copy*, including ink, text, PDF pages, tags and voice recordings). Saving again overwrites that board's own file; renaming a board replaces its old file. Boards it links to are saved too, so links keep working.
+- **Open on the other PC:** **☁ Sync folder** lists the files; tick some and press **Import selected**. If a board already exists you can **replace** it, **keep both**, or **skip** (with a warning when the file is older than the board in the app).
+- **One PC at a time:** a small lock file (`.rejboard-lock.json`, computer name + heartbeat) stops two PCs from writing at once. If another PC is using the folder you are told which one; a lock that has not been refreshed for 5 minutes is treated as stale (e.g. after a crash) and can be taken over. Always wait for your sync app to finish uploading before importing on the other PC.
+- **Browsers:** Chrome and Edge can use the folder directly. Firefox and Safari download one `.rjwb` file per board; move them into the synced folder yourself and use **Import files…**.
+- **Moving from OneNote:** export the pages to PDF and import the PDF (direct `.one` import is not supported).
+
 ---
 
 ## Privacy and data handling

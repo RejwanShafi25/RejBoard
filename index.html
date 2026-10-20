@@ -2291,7 +2291,7 @@ async function renderHome(){
  const opts=(a,cur)=>a.map(([v,l])=>`<option value="${v}"${v===cur?' selected':''}>${l}</option>`).join('');
  const sortUi=(hasFolderSort?`<label class="srt" title="Sort folders">Folders <select id="hfs">${opts([['az','Name A → Z'],['za','Name Z → A']],FS)}</select></label>`:'')+(hasBoardSort?`<label class="srt" title="Sort boards">Boards <select id="hbs">${opts([['name-asc','Name A → Z'],['name-desc','Name Z → A'],['cre-desc','Created: newest'],['cre-asc','Created: oldest'],['mod-desc','Modified: newest'],['mod-asc','Modified: oldest']],BS)}</select></label>`:'');
  const m=$('#hmain');
- m.innerHTML=`<div class="bt-head"><div class="bt bt-hero"><div><h2 id="htitle"></h2><div class="bt-chips" id="hchips"></div></div><input id="hq" placeholder="${tr('search')}"></div><div class="bt-actions">${(!special&&sec!=='folders')?'<button id="hnew" class="pri">＋ New board</button>':''}${canFolder?'<button id="hfolder">＋ New folder</button>':''}${(!special&&sec!=='folders')?'<button id="hpdf">📄 PDF / DOCX / PPTX</button>':''}${(sec!=='tags'&&sec!=='folders')?`<button id="hsel"${HV.selMode?' class="on"':''}>${HV.selMode?'✕ Done selecting':'☑ Select'}</button>`:''}<button id="hbk">⬇ Backup</button><button id="hrs">⬆ Restore</button>${sec==='trash'?'<button id="hempty" class="dng">🗑 Empty trash</button>':''}${sortUi?`<div class="srt-tile">${sortUi}</div>`:''}</div></div><div id="selbar" hidden></div><div id="crumb"></div><div id="hbody"></div>`;
+ m.innerHTML=`<div class="bt-head"><div class="bt bt-hero"><div><h2 id="htitle"></h2><div class="bt-chips" id="hchips"></div></div><input id="hq" placeholder="${tr('search')}"></div><div class="bt-actions">${(!special&&sec!=='folders')?'<button id="hnew" class="pri">＋ New board</button>':''}${canFolder?'<button id="hfolder">＋ New folder</button>':''}${(!special&&sec!=='folders')?'<button id="hpdf">📄 PDF / DOCX / PPTX</button>':''}${(sec!=='tags'&&sec!=='folders')?`<button id="hsel"${HV.selMode?' class="on"':''}>${HV.selMode?'✕ Done selecting':'☑ Select'}</button>`:''}<button id="hbk">⬇ Backup</button><button id="hrs">⬆ Restore</button><button id="hsf" title="Back up boards as separate files to a OneDrive / Google Drive / Dropbox / Nextcloud folder, or import them">☁ Sync folder</button>${sec==='trash'?'<button id="hempty" class="dng">🗑 Empty trash</button>':''}${sortUi?`<div class="srt-tile">${sortUi}</div>`:''}</div></div><div id="selbar" hidden></div><div id="crumb"></div><div id="hbody"></div>`;
  /* quick-jump chips in the hero tile */
  {const ch=$('#hchips');[['📒',tr('allnotes'),'all',N.length],['⭐',tr('favs'),'fav',N.filter(n=>n.fav).length],['📁',tr('folders'),'folders',rootFolders.length],['🗑',tr('trash'),'trash',TR.length]].forEach(([ic,lb,key,c])=>{const b=document.createElement('button');b.type='button';if(HV.sec===key)b.style.background='var(--pn)';const i1=document.createElement('span');i1.textContent=ic;const n1=document.createElement('b');n1.textContent=c;n1.style.margin='0 .4em';const l1=document.createElement('span');l1.textContent=lb;b.append(i1,n1,l1);b.onclick=()=>go(key);ch.append(b)})}
  $('#htitle').textContent=title;
@@ -2302,7 +2302,7 @@ async function renderHome(){
  if($('#hfolder'))$('#hfolder').onclick=async e=>{e.preventDefault();e.stopPropagation();const id=await newFolder(CF);if(id)renderHome()};
  if($('#hpdf'))$('#hpdf').onclick=()=>{pdfImportContext='home';$('#docf').click()};
  if($('#hsel'))$('#hsel').onclick=()=>{HV.selMode=!HV.selMode;HV.sel=new Set();renderHome()};
- $('#hbk').onclick=backup;$('#hrs').onclick=()=>{$('#np').hidden=0;listNotes();$('#rf').click();$('#np').hidden=1};
+ $('#hbk').onclick=backup;$('#hsf').onclick=sfDialog;$('#hrs').onclick=()=>{$('#np').hidden=0;listNotes();$('#rf').click();$('#np').hidden=1};
  if(sec==='trash')$('#hempty').onclick=async()=>{if(!TR.length)return;if(!await askConfirm('Empty trash','Permanently delete all boards in Trash? This cannot be undone.','Empty trash'))return;await tx('readwrite',s=>TR.forEach(n=>s.delete(n.id)));await recDelBoards(TR.map(n=>n.id));HV.q='';await renderHome()};
 
  /* breadcrumb for folders */
@@ -2376,6 +2376,7 @@ async function renderHome(){
    mk(allFav?'☆ Unfavorite':'⭐ Favorite',async()=>{for(const b of picked)await updateBoard(b,{fav:!allFav});fin()});
    mk('📁 Move',async()=>{if(await moveBoardDialog(picked,F))fin()});
    mk('🏷 Add tags',async()=>{const v=await askText('Add tags','Tags (comma separated)','','Add','The tags are added to every selected board.');if(!v)return;const add=tagList(v);for(const b of picked){const cur=(await tx('readonly',s=>s.get(b.id)))||b;await updateBoard(b,{tags:[...new Set([...tagList(cur.tags),...add])].join(', ')})}fin()});
+   mk('☁ Save to sync folder',()=>sfBackup(picked.map(b=>b.id)));
    mk('📡 Share on network',()=>lanDialog(picked.map(b=>b.id)));
    mk('🗑 Move to Trash',async()=>{if(!await askConfirm('Move to Trash','Move '+picked.length+' selected board'+(picked.length==1?'':'s')+' to the Trash? You can restore them later.','Move to Trash'))return;for(const b of picked)await updateBoard(b,{del:Date.now()});if(picked.some(b=>b.id===S.id))await leaveBoard();fin()});
   }};
@@ -2398,6 +2399,7 @@ async function renderHome(){
   }else{
    mi(n.fav?'★  Remove favorite':'☆  Add to favorites',async()=>{await updateBoard(n,{fav:!n.fav});renderHome()});
    mi('⧉  Copy board',async()=>{const cur=(await tx('readonly',s=>s.get(n.id)))||n;const c={...structuredClone(cur),id:uid(),title:n.title+' copy',t:Date.now(),ct:Date.now(),mt:Date.now(),fav:false,del:0};await tx('readwrite',s=>s.put(c));renderHome()});
+   mi('☁  Save to sync folder',()=>sfBackup([n.id]));
    mi('📁  Move board',async()=>{if(await moveBoardDialog(n,F))renderHome()});
    mi('🏷  Edit tags',async()=>{if(await editTagsDialog(n,tagNames))renderHome()});
    mi(n.locked?'🔓  Remove password':'🔐  Lock with password',async()=>{if(n.locked?await unlockBoard(n):await lockBoard(n))renderHome()});
@@ -3373,6 +3375,144 @@ async function recUnpack(list,newBoard){let n=0;if(!Array.isArray(list))return 0
  if(!window.wb)window.addEventListener('beforeunload',e=>{if(RC.mr){e.preventDefault();e.returnValue=''}});
  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!p.hidden&&!document.querySelector('.mdl'))p.hidden=true});
 })();
+/* ---------- shared sync folder: one .rjwb file per board in a OneDrive / Google Drive / Dropbox / Nextcloud folder ----------
+   The live database is never put in the synced folder. Files are the same RJWB1 format as "Save a copy", named "<title> [<id>].rjwb",
+   so re-saving a board overwrites its own file. A lock file (machine name + heartbeat) keeps two PCs from writing at once. */
+const SF={dir:null,label:'',host:'',held:false,beat:0};
+const SF_LOCK='.rejboard-lock.json',SF_STALE=5*60e3,SF_BEAT=60e3;
+const sfDesk=()=>!!(window.wb&&wb.sync);
+const sfBrowserOk=()=>typeof window.showDirectoryPicker==='function';
+const sfSafe=t=>(String(t||'Untitled').replace(/[\\/:*?"<>|\u0000-\u001f]/g,'_').replace(/[. ]+$/,'').trim().slice(0,80))||'Untitled';
+const sfFileName=r=>sfSafe(r.title)+' ['+r.id+'].rjwb';
+const sfFileId=n=>{const m=/\[([^\]]+)\]\.rjwb$/i.exec(n);return m?m[1]:''};
+const sfMid=()=>{let m=L('wb.mid','');if(!m){m=uid()+uid();Wr('wb.mid',m)}return m};
+const sfIdb=()=>new Promise(r=>{try{const q=indexedDB.open('rejsync',1);q.onupgradeneeded=()=>q.result.createObjectStore('h');q.onsuccess=()=>r(q.result);q.onerror=()=>r(null)}catch(e){r(null)}});
+async function sfIdbOp(mode,f){const d=await sfIdb();if(!d)return;return new Promise(r=>{try{const q=f(d.transaction('h',mode).objectStore('h'));q.onsuccess=()=>r(q.result);q.onerror=()=>r()}catch(e){r()}})}
+/* backend: desktop app = native folder dialog + main-process file access; browser = File System Access API */
+async function sfInit(){
+ if(sfDesk()){const g=await wb.sync.get();SF.host=g.host||'This PC';SF.label=g.dir||'';SF.dir=g.dir?'desk':null;return}
+ SF.host=L('wb.mname','')||'';SF.dir=(await sfIdbOp('readonly',s=>s.get('dir')))||null;SF.label=SF.dir?SF.dir.name:''}
+async function sfChoose(){
+ if(sfDesk()){const g=await wb.sync.choose();SF.label=g.dir||'';SF.dir=g.dir?'desk':null;return !!g.dir}
+ if(!sfBrowserOk()){toast('This browser cannot open a folder. Use the desktop app or Chrome/Edge, or use the file buttons.',5000);return false}
+ try{const h=await showDirectoryPicker({id:'rejboard-sync',mode:'readwrite'});await sfIdbOp('readwrite',s=>s.put(h,'dir'));SF.dir=h;SF.label=h.name;return true}catch(e){return false}}
+async function sfReady(){ /* folder chosen and writable */
+ if(!SF.dir&&!await sfChoose())return false;
+ if(sfDesk())return true;
+ try{if(await SF.dir.queryPermission({mode:'readwrite'})!=='granted'&&await SF.dir.requestPermission({mode:'readwrite'})!=='granted'){toast('Folder access was not allowed');return false}return true}catch(e){SF.dir=null;return sfReady()}}
+async function sfList(){
+ if(sfDesk())return(await wb.sync.list())||[];
+ const out=[];for await(const[n,h] of SF.dir.entries()){if(h.kind==='file'&&/\.rjwb$/i.test(n)){const f=await h.getFile();out.push({name:n,size:f.size,mtime:f.lastModified})}}return out}
+async function sfRead(n){
+ if(sfDesk())return wb.sync.read(n);
+ try{return await(await(await SF.dir.getFileHandle(n)).getFile()).text()}catch(e){return null}}
+async function sfWrite(n,t){
+ if(sfDesk())return wb.sync.write(n,t);
+ try{const w=await(await SF.dir.getFileHandle(n,{create:true})).createWritable();await w.write(t);await w.close();return true}catch(e){return false}}
+async function sfRemove(n){
+ if(sfDesk())return wb.sync.remove(n);
+ try{await SF.dir.removeEntry(n);return true}catch(e){return false}}
+/* lock */
+async function sfMachine(){
+ if(!SF.host){const v=await askText('Name this computer','Computer name',(navigator.userAgentData&&navigator.userAgentData.platform||navigator.platform||'Browser')+' browser','Save','Shown to your other PC so it knows who is using the synced folder.');SF.host=v||'Browser';Wr('wb.mname',SF.host)}return SF.host}
+async function sfLockRead(){const t=await sfRead(SF_LOCK);if(!t)return null;try{return JSON.parse(t)}catch(e){return null}}
+const sfAgo=ms=>{const s=Math.max(0,Math.round((Date.now()-ms)/1000));return s<90?'moments ago':s<5400?Math.round(s/60)+' minutes ago':Math.round(s/3600)+' hours ago'};
+async function sfBeatNow(){return sfWrite(SF_LOCK,JSON.stringify({id:sfMid(),host:SF.host,t:Date.now(),app:'RejBoard'}))}
+async function sfAcquire(){
+ if(SF.held)return true;
+ await sfMachine();const l=await sfLockRead();
+ if(l&&l.id!==sfMid()&&Date.now()-(+l.t||0)<SF_STALE){
+  const yes=await dlg({title:'Folder in use on another PC',msg:'“'+(l.host||'Another PC')+'” used this folder '+sfAgo(+l.t||0)+'. Only one PC should work with these boards at a time. Wait until it has closed the sync dialog and your sync app (OneDrive, Google Drive, Nextcloud…) has finished uploading, then try again. Only take over if you know that PC is no longer using it.',ok:'Take over anyway',cancel:'Cancel',danger:true});
+  if(!yes)return false}
+ if(!await sfBeatNow()){toast('Could not write to the folder');return false}
+ SF.held=true;clearInterval(SF.beat);
+ SF.beat=setInterval(async()=>{const c=await sfLockRead();if(c&&c.id!==sfMid()){SF.held=false;clearInterval(SF.beat);toast('⚠ “'+(c.host||'Another PC')+'” took over the sync folder',6000);return}await sfBeatNow()},SF_BEAT);
+ return true}
+async function sfRelease(){clearInterval(SF.beat);if(!SF.held)return;SF.held=false;try{const l=await sfLockRead();if(l&&l.id===sfMid())await sfRemove(SF_LOCK)}catch(e){}}
+window.addEventListener('pagehide',()=>{if(SF.held&&sfDesk()){SF.held=false;wb.sync.remove(SF_LOCK)}});
+/* pack / parse */
+async function sfPack(id){const r=await tx('readonly',s=>s.get(id));if(!r||r.folder)return null;const o={...r,recs:await recPack(id),src:id,app:'RejBoard'};delete o.linked;
+ return{name:sfFileName(r),title:r.title,text:'RJWB1:'+b64(JSON.stringify(o))}}
+function sfParse(t){try{if(typeof t!=='string'||!t.startsWith('RJWB1:'))return null;const n=JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(t.slice(6)),c=>c.charCodeAt(0))));return n&&Array.isArray(n.items)?n:null}catch(e){return null}}
+/* export: ids -> one file per board (linked boards come along so links keep working on the other PC) */
+async function sfExport(ids){
+ await saveNow();
+ const want=[...new Set(ids)];for(const r of await linkedBoardsOf(want))if(!want.includes(r.id))want.push(r.id);
+ const existing=await sfList(),bad=[];let ok=0;
+ for(const id of want){const p=await sfPack(id);if(!p){bad.push(id);continue}
+  if(!await sfWrite(p.name,p.text)||(await sfRead(p.name))?.length!==p.text.length){bad.push(p.title);continue}
+  for(const f of existing)if(sfFileId(f.name)===id&&f.name!==p.name)await sfRemove(f.name); /* board was renamed: drop its old file */
+  ok++}
+ return{ok,bad,extra:want.length-new Set(ids).size}}
+async function sfBackup(ids){
+ if(!ids.length)return toast('No boards to back up');
+ if(!sfDesk()&&!sfBrowserOk()){ /* no folder access (e.g. Firefox/Safari): download one file per board to put in the synced folder yourself */
+  await saveNow();let n=0;for(const id of ids){const p=await sfPack(id);if(p){await dlf(p.name,new Blob([p.text],{type:'application/octet-stream'}));n++;await new Promise(r=>setTimeout(r,250))}}
+  return toast(n+' board file'+(n==1?'':'s')+' downloaded. Move them into your OneDrive / Google Drive / Nextcloud folder.',6000)}
+ await sfInit();if(!await sfReady())return;if(!await sfAcquire())return;
+ try{toast('Saving '+ids.length+' board'+(ids.length==1?'':'s')+' to “'+SF.label+'”…',2500);const r=await sfExport(ids);
+  toast((r.ok?'☁ Saved '+r.ok+' board file'+(r.ok==1?'':'s')+' to “'+SF.label+'”'+(r.extra>0?' (incl. '+r.extra+' linked)':'')+'. Wait for your sync app to finish uploading before opening them on another PC.':'')+(r.bad.length?' ⚠ Could not save: '+r.bad.join(', '):''),r.bad.length?9000:7000)}
+ finally{await sfRelease()}}
+async function sfBackupAll(){const all=((await tx('readonly',s=>s.getAll()))||[]).filter(r=>!r.folder&&!r.del);sfBackup(all.map(r=>r.id))}
+/* import: files = [{name,text}] ; asks replace / keep both / skip when the board already exists */
+function sfAskConflict(title,fileMt,localMt,many){return new Promise(res=>{let all=false;
+ dlg({title:'Board already exists',msg:'“'+title+'” is already in RejBoard on this PC.'+(fileMt&&localMt&&fileMt<localMt?'\n⚠ The file is OLDER ('+new Date(fileMt).toLocaleString()+') than the board in the app ('+new Date(localMt).toLocaleString()+'). Replacing would lose newer changes.':fileMt?'\nFile saved: '+new Date(fileMt).toLocaleString()+' · In app: '+(localMt?new Date(localMt).toLocaleString():'unknown'):''),hideOk:true,cancel:'Skip',
+  body:close=>{const w=lanEl('div',{style:'display:flex;flex-direction:column;gap:8px;margin:8px 0'});
+   const b=(t,v,c)=>lanEl('button',{textContent:t,className:c||'',onclick:()=>{close(v);res({act:v,all})}});
+   w.append(b('Replace the board in the app','replace','dng'),b('Keep both (import as a copy)','both','pri'));
+   if(many)w.append(lanEl('label',{style:'display:flex;gap:6px;align-items:center;font-size:13px'},lanEl('input',{type:'checkbox',onchange:e=>{all=e.target.checked}}),'Do this for all remaining conflicts'));return w}
+ }).then(v=>{if(v==null)res({act:'skip',all:false})})})}
+async function sfImport(files){
+ await saveNow();const res={added:0,replaced:0,both:0,skipped:0,bad:0};
+ const parsed=[];for(const f of files){const n=sfParse(f.text);const id=n&&(n.id||n.src||sfFileId(f.name));if(!n||!id){res.bad++;continue}parsed.push({n,id:String(id),name:f.name})}
+ const all=(await tx('readonly',s=>s.getAll()))||[],by={},fold=new Set();all.forEach(r=>{if(r.folder)fold.add(r.id);else by[r.id]=r});
+ const plan=[],map={};let sticky=null,k=0;
+ for(const p of parsed){const cur=by[p.id];let act='new';
+  if(cur){let d=sticky;if(!d){d=await sfAskConflict(p.n.title||'Untitled',+p.n.mt||+p.n.t||0,boardModified(cur),parsed.length>1);if(d.all)sticky=d}act=d.act}
+  if(act==='skip'){res.skipped++;continue}
+  if(act==='both'){map[p.id]=uid()+(k++)}
+  plan.push({...p,act})}
+ let reopen=null;
+ for(const p of plan){const n=p.n,both=p.act==='both',id=both?map[p.id]:p.id,now=Date.now();
+  const r={...n,id,parent:fold.has(n.parent)?n.parent:'',items:relinkItems(n.items,map),del:0};delete r.recs;delete r.src;delete r.linked;delete r.app;
+  if(both){r.title=(n.title||'Untitled')+' (copy)';r.t=r.ct=r.mt=now;r.fav=false}else{r.mt=+n.mt||+n.t||now;r.t=+n.t||r.mt;r.ct=+n.ct||r.mt}
+  if(p.act==='replace')await recDelBoards([id]);
+  await tx('readwrite',s=>s.put(r));await recUnpack(n.recs,id);
+  if(p.act==='replace'&&id===S.id)reopen=r;
+  res[p.act==='new'?'added':p.act==='replace'?'replaced':'both']++}
+ if(reopen)await openNote(reopen);
+ try{await refreshBT()}catch(e){}if(!$('#hm').hidden)renderHome();
+ const bits=[res.added&&res.added+' added',res.replaced&&res.replaced+' replaced',res.both&&res.both+' kept as copy',res.skipped&&res.skipped+' skipped',res.bad&&res.bad+' not a RejBoard file'].filter(Boolean);
+ toast('☁ Import: '+(bits.join(', ')||'nothing to import'),6000);return res}
+/* dialog */
+async function sfDialog(){
+ await sfInit();
+ const body=close=>{const w=lanEl('div',{style:'display:flex;flex-direction:column;gap:8px;width:min(560px,74vw);max-width:100%;box-sizing:border-box;overflow-wrap:anywhere'});
+  const info=lanEl('div',{style:'font-size:13px;opacity:.85'}),lst=lanEl('div',{style:'max-height:38vh;overflow:auto;border:1px solid rgba(128,128,128,.35);border-radius:8px;padding:4px'}),row=lanEl('div',{style:'display:flex;gap:6px;flex-wrap:wrap'});
+  const picked=new Set();let files=[],busy=false;
+  const run=async f=>{if(busy)return;busy=true;try{await f()}finally{busy=false}};
+  const load=async()=>{
+   info.textContent=SF.dir?'Folder: '+SF.label:'No folder chosen yet. Pick a folder inside OneDrive, Google Drive, Dropbox or Nextcloud.';
+   lst.textContent='';files=[];picked.clear();
+   if(!SF.dir){lst.textContent='—';return}
+   if(!await sfReady()){lst.textContent='Folder access was not granted.';return}
+   try{files=(await sfList()).sort((a,b)=>b.mtime-a.mtime)}catch(e){lst.textContent='Could not read the folder.';return}
+   const l=await sfLockRead();if(l&&l.id!==sfMid()&&Date.now()-(+l.t||0)<SF_STALE)info.textContent+=' · ⚠ “'+(l.host||'another PC')+'” is using it ('+sfAgo(+l.t||0)+')';
+   if(!files.length){lst.textContent='No board files in this folder yet. Use “Back up all boards”, or select boards on the home screen and choose “Save to sync folder”.';return}
+   for(const f of files){const cb=lanEl('input',{type:'checkbox',onchange:()=>{cb.checked?picked.add(f.name):picked.delete(f.name)}});
+    lst.append(lanEl('label',{style:'display:flex;gap:8px;align-items:center;padding:4px 6px;cursor:pointer;font-size:13px'},cb,lanEl('span',{style:'flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap',textContent:f.name.replace(/ \[[^\]]+\]\.rjwb$/i,'').replace(/\.rjwb$/i,'')}),lanEl('small',{style:'opacity:.7;white-space:nowrap',textContent:new Date(f.mtime).toLocaleString()+' · '+recSize(f.size)})))}};
+  const btn=(t,f,c)=>row.append(lanEl('button',{textContent:t,className:c||'',onclick:()=>run(f)}));
+  btn(SF.dir?'Change folder…':'Choose folder…',async()=>{if(await sfChoose())await load()});
+  btn('Back up all boards',async()=>{if(!SF.dir&&!await sfChoose())return;close(null);await sfBackupAll()},'pri');
+  btn('Select all',async()=>{lst.querySelectorAll('input').forEach(c=>{c.checked=true});files.forEach(f=>picked.add(f.name))});
+  btn('Import selected',async()=>{if(!picked.size)return toast('Tick the boards to import first');
+   if(!await sfAcquire())return;const out=[];try{for(const n of picked){const t=await sfRead(n);if(t)out.push({name:n,text:t})}}finally{await sfRelease()}
+   close(null);await sfImport(out)},'pri');
+  btn('Import files…',async()=>{const i=lanEl('input',{type:'file',accept:'.rjwb',multiple:true});i.onchange=async()=>{const out=[];for(const f of i.files)out.push({name:f.name,text:await f.text()});if(out.length){close(null);await sfImport(out)}};i.click()});
+  w.append(info,lst,row,lanEl('small',{style:'opacity:.7',textContent:'One file per board, so you can sync just the ones you need. Only one PC should edit a board at a time — close RejBoard (or this dialog) on the other PC and let your sync app finish uploading before you import.'}));
+  load();return w};
+ await dlg({title:'☁ Sync folder (OneDrive, Google Drive, Dropbox, Nextcloud…)',hideOk:true,cancel:'Close',body});
+ await sfRelease()}
 </script><script>
 /* Temporary embedded browser/video surfaces. No address or form input is written to app storage. */
 (()=>{

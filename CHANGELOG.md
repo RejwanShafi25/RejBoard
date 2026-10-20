@@ -1,5 +1,8 @@
 # Changelog
 ## [Unreleased]
+### Added
+- **Sync folder** ([#2](https://github.com/RejwanShafi25/RejBoard/issues/2)). Save selected boards (select mode or a board's ⋮ menu) or all boards as one `.rjwb` file each into a folder inside OneDrive, Google Drive, Dropbox or Nextcloud, and import them on a second PC from **☁ Sync folder** on the home screen. Files carry ink, text, PDFs, tags, voice recordings and linked boards. Importing asks to replace, keep both or skip when a board already exists, and warns when the file is older than the board in the app. A lock file (computer name + heartbeat, stale after 5 minutes) keeps two PCs from writing at once. Chrome/Edge use the folder directly; other browsers download one file per board.
+
 ### Fixed
 - A voice recording could be saved to the wrong board if you switched boards while the microphone permission prompt was open ([#1](https://github.com/RejwanShafi25/RejBoard/issues/1)). The board is now captured when you press Record, and if you switch boards before the prompt is answered the recording is cancelled instead of starting on the wrong board.
 

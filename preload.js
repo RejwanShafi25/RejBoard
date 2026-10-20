@@ -6,6 +6,14 @@ contextBridge.exposeInMainWorld('wb', {
   docToPdf: (name, buf) => ipcRenderer.invoke('doc:toPdf', name, buf),
   i18n: { fetch: f => ipcRenderer.invoke('i18n:fetch', f) },
   clearBrowserData: () => ipcRenderer.invoke('browser:clear'),
+  sync: {
+    get: () => ipcRenderer.invoke('sync:get'),
+    choose: () => ipcRenderer.invoke('sync:choose'),
+    list: () => ipcRenderer.invoke('sync:list'),
+    read: n => ipcRenderer.invoke('sync:read', n),
+    write: (n, t) => ipcRenderer.invoke('sync:write', n, t),
+    remove: n => ipcRenderer.invoke('sync:remove', n)
+  },
   fetchRemoteImage: url => ipcRenderer.invoke('image:fetch-remote', url),
   updates: {
     getVersion: () => ipcRenderer.invoke('updates:version'),

@@ -1,5 +1,5 @@
 // Electron main process: opens the app and proxies handwriting recognition.
-const { app, BrowserWindow, ipcMain, shell, Menu, clipboard } = require('electron');
+const { app, BrowserWindow, ipcMain, shell, Menu, clipboard, dialog } = require('electron');
 const lanShare = require('./lan');
 const ocr = require('./ocr'); // on-device handwriting OCR (no network, no files)
 const path = require('path');
@@ -93,6 +93,29 @@ ipcMain.handle('i18n:fetch', async (_e, file) => {
   return null;
 });
 ipcMain.handle('browser:clear', async () => { try { const ses = require('electron').session.fromPartition('rejboard-ephemeral'); await ses.clearStorageData(); await ses.clearCache(); return true; } catch (_) { return false; } });
+
+/* ---- shared sync folder (OneDrive / Google Drive / Dropbox / Nextcloud ...): per-board backup files + a lock file.
+   The renderer never sends a path: the folder is picked in a native dialog and remembered here, and file names are validated. ---- */
+const syncCfg = () => path.join(app.getPath('userData'), 'syncfolder.json');
+const syncDir = () => { try { const d = JSON.parse(fs.readFileSync(syncCfg(), 'utf8')).dir; return d && fs.statSync(d).isDirectory() ? d : ''; } catch (_) { return ''; } };
+const syncName = n => typeof n === 'string' && n.length > 0 && n.length < 200 && n !== '.' && n !== '..' && !/[\/:*?"<>|\u0000-\u001f]/.test(n) && (/\.rjwb$/i.test(n) || n === '.rejboard-lock.json');
+ipcMain.handle('sync:get', () => ({ dir: syncDir(), host: os.hostname() }));
+ipcMain.handle('sync:choose', async e => {
+  const r = await dialog.showOpenDialog(BrowserWindow.fromWebContents(e.sender), { title: 'Choose your synced folder (OneDrive, Google Drive, Dropbox, Nextcloud...)', properties: ['openDirectory', 'createDirectory'] });
+  if (r.canceled || !r.filePaths[0]) return { dir: syncDir(), host: os.hostname() };
+  fs.writeFileSync(syncCfg(), JSON.stringify({ dir: r.filePaths[0] }));
+  return { dir: r.filePaths[0], host: os.hostname() };
+});
+ipcMain.handle('sync:list', () => {
+  const d = syncDir(); if (!d) return null;
+  return fs.readdirSync(d).filter(n => /\.rjwb$/i.test(n)).map(n => { try { const st = fs.statSync(path.join(d, n)); return { name: n, size: st.size, mtime: st.mtimeMs }; } catch (_) { return null; } }).filter(Boolean);
+});
+ipcMain.handle('sync:read', (_e, name) => { const d = syncDir(); if (!d || !syncName(name)) return null; try { return fs.readFileSync(path.join(d, name), 'utf8'); } catch (_) { return null; } });
+ipcMain.handle('sync:write', (_e, name, text) => { // write to a temp file first so a sync client never uploads a half-written board
+  const d = syncDir(); if (!d || !syncName(name) || typeof text !== 'string') return false;
+  const tmp = path.join(d, '.' + name + '.tmp'); try { fs.writeFileSync(tmp, text); fs.renameSync(tmp, path.join(d, name)); return true; } catch (_) { try { fs.unlinkSync(tmp); } catch (__) {} return false; }
+});
+ipcMain.handle('sync:remove', (_e, name) => { const d = syncDir(); if (!d || !syncName(name)) return false; try { fs.unlinkSync(path.join(d, name)); return true; } catch (_) { return false; } });
 // ---- Secure in-app updates ----
 let macSigned = false;
 if (process.platform === 'darwin' && app.isPackaged) { try { require('child_process').execFileSync('codesign', ['--verify', '--deep', '--strict', path.resolve(path.dirname(process.execPath), '..', '..')], { stdio: 'ignore' }); macSigned = true; } catch (_) {} }
