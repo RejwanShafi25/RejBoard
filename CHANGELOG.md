@@ -1,4 +1,8 @@
 # Changelog
+## [Unreleased]
+### Fixed
+- A voice recording could be saved to the wrong board if you switched boards while the microphone permission prompt was open ([#1](https://github.com/RejwanShafi25/RejBoard/issues/1)). The board is now captured when you press Record, and if you switch boards before the prompt is answered the recording is cancelled instead of starting on the wrong board.
+
 ## [1.3.1]
 ### Added
 - **Tool shortcuts.** `1`–`8` pick the fountain pen, calligraphy pen, soft brush, ballpoint, pencil and the square, chisel and round highlighters; `T` text, `W` tape, `E` eraser. `H` converts the selected handwriting to text and only works while handwriting is selected. Shortcuts are shown in the toolbar tooltips and ignored while typing.
