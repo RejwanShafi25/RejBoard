@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://rejwanshafi25.github.io/RejBoard/sitemap.xml

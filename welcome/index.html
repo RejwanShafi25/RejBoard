@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RejBoard: the free whiteboard that works offline</title>
+<meta name="description" content="RejBoard is a free, open-source whiteboard for handwritten notes, PDF annotation and lecture recordings, with a built-in equation solver and graph plotter. No account, no cloud, works offline.">
+<link rel="canonical" href="https://rejwanshafi25.github.io/RejBoard/welcome/">
+<meta name="theme-color" content="#ffffff">
+<link rel="icon" href="img/icon.svg" type="image/svg+xml">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="RejBoard">
+<meta property="og:title" content="RejBoard: the free whiteboard that works offline">
+<meta property="og:description" content="Handwriting, PDF annotation, lecture recordings, an equation solver with steps and a graph plotter. No account, no cloud, free and open source.">
+<meta property="og:url" content="https://rejwanshafi25.github.io/RejBoard/welcome/">
+<meta property="og:image" content="https://rejwanshafi25.github.io/RejBoard/og-image.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"RejBoard","applicationCategory":"EducationalApplication","operatingSystem":"Windows, macOS, Linux, Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"license":"https://opensource.org/licenses/MIT","url":"https://rejwanshafi25.github.io/RejBoard/welcome/","downloadUrl":"https://github.com/RejwanShafi25/RejBoard/releases/latest"}</script>
+<style>
+@font-face{font-family:Fraunces;font-weight:400;font-style:normal;font-display:swap;src:url(fonts/fraunces-latin-400-normal.woff2) format("woff2")}
+@font-face{font-family:Fraunces;font-weight:400;font-style:italic;font-display:swap;src:url(fonts/fraunces-latin-400-italic.woff2) format("woff2")}
+@font-face{font-family:Fraunces;font-weight:600;font-style:normal;font-display:swap;src:url(fonts/fraunces-latin-600-normal.woff2) format("woff2")}
+@font-face{font-family:"Instrument Sans";font-weight:400;font-display:swap;src:url(fonts/instrument-sans-latin-400-normal.woff2) format("woff2")}
+@font-face{font-family:"Instrument Sans";font-weight:500;font-display:swap;src:url(fonts/instrument-sans-latin-500-normal.woff2) format("woff2")}
+@font-face{font-family:"Instrument Sans";font-weight:600;font-display:swap;src:url(fonts/instrument-sans-latin-600-normal.woff2) format("woff2")}
+:root{
+  --ink:#262622;--mute:#6b6a60;--faint:#9a988c;--line:#e8e6da;
+  --cream:#f6f4ea;--cream2:#efecdd;--olive:#58511d;--olive2:#6d6526;--lime:#cfdc57;--sage:#dde5c4;
+  --serif:Fraunces,Georgia,"Times New Roman",serif;--sans:"Instrument Sans",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  --max:1180px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:84px}
+body{background:#fff;color:var(--ink);font:400 18px/1.55 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit}img{max-width:100%;height:auto;display:block}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 28px}
+h1,h2,h3{font-family:var(--serif);font-weight:400;letter-spacing:-.02em;line-height:1.06}
+/* nav */
+nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.88);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid transparent;transition:border-color .2s}
+nav.sc{border-color:var(--line)}
+nav .wrap{display:flex;align-items:center;height:72px;gap:28px}
+.brand{display:flex;align-items:center;gap:11px;text-decoration:none;font:600 24px var(--serif);letter-spacing:-.02em}
+.brand img{width:32px;height:32px;border-radius:8px}
+.menu{display:flex;gap:6px;margin-left:34px;flex:1}
+.menu a{text-decoration:none;font-weight:500;font-size:16px;color:var(--ink);padding:8px 14px;border-radius:99px;transition:background .15s}
+.menu a:hover{background:var(--cream)}
+.nav-r{display:flex;gap:10px;align-items:center}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;text-decoration:none;font:500 16px var(--sans);padding:13px 24px;border-radius:99px;border:0;cursor:pointer;transition:background .18s,transform .18s}
+.btn.dark{background:var(--olive);color:#fff}.btn.dark:hover{background:var(--olive2)}
+.btn.soft{background:rgba(88,81,29,.07);color:var(--ink)}.btn.soft:hover{background:rgba(88,81,29,.13)}
+.btn.sm{padding:10px 18px;font-size:15px}
+.btn.lg{padding:17px 30px;font-size:17px}
+.burger{display:none;background:none;border:0;width:44px;height:44px;border-radius:50%;cursor:pointer}
+.burger span,.burger span::before,.burger span::after{display:block;width:20px;height:2px;background:var(--ink);position:relative;margin:0 auto;content:"";transition:transform .2s}
+.burger span::before{position:absolute;top:-6px;left:0}.burger span::after{position:absolute;top:6px;left:0}
+/* hero */
+.hero{padding:48px 0 40px}
+.hero .wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:56px;align-items:center}
+.badge{display:inline-flex;align-items:center;gap:10px;background:var(--cream);border-radius:99px;padding:6px 16px 6px 6px;font-size:14.5px;font-weight:500;text-decoration:none}
+.badge b{background:var(--lime);border-radius:99px;padding:3px 11px;font-weight:600;font-size:13px}
+h1{font-size:clamp(42px,5.2vw,72px);margin-top:26px}
+.hero p.lead{font-size:clamp(18px,1.9vw,22px);color:var(--mute);margin-top:26px;max-width:30em}
+.hero p.lead strong{color:var(--ink);font-weight:500}
+.hero .go{margin-top:34px;display:flex;flex-direction:column;align-items:flex-start;gap:16px}
+.hero .go small{color:var(--faint);font-size:15px;display:flex;align-items:center;gap:8px}
+.stage{position:relative;aspect-ratio:1/1.02;border-radius:28px;overflow:hidden;background:
+  radial-gradient(70% 60% at 20% 15%,#d6e26a 0,transparent 60%),radial-gradient(60% 60% at 90% 85%,#f1b98a 0,transparent 62%),radial-gradient(70% 70% at 10% 95%,#7fb6a4 0,transparent 65%),#bfcf63}
+.win{position:absolute;left:9%;top:12%;width:92%;background:var(--cream);border-radius:16px;box-shadow:0 30px 60px -20px rgba(40,36,10,.45),0 0 0 1px rgba(0,0,0,.05);overflow:hidden}
+.win .bar{display:flex;gap:7px;padding:12px 14px 4px}.win .bar i{width:11px;height:11px;border-radius:50%;background:#e1ddcb}
+.win img{width:100%;border-top:1px solid var(--line);margin-top:8px}
+.pop{position:absolute;right:5%;bottom:6%;width:44%;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 30px 60px -18px rgba(40,36,10,.5),0 0 0 1px rgba(0,0,0,.06)}
+.pop img{width:100%}
+/* sections */
+.kick{font-size:17px;color:var(--faint);font-weight:500;margin-bottom:6px}
+.cen{text-align:center}
+.block{padding:120px 0 0}
+.block h2{font-size:clamp(36px,4.6vw,60px);margin-top:12px}
+.block p.sub{color:var(--mute);margin-top:18px;max-width:34em}
+.cen p.sub,.cen h2{margin-left:auto;margin-right:auto}
+.doers{padding:150px 0 0}
+.doers h2{font-size:clamp(46px,7vw,96px)}
+.doers p{max-width:30em;margin:24px auto 0;color:var(--mute);font-size:21px}
+.step{padding:130px 0 0}
+.step .txt{max-width:640px}
+.step h2{font-size:clamp(34px,4vw,50px);margin-top:10px}
+.step .txt p{color:var(--mute);margin-top:16px;font-size:19px}
+.showcase{margin-top:44px;border-radius:28px;padding:clamp(22px,5vw,64px);display:grid;place-items:center;overflow:hidden}
+.showcase.a{background:radial-gradient(80% 70% at 10% 0,#e1ec86,transparent 60%),radial-gradient(70% 70% at 100% 100%,#f1c39a,transparent 60%),#b9cc59}
+.showcase.b{background:radial-gradient(80% 70% at 90% 0,#9fd0c0,transparent 62%),radial-gradient(70% 70% at 0 100%,#e1ec86,transparent 60%),#79b3a2}
+.showcase.c{background:radial-gradient(80% 70% at 0 0,#f4c7a3,transparent 60%),radial-gradient(70% 70% at 100% 100%,#c9d95a,transparent 62%),#e8b98e}
+.shot{border-radius:16px;overflow:hidden;background:#fff;box-shadow:0 36px 70px -24px rgba(40,36,10,.5),0 0 0 1px rgba(0,0,0,.06);width:100%}
+.shot.nar{max-width:560px}.shot.mid{max-width:880px}.shot.wide{max-width:1000px}
+.shot img{width:100%}
+.chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
+.chips span{background:var(--cream);border-radius:99px;padding:8px 16px;font-size:15.5px;font-weight:500}
+/* dark band */
+.band{margin-top:140px;background:var(--ink);color:#f6f4ea;padding:110px 0 100px}
+.band h2{font-size:clamp(36px,4.6vw,60px);color:#fff}
+.band .sub{color:#b9b7a8}
+.nums{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:60px;text-align:left}
+.num{border-top:1px solid rgba(255,255,255,.18);padding-top:26px}
+.num b{display:block;font:400 clamp(52px,6vw,84px)/1 var(--serif);letter-spacing:-.03em;color:var(--lime)}
+.num span{display:block;margin-top:14px;font-weight:500;font-size:19px}
+.num small{display:block;margin-top:4px;color:#a3a193;font-size:15.5px}
+.band .fine{margin-top:40px;font-size:14.5px;color:#908e80;max-width:46em}
+/* features */
+.feat{display:grid;grid-template-columns:repeat(3,1fr);gap:56px 44px;margin-top:70px}
+.f svg{width:34px;height:34px;stroke:var(--olive);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.f h3{font:600 22px var(--serif);margin:18px 0 8px;letter-spacing:-.01em;line-height:1.2}
+.f p{color:var(--mute);font-size:17px}
+.wideCard{margin-top:70px;background:var(--cream);border-radius:28px;padding:clamp(28px,5vw,64px);display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center}
+.wideCard h3{font-size:clamp(30px,3.4vw,44px)}
+.wideCard p{color:var(--mute);margin-top:16px}
+.fold{background:#fff;border-radius:16px;padding:18px;box-shadow:0 20px 40px -18px rgba(40,36,10,.3),0 0 0 1px rgba(0,0,0,.05);font-size:15px}
+.fold div{display:flex;align-items:center;gap:12px;padding:11px 8px;border-bottom:1px solid var(--line)}
+.fold div:last-child{border:0}
+.fold i{font-style:normal;width:30px;height:30px;border-radius:8px;background:var(--sage);display:grid;place-items:center;font-size:13px;font-weight:600;color:var(--olive)}
+.fold span{flex:1;font-weight:500}.fold em{font-style:normal;color:var(--faint);font-size:13.5px}
+.fold .lock{background:var(--cream);margin-top:10px;border-radius:10px;border:0;color:var(--mute);font-size:13.5px}
+/* download */
+.dl{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:56px;text-align:left}
+.os{background:var(--cream);border-radius:24px;padding:32px;display:flex;flex-direction:column;gap:6px}
+.os h3{font:600 26px var(--serif)}
+.os p{color:var(--mute);font-size:16px;flex:1;margin-bottom:20px}
+.os.me{outline:2px solid var(--olive)}
+.note{margin-top:26px;color:var(--faint);font-size:15.5px}
+.note a{color:var(--ink)}
+/* faq */
+.faq{max-width:780px;margin:56px auto 0;text-align:left}
+details{border-bottom:1px solid var(--line);padding:24px 0}
+summary{cursor:pointer;font:400 24px var(--serif);list-style:none;display:flex;justify-content:space-between;gap:20px;align-items:center;letter-spacing:-.01em}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font:300 30px var(--sans);color:var(--olive);transition:transform .25s;flex:none}
+details[open] summary::after{transform:rotate(45deg)}
+details p{color:var(--mute);margin-top:14px;font-size:17.5px}
+details a{color:var(--ink)}
+/* closing */
+.close{margin-top:130px;border-radius:32px;padding:clamp(56px,8vw,110px) 28px;text-align:center;background:radial-gradient(70% 90% at 12% 0,#e1ec86,transparent 62%),radial-gradient(60% 90% at 95% 100%,#f1c39a,transparent 62%),#bccd5b}
+.close h2{font-size:clamp(40px,6vw,76px);max-width:14em;margin:0 auto}
+.close .row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:36px}
+.close .btn.soft{background:rgba(255,255,255,.55)}.close .btn.soft:hover{background:rgba(255,255,255,.8)}
+footer{margin-top:90px;border-top:1px solid var(--line);padding:56px 0 64px}
+footer .wrap{display:grid;grid-template-columns:1.4fr repeat(3,1fr);gap:36px}
+footer p{color:var(--faint);font-size:15px;margin-top:14px;max-width:22em}
+footer h4{font:600 15px var(--sans);margin-bottom:14px}
+footer a{display:block;text-decoration:none;color:var(--mute);font-size:15.5px;padding:4px 0}footer a:hover{color:var(--ink)}
+/* reveal */
+.rv{opacity:0;transform:translateY(22px);transition:opacity .8s cubic-bezier(.2,.7,.2,1),transform .8s cubic-bezier(.2,.7,.2,1)}
+.rv.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}html{scroll-behavior:auto}}
+@media(max-width:980px){
+  .menu{display:none;position:absolute;left:0;right:0;top:72px;background:#fff;flex-direction:column;margin:0;padding:10px 28px 22px;border-bottom:1px solid var(--line)}
+  .menu.open{display:flex}.menu a{padding:14px 6px;font-size:18px}
+  .burger{display:block;margin-left:auto}.nav-r .soft{display:none}.nav-r{margin-left:0}
+  nav .wrap{gap:10px}.brand{margin-right:auto}
+  .hero .wrap{grid-template-columns:1fr}.stage{aspect-ratio:1/.95}
+  .feat,.dl,.nums{grid-template-columns:1fr}.wideCard{grid-template-columns:1fr}
+  footer .wrap{grid-template-columns:1fr 1fr}
+  .block{padding-top:90px}.step{padding-top:90px}.doers{padding-top:110px}.band{margin-top:100px;padding:80px 0}
+}
+@media(max-width:560px){body{font-size:17px}.wrap{padding:0 20px}.btn.lg{width:100%}.hero .go{align-items:stretch}.pop{width:56%}.nav-r .btn{padding:10px 16px}}
+</style>
+</head>
+<body>
+<nav id="nav">
+  <div class="wrap">
+    <a class="brand" href="#top"><img src="img/icon-192.png" alt="" width="32" height="32">RejBoard</a>
+    <div class="menu" id="menu">
+      <a href="#write">Write</a><a href="#solve">Solve</a><a href="#plot">Plot</a><a href="#features">Features</a><a href="#faq">FAQ</a>
+    </div>
+    <div class="nav-r">
+      <a class="btn soft sm" href="https://rejwanshafi25.github.io/RejBoard/">Try in browser</a>
+      <a class="btn dark sm" href="#download">Download</a>
+    </div>
+    <button class="burger" id="burger" aria-label="Menu" aria-expanded="false"><span></span></button>
+  </div>
+</nav>
+
+<main id="top">
+<section class="hero">
+  <div class="wrap">
+    <div>
+      <a class="badge rv" href="#solve"><b>New</b>Equation solver and graph plotter</a>
+      <h1 class="rv">The whiteboard for handwritten notes and math.</h1>
+      <p class="lead rv">Write, annotate PDFs, record lectures and solve equations step by step. <strong>Without an account.</strong></p>
+      <div class="go rv">
+        <a class="btn dark lg" id="dl-main" href="https://github.com/RejwanShafi25/RejBoard/releases/latest">Download for free</a>
+        <small id="dl-note">Available for Windows, macOS, Linux and in your browser</small>
+      </div>
+    </div>
+    <div class="stage rv" aria-label="RejBoard with its equation solver open">
+      <div class="win"><div class="bar"><i></i><i></i><i></i></div><img src="img/01-board.jpg" alt="A RejBoard board with handwriting in several pens, sticky notes, shapes, a table and a formula" width="1600" height="852" fetchpriority="high"></div>
+      <div class="pop"><img src="img/solver.jpg" alt="The equation solver showing the steps and checked answer for x squared minus 5x plus 6 equals 0" width="770" height="765"></div>
+    </div>
+  </div>
+</section>
+
+<section class="doers wrap cen">
+  <h2 class="rv">For people who think on paper.</h2>
+  <p class="rv">Students, teachers and anyone who sketches an idea before they understand it. RejBoard keeps the pen, the page and the math together, on your computer.</p>
+</section>
+
+<section class="step wrap" id="write">
+  <div class="txt rv">
+    <div class="kick">Write</div>
+    <h2>Handwriting that feels natural</h2>
+    <p>Fountain, calligraphy, soft brush, ballpoint and pencil, three highlighters, tape and an eraser. Hold Shift for a straight line. Add sticky notes, shapes, tables and formulas on the same board.</p>
+    <div class="chips"><span>5 pens</span><span>3 highlighters</span><span>PDF annotation</span><span>Lecture recordings</span></div>
+  </div>
+  <div class="showcase a rv"><div class="shot wide"><img src="img/01-board.jpg" alt="RejBoard board with every pen, sticky notes, shapes and a table" width="1600" height="852" loading="lazy"></div></div>
+</section>
+
+<section class="step wrap" id="solve">
+  <div class="txt rv">
+    <div class="kick">Solve</div>
+    <h2>Every step, checked</h2>
+    <p>Solve equations and systems, differentiate, integrate, simplify, expand, factor and take limits. The working is written out, every answer is verified before it is shown, and you can drop the result straight onto your board.</p>
+  </div>
+  <div class="showcase b rv"><div class="shot nar"><img src="img/solver.jpg" alt="The RejBoard equation solver with steps, a substitution check and the final answer" width="770" height="765" loading="lazy"></div></div>
+</section>
+
+<section class="step wrap" id="plot">
+  <div class="txt rv">
+    <div class="kick">Plot</div>
+    <h2>See the curve, move the slider</h2>
+    <p>Plot <code style="font-size:.9em">y = f(x)</code>, implicit, polar and parametric curves. Letters like <em>a</em> become sliders, intersections are labelled, and the graph sits on your board and exports with your notes.</p>
+  </div>
+  <div class="showcase c rv"><div class="shot mid"><img src="img/graph.jpg" alt="The RejBoard graph plotter showing two curves, a slider and their intersections" width="990" height="632" loading="lazy"></div></div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <div class="kick" style="color:#908e80">Fast on any PC</div>
+    <h2 class="rv">Built for big boards and old computers.</h2>
+    <p class="sub rv" style="margin-top:18px;max-width:34em">A crowded board shouldn't make the pen lag. Drawing, scrolling and saving have all been tuned for slower machines.</p>
+    <div class="nums">
+      <div class="num rv"><b>≈1 ms</b><span>to finish a stroke</span><small>down from about 350 ms on a crowded board</small></div>
+      <div class="num rv"><b>≈4×</b><span>less work while scrolling</span><small>only the newly exposed strip is painted</small></div>
+      <div class="num rv"><b>≈3×</b><span>faster saves</span><small>done in the background, never while the pen is down</small></div>
+    </div>
+    <p class="fine rv">Measured on a synthetic 3,000-stroke test board. Real results depend on your computer.</p>
+  </div>
+</section>
+
+<section class="block wrap cen" id="features">
+  <div class="kick">Features</div>
+  <h2 class="rv">Works the way you do</h2>
+  <div class="feat" style="text-align:left">
+    <div class="f rv"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg><h3>No account, no cloud</h3><p>Open it and write. Boards live on your computer and the web version keeps working offline.</p></div>
+    <div class="f rv"><svg viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V8z"/><path d="M14 3v5h5"/><path d="M9 14h6M9 17h4"/></svg><h3>PDF annotation</h3><p>Open a PDF, write on it, then export the marked-up pages as PDF, PNG or SVG.</p></div>
+    <div class="f rv"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3"/></svg><h3>Lecture recordings</h3><p>Record audio for each board, so the explanation stays with the notes it belongs to.</p></div>
+    <div class="f rv"><svg viewBox="0 0 24 24"><path d="M3 7h6l2 2h10v10a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg><h3>Organised boards</h3><p>Tags, favourites, linked boards, page mode, and a trash you can restore from.</p></div>
+    <div class="f rv"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg><h3>Private by design</h3><p>Password-protect boards, and send them to another computer on your network with encryption.</p></div>
+    <div class="f rv"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 010 18M12 3a14 14 0 000 18"/></svg><h3>20+ languages</h3><p>A translated interface, with light, dark and colourful themes to pick from.</p></div>
+  </div>
+  <div class="wideCard rv" style="text-align:left">
+    <div>
+      <div class="kick">Sync folder</div>
+      <h3 style="margin-top:10px">Back up to a folder you control</h3>
+      <p>Save each board as one file into a OneDrive, Google Drive, Dropbox or Nextcloud folder, and open it on another PC. A lock file keeps two computers from writing at once.</p>
+    </div>
+    <div class="fold" aria-hidden="true">
+      <div><i>R</i><span>Physics notes</span><em>.rjwb</em></div>
+      <div><i>R</i><span>Calculus homework</span><em>.rjwb</em></div>
+      <div><i>R</i><span>Lecture 12</span><em>.rjwb</em></div>
+      <div class="lock">Folder in use on another PC? RejBoard tells you before anything is overwritten.</div>
+    </div>
+  </div>
+</section>
+
+<section class="block wrap cen" id="download">
+  <div class="kick">Download</div>
+  <h2 class="rv">Free for everyone</h2>
+  <p class="sub rv">Pick your system. Installers come from the latest release on GitHub.</p>
+  <div class="dl">
+    <div class="os rv" data-os="win"><h3>Windows</h3><p>Installer or portable .exe</p><a class="btn dark" data-asset="win" href="https://github.com/RejwanShafi25/RejBoard/releases/latest">Download for Windows</a></div>
+    <div class="os rv" data-os="mac"><h3>macOS</h3><p>Apple silicon and Intel .dmg</p><a class="btn dark" data-asset="mac" href="https://github.com/RejwanShafi25/RejBoard/releases/latest">Download for macOS</a></div>
+    <div class="os rv" data-os="linux"><h3>Linux</h3><p>AppImage, .deb and .rpm</p><a class="btn dark" data-asset="linux" href="https://github.com/RejwanShafi25/RejBoard/releases/latest">Download for Linux</a></div>
+  </div>
+  <p class="note rv">Prefer not to install? <a href="https://rejwanshafi25.github.io/RejBoard/">Open the web app</a> in Chrome, Edge or Safari and add it to your home screen.</p>
+</section>
+
+<section class="block wrap" id="faq">
+  <div class="cen"><div class="kick">FAQ</div><h2 class="rv">Good to know</h2></div>
+  <div class="faq rv">
+    <details><summary>Is it really free?</summary><p>Yes. RejBoard is MIT licensed, with no account, subscription or paid tier.</p></details>
+    <details><summary>Does the math work without internet?</summary><p>Yes. The equation solver and graph plotter run on your device and never call a web service.</p></details>
+    <details><summary>Where are my boards stored?</summary><p>On your computer, inside the app. You can also save boards as <code>.rjwb</code> files, or back them up to a folder inside OneDrive, Google Drive, Dropbox or Nextcloud.</p></details>
+    <details><summary>Will it run on an old computer?</summary><p>That is the goal. Drawing, scrolling and saving are tuned for crowded boards and slower machines. The numbers on this page come from a synthetic test board, so real results vary.</p></details>
+    <details><summary>Can I use it on a phone or tablet?</summary><p>Open the web app in your browser and add it to your home screen. It works offline once installed.</p></details>
+    <details><summary>How do I report a bug or ask for a feature?</summary><p>Open an issue on <a href="https://github.com/RejwanShafi25/RejBoard/issues">GitHub</a>.</p></details>
+  </div>
+  <div class="close rv">
+    <h2>Start writing in seconds.</h2>
+    <div class="row">
+      <a class="btn dark lg" href="#download">Download for free</a>
+      <a class="btn soft lg" href="https://github.com/RejwanShafi25/RejBoard">Star on GitHub</a>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div><a class="brand" href="#top" style="display:inline-flex"><img src="img/icon-192.png" alt="" width="32" height="32">RejBoard</a><p>A local-first whiteboard for handwritten notes, PDFs and math. Free and open source.</p></div>
+    <div><h4>Product</h4><a href="#write">Write</a><a href="#solve">Solve</a><a href="#plot">Plot</a><a href="#download">Download</a></div>
+    <div><h4>Use it</h4><a href="https://rejwanshafi25.github.io/RejBoard/">Web app</a><a href="https://github.com/RejwanShafi25/RejBoard/releases/latest">Releases</a><a href="https://github.com/RejwanShafi25/RejBoard/blob/main/CHANGELOG.md">Changelog</a></div>
+    <div><h4>Project</h4><a href="https://github.com/RejwanShafi25/RejBoard">GitHub</a><a href="https://github.com/RejwanShafi25/RejBoard/issues">Support</a><a href="https://github.com/RejwanShafi25/RejBoard/blob/main/LICENSE">MIT license</a></div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var nav=document.getElementById('nav');
+  function sc(){nav.classList.toggle('sc',window.scrollY>8)}sc();addEventListener('scroll',sc,{passive:true});
+  var menu=document.getElementById('menu'),bg=document.getElementById('burger');
+  bg.addEventListener('click',function(){var o=menu.classList.toggle('open');bg.setAttribute('aria-expanded',o)});
+  menu.addEventListener('click',function(e){if(e.target.tagName==='A'){menu.classList.remove('open');bg.setAttribute('aria-expanded',false)}});
+  /* scroll reveal */
+  var els=document.querySelectorAll('.rv');
+  if(!('IntersectionObserver' in window)){els.forEach(function(e){e.classList.add('in')})}
+  else{var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.1,rootMargin:'0px 0px -5% 0px'});els.forEach(function(e){io.observe(e)})}
+  /* download button for the visitor's system; falls back to the releases page if GitHub cannot be reached */
+  var ua=navigator.userAgent||'',plat=(navigator.userAgentData&&navigator.userAgentData.platform)||navigator.platform||'';
+  var os=/android|iphone|ipad|ipod/i.test(ua)?'mobile':/win/i.test(plat+ua)?'win':/mac/i.test(plat+ua)?'mac':/linux|x11/i.test(plat+ua)?'linux':'other';
+  var names={win:'Windows',mac:'macOS',linux:'Linux'};
+  var main=document.getElementById('dl-main'),note=document.getElementById('dl-note');
+  if(names[os]){main.textContent='Download for '+names[os];var card=document.querySelector('.os[data-os="'+os+'"]');if(card)card.classList.add('me')}
+  else if(os==='mobile'){main.textContent='Open the web app';main.href='https://rejwanshafi25.github.io/RejBoard/';note.textContent='Add it to your home screen to use it offline. Desktop apps are for Windows, macOS and Linux.'}
+  try{
+    fetch('https://api.github.com/repos/RejwanShafi25/RejBoard/releases/latest',{headers:{Accept:'application/vnd.github+json'}}).then(function(r){return r.ok?r.json():null}).then(function(rel){
+      if(!rel||!rel.assets)return;
+      var pick={win:/Setup\.exe$/i,mac:/arm64\.dmg$/i,linux:/\.AppImage$/i},macIntel=/x64\.dmg$/i,url={};
+      rel.assets.forEach(function(a){for(var k in pick){if(!url[k]&&pick[k].test(a.name))url[k]=a.browser_download_url}});
+      document.querySelectorAll('[data-asset]').forEach(function(a){var k=a.getAttribute('data-asset');if(url[k])a.href=url[k]});
+      if(url[os]){main.href=url[os];note.textContent=rel.tag_name+' · also available in your browser, and for other systems below'}
+      if(os==='mac'){var intel=rel.assets.filter(function(a){return macIntel.test(a.name)})[0];if(intel){var p=document.querySelector('.os[data-os="mac"] p');if(p)p.innerHTML='Apple silicon .dmg · <a href="'+intel.browser_download_url+'" style="color:inherit">Intel .dmg</a>'}}
+    }).catch(function(){});
+  }catch(e){}
+})();
+</script>
+</body>
+</html>

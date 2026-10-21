@@ -13,6 +13,7 @@ Write, sketch, annotate PDFs and record lectures. No account, no cloud, no subsc
 [![PWA](https://img.shields.io/badge/web-installable%20PWA-5a0fc8)](https://rejwanshafi25.github.io/RejBoard/)
 
 [Download](https://github.com/RejwanShafi25/RejBoard/releases/latest) ·
+[Website](https://rejwanshafi25.github.io/RejBoard/welcome/) ·
 [Web app](https://rejwanshafi25.github.io/RejBoard/) ·
 [Changelog](CHANGELOG.md) ·
 [Report an issue](https://github.com/RejwanShafi25/RejBoard/issues)
