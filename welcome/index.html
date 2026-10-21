@@ -105,7 +105,10 @@ h1{font-size:clamp(42px,5.2vw,72px);margin-top:26px}
 .band .fine{margin-top:40px;font-size:14.5px;color:#908e80;max-width:46em}
 /* features */
 .feat{display:grid;grid-template-columns:repeat(3,1fr);gap:56px 44px;margin-top:70px}
-.f svg{width:34px;height:34px;stroke:var(--olive);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.f svg{width:46px;height:46px;overflow:visible}
+.f svg .a{fill:var(--sage);stroke:var(--olive);stroke-width:2;stroke-linejoin:round}
+.f svg .b{fill:var(--lime);stroke:var(--olive);stroke-width:2;stroke-linejoin:round}
+.f svg .s{fill:none;stroke:var(--olive);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
 .f h3{font:600 22px var(--serif);margin:18px 0 8px;letter-spacing:-.01em;line-height:1.2}
 .f p{color:var(--mute);font-size:17px}
 .wideCard{margin-top:70px;background:var(--cream);border-radius:28px;padding:clamp(28px,5vw,64px);display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center}
@@ -246,12 +249,12 @@ footer a{display:block;text-decoration:none;color:var(--mute);font-size:15.5px;p
   <div class="kick">Features</div>
   <h2 class="rv">Works the way you do</h2>
   <div class="feat" style="text-align:left">
-    <div class="f rv"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg><h3>No account, no cloud</h3><p>Open it and write. Boards live on your computer and the web version keeps working offline.</p></div>
-    <div class="f rv"><svg viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V8z"/><path d="M14 3v5h5"/><path d="M9 14h6M9 17h4"/></svg><h3>PDF annotation</h3><p>Open a PDF, write on it, then export the marked-up pages as PDF, PNG or SVG.</p></div>
-    <div class="f rv"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3"/></svg><h3>Lecture recordings</h3><p>Record audio for each board, so the explanation stays with the notes it belongs to.</p></div>
-    <div class="f rv"><svg viewBox="0 0 24 24"><path d="M3 7h6l2 2h10v10a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg><h3>Organised boards</h3><p>Tags, favourites, linked boards, page mode, and a trash you can restore from.</p></div>
-    <div class="f rv"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg><h3>Private by design</h3><p>Password-protect boards, and send them to another computer on your network with encryption.</p></div>
-    <div class="f rv"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 010 18M12 3a14 14 0 000 18"/></svg><h3>20+ languages</h3><p>A translated interface, with light, dark and colourful themes to pick from.</p></div>
+    <div class="f rv"><svg viewBox="0 0 40 40" aria-hidden="true"><rect x="4" y="7" width="32" height="21" rx="4" class="a"/><path d="M15 34h10M20 28v6" class="s"/><path d="M10 22l5-7 4 5 3-3 6 6" class="s"/></svg><h3>No account, no cloud</h3><p>Open it and write. Boards live on your computer and the web version keeps working offline.</p></div>
+    <div class="f rv"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M9 4h14l9 9v21a2 2 0 01-2 2H9a2 2 0 01-2-2V6a2 2 0 012-2z" class="a"/><path d="M23 4v9h9" class="s"/><rect x="12" y="27" width="16" height="5" rx="2.5" class="b"/><path d="M12 21c2-3 4 3 6 0s4 3 6 0" class="s"/></svg><h3>PDF annotation</h3><p>Open a PDF, write on it, then export the marked-up pages as PDF, PNG or SVG.</p></div>
+    <div class="f rv"><svg viewBox="0 0 40 40" aria-hidden="true"><rect x="4" y="15" width="5" height="10" rx="2.5" class="b"/><rect x="12" y="9" width="5" height="22" rx="2.5" class="a"/><rect x="20" y="4" width="5" height="32" rx="2.5" class="b"/><rect x="28" y="11" width="5" height="18" rx="2.5" class="a"/></svg><h3>Lecture recordings</h3><p>Record audio for each board, so the explanation stays with the notes it belongs to.</p></div>
+    <div class="f rv"><svg viewBox="0 0 40 40" aria-hidden="true"><rect x="13" y="4" width="24" height="22" rx="4" class="a"/><rect x="4" y="13" width="24" height="23" rx="4" class="b"/><path d="M9 26c3-4 5 3 8-1s5 1 7-1" class="s"/></svg><h3>Organised boards</h3><p>Tags, favourites, linked boards, page mode, and a trash you can restore from.</p></div>
+    <div class="f rv"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M12 18v-5a8 8 0 0116 0v5" class="s" style="stroke-width:3"/><rect x="6" y="18" width="28" height="18" rx="5" class="a"/><circle cx="20" cy="26" r="3.2" class="b"/><path d="M20 29v3" class="s"/></svg><h3>Private by design</h3><p>Password-protect boards, and send them to another computer on your network with encryption.</p></div>
+    <div class="f rv"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M4 6a4 4 0 014-4h16a4 4 0 014 4v10a4 4 0 01-4 4H14l-6 5v-5H8a4 4 0 01-4-4z" class="a"/><path d="M18 20h10a4 4 0 014 4v6a4 4 0 01-4 4h-1v4l-5-4h-5a4 4 0 01-4-4v-6a4 4 0 014-4z" class="b"/><path d="M10 8h12M10 13h7" class="s"/></svg><h3>20+ languages</h3><p>A translated interface, with light, dark and colourful themes to pick from.</p></div>
   </div>
   <div class="wideCard rv" style="text-align:left">
     <div>
