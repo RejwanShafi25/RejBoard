@@ -45,7 +45,7 @@ jobs:
       - name: Assemble site
         run: |
           mkdir _site
-          cp index.html board-core.js math-engine.js graph-core.js manifest.json sw.js icon.svg icon-192.png icon-512.png og-image.jpg robots.txt sitemap.xml _site/
+          cp index.html board-core.js math-engine.js graph-core.js manifest.json sw.js icon.svg icon-192.png icon-512.png og-image.jpg robots.txt sitemap.xml googlec39715c0827ef8e4.html _site/
           cp -r vendor _site/vendor
           cp -r welcome _site/welcome
           touch _site/.nojekyll
