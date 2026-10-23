@@ -47,6 +47,51 @@ test('every local script is pre-cached for offline use', () => {
   for (const s of localScripts) assert.ok(sw.includes(`'${s}'`), `sw.js does not pre-cache ${s}`);
 });
 
+/* Scripts that only workers load (new Worker(...) in the page, importScripts(...) in the worker) are invisible to the <script> checks above. */
+const workers = [...html.matchAll(/new Worker\('([^']+)'/g)].map(m => m[1]);
+const workerImports = workers.flatMap(w => [...read(w).matchAll(/importScripts\('([^']+)'/g)].map(m => m[1]));
+
+test('worker scripts and everything they import ship in the installer and on the website', () => {
+  assert.ok(workers.includes('mfr-worker.js'), 'the handwriting -> LaTeX worker is started by the page');
+  assert.ok(workerImports.includes('mfr-core.js') && workerImports.includes('vendor/ort/ort.wasm.min.js'));
+  const files = pkg.build.files.map(globToRe), pages = read('.github/workflows/pages.yml'), sw = read('sw.js');
+  for (const s of [...workers, ...workerImports]) {
+    assert.ok(files.some(re => re.test(s)), `package.json build.files is missing ${s}`);
+    const esc = s.replace(/[.\/]/g, m => '\\' + m);
+    assert.ok(new RegExp('for f in [^\\n]*' + esc + '\\b').test(pages), `pages.yml does not check ${s}`);
+    if (!s.startsWith('vendor/')) {
+      assert.ok(new RegExp('cp [^\\n]*\\b' + esc + '\\b').test(pages), `pages.yml does not copy ${s}`);
+      assert.ok(sw.includes(`'${s}'`), `sw.js does not pre-cache ${s}`);
+    }
+  }
+});
+
+test('the ONNX Runtime loader is fetched pinned by hash, and its version matches the engine the app downloads', () => {
+  const py = read('fetch_libs.py'), C = require('../mfr-core.js');
+  const ver = (py.match(/onnxruntime-web@(\d+\.\d+\.\d+)\//) || [])[1];
+  assert.ok(ver, 'fetch_libs.py pins an exact onnxruntime-web version');
+  assert.ok(/ort\.wasm\.min\.js": "[0-9a-f]{64}"/.test(py) && /ort-wasm-simd-threaded\.mjs": "[0-9a-f]{64}"/.test(py), 'loader files are hash-checked');
+  const wasm = C.MODEL.files.find(f => f.key === 'wasm');
+  assert.ok(wasm && C.fileUrl(wasm).includes('onnxruntime-web@' + ver + '/'), 'the downloaded .wasm must come from the same version as the bundled loader');
+});
+
+test('a new service worker version fetches the app shell fresh, never from the HTTP cache', () => {
+  const sw = read('sw.js');
+  assert.ok(/addAll\(\[[^\]]+\]\.map\(u=>new Request\(u,\{cache:'reload'\}\)\)\)/.test(sw), 'install must bypass the HTTP cache, or a fresh index.html can be paired with a stale script');
+});
+
+test('the service worker never stores a second copy of the model download', () => {
+  const sw = read('sw.js'), w = read('mfr-worker.js');
+  assert.ok(/cache: 'no-store'/.test(w), 'the worker downloads with cache: no-store');
+  assert.ok(/e\.request\.cache==='no-store'\)return/.test(sw), 'sw.js lets no-store requests through untouched');
+});
+
+test('recognized LaTeX is only ever put into the editor as text', () => {
+  const block = html.slice(html.indexOf('async function hwMath'), html.indexOf('const mrepOff'));
+  assert.ok(block.includes("$('#ml').value=r.latex"));
+  assert.ok(!/innerHTML/.test(block), 'no markup built from model output');
+});
+
 test('every BoardCore function the page calls exists', () => {
   const used = new Set([...html.matchAll(/BoardCore\.(\w+)/g)].map(m => m[1]));
   assert.ok(used.size > 5);

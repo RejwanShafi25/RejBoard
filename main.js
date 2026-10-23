@@ -2,6 +2,7 @@
 const { app, BrowserWindow, ipcMain, shell, Menu, clipboard, dialog } = require('electron');
 const lanShare = require('./lan');
 const ocr = require('./ocr'); // on-device handwriting OCR (no network, no files)
+const backupStore = require('./backup-store'); // automatic daily backups into <app data>/backups
 const path = require('path');
 const fs = require('fs');
 const { autoUpdater } = require('electron-updater');
@@ -22,6 +23,7 @@ ipcMain.handle('hw', async (_e, d) => {
   return j[0] === 'SUCCESS' ? j[1][0][1][0] : '';
 });
 ocr.register(ipcMain, app);
+backupStore.register(ipcMain, app, shell);
 // ---- Word / PowerPoint -> PDF, so the renderer can import them as rendered pages (same as a PDF) ----
 const { execFile } = require('child_process');
 const os = require('os');

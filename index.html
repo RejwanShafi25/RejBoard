@@ -150,7 +150,7 @@ button,select,input,textarea{border-radius:12px}
 
 /* dialogs, locked cards, tags, folders */
 .mdl{position:fixed;inset:0;z-index:90;background:#0006;display:flex;align-items:center;justify-content:center;padding:16px}
-.mdl .box{width:min(430px,94vw);max-height:86vh;overflow:auto;background:var(--pn);color:var(--fg);border:1px solid var(--bd);border-radius:18px;padding:18px;box-shadow:0 18px 60px #0006}
+.mdl .box{width:min(430px,94vw);}.mdl .box.wide{width:min(620px,94vw)}.mdl .box{max-height:86vh;overflow:auto;background:var(--pn);color:var(--fg);border:1px solid var(--bd);border-radius:18px;padding:18px;box-shadow:0 18px 60px #0006}
 .mdl h3{margin:0 0 8px;font-size:17px}.mdl .msg{font-size:12.5px;opacity:.75;margin:0 0 10px;line-height:1.4}
 .mdl .fld{display:block;margin:8px 0}.mdl .fld span{display:block;font-size:12px;opacity:.75;margin-bottom:3px}
 .mdl .fld input{width:100%;box-sizing:border-box;padding:9px 11px}
@@ -569,7 +569,7 @@ html.lowmem .mdl,html.lowmem #stm{backdrop-filter:none!important}
 </head><body>
 <div id="hdr"><div class="hd hd-nav"><button id="bkb" hidden>← Back</button><button id="bn" title="Boards — all your notes, folders and tags"><img src="icon-192.png" alt="" width="18" height="18" style="vertical-align:-4px;border-radius:4px"> <span data-i="boards">Boards</span></button><button id="nn" title="Create a new board">＋ <span data-i="newb">New</span></button></div><div class="hd hd-doc"><b class="hd-brand">RejBoard</b><input id="ti" size="16" aria-label="Board title" title="Rename this board"><button id="lkf" hidden></button><button id="favnote" title="Add to favorites">☆</button><input id="tgs" size="12" placeholder="#tags, comma" title="Add tags to this board (comma separated)"><span class="chip" id="sv" role="status" title="Autosave status">✓ Saved</span></div><div class="hd hd-act"><button id="recb" title="Voice recordings for this board: record the class, play it back later">🎙 <span class="lb">Record</span></button><button id="cvb" title="Canvas: paper, grid, dots, pages and settings">🎨 <span data-i="canvas">Canvas</span></button><button id="exb" title="Export, save a copy, open a board file">⬆ <span data-i="export">Export</span></button><button id="prb" title="Present full screen">📽 <span data-i="present">Present</span></button><button id="stb" title="Settings">⚙</button></div></div>
 <div id="bars" hidden><div class="bar"><button id="hb" title="Close this panel">✕</button>
-<button id="tg" data-i="line"></button><button id="tsn" data-i="snap"></button><button id="pic" data-i="pic"></button><input type="file" id="fi" accept="image/*" multiple hidden><button id="hw" title="Handwriting → text (H) — select strokes with lasso">✍→T</button><button id="deselectAll" title="Deselect all objects (Esc)">↖ Deselect</button><button id="dl" title="Delete selection">🗑</button><span class="sep"></span>
+<button id="tg" data-i="line"></button><button id="tsn" data-i="snap"></button><button id="tgr" title="Snap moved and drawn things to the paper grid">Snap to grid</button><button id="tal" title="Arrange connected shapes automatically (the selected ones, or the whole diagram)">Auto-layout</button><button id="tgd" title="Show alignment guides and snap to nearby edges and centres while moving (hold Ctrl to move freely)">Smart guides</button><button id="pic" data-i="pic"></button><input type="file" id="fi" accept="image/*" multiple hidden><button id="hw" title="Handwriting → text (H) — select strokes with lasso">✍→T</button><button id="hwm" title="Handwriting → LaTeX — select a handwritten formula with the lasso">✍→∑</button><button id="deselectAll" title="Deselect all objects (Esc)">↖ Deselect</button><button id="dl" title="Delete selection">🗑</button><span class="sep"></span>
 <label title="Typed text like x^2, 1/2, sqrt(x), pi, a&lt;=b turns into a typeset equation when you finish typing, and handwriting → text does the same"><input type="checkbox" id="am" checked> <span data-i="am"></span></label><span class="sep"></span>
 <label><span data-i="bg"></span> <select id="bgs"><option value="white" data-i="light"></option><option value="cream">Cream</option><option value="gray">Light gray</option><option value="black" data-i="dark"></option><option value="slate">Slate</option><option value="navy">Navy</option></select></label>
 <label><span data-i="pt"></span> <select id="pt"><option value="plain">Plain</option><option value="grid">Grid</option><option value="dots">Dots</option><option value="lines">Lined</option><option value="cornell">Cornell</option><option value="cols">Columns</option><option value="margin">Ruled + margin</option><option value="iso">Isometric dots</option></select></label>
@@ -581,7 +581,7 @@ html.lowmem .mdl,html.lowmem #stm{backdrop-filter:none!important}
 <div class="bar" id="b5"><label><span data-i="size"></span> <select id="cps"><option value="inf" data-i="inf"></option><option value="pdf">PDF</option><option value="a4">A4</option><option value="a5">A5</option><option value="a3">A3</option><option value="letter">Letter</option></select></label><label><span data-i="orient"></span> <select id="cpo"><option value="p" data-i="portrait"></option><option value="l" data-i="landscape"></option></select></label><button id="apg" data-i="addpage"></button></div>
 <div class="bar" id="b4"><span class="sep"></span>
 <label><input type="checkbox" id="palm"> <span data-i="palm"></span></label><label><input type="checkbox" id="tilt"> <span data-i="tilt"></span></label><label><input type="checkbox" id="fast"> <span data-i="speed"></span></label><button id="penb" type="button" hidden title="Graphics tablet pen detected - adjust pen pressure">🖊 Pen</button><span class="sep"></span>
-<select id="shp" hidden><option value="rect">Rectangle</option><option value="ell">Ellipse</option><option value="tri">Triangle</option><option value="dia">Diamond</option><option value="line">Line</option><option value="arr">Arrow</option><option value="rtri">Right triangle</option><option value="pent">Pentagon</option><option value="hex">Hexagon</option><option value="oct">Octagon</option><option value="star">Star</option><option value="darr">Double arrow</option><option value="cyl">Cylinder</option><option value="cone">Cone</option><option value="sphere">Sphere</option><option value="cube">Cube</option><option value="prism">Prism</option><option value="xyz">XYZ Plane</option><option value="trap">Trapezoid</option><option value="para">Parallelogram</option><option value="heart">Heart</option><option value="cross">Cross</option><option value="cloud">Cloud</option><option value="hexagram">Hexagram</option></select>
+<select id="shp" hidden><option value="rect">Rectangle</option><option value="frame">Container</option><option value="lane">Swimlane</option><option value="ell">Ellipse</option><option value="tri">Triangle</option><option value="dia">Diamond</option><option value="line">Line</option><option value="arr">Arrow</option><option value="rtri">Right triangle</option><option value="pent">Pentagon</option><option value="hex">Hexagon</option><option value="oct">Octagon</option><option value="star">Star</option><option value="darr">Double arrow</option><option value="cyl">Cylinder</option><option value="cone">Cone</option><option value="sphere">Sphere</option><option value="cube">Cube</option><option value="prism">Prism</option><option value="xyz">XYZ Plane</option><option value="trap">Trapezoid</option><option value="para">Parallelogram</option><option value="heart">Heart</option><option value="cross">Cross</option><option value="cloud">Cloud</option><option value="hexagram">Hexagram</option></select>
 </div>
 </div><button id="sh" hidden title="Show toolbars">▼</button>
 <div id="w"><canvas id="c"></canvas><div id="brushCursor" class="brush-cursor" aria-hidden="true"></div></div>
@@ -591,7 +591,7 @@ html.lowmem .mdl,html.lowmem #stm{backdrop-filter:none!important}
 <div id="txp" class="pp" hidden><span id="txszw" title="Font size (pt)"><button id="txszm" type="button" title="Decrease font size">−</button><input id="txsz" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" value="18" aria-label="Font size in points"><button id="txszd" type="button" title="Choose a font size">▾</button><button id="txszp" type="button" title="Increase font size">+</button><div id="txszl" hidden></div></span><input id="txcolor" type="color" title="Text color" value="#111111"><select id="tff" title="Font"><option value="hand">Handwriting</option><option value="sans" selected>Sans</option><option value="mono">Mono</option><option value="marker">Marker</option><option value="serif">Serif</option></select><span id="txsk" hidden style="display:none;align-items:center;gap:5px;flex-wrap:wrap"><b style="font-size:12px" title="Sticky note color">Note</b><span id="txskc" style="display:flex;gap:4px;flex-wrap:wrap"></span><input id="txskp" type="color" title="Custom sticky note color" value="#fff3a3"></span><button id="tb_" title="Bold"><b>B</b></button><button id="ti_" title="Italic"><i>I</i></button><button id="tu_" title="Underline"><u>U</u></button></div>
 <div id="emp" class="pp" hidden><button class="em" style="font-size:22px">😀</button><button class="em" style="font-size:22px">😍</button><button class="em" style="font-size:22px">🥰</button><button class="em" style="font-size:22px">😎</button><button class="em" style="font-size:22px">🤔</button><button class="em" style="font-size:22px">😴</button><button class="em" style="font-size:22px">🎉</button><button class="em" style="font-size:22px">✨</button><button class="em" style="font-size:22px">🌸</button><button class="em" style="font-size:22px">🌈</button><button class="em" style="font-size:22px">⭐</button><button class="em" style="font-size:22px">❤️</button><button class="em" style="font-size:22px">💡</button><button class="em" style="font-size:22px">📌</button><button class="em" style="font-size:22px">✅</button><button class="em" style="font-size:22px">❌</button><button class="em" style="font-size:22px">⚠️</button><button class="em" style="font-size:22px">❓</button><button class="em" style="font-size:22px">🔥</button><button class="em" style="font-size:22px">🍀</button><button class="em" style="font-size:22px">🎯</button><button class="em" style="font-size:22px">📚</button><button class="em" style="font-size:22px">✏️</button><button class="em" style="font-size:22px">🖍️</button><button class="em" style="font-size:22px">🧠</button><button class="em" style="font-size:22px">🐱</button><button class="em" style="font-size:22px">🐶</button><button class="em" style="font-size:22px">🦄</button><button class="em" style="font-size:22px">🍓</button><button class="em" style="font-size:22px">☕</button><button class="em" style="font-size:22px">🎵</button></div>
 <div id="plm" class="pp" hidden><button id="pl1">🖼️ Add image</button><button id="pl2">📄 PDF (annotate on top)</button><button id="pl4">📄 Word / PowerPoint</button><button id="pl3">▦ <span data-i="addtable"></span></button></div>
-<div id="exm" class="pp" hidden style="flex-direction:column;align-items:stretch"><button data-x="png">🖼 Export board as PNG</button><button data-x="svg">✏️ Export board as SVG</button><button data-x="pdf">📕 Export as PDF</button><button data-x="selpng">🔲 Export selection as PNG</button><button data-x="fit">⛶ Fit everything on the paper</button><button data-x="copy">💾 Save a copy (.rjwb — opens only in this app)</button><button data-x="open">📂 Open a board file</button><button data-x="lan">📡 Share boards on local network (encrypted)…</button></div>
+<div id="exm" class="pp" hidden style="flex-direction:column;align-items:stretch"><button data-x="png">🖼 Export board as PNG</button><button data-x="svg">✏️ Export board as SVG</button><button data-x="pdf">📕 Export as PDF</button><button data-x="selpng">🔲 Export selection as PNG</button><button data-x="md">📝 Export as Markdown (.zip)</button><button data-x="fit">⛶ Fit everything on the paper</button><button data-x="ver">🕘 Version history…</button><button data-x="copy">💾 Save a copy (.rjwb — opens only in this app)</button><button data-x="open">📂 Open a board file</button><button data-x="lan">📡 Share boards on local network (encrypted)…</button></div>
 <div id="sb" class="pp" hidden><button data-a="dup" title="Duplicate (Ctrl+D)">⧉</button><button data-a="copy" title="Copy (Ctrl+C)">📋</button><button data-a="cut" title="Cut (Ctrl+X)">✂️</button><button data-a="del" title="Delete">🗑</button><button data-a="front" title="Bring to front">⬆</button><button data-a="back" title="Send to back">⬇</button><button data-a="grp" title="Group (Ctrl+G)">▣</button><button data-a="ungrp" title="Ungroup (Ctrl+Shift+G)">▢</button><span class="sep"></span><button data-a="L" title="Align left">⇤</button><button data-a="H" title="Center horizontally">⇔</button><button data-a="R" title="Align right">⇥</button><button data-a="T" title="Align top">⤒</button><button data-a="V" title="Center vertically">⇕</button><button data-a="D" title="Align bottom">⤓</button><button data-a="zsel" title="Zoom to selection (Z)">🔍</button><button data-a="dist" title="Distribute evenly (3+ objects)" aria-label="Distribute evenly"><svg viewBox="0 0 16 16" width="1em" height="1em" fill="currentColor" aria-hidden="true" style="vertical-align:-.125em"><rect x="1" y="2" width="1.6" height="12" rx=".8"/><rect x="13.4" y="2" width="1.6" height="12" rx=".8"/><rect x="5.6" y="4.5" width="4.8" height="7" rx="1"/></svg></button></div>
 <div id="tbp" class="pp" hidden style="bottom:calc(var(--pb,86px) + 60px)"><div class="tbr"><b>Rows / columns</b><button data-b="ra">＋ Row above</button><button data-b="rb">＋ Row below</button><button data-b="cl">＋ Col left</button><button data-b="cr">＋ Col right</button><button data-b="dr">− Row</button><button data-b="dc">− Col</button></div><div class="tbr"><b>Cells</b><button data-b="mg" title="Merge the selected cells into one">⊞ Merge</button><button data-b="sp" title="Unmerge a merged cell, or split a single cell into rows / columns">⊟ Split</button><button data-b="sum" title="AutoSum the numbers above (or to the left of) the selected cell">Σ Sum</button><b>Fill</b><button class="sw" data-bgc="#fff3a3" style="background:#fff3a3" title="Cell background #fff3a3"></button><button class="sw" data-bgc="#ffd6e0" style="background:#ffd6e0" title="Cell background #ffd6e0"></button><button class="sw" data-bgc="#d6f5d6" style="background:#d6f5d6" title="Cell background #d6f5d6"></button><button class="sw" data-bgc="#d6e8ff" style="background:#d6e8ff" title="Cell background #d6e8ff"></button><button class="sw" data-bgc="#e5d6ff" style="background:#e5d6ff" title="Cell background #e5d6ff"></button><button class="sw" data-bgc="#ffe0b3" style="background:#ffe0b3" title="Cell background #ffe0b3"></button><button class="sw" data-bgc="#e0e0e0" style="background:#e0e0e0" title="Cell background #e0e0e0"></button><input type="color" id="tbbg" value="#ffe066" title="Custom cell background"><button data-b="nofill" title="Remove cell background">∅</button></div><div class="tbr"><b>Text</b><select id="tbff" title="Font of the selected cells"><option value="hand">Handwriting</option><option value="sans">Sans</option><option value="mono">Mono</option><option value="marker">Marker</option><option value="serif">Serif</option></select><label title="Text size of the selected cells" style="display:flex;align-items:center;gap:3px;font-size:12px">Size <input id="tbfs" type="range" min="8" max="96" value="18" style="width:90px"><span id="tbfsv" style="min-width:20px">18</span></label><input type="color" id="tbtc" value="#111111" title="Text color of the selected cells"><button data-tx="b" id="tbxb" title="Bold"><b>B</b></button><button data-tx="i" id="tbxi" title="Italic"><i>I</i></button><button data-tx="u" id="tbxu" title="Underline"><u>U</u></button><button data-b="txreset" title="Back to the table's default text style">Reset</button><button data-b="all" title="Select every cell of the table">▦ All cells</button></div><div class="tbr"><b>Align</b><button data-al="l" title="Align left">⇤</button><button data-al="c" title="Center">↔</button><button data-al="r" title="Align right">⇥</button><button data-av="t" title="Align top">⤒</button><button data-av="m" title="Middle">↕</button><button data-av="b" title="Align bottom">⤓</button></div><div class="tbr"><b>Borders</b><button data-bd="all">All</button><button data-bd="outer">Outer</button><button data-bd="inner">Inner</button><button data-bd="T">Top</button><button data-bd="B">Bottom</button><button data-bd="L">Left</button><button data-bd="R">Right</button><button data-bd="none" title="Remove the borders around the selected cells">None</button><button data-bd="reset" title="Back to the default thin line">Default</button></div><div class="tbr"><b>Border style</b><select id="tbbw" title="Border thickness"><option value="1">Thin</option><option value="2" selected>Medium</option><option value="4">Thick</option></select><select id="tbbs" title="Border line style"><option value="">Solid</option><option value="d">Dashed</option><option value="o">Dotted</option></select><input type="color" id="tbbc" value="#111111" title="Border color"><b>Table</b><button data-b="dup">⧉ Copy</button><button data-b="front">⬆ Front</button><button data-b="back">⬇ Back</button></div><div class="tbh">Drag across cells to select (Shift+click extends) · drag a grid line to resize · ✥ moves the table · double-click or Tab to type · formulas start with = : =SUM(A1:A3), =B2*C2, =AVERAGE(B2:B9), =IF(A1&gt;5,"hi","lo"), =SUMIF(A1:A9,"&gt;5") — letters/numbers on the table edge are the cell addresses · while typing a formula, click cells to insert them</div></div>
 <div id="pgn" class="pp" hidden style="left:12px;transform:none;bottom:14px;flex-wrap:nowrap"><button id="pg0" title="Previous page">◀</button><span id="pgl2" class="chip">1/1</span><button id="pg1" title="Next page">▶</button><button id="pgov-btn" title="Pages overview — rearrange, copy and delete pages">▦ Pages</button><button id="pgadd" title="Add another page">＋ <span data-i="page"></span></button><button id="pgfull" hidden class="on"></button></div>
@@ -619,9 +619,9 @@ html.lowmem .mdl,html.lowmem #stm{backdrop-filter:none!important}
 <div id="erp" class="pp" hidden aria-label="Eraser settings"><label>Size <input id="ersz" type="range" min="2" max="80" value="16"></label><label><input id="erobj" type="checkbox" checked> Erase entire object</label><label><input id="erhl" type="checkbox"> Highlighter only</label><label><input id="ertp" type="checkbox"> Tape only</label></div>
 <div id="pdfq" class="pop" hidden><label style="display:block;margin-bottom:8px"><input type="checkbox" id="pdfinv"> Invert PDF colors before saving</label><div style="display:flex;gap:6px;justify-content:flex-end"><button id="pdfcancel">Cancel</button><button id="pdfsave" class="on">Save PDF</button></div></div>
 <div id="pdfm" hidden><div class="inner"><div style="display:flex;gap:8px;align-items:center"><b id="pdfmt" style="font-size:17px;flex:1">Import PDF</b><button id="pdfmx">✕</button></div><div id="pdfstatus" style="opacity:.7;margin-top:4px"></div><div class="opts" style="margin-top:10px"><label><input type="radio" name="pdfscope" value="all" checked> All pages</label><label><input type="radio" name="pdfscope" value="custom"> Custom range</label><input id="pdfrange" placeholder="e.g. 1-3,5,8-10" style="min-width:190px"><label>Quality <select id="pdfqly"><option value="144">Standard (144 dpi)</option><option value="216">High (216 dpi)</option><option value="300">Maximum (300 dpi)</option></select></label><label>Arrange <select id="pdfarr"><option value="stack">Stacked</option><option value="row">Row</option><option value="grid">Grid</option></select></label></div><div style="display:flex;gap:6px;margin-top:8px"><button id="pdfall" type="button">Select all</button><button id="pdfnone" type="button">Select none</button><span style="flex:1"></span><button id="pdfdo" class="on">Import selected pages</button></div><div id="pdfpages" class="pages"></div></div></div>
-<div id="mq" class="pop" hidden><b>LaTeX</b><br><textarea id="ml" placeholder="Type LaTeX…"></textarea><div id="mathTabs" style="display:flex;gap:4px;margin-top:7px"><button data-mtab="structures" class="on">Structures</button><button data-mtab="greek">Greek</button><button data-mtab="symbols">Symbols</button><button data-mtab="cs">Computer Science</button><button data-mtab="other">Other</button></div><div id="mathPalette" style="display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin-top:6px"></div><div id="mathPreview" style="min-height:44px;padding:8px;border-radius:10px;background:var(--bg);margin-top:7px;overflow:auto"></div><br><button id="mi" class="on">Insert</button> <button id="mc">Cancel</button></div>
+<div id="mq" class="pop" hidden><b>LaTeX</b><br><textarea id="ml" placeholder="Type LaTeX…"></textarea><div id="mathTabs" style="display:flex;gap:4px;margin-top:7px"><button data-mtab="structures" class="on">Structures</button><button data-mtab="greek">Greek</button><button data-mtab="symbols">Symbols</button><button data-mtab="cs">Computer Science</button><button data-mtab="other">Other</button></div><div id="mathPalette" style="display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin-top:6px"></div><div id="mathPreview" style="min-height:44px;padding:8px;border-radius:10px;background:var(--bg);margin-top:7px;overflow:auto"></div><div id="mrepL" hidden style="margin-top:7px"><label><input type="checkbox" id="mrep" checked> Replace the handwriting</label></div><br><button id="mi" class="on">Insert</button> <button id="mc">Cancel</button></div>
 <div id="np" class="pop" hidden></div><div id="ts_" hidden></div>
-<script src="board-core.js"></script>
+<script src="board-core.js"></script><script src="versions-core.js"></script><script src="md-core.js"></script><script src="vault-core.js"></script><script src="diagram-core.js"></script>
 <script src="math-engine.js"></script>
 <script src="graph-core.js"></script>
 <script>
@@ -634,12 +634,13 @@ const T={en:{ang:'Nib angle',pic:'Picture',ut:'Theme',pt:'Pattern',gs:'Spacing',
 const LN={en:'English',es:'Español',fr:'Français',de:'Deutsch',bn:'বাংলা',hi:'हिन्दी',ar:'العربية',zh:'中文'};
 const TLN={en:'English',es:'Español',fr:'Français',de:'Deutsch',bn:'বাংলা',hi:'हिन्दी',ar:'العربية',ur:'اردو',zh:'中文',ja:'日本語',ko:'한국어',ru:'Русский',pt:'Português',it:'Italiano',tr:'Türkçe'};
 const cfg=L('wb.cfg',{});for(const k in DEF)cfg[k]=Object.assign({size:DEF[k],stab:30,sens:.6,ang:k=='hch'?45:135,opacity:k[0]=='h'?35:100},cfg[k]);cfg.erase=Object.assign({size:16,whole:true},cfg.erase||{});cfg.laser=Object.assign({fade:1000,size:5},cfg.laser||{});
-const DS={moveLinked:true,pres:true,side:true,inkRaw:true,mouse:'auto',finger:'auto',ptr:'nib',wheel:false,rts:true,rdrag:true,ll:false,auto:true,hwEngine:'online',snd:false,sndEr:true,sndVol:60,dbPack:true},ST=Object.assign({},DS,L('wb.st',{})),FF={hand:'"Segoe Print","Comic Sans MS","Bradley Hand",cursive',sans:FONT,mono:'ui-monospace,Consolas,monospace',marker:'"Marker Felt","Chalkboard SE","Comic Sans MS",fantasy',serif:'Georgia,"Times New Roman",serif'};
+const DS={moveLinked:true,pres:true,side:true,inkRaw:true,mouse:'auto',finger:'auto',ptr:'nib',wheel:false,rts:true,rdrag:true,ll:false,auto:true,hwEngine:'online',snd:false,sndEr:true,sndVol:60,dbPack:true,autoBk:true,ixHw:true},ST=Object.assign({},DS,L('wb.st',{})),FF={hand:'"Segoe Print","Comic Sans MS","Bradley Hand",cursive',sans:FONT,mono:'ui-monospace,Consolas,monospace',marker:'"Marker Felt","Chalkboard SE","Comic Sans MS",fantasy',serif:'Georgia,"Times New Roman",serif'};
 const S={id:null,pg:{size:'inf',o:'p',n:1},cell:null,sc:'#fff3a3',sk:'m',fill:'',tf:{ff:'sans',b:0,i:0,u:0,size:24},title:'Untitled',items:[],bg:'white',pat:'plain',gs:28,gd:1.5,am:true,z:1,fast:L('wb.fast',true),palm:L('wb.palm',false),tilt:L('wb.tilt',false),layers:[{id:1,name:'Layer 1',vis:1,lock:0}],ly:1,parent:'',tags:'',ox:0,oy:0,tool:'fount',color:'#111111',sel:[],straight:false,stickySize:'m',stickyColor:'#fff3a3',eraseWhole:true,snap:false,rot:0,ruler:false,rulerAngle:0,rulerLen:520,tl:L('wb.tl','en'),colors:L('wb.colors',['#111111','#ffffff','#e03131','#2f6fed','#2f9e44','#f08c00','#9c36b5'])};
 S.shapeStyle=Object.assign({lineType:'solid',cornerType:'rounded',size:cfg?.shape?.size||3,border:S.color,fill:S.fill||''},L('wb.shapeStyle',{}));
 let pals=Object.assign({'Pastel Candy':['#ffb3c6','#ffcfd2','#fde4cf','#fbf8cc','#b9fbc0','#a0c4ff','#cdb4ff'],'Pastel Sky':['#cae9ff','#bde0fe','#a2d2ff','#d0f4de','#e4c1f9','#fcf6bd','#ffc8dd'],'Pastel Earth':['#e6ccb2','#ddb892','#b7b7a4','#a5a58d','#cb997e','#ddbea9','#ffe8d6']},L('wb.pals',{})),hist=[],fut=[],cur=null,lasso=null,drag=null,cache=null,CF='',sp,lt,lp,mp=[100,100],st;
 const cv=$('#c'),cx=cv.getContext('2d',{desynchronized:!!L('wb.st',{}).ll});let dpr=1;
-const toast=(m,ms=2800)=>{const t=$('#ts_');t.textContent=m;t.hidden=0;clearTimeout(toast.h);toast.h=setTimeout(()=>t.hidden=1,ms)};
+const t_=(k,v)=>{let o=window.__tx?window.__tx(k):k;if(v)for(const n in v)o=o.split('{'+n+'}').join(String(v[n]));return o}, /* translated message with {placeholders} */
+toast=(m,ms=2800)=>{const t=$('#ts_');t.textContent=m;t.hidden=0;clearTimeout(toast.h);toast.h=setTimeout(()=>t.hidden=1,ms)};
 /* ---------- rendering ---------- */
 const IM={};function img(s){if(!IM[s]){const m=new Image();m.decoding='async';m.onload=()=>schedDraw();m.src=s;IM[s]=m}return IM[s]}
 const wd=(s,p)=>Math.max(.6,s.size*(1-s.sens+s.sens*2*p));
@@ -953,7 +954,7 @@ function item(c,i){c.save();let rb=null;if(i.rot){const b=bnds([i]);rb=[(b[0]+b[
 function bnds(L){let a=[1e9,1e9,-1e9,-1e9];for(const i of L){let b;if(i.t=='sp')b=spAabb(i);else if(i.t=='s'&&i.xyz){const o=i.xyz,ox=o.ox??i.x,oy=o.oy??i.y,dx=(o.zLen||35)*.72,dy=(o.zLen||35)*.55;b=[ox,oy-(o.zLen||35)*.55,ox+(o.xLen||120)+10,oy+(o.yLen||90)+10]}else if(i.t=='s'){const r=i.size/2;b=i.pts.reduce((m,p)=>[Math.min(m[0],p[0]-r),Math.min(m[1],p[1]-r),Math.max(m[2],p[0]+r),Math.max(m[3],p[1]+r)],[1e9,1e9,-1e9,-1e9])}else{if(i.t=='t'||i.t=='l')txt(cx,i,0);b=[i.x,i.y,i.x+i.w,i.y+i.h]}a=[Math.min(a[0],b[0]),Math.min(a[1],b[1]),Math.max(a[2],b[2]),Math.max(a[3],b[3])]}return a}
 function clipPages(c){if(S.pg.size==='inf')return;const[pw,ph]=pdim();c.beginPath();for(let i=0;i<S.pg.n;i++)c.rect(0,i*(ph+PG_GAP),pw,ph);c.clip()}
 var rulerActive=false,rulerHook=null;
-function draw(){draw0();ov2();if(typeof renderRuler==='function')renderRuler()}
+function draw(){draw0();ov2();if(drag&&drag.k=='mv'&&drag.guides)drawGuides(cx,drag.guides);if(typeof renderRuler==='function')renderRuler()}
 /* ---- viewport culling: only items that can touch the visible area are painted ---- */
 var VP=null;
 function vpRect(){const W=cv.width/dpr,H=cv.height/dpr,m=40/S.z;return[-S.ox/S.z-m,-S.oy/S.z-m,(W-S.ox)/S.z+m,(H-S.oy)/S.z+m]}
@@ -1095,20 +1096,24 @@ const ind=m=>{const e=$('#sv');if(e)e.textContent=m};
 let DIRTY=false;
 const boardCreated=(r,id=r.id)=>{if(r.ct)return r.ct;const m=/^[0-9a-z]{9,}$/.test(id||'')?parseInt(String(id).slice(0,-4),36):0;return m>9.46e11&&m<=Date.now()+864e5?m:(r.t||0)}; /* old boards: uid() embeds the creation time */
 const boardModified=r=>r.mt||r.t||0;
-async function saveNow(src){clearTimeout(st);if(!S.id)return;if(S.eph&&!DIRTY&&!S.items.length)return;S.eph=false;const dirty=DIRTY;DIRTY=false;BTITLE[S.id]=S.title;BLINKS[S.id]=new Set(linkRefs(S.items).map(r=>r.id));const q=S.items.map(i=>i.srcText||i.text||i.latex||(i.cells?i.cells.flat().join(' '):'')).join(' ').slice(0,4000);const prev0=await tx('readonly',s=>s.get(S.id))||{},prev={};for(const k in prev0)if(k!=='items')prev[k]=prev0[k]; /* (copy without touching the stored strokes) */
- const r=await tx('readwrite',s=>s.put({...prev,id:S.id,title:S.title,items:S.items,bg:S.bg,pat:S.pat,gs:S.gs,gd:S.gd,layers:S.layers,pg:S.pg,parent:S.parent,tags:S.tags,q,t:Date.now(),ct:boardCreated(prev,S.id),mt:dirty?Date.now():(boardModified(prev)||Date.now()),fav:!!S.fav,th:thumbNow(prev,src==='timer')}));
+async function saveNow(src){clearTimeout(st);if(!S.id)return;if(S.eph&&!DIRTY&&!S.items.length)return;S.eph=false;const dirty=DIRTY;DIRTY=false;BTITLE[S.id]=S.title;BLINKS[S.id]=new Set(linkRefs(S.items).map(r=>r.id));const{q,pq}=BoardCore.searchText(S.items);const prev0=await tx('readonly',s=>s.get(S.id))||{},prev={};for(const k in prev0)if(k!=='items')prev[k]=prev0[k]; /* (copy without touching the stored strokes) */
+ if(dirty&&prev0.id===S.id)verSnap(prev0); /* version history keeps the board as it was BEFORE this change (when a snapshot is due) */
+ let rec_={...prev,id:S.id,title:S.title,items:S.items,bg:S.bg,pat:S.pat,gs:S.gs,gd:S.gd,layers:S.layers,pg:S.pg,parent:S.parent,tags:S.tags,q,pq,t:Date.now(),ct:boardCreated(prev,S.id),mt:dirty?Date.now():(boardModified(prev)||Date.now()),fav:!!S.fav,th:thumbNow(prev,src==='timer')};
+ if(VaultCore.isProtected(prev0)){const k=VK.get(S.id);if(!k){DIRTY=true;return ind('⚠ Not saved: this board is locked')}try{rec_=await VaultCore.seal(rec_,k,prev0.enc.head)}catch(e){DIRTY=true;return ind('⚠ Not saved (encryption failed)')}}
+ const r=await tx('readwrite',s=>s.put(rec_));
  ind(r?'✓ Saved '+new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}):'⚠ Not saved (no storage)')}
 /* big boards: save later (and never while a pen is down), and refresh the thumbnail at most every 8 s */
 const boardWeight=()=>{let w=S.items.length;for(const i of S.items)if(i.pts)w+=i.pts.length/20;return w}; /* ink points count too: a few long strokes are as heavy as many short ones */
 const saveDelay=()=>Math.min(4000,600+boardWeight()*.8);
 function saveSoon(){if(drag){st=setTimeout(saveSoon,500);return}saveNow('timer')}
 let thT=0;
-function thumbNow(prev,lazy){const n=S.items.length;if(!n)return prev.th||'';const now=Date.now(),w=boardWeight();if(lazy&&w>=150&&prev.th&&now-thT<8000)return prev.th;thT=now;THF=w>=400;try{return rexp(0,0,200).toDataURL('image/png')}finally{THF=false}}
+let THM={id:null,th:''}; /* last thumbnail of the open board: a protected board stores its thumbnail encrypted, so prev.th is empty there */
+function thumbNow(prev,lazy){const n=S.items.length,pth=prev.th||(THM.id===S.id?THM.th:'');if(!n)return pth;const now=Date.now(),w=boardWeight();if(lazy&&w>=150&&pth&&now-thT<8000)return pth;thT=now;THF=w>=400;try{const th=rexp(0,0,200).toDataURL('image/png');THM={id:S.id,th};return th}finally{THF=false}}
 function save(){clearTimeout(st);DIRTY=true;if(!ST.auto){ind('● Unsaved (Ctrl+S)');return}ind('● Saving…');st=setTimeout(saveSoon,saveDelay())}
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
 /* leaving a board: close the floating browser / video panel (and wipe its page + browsing data) */
 function closeMediaHub(){const h=document.getElementById('mediaHub'),b=document.getElementById('mediaClose');if(h&&!h.hidden&&b&&b.onclick)b.onclick()}
-async function openNote(n){closeMediaHub();DIRTY=false;S.eph=false;HW.line=null;if(!_linkNav)BSTACK.length=0;BTITLE[n.id]=n.title;S.id=n.id;S.title=n.title;Wr('wb.last',n.id);if(window.mtLoad&&(n.items||[]).some(q=>q&&q.t==='gr'))mtLoad().then(()=>{LC.ok=false;draw()}).catch(()=>{});try{window.wb&&wb.app&&wb.app.board(n.title||'Untitled')}catch(_){}S.items=migShapes(n.items);S.bg=n.bg;S.pat=n.pat||'plain';S.gs=n.gs||28;S.gd=n.gd||1.5;syncPaper();S.sel=[];hist=[];fut=[];S.pg=n.pg||{size:'inf',o:'p',n:1};S.ox=S.oy=0;S.z=1;S.layers=n.layers||[{id:1,name:'Layer 1',vis:1,lock:0}];S.ly=S.layers[S.layers.length-1].id;S.parent=n.parent||'';S.tags=n.tags||'';S.fav=!!n.fav;$('#tgs').value=S.tags;setTimeout(()=>{try{fitTags()}catch(e){}},0);$('#favnote').textContent=S.fav?'★':'☆';$('#favnote').title=S.fav?'Remove from favorites':'Add to favorites';$('#ti').value=S.title;$('#bgs').value=S.bg;S.items.forEach(i=>i.src&&img(i.src));pgUi();if(S.pg.size!='inf')goPage(0);draw();$('#np').hidden=1;$('#hm').hidden=1;bkUi();lfUi()}
+async function openNote(n){if(VaultCore.isProtected(n)){toast('This board is protected. Open it from the home screen and enter its password.',5000);return}closeMediaHub();DIRTY=false;S.eph=false;HW.line=null;if(!_linkNav)BSTACK.length=0;BTITLE[n.id]=n.title;S.id=n.id;S.title=n.title;Wr('wb.last',n.id);if(window.mtLoad&&(n.items||[]).some(q=>q&&q.t==='gr'))mtLoad().then(()=>{LC.ok=false;draw()}).catch(()=>{});try{window.wb&&wb.app&&wb.app.board(n.title||'Untitled')}catch(_){}S.items=migShapes(n.items);S.bg=n.bg;S.pat=n.pat||'plain';S.gs=n.gs||28;S.gd=n.gd||1.5;syncPaper();S.sel=[];hist=[];fut=[];S.pg=n.pg||{size:'inf',o:'p',n:1};S.ox=S.oy=0;S.z=1;S.layers=n.layers||[{id:1,name:'Layer 1',vis:1,lock:0}];S.ly=S.layers[S.layers.length-1].id;S.parent=n.parent||'';S.tags=n.tags||'';S.fav=!!n.fav;$('#tgs').value=S.tags;setTimeout(()=>{try{fitTags()}catch(e){}},0);$('#favnote').textContent=S.fav?'★':'☆';$('#favnote').title=S.fav?'Remove from favorites':'Add to favorites';$('#ti').value=S.title;$('#bgs').value=S.bg;S.items.forEach(i=>i.src&&img(i.src));pgUi();if(S.pg.size!='inf')goPage(0);draw();$('#np').hidden=1;$('#hm').hidden=1;bkUi();lfUi()}
 /* placeholder board shown when no boards exist: NOT written to storage until the user actually edits it */
 async function blankNote(){if(S.id)await saveNow();await openNote({id:uid(),title:'Untitled',items:[],bg:S.bg,parent:CF,fav:false});S.eph=true;DIRTY=false}
 async function newNote(){if(S.id)await saveNow();openNote({id:uid(),title:'Untitled',items:[],bg:S.bg,parent:CF,fav:false});save()}
@@ -1131,17 +1136,148 @@ async function listNotes(){const p=$('#np');
   n.onblur=()=>{if(!n.readOnly)saveName()};
   const x=document.createElement('button');x.textContent='✕';x.title='Delete folder (contents move up one level)';
   x.onclick=async()=>{if(x.textContent=='✕'){x.textContent='Sure?';return}for(const c of all.filter(r=>(r.parent||'')==f.id))await tx('readwrite',s=>s.put({...c,parent:f.parent||''}));await tx('readwrite',s=>s.delete(f.id));listNotes()};d.append(o,rn,n,x);ls.append(d)});
- N.filter(n=>searching?((n.title+' '+(n.tags||'')+' '+(n.q||'')).toLowerCase().includes(w_)&&tg.every(t=>(n.tags||'').toLowerCase().split(',').map(x=>x.trim()).includes(t))):(n.parent||'')==CF).forEach(n=>{
+ N.filter(n=>searching?(BoardCore.textMatch(n.title+' '+(n.tags||'')+' '+(n.locked?'':(n.q||'')+' '+(n.hq||'')+' '+(n.pq||'')),w_)&&tg.every(t=>(n.tags||'').toLowerCase().split(',').map(x=>x.trim()).includes(t))):(n.parent||'')==CF).forEach(n=>{
   const d=document.createElement('div');d.className='nc';const im=new Image();im.src=n.th||'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';const m=document.createElement('div');m.style.flex=1;const tt=document.createElement('b');tt.textContent=n.title;m.append(tt,document.createElement('br'));
   (n.tags||'').split(',').map(t=>t.trim()).filter(Boolean).forEach(t=>{const c=document.createElement('button');c.textContent='#'+t;c.style.cssText='padding:0 6px;margin:1px';c.onclick=()=>{NQ='#'+t;$('#ns').value=NQ;listNotes()};m.append(c)});
   const sm=document.createElement('small');sm.textContent=(searching?' '+path(n.parent||''):'')+' '+new Date(n.t).toLocaleDateString();m.append(sm);
   const o=document.createElement('button');o.textContent='Open';o.onclick=async()=>{await openBoardGuarded(n)};
   const mv=document.createElement('select');mv.style.width='64px';mv.innerHTML='<option value="">Move…</option><option value="__r">(root)</option>'+F.map(f=>`<option value="${f.id}">${path(f.id).replace(/</g,'&lt;')}</option>`).join('');mv.onchange=async()=>{if(!mv.value)return;await tx('readwrite',s=>s.put({...n,parent:mv.value=='__r'?'':mv.value}));listNotes()};
-  const x=document.createElement('button');x.textContent='✕';x.onclick=async()=>{if(x.textContent=='✕'){x.textContent='Sure?';return}await tx('readwrite',s=>s.delete(n.id));if(n.id==S.id){S.id=null;await blankNote()}listNotes()};
+  const x=document.createElement('button');x.textContent='✕';x.onclick=async()=>{if(x.textContent=='✕'){x.textContent='Sure?';return}await tx('readwrite',s=>s.delete(n.id));await recDelBoards([n.id]);await verDelBoards([n.id]);if(n.id==S.id){S.id=null;await blankNote()}listNotes()};
   d.append(im,m,o,mv,x);ls.append(d)});
  if(!ls.children.length)ls.textContent=searching?'No matches.':'Empty — add a folder or a note.'}
 async function backup(){const all=(await tx('readonly',s=>s.getAll()))||[],recs=(await rtx('readonly',s=>s.getAll()))||[];for(const r of recs){const{blob,...m}=r;all.push({...m,rec:1,data:await blobToDataURL(blob)})}if(recs.length)toast('Backup includes '+recs.length+' voice recording'+(recs.length==1?'':'s'),3500);dlf('whiteboard-backup.json',new Blob([JSON.stringify(all)],{type:'application/json'}))}
-async function restore(e){const f=e.target.files[0];e.target.value='';if(!f)return;try{const a=JSON.parse(await f.text());for(const r of a)if(r.id){if(r.rec){const{data,rec,...m}=r;await rtx('readwrite',s=>s.put({...m,blob:dataURLToBlob(data)}))}else await tx('readwrite',s=>s.put(r))}toast('Restored '+a.length+' items');listNotes()}catch(x){toast('Invalid backup file')}}
+async function restore(e){const f=e.target.files[0];e.target.value='';if(!f)return;try{await restoreText(await f.text())}catch(x){toast('Invalid backup file')}}
+/* Puts back every record of a backup. A board that would be overwritten is first saved to its version history, so a restore can be undone. */
+async function restoreText(text){const a=JSON.parse(text);if(!Array.isArray(a))throw new Error('not a backup');if(S.id)await saveNow();let n=0;
+ for(const r of a){if(!r||typeof r!=='object'||typeof r.id!=='string'||!r.id||r.id.length>200)continue;
+  if(r.rec){const{data,rec,...m}=r;await rtx('readwrite',s=>s.put({...m,blob:dataURLToBlob(data)}))}
+  else{const cur=r.folder?null:await tx('readonly',s=>s.get(r.id));if(cur&&Array.isArray(cur.items))await verSnap(cur,{force:true,named:'Before restoring a backup'});await tx('readwrite',s=>s.put(r))}n++}
+ toast(t_('Restored items: {n}',{n}));listNotes();renderHomeIfOpen();if(S.id){const cur=await tx('readonly',s=>s.get(S.id));if(cur&&!cur.del)await reopenStored(cur)}}
+/* ---------- automatic backups (desktop): once a day, the same JSON as Backup, streamed in chunks to <app data>/backups (backup-store.js) ---------- */
+const ABK_DAY=864e5,ABK_CHUNK=4*1048576;
+async function autoBackupNow(){const B=window.wb&&wb.backup;if(!B)return{ok:false,error:'Automatic backups need the desktop app'};if(autoBackupNow.busy)return{ok:false,error:'A backup is already running'};autoBackupNow.busy=true;let tk=null;
+ try{if(S.id)await saveNow();const b=await B.begin();if(!b||!b.ok)return b||{ok:false,error:'could not start'};tk=b.token;let buf='[',first=true;
+  /* chunks are cut at whole characters (never between the two halves of an emoji), so the file is byte-for-byte valid UTF-8 */
+  const send=async all=>{while(buf.length>=ABK_CHUNK||(all&&buf.length)){let k=Math.min(buf.length,ABK_CHUNK);const c=buf.charCodeAt(k-1);if(k<buf.length&&c>=0xd800&&c<=0xdbff)k--;const r=await B.chunk(tk,buf.slice(0,k));buf=buf.slice(k);if(!r||!r.ok)throw new Error(r&&r.error||'could not write the backup')}};
+  const add=async o=>{buf+=(first?'':',')+JSON.stringify(o);first=false;await send(false)};
+  for(const r of(await tx('readonly',s=>s.getAll()))||[])await add(r);
+  for(const r of(await rtx('readonly',s=>s.getAll()))||[]){const{blob,...m}=r;await add({...m,rec:1,data:await blobToDataURL(blob)})}
+  buf+=']';await send(true);const e=await B.end(tk);tk=null;if(e&&e.ok)Wr('wb.abk',Date.now());return e||{ok:false,error:'could not finish'}}
+ catch(err){if(tk)try{await B.abort(tk)}catch(_){}return{ok:false,error:String(err&&err.message||err)}}
+ finally{autoBackupNow.busy=false}}
+let abkWarned=false;
+function autoBackupTick(){if(!(window.wb&&wb.backup)||ST.autoBk===false||drag||Date.now()-L('wb.abk',0)<ABK_DAY)return;
+ autoBackupNow().then(r=>{if(r&&!r.ok&&!abkWarned){abkWarned=true;toast(t_('Automatic backup failed: {e}',{e:r.error}),6000)}})}
+setTimeout(autoBackupTick,180e3);setInterval(autoBackupTick,3600e3);
+async function restoreBackupDialog(){const B=window.wb&&wb.backup;if(!B)return;const list=(await B.list())||[];if(!list.length)return toast('No automatic backups yet');
+ let close=null;const body=c=>{close=c;const w=document.createElement('div');w.style.cssText='display:flex;flex-direction:column;gap:6px;max-height:50vh;overflow:auto';
+  for(const x of list){const b=document.createElement('button');b.style.cssText='display:flex;justify-content:space-between;gap:12px;text-align:left';const a=document.createElement('span');a.textContent=new Date(x.t).toLocaleString();const z=document.createElement('span');z.style.opacity='.7';z.textContent=(x.size/1048576).toFixed(1)+' MB';b.append(a,z);
+   b.onclick=async()=>{close(null);if(!await askConfirm('Restore this backup?',t_('Every board in the backup from {when} is put back. Boards you created later are kept. Each board that gets replaced is saved to its version history first.',{when:new Date(x.t).toLocaleString()}),'Restore',false))return;
+    toast('Restoring…',60000);const t=await B.read(x.name);if(!t)return toast('That backup could not be read',5000);try{await restoreText(t)}catch(e){toast('That backup file is damaged',6000)}};w.append(b)}return w};
+ await dlg({title:'Restore from an automatic backup',cancel:'Close',hideOk:true,body})}
+/* ---------- version history ----------
+   Its own database ('wbver'), so older versions of the app are unaffected: 'm' holds small metadata records (listing is cheap),
+   'd' the packed board records. versions-core.js (unit-tested) decides when a snapshot is due and which ones to keep. */
+const VDB=new Promise(r=>{try{const q=indexedDB.open('wbver',1);q.onupgradeneeded=()=>{const d=q.result;if(!d.objectStoreNames.contains('m'))d.createObjectStore('m',{keyPath:'id'}).createIndex('b','b');if(!d.objectStoreNames.contains('d'))d.createObjectStore('d',{keyPath:'id'})};q.onsuccess=()=>{q.result.onversionchange=()=>q.result.close();r(q.result)};q.onerror=()=>r(null)}catch(e){r(null)}});
+/* one transaction over both stores; resolves f's request result, or undefined when storage fails (history is never allowed to break saving) */
+async function vtx(mode,f){const d=await VDB;if(!d)return;return new Promise(res=>{try{const t=d.transaction(['m','d'],mode);let out;const q=f(t.objectStore('m'),t.objectStore('d'));if(q)q.onsuccess=()=>{out=q.result};t.oncomplete=()=>res(out===undefined?true:out);t.onerror=t.onabort=()=>res(undefined)}catch(e){res(undefined)}})}
+const verList=async b=>((await vtx('readonly',m=>m.index('b').getAll(b)))||[]).filter(x=>x&&x.id).sort((a,c)=>c.t-a.t);
+const VLAST={}; /* board id -> time of its newest snapshot */
+const verLabel=(t,now)=>VersionsCore.label(t,now,($('#lg')||{}).value||undefined); /* in the app's language */
+async function verSnap(rec,o={}){try{
+ const prot=VaultCore.isProtected(rec);if(!rec||!rec.id||rec.folder||!Array.isArray(rec.items)||!(rec.items.length||prot))return false;const now=Date.now();
+ if(!o.force){if(VLAST[rec.id]===undefined)VLAST[rec.id]=((await verList(rec.id))[0]||{}).t||0;if(!VersionsCore.due(VLAST[rec.id],now))return false}
+ VLAST[rec.id]=now;const id=uid(),{th,...body}=rec;
+ const meta={id,b:rec.id,t:now,title:rec.title||'Untitled',n:prot?null:rec.items.length,size:VersionsCore.estimateSize(rec)+(prot?String(rec.enc.box||'').length:0),named:String(o.named||'').slice(0,80),th:typeof th==='string'?th:''};
+ const data={id,rec:BoardCore.dbPackRec(body,true)};
+ if(!await vtx('readwrite',(m,d)=>{m.put(meta);d.put(data)}))return false;
+ await verPrune(rec.id);return true}catch(e){return false}}
+async function verPrune(b){const del=VersionsCore.prune(await verList(b),Date.now());if(del.length)await vtx('readwrite',(m,d)=>{for(const id of del){m.delete(id);d.delete(id)}})}
+async function verDelBoards(ids){for(const b of new Set(ids)){const l=await verList(b);if(l.length)await vtx('readwrite',(m,d)=>{for(const x of l){m.delete(x.id);d.delete(x.id)}});delete VLAST[b]}}
+async function verGet(id){const r=await vtx('readonly',(m,d)=>d.get(id));return r&&r.rec?BoardCore.dbOut(r.rec):null}
+/* the parts of a board a version restores: its content. Title, folder, tags, favourite and password stay as they are now. */
+const VER_KEYS=['items','bg','pat','gs','gd','layers','pg'];
+async function verRestore(meta,asCopy){
+ let v=await verGet(meta.id);if(!v||!Array.isArray(v.items))return toast('This version could not be read',5000);
+ const key=VK.get(meta.b);if(VaultCore.isProtected(v)){if(!key)return toast('Unlock the board first',5000);try{v=await VaultCore.unseal(v,key)}catch(e){return toast('This version was saved under a different key and cannot be opened',6000)}}
+ if(S.id===meta.b)await saveNow();
+ const cur0=await tx('readonly',s=>s.get(meta.b)),prot=VaultCore.isProtected(cur0);let cur=cur0;if(prot){if(!key)return toast('Unlock the board first',5000);cur=await VaultCore.unseal(cur0,key)}
+ if(asCopy||!cur){const t=Date.now(),c={...structuredClone({...v,items:v.items}),id:uid(),title:(cur?cur.title:v.title||'Untitled')+' ('+verLabel(meta.t,t)+')',parent:cur?cur.parent:v.parent||'',fav:false,del:0,locked:cur?cur.locked:null,t,ct:t,mt:t};
+  if(prot){VK.set(c.id,key);const sc=await VaultCore.seal(c,key,cur0.enc.head);await tx('readwrite',s=>s.put(sc))}else await tx('readwrite',s=>s.put(c));
+  toast('Opened as a new board');await openNote(c);return}
+ await verSnap(cur0,{force:true,named:'Before restoring '+verLabel(meta.t,Date.now())}); /* so the restore itself can be undone */
+ const next={...cur};for(const k of VER_KEYS)if(k in v)next[k]=v[k];next.t=next.mt=Date.now();
+ const stored=prot?await VaultCore.seal(next,key,cur0.enc.head):next;await tx('readwrite',s=>s.put(stored));toast('Version restored');
+ if(S.id===meta.b)await openNote(next)}
+async function verDialog(n){
+ if(!n||!n.id)return;if(n.locked&&!await askPassword(n))return;
+ if(S.id===n.id)await saveNow();
+ let close=null;const draw_=async box=>{box.innerHTML='';const list=await verList(n.id),now=Date.now();
+  const top=document.createElement('div');top.style.cssText='display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:8px';const sv=document.createElement('button');sv.textContent='＋ Save a version now';
+  sv.onclick=async()=>{const name=await askText('Save a version','Name (optional)','','Save');if(name===null)return;const cur=await tx('readonly',s=>s.get(n.id));if(!cur||!cur.items||!cur.items.length)return toast('Nothing to save yet');await verSnap(cur,{force:true,named:name||'Saved version'});draw_(box)};
+  const info=document.createElement('span');info.style.cssText='opacity:.7;font-size:12px';info.textContent=list.length?t_('Versions kept: {n}',{n:list.length}):t_('No versions yet. They are saved automatically while you edit.');top.append(sv,info);box.append(top);
+  const ul=document.createElement('div');ul.style.cssText='display:flex;flex-direction:column;gap:6px;max-height:52vh;overflow:auto';
+  for(const x of list){const row=document.createElement('div');row.style.cssText='display:flex;gap:10px;align-items:center;padding:6px;border:1px solid var(--bd);border-radius:10px';
+   const im=new Image();im.alt='';im.src=n.locked||!x.th?'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7':x.th;im.style.cssText='width:72px;height:48px;object-fit:contain;background:#fff;border-radius:6px;flex:none';
+   const m=document.createElement('div');m.style.cssText='flex:1;min-width:0';const b=document.createElement('b');b.textContent=verLabel(x.t,now);const s=document.createElement('div');s.style.cssText='opacity:.7;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap';s.textContent=(x.named?x.named+' · ':'')+(x.n==null?t_('🔒 encrypted'):t_('Objects: {n}',{n:x.n}));m.append(b,s);
+   const rb=document.createElement('button');rb.textContent='Restore';rb.onclick=async()=>{if(!await askConfirm('Restore this version?',t_('The board goes back to how it was {when}. Its current state is saved as a version first, so you can undo this.',{when:verLabel(x.t,Date.now())}),'Restore',false))return;close&&close(null);await verRestore(x,false);renderHomeIfOpen()};
+   const cb=document.createElement('button');cb.textContent='Open as copy';cb.onclick=async()=>{close&&close(null);await verRestore(x,true)};
+   const bt=document.createElement('div');bt.style.cssText='display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end';bt.append(rb,cb);row.append(im,m,bt);ul.append(row)}
+  box.append(ul)};
+ await dlg({title:t_('Version history — {title}',{title:n.title||'Untitled'}),cancel:'Close',hideOk:true,body:c=>{close=c;const box=document.createElement('div');requestAnimationFrame(()=>{const b=box.closest('.box');if(b)b.classList.add('wide')});draw_(box);return box}})}
+/* ---------- Markdown export (md-core.js): typed content as Markdown, images as files, ink as a picture of the board, all in one .zip ---------- */
+const mdHasInk=r=>(r.items||[]).some(i=>i&&(i.t=='s'||i.t=='sp'||i.t=='k'||i.t=='gr'||i.t=='xyz'||(i.t=='i'&&(i.imp||i.pg))));
+async function mdPicture(r){const srcs=[...new Set((r.items||[]).filter(i=>i&&typeof i.src==='string').map(i=>i.src))];
+ await Promise.all(srcs.map(u=>new Promise(res=>{const m=img(u);if(m.complete)return res();m.addEventListener('load',res,{once:true});m.addEventListener('error',res,{once:true});setTimeout(res,8000)})));
+ const c=withBoard(r,()=>rexp(false,0,1600));const blob=await new Promise(res=>c.toBlob(res,'image/png'));c.width=c.height=0;return blob?new Uint8Array(await blob.arrayBuffer()):null}
+async function mdExport(ids,zipName){
+ if(_expBusy)return toast('An export is already running');_expBusy=true;
+ try{if(S.id)await saveNow();const all=(await tx('readonly',s=>s.getAll()))||[],F={};all.filter(r=>r.folder).forEach(f=>F[f.id]=f);
+  const want=new Set(ids),boards=all.filter(r=>!r.folder&&!r.del&&want.has(r.id)),U=MdCore.uniquer(),entries=[],many=ids.length>1;let locked=0,n=0;
+  const dirOf=id=>{const a=[];for(let f=F[id],k=0;f&&k<64;f=F[f.parent],k++)a.unshift(MdCore.safeName(f.name,'Folder'));return a.join('/')};
+  for(const r of boards){if(r.locked){locked++;continue}
+   toast(t_('Exporting {n} / {total}…',{n:++n,total:boards.length-boards.filter(b=>b.locked).length}),60000);
+   const dir=many?dirOf(r.parent):'',base=U(dir,MdCore.safeName(r.title),''),assets=base+' files';
+   const pic=mdHasInk(r)?await mdPicture(r):null;
+   const shown={...r,items:(r.items||[]).map(i=>{if(!i||i.t!=='tb'||!Array.isArray(i.cells))return i; /* tables: computed values, not "=SUM(A1:A3)" */
+    try{const t={...i,cells:i.cells.map(x=>Array.isArray(x)?x.slice():[]),st:(i.st||[]).map(x=>Array.isArray(x)?x.slice():x),mg:(i.mg||[]).slice()},ev=tbEval(t);return{...i,cells:t.cells.map((row,ri)=>row.map((_,ci)=>ev.disp(ri,ci)))}}catch(e){return i}})};
+   const o=MdCore.boardToMd(shown,{picture:pic?assets+'/board.png':null,assetDir:assets,hq:r.hq||''});
+   entries.push({path:MdCore.joinPath(dir,base+'.md'),text:o.md});
+   if(pic)entries.push({path:MdCore.joinPath(dir,assets,'board.png'),bytes:pic});
+   for(const f of o.files)entries.push({path:MdCore.joinPath(dir,f.path),bytes:f.bytes})}
+  if(!entries.length)return toast(locked?'Password-protected boards are not exported':'Nothing to export',5000);
+  const name=MdCore.safeName(zipName||(boards.length==1?boards[0].title:'RejBoard boards'))+'.zip';
+  await dlf(name,new Blob(MdCore.zip(entries),{type:'application/zip'}));
+  toast(t_('Boards exported as Markdown: {n}',{n})+(locked?' · '+t_('Password-protected boards skipped: {n}',{n:locked}):''),5000)}
+ catch(e){console.error(e);toast(t_('Markdown export failed: {e}',{e:e&&e.message||e}),6000)}
+ finally{_expBusy=false}}
+async function mdExportAll(){const all=((await tx('readonly',s=>s.getAll()))||[]).filter(r=>!r.folder&&!r.del);if(!all.length)return toast('No boards to export');await mdExport(all.map(r=>r.id),'RejBoard Markdown export '+new Date().toISOString().slice(0,10))}
+/* The stored record of the OPEN board was replaced (restore, sync import). Show it again; if it is protected and cannot be
+   decrypted with this session's key, leave the board WITHOUT saving, so the editor's old copy never overwrites what was just put back. */
+async function reopenStored(rec){if(!rec||rec.del||rec.folder)return;
+ let o=null;try{o=await vRead(rec)}catch(e){}
+ if(o){await openNote(o);return}
+ S.id=null;DIRTY=false;clearTimeout(st);await blankNote();toast(t_('This board is protected. Open it from the home screen and enter its password.'),5000)}
+/* ---------- grid snap and smart guides ---------- */
+const gsnapPt=q=>{if(!S.gsnap)return q;const g=S.gs||28;return[Math.round(q[0]/g)*g,Math.round(q[1]/g)*g]};
+/* boxes of what the moving selection can line up with: nearby shapes, text, images, tables (not ink, not connectors), at most 400 */
+function snapTargets(sel){const not=new Set(sel),v=vpRect(),out=[];for(const i of S.items){if(out.length>=400)break;if(not.has(i)||!act(i)||i.t=='s'||(i.t=='sp'&&LINEK.includes(i.shp)))continue;const b=bnds([i]);if(b[2]<v[0]||b[0]>v[2]||b[3]<v[1]||b[1]>v[3])continue;out.push(b)}return out}
+function drawGuides(c,g){if(!g)return;const z=S.z;c.save();c.setTransform(dpr*z,0,0,dpr*z,dpr*S.ox,dpr*S.oy);c.strokeStyle='#ec4899';c.lineWidth=1/z;c.setLineDash([5/z,4/z]);c.beginPath();
+ for(const l of g.gx){c.moveTo(l.x,l.y0-10/z);c.lineTo(l.x,l.y1+10/z)}for(const l of g.gy){c.moveTo(l.x0-10/z,l.y);c.lineTo(l.x1+10/z,l.y)}c.stroke();c.restore()}
+/* ---------- containers and swimlanes: moving one moves everything whose centre is inside it (nested ones too) ---------- */
+window.rbWithContents=sel=>{const out=new Set(sel),todo=sel.filter(isBox);if(!todo.length)return sel;const items=S.items.filter(i=>act(i)),boxes=items.map(i=>bnds([i]));
+ while(todo.length){const c=todo.pop(),k=items.indexOf(c),skip=new Set([k]);for(const j of DiagramCore.inside(bnds([c]),boxes,skip)){const q=items[j];if(!out.has(q)&&items.indexOf(q)>k){out.add(q);if(isBox(q))todo.push(q)}}}
+ return expandSel([...out])};
+function addLaneBelow(l){const n={...structuredClone(l),id:uid(),y:l.y+l.h,label:t_('Lane')};delete n.lk0;delete n.lk1;push();addI(n);S.items.splice(S.items.indexOf(n),1);S.items.splice(S.items.indexOf(l)+1,0,n);S.sel=[n];save();draw()}
+/* ---------- auto-layout: connected shapes in layers (top to bottom or left to right) ---------- */
+function autoLayout(dir){const pick=S.sel.filter(i=>i.t=='sp'&&!LINEK.includes(i.shp)&&!isBox(i)&&act(i));let nodes=pick;
+ const conns=S.items.filter(i=>i.t=='sp'&&LINEK.includes(i.shp)&&i.lk0&&i.lk1&&act(i));
+ if(nodes.length<2){const ids=new Set();conns.forEach(c=>{ids.add(c.lk0.id);ids.add(c.lk1.id)});nodes=S.items.filter(i=>i.id&&ids.has(i.id)&&i.t=='sp'&&!isBox(i)&&act(i))}
+ if(nodes.length<2)return toast(t_('Select two or more shapes, or connect shapes with lines first'),5000);
+ nodes.forEach(n=>{n.id??=uid()});const set=new Set(nodes.map(n=>n.id)),b=bnds(nodes);
+ const P=DiagramCore.layered(nodes.map(n=>({id:n.id,w:n.w,h:n.h})),conns.filter(c=>set.has(c.lk0.id)&&set.has(c.lk1.id)).map(c=>[c.lk0.id,c.lk1.id]),{dir,gap:70,sep:50});
+ push();for(const n of nodes){const q=P[n.id];if(q){n.x=b[0]+q[0];n.y=b[1]+q[1]}}cache=null;save();draw();toast(t_('Arranged {n} shapes',{n:nodes.length}))}
+function renderHomeIfOpen(){try{if(!$('#hm').hidden)renderHome()}catch(e){}}
 /* ---------- geometry helpers ---------- */
 const pt=e=>{const r=cv.getBoundingClientRect();return[(e.clientX-r.left-S.ox)/S.z,(e.clientY-r.top-S.oy)/S.z]};const paperPoint=p=>{if(S.pg.size==='inf')return p;const[pw,ph]=pdim(),idx=pgOf(),top=idx*(ph+PG_GAP);return [Math.max(0,Math.min(pw,p[0])),Math.max(top,Math.min(top+ph,p[1]))]};
 
@@ -1263,7 +1399,7 @@ cv.addEventListener('pointerdown',e=>{cv.setPointerCapture(e.pointerId);if(e.but
  ruler.lock=false;if(ruler.on&&e.button!==1){const rp=pt(e),rh=rulerHit(rp);if(rh==='edge')ruler.lock=true;else if(rh){const co=Math.cos(ruler.angle),si=Math.sin(ruler.angle),C=[ruler.x+co*ruler.len/2,ruler.y+si*ruler.len/2];drag={k:'rl',m:rh,last:rp,C,a0:ruler.angle-(Math.atan2(rp[1]-C[1],rp[0]-C[0])+(rh==='rotA'?Math.PI:0))};return}}
  let p=rulerPoint(paperPoint(pt(e))),t=S.tool;
  if(t=='hand'||e.button==1){drag={k:'pan',x:e.clientX,y:e.clientY,ox:S.ox,oy:S.oy};mkCache();return}
- if(t=='laser'){drag={k:'lz'};mkCache();lzAdd(p);if(!lzOn){lzOn=true;lzLoop()}return}if(t=='sticky'){const h=hit(p);if(h&&h.t=='t'&&h.sticky)return editItem(h);return textAt(p,null,true)}if(t=='text'){const h=hit(p);if(h&&h.t=='tb')return editCell(h,p);return h&&(h.t=='t'||h.t=='m')?editItem(h):textAt(p)}if(t=='math'){const h=hit(p);if(h&&h.t=='m')return editItem(h);mp=p;medit=null;$('#mq').hidden=0;$('#ml').focus();return}
+ if(t=='laser'){drag={k:'lz'};mkCache();lzAdd(p);if(!lzOn){lzOn=true;lzLoop()}return}if(t=='sticky'){const h=hit(p);if(h&&h.t=='t'&&h.sticky)return editItem(h);return textAt(p,null,true)}if(t=='text'){const h=hit(p);if(h&&h.t=='tb')return editCell(h,p);return h&&(h.t=='t'||h.t=='m')?editItem(h):textAt(p)}if(t=='math'){const h=hit(p);if(h&&h.t=='m')return editItem(h);mp=p;medit=null;mrepOff();$('#mq').hidden=0;$('#ml').focus();return}
  if(t=='erase'){push();drag={k:'er',last:p};lcPre();erase(p);lcErasePatch();draw();return}
  if(t=='lasso'||t=='select'){if(S.sel.length===1&&S.sel[0].t=='sp'&&spDown(p))return;if(S.sel.length===1&&S.sel[0].xyz){const q=S.sel[0],hs=Object.values(xyzHandles(q)),xh=hs.find(v=>Math.hypot(v[0]-p[0],v[1]-p[1])<13/S.z);if(xh){push();drag={k:'xyz',axis:xh[2],item:q};return}}if(S.sel.length&&!(S.sel.length===1&&S.sel[0].t=='sp')){const b=bnds(S.sel),rc=[(b[0]+b[2])/2,b[1]-28/S.z];if(Math.hypot(rc[0]-p[0],rc[1]-p[1])<13/S.z){push();const center=[(b[0]+b[2])/2,(b[1]+b[3])/2];drag={k:'rot',center,start:Math.atan2(p[1]-center[1],p[0]-center[0]),items:S.sel.map(i=>({i,rot:i.rot||0,c:i.t=='sp'?[i.x+i.w/2,i.y+i.h/2]:null}))};return}const h=HD(b).find(q=>Math.hypot(q[0]-p[0],q[1]-p[1])<11/S.z);if(h){push();drag={k:'rs',h:h[2]};return}if(S.sel.length===1&&S.sel[0].t=='tb'&&tbDown(p,e))return;if(p[0]>b[0]&&p[0]<b[2]&&p[1]>b[1]&&p[1]<b[3]){push();drag={k:'mv',last:p};return}}const h=hit(p);if(h&&h.t=='tb'){const a=cellAt(h,p);S.cell={...a,ar:a.r,ac:a.c}}if(h){const G=grpOf(h);if(e.shiftKey){const base=S.sel.slice();S.sel=G.every(q=>base.includes(q))?base.filter(q=>!G.includes(q)):[...base,...G.filter(q=>!base.includes(q))]}else S.sel=G;push();drag={k:'mv',last:p};draw();return}if(!e.shiftKey)S.sel=[];lasso=[p];drag={k:'ls',r:t=='select'?p:null};draw();return}
  if(t=='shape'||t=='tape'){drag={k:'sh',a:p,pts:[p.slice()]};mkCache();return}
@@ -1274,18 +1410,22 @@ cv.addEventListener('pointermove',e=>{updateBrushCursor(e.clientX,e.clientY);if(
  if(drag.k=='rl'){rulerDragMove(e,drag);draw();return}
  let p=rulerPoint(paperPoint(pt(e))),k=drag.k;if(k=='mv'||k=='rs'||k=='rot')drag.mvd=true;
  if(k=='pan'){S.ox=drag.ox+e.clientX-drag.x;S.oy=drag.oy+e.clientY-drag.y}else if(k=='er'){eraseMove(e,p);lcErasePatch()}else if(k=='ls'){if(drag.r){const a=drag.r;lasso=[a,[p[0],a[1]],p,[a[0],p[1]]]}else lasso.push(p)}else if(k=='lz'){const evs=coal(e);if(evs.length>1)for(const v of evs)lzAdd(rulerPoint(paperPoint(pt(v))),v.timeStamp);else lzAdd(p)}
- else if(k=='xyz'){const i=drag.item,o=i.xyz;if(drag.axis==='x')o.xLen=Math.max(10,p[0]-o.ox);else if(drag.axis==='y')o.yLen=Math.max(10,p[1]-o.oy);else{o.zLen=Math.max(8,Math.hypot(p[0]-o.ox,p[1]-o.oy)/.9)}i.x=o.ox;i.y=o.oy} else if(k=='mv'){if(!drag.exp){drag.exp=1;if(ST.moveLinked&&!e.altKey)S.sel=linkedCluster(S.sel)}const dx=p[0]-drag.last[0],dy=p[1]-drag.last[1];drag.last=p;xf(S.sel,(x,y)=>[x+dx,y+dy],1)}
+ else if(k=='xyz'){const i=drag.item,o=i.xyz;if(drag.axis==='x')o.xLen=Math.max(10,p[0]-o.ox);else if(drag.axis==='y')o.yLen=Math.max(10,p[1]-o.oy);else{o.zLen=Math.max(8,Math.hypot(p[0]-o.ox,p[1]-o.oy)/.9)}i.x=o.ox;i.y=o.oy} else if(k=='mv'){if(!drag.exp){drag.exp=1;if(ST.moveLinked&&!e.altKey)S.sel=linkedCluster(S.sel);if(window.rbWithContents)S.sel=window.rbWithContents(S.sel);drag.p0=drag.last;drag.b0=bnds(S.sel);drag.off=[0,0];drag.oth=(S.guides||S.gsnap)?snapTargets(S.sel):[]}
+  let tx=p[0]-drag.p0[0],ty=p[1]-drag.p0[1];drag.guides=null;
+  if(!(e.ctrlKey||e.metaKey)){const sb=[drag.b0[0]+tx,drag.b0[1]+ty,drag.b0[2]+tx,drag.b0[3]+ty];let g={dx:0,dy:0,gx:[],gy:[]};if(S.guides)g=DiagramCore.guideSnap(sb,drag.oth,7/S.z);
+   if(S.gsnap){const r=DiagramCore.gridSnap(sb,S.gs||28);if(!g.gx.length)g.dx=r.dx;if(!g.gy.length)g.dy=r.dy}tx+=g.dx;ty+=g.dy;if(g.gx.length||g.gy.length)drag.guides=g}
+  const dx=tx-drag.off[0],dy=ty-drag.off[1];drag.off=[tx,ty];drag.last=p;if(dx||dy)xf(S.sel,(x,y)=>[x+dx,y+dy],1)}
  else if(k=='rot'){const a=Math.atan2(p[1]-drag.center[1],p[0]-drag.center[0]);let d=a-drag.start;if(e.shiftKey&&drag.items.length===1){const sn=Math.PI/12;d=Math.round((drag.items[0].rot+d)/sn)*sn-drag.items[0].rot}drag.items.forEach(q=>{q.i.rot=q.rot+d;if(q.c&&drag.items.length>1){const n=rotPoint(q.c,drag.center[0],drag.center[1],d);q.i.x=n[0]-q.i.w/2;q.i.y=n[1]-q.i.h/2}})}
  else if(k=='tcw'){const q=tbLocal(drag.t,p);drag.t.cw[drag.i]=Math.max(24,drag.w0+q[0]-drag.q0)}else if(k=='trh'){const q=tbLocal(drag.t,p);drag.t.rh[drag.i]=Math.max(18,drag.w0+q[1]-drag.q0)}else if(k=='tcs'){const a=cellAt(drag.t,p);S.cell={...tbRange(drag.t,drag.ar,drag.ac,a.r,a.c),ar:drag.ar,ac:drag.ac}}
  else if(k=='sprs')spResize(p,e.shiftKey);
  else if(k=='spend'){let P=p;if(e.shiftKey){const f=drag.fixed,sn=Math.PI/12,ang=Math.round(Math.atan2(p[1]-f[1],p[0]-f[0])/sn)*sn,l=Math.hypot(p[0]-f[0],p[1]-f[1]);P=[f[0]+l*Math.cos(ang),f[1]+l*Math.sin(ang)]}drag.w==0?spSetEnds(drag.item,P,drag.fixed):spSetEnds(drag.item,drag.fixed,P)}
  else if(k=='rs'){const b=bnds(S.sel),h=drag.h,W=Math.max(1,b[2]-b[0]),H=Math.max(1,b[3]-b[1]);let sx=1,sy=1,ax=b[0],ay=b[1];if(h.includes('e'))sx=(p[0]-ax)/W;else if(h.includes('w')){ax=b[2];sx=(ax-p[0])/W}if(h.includes('s'))sy=(p[1]-ay)/H;else if(h.includes('n')){ay=b[3];sy=(ay-p[1])/H}sx=Math.max(.05,sx);sy=Math.max(.05,sy);if(h.length==2)sx=sy=Math.max(sx,sy);xf(S.sel,(x,y)=>[ax+(x-ax)*sx,ay+(y-ay)*sy],sx,sy)}
- else if(k=='sh'){if(S.tool=='tape'){const ts=cfg.tape?.size||18,straight=!!cfg.tape?.straight!==e.shiftKey;if(straight)drag.pts=[drag.a.slice(),p.slice()];else{const l=drag.pts[drag.pts.length-1];if(Math.hypot(p[0]-l[0],p[1]-l[1])>=Math.max(1.5,2/S.z))drag.pts.push(p.slice())}cur=drag.pts.length>1?mkTape(drag.pts,ts):null}else{cur=mkSp($('#shp').value,drag.a,p,e.shiftKey)}}
+ else if(k=='sh'){if(S.tool=='tape'){const ts=cfg.tape?.size||18,straight=!!cfg.tape?.straight!==e.shiftKey;if(straight)drag.pts=[drag.a.slice(),p.slice()];else{const l=drag.pts[drag.pts.length-1];if(Math.hypot(p[0]-l[0],p[1]-l[1])>=Math.max(1.5,2/S.z))drag.pts.push(p.slice())}cur=drag.pts.length>1?mkTape(drag.pts,ts):null}else{cur=mkSp($('#shp').value,gsnapPt(drag.a),gsnapPt(p),e.shiftKey)}}
  else if(k=='pen'&&!(ST.inkRaw&&e.pointerType==='pen'))for(const v of coal(e))addPt(v,pt(v));
  const lce=LCER;LCER=false;schedDraw(lce||lcDragSafe()?true:undefined)});
 const up=e=>{if(e&&e.pointerId!=null)tp.delete(e.pointerId);if(!drag)return;const k=drag.k,dg=drag;if(k=='pz'&&tp.size)return;drag=null;cache=null;ruler.lock=false;if(k=='sh')LC.ok=false;
  if(k=='pen'&&cur){let s=cur;cur=null;s=wbPost(s);if(S.snap&&!s.fx&&s.pts.length>8){const r=skSnap(s);if(r)s=r;else{const g=snap(s.pts);if(g){s.pts=g;s.sharp=1}}}const lcWas=LC.ok&&!LC.ex&&lcHeavy()&&lcFresh();if(!BoardCore.pushAdd(S,hist,fut,HBUD,s))push();addI(s);save();lcAdd(s,lcWas)}
- else if(k=='sh'&&cur){const s=cur;cur=null;if(s.t=='k'){delete s.prev;if(!s.pts)fitTape(s)}if(s.t=='k'?(s.pts?tapeLen(s)>6:s.w>8&&s.h>8):s.t=='sp'?(s.w>3||s.h>3):true){push();addI(s);S.sel=(s.t=='sp'&&ST.rts)?[s]:[];save()}}
+ else if(k=='sh'&&cur){const s=cur;cur=null;if(s.t=='k'){delete s.prev;if(!s.pts)fitTape(s)}if(s.t=='k'?(s.pts?tapeLen(s)>6:s.w>8&&s.h>8):s.t=='sp'?(s.w>3||s.h>3):true){push();addI(s);if(isBox(s)){S.items.splice(S.items.indexOf(s),1);S.items.unshift(s);if(!s.label)s.label=t_(s.shp==='lane'?'Lane':'Container')}S.sel=(s.t=='sp'&&ST.rts)?[s]:[];save()}}
  else if(k=='ls'){const poly=lasso;lasso=null;S.cell=null;const px=poly.map(q=>q[0]),py=poly.map(q=>q[1]),click=Math.max(...px)-Math.min(...px)<4/S.z&&Math.max(...py)-Math.min(...py)<4/S.z;S.sel=!click&&poly.length>2?expandSel(S.items.filter(i=>act(i)&&selIn(i,poly))):[]}
  else if(k=='mv'||k=='rs'||k=='rot'||k=='xyz'||k=='er'||k=='sprs'||k=='spend'||k=='tcw'||k=='trh'){if(k=='er'&&erPending){const q=erPending;erPending=null;erase(q);drag.last=q}save();}if(ST.rts&&k=='sh')setTool('select');if((k=='er'||k=='ls')&&LC.ok)LCSAFE=true;if((k=='mv'||k=='rs'||k=='rot')&&!dg.mvd&&LC.ok&&!LC.ex&&lcSig()===LC.sig)LCSAFE=true;draw()};
 cv.addEventListener('pointerrawupdate',e=>{if(!ST.inkRaw||e.pointerType!=='pen'||!drag||drag.k!=='pen')return;for(const v of coal(e))addPt(v,pt(v));schedDraw()});
@@ -1513,8 +1653,8 @@ async function openLinkedBoard(id,page){
  if(!fresh||fresh.folder)return toast('That linked board is not on this device (or was deleted)');
  if(fresh.del)return toast('“'+(fresh.title||'Untitled')+'” is in the Trash — restore it to open the link');
  if(fresh.locked&&!await askPassword(fresh))return;
- const from={id:S.id,title:S.title};await saveNow();
- _linkNav=true;try{await openNote(fresh)}finally{_linkNav=false}
+ const from={id:S.id,title:S.title};await saveNow();let open_;try{open_=await vRead(fresh)}catch(e){return toast(e.message,5000)}
+ _linkNav=true;try{await openNote(open_)}finally{_linkNav=false}
  if(from.id&&from.id!==fresh.id)BSTACK.push(from);bkUi();
  if(pg>=0&&S.pg.size!='inf')goPage(pg)}
 async function goBackBoard(){
@@ -1522,7 +1662,7 @@ async function goBackBoard(){
  const fresh=await tx('readonly',s=>s.get(pv.id));
  if(!fresh||fresh.folder||fresh.del){toast('The previous board is no longer available');return bkUi()}
  if(fresh.locked&&!await askPassword(fresh)){BSTACK.push(pv);return}
- await saveNow();_linkNav=true;try{await openNote(fresh)}finally{_linkNav=false}bkUi()}
+ await saveNow();let open_;try{open_=await vRead(fresh)}catch(e){BSTACK.push(pv);return toast(e.message,5000)}_linkNav=true;try{await openNote(open_)}finally{_linkNav=false}bkUi()}
 $("#bkb").onclick=goBackBoard;refreshBT().then(()=>lfUi());
 (()=>{let dn=null,hv=false,pc='';const linkTool=e=>['select','lasso','hand','laser'].includes(S.tool)||e.ctrlKey||e.metaKey;
  cv.addEventListener('pointerdown',e=>{dn=null;if(e.button!==0||textEditor||!linkTool(e))return;const l=boardLinkAt(paperPoint(pt(e)));if(l)dn={id:l.id,page:l.page,x:e.clientX,y:e.clientY,t:Date.now()}},true);
@@ -1577,7 +1717,7 @@ function attachBoardMention(ed){
 function saveEditorRange(){if(!textEditor)return;const sel=getSelection();if(sel&&sel.rangeCount&&textEditor.contains(sel.anchorNode)&&textEditor.contains(sel.focusNode))textSavedRange=sel.getRangeAt(0).cloneRange()}
 function restoreEditorRange(){if(!textEditor||!textSavedRange)return false;const sel=getSelection();sel.removeAllRanges();sel.addRange(textSavedRange);return true}
 function syncTextPopup(it){const t=it||S.sel[0]||{};const st=editorStyleFor(t);st.size=txSelPx(st.size);S.tf={...st};$('#tff').value=st.ff;txSzShow(st.size);$('#txcolor').value=st.color||S.color;$('#tb_').classList.toggle('on',st.b);$('#ti_').classList.toggle('on',st.i);$('#tu_').classList.toggle('on',st.u)}
-function editItem(h){if(h.t=='t'){placeTextEditor(h);return}if(h.t=='m'&&!h.srcText){medit=h;mcell=null;$('#mq b').textContent='LaTeX';mp=[h.x,h.y];$('#ml').value=h.latex;closeTransient('mq');$('#mq').hidden=0;$('#ml').focus()}else placeTextEditor(h)}
+function editItem(h){if(h.t=='t'){placeTextEditor(h);return}if(h.t=='m'&&!h.srcText){medit=h;mcell=null;$('#mq b').textContent='LaTeX';mp=[h.x,h.y];$('#ml').value=h.latex;mrepOff();closeTransient('mq');$('#mq').hidden=0;$('#ml').focus()}else placeTextEditor(h)}
 function textAt(p,it,sticky){const q=paperPoint(p);placeTextEditor(it,sticky,q[0],q[1])}
 
 let ruler={on:false,x:0,y:0,angle:0,len:1200,h:64,lock:false};rulerHook=rulerDraw;
@@ -1699,11 +1839,21 @@ async function renderMathPalette(tab){const p=$('#mathPalette');p.innerHTML='';c
 
 document.querySelectorAll('[data-mtab]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-mtab]').forEach(x=>x.classList.remove('on'));b.classList.add('on');renderMathPalette(b.dataset.mtab)});$('#ml').addEventListener('input',previewMath);renderMathPalette('structures');
 
-$('#mi').onclick=async()=>{const l=$('#ml').value.trim();if(!l)return;if(!medit&&mcell&&tbMathInsert(l))return;try{const o=await mkMath(l);push();if(medit){Object.assign(medit,{latex:l,srcText:undefined,...o});medit=null}else addI({t:'m',latex:l,x:mp[0],y:mp[1],color:S.color,size:cfg.math.size,...o});save();$('#mq').hidden=1;$('#ml').value='';draw()}catch(e){toast('LaTeX could not be loaded or rendered')}};
-$('#mc').onclick=()=>{medit=null;mcell=null;$('#mq b').textContent='LaTeX';$('#mq').hidden=1};
+$('#mi').onclick=async()=>{const l=$('#ml').value.trim();if(!l)return;if(!medit&&mcell&&tbMathInsert(l))return;
+ const rp=!medit&&mrep&&mrep.mp===mp?mrep:null; /* recognized from handwriting: same colour, about the same height, optionally replacing the strokes */
+ try{let col=rp?rp.color:S.color,size=cfg.math.size,o=await mkMath(l,col,size);
+  if(rp&&o.h>0){size=Math.round(Math.max(10,Math.min(160,size*(rp.b[3]-rp.b[1])/o.h)));o=await mkMath(l,col,size)}
+  push();if(medit){Object.assign(medit,{latex:l,srcText:undefined,...o});medit=null}
+  else{const rm=rp&&$('#mrep').checked;addI({t:'m',latex:l,x:mp[0],y:rp&&!rm?rp.b[3]+12:mp[1],color:col,size,...o});if(rm){S.items=S.items.filter(i=>!rp.ss.includes(i));S.sel=[]}}
+  mrepOff();save();$('#mq b').textContent='LaTeX';$('#mq').hidden=1;$('#ml').value='';draw()}catch(e){toast('LaTeX could not be loaded or rendered')}};
+$('#mc').onclick=()=>{medit=null;mcell=null;mrepOff();$('#mq b').textContent='LaTeX';$('#mq').hidden=1};
 /* ---- On-device OCR: strokes -> small black-on-white PNG (RAM only) -> bundled Tesseract.js engine in the main process ---- */
 const OCR_MAXSIDE=1600,OCR_PAD=24,OCR_XH=44; /* longest side cap keeps RAM tiny; OCR_XH = target pixel height of a typical pen stroke */
-async function strokesToPng(ss,xh,lwm){
+async function strokesToPng(ss,xh,lwm){let c=strokesCanvas(ss,xh,lwm);if(!c)return null;
+ const blob=await new Promise(r=>c.toBlob(r,'image/png'));
+ c.width=c.height=0;c=null; /* release the pixel buffer immediately */
+ return blob?new Uint8Array(await blob.arrayBuffer()):null}
+function strokesCanvas(ss,xh,lwm){
  const pen=ss.filter(s=>s.pts&&s.pts.length&&!(s.tool&&s.tool[0]=='h'));if(!pen.length)return null; /* highlighters would blob the text */
  const b=bnds(pen),w=Math.max(1,b[2]-b[0]),h=Math.max(1,b[3]-b[1]),med=a=>{a=a.slice().sort((x,y)=>x-y);return a[a.length>>1]||1};
  const sh=pen.map(s=>{let lo=1e9,hi=-1e9;for(const p of s.pts){if(p[1]<lo)lo=p[1];if(p[1]>hi)hi=p[1]}return Math.max(1,hi-lo)}); /* median stroke height ~ letter height */
@@ -1715,16 +1865,15 @@ async function strokesToPng(ss,xh,lwm){
  g.translate(OCR_PAD-b[0]*k,OCR_PAD-b[1]*k);g.scale(k,k);g.lineWidth/=k;
  for(const s of pen){const P=s.pts;if(P.length==1){g.beginPath();g.arc(P[0][0],P[0][1],g.lineWidth/2,0,7);g.fill();continue}
   g.beginPath();g.moveTo(P[0][0],P[0][1]);for(let i=1;i<P.length-1;i++)g.quadraticCurveTo(P[i][0],P[i][1],(P[i][0]+P[i+1][0])/2,(P[i][1]+P[i+1][1])/2);g.lineTo(P.at(-1)[0],P.at(-1)[1]);g.stroke()}
- const blob=await new Promise(r=>c.toBlob(r,'image/png'));
- c.width=c.height=0;c=null; /* release the pixel buffer immediately */
- return blob?new Uint8Array(await blob.arrayBuffer()):null}
+ return c}
 async function deviceOcr(ss){
  if(!(window.wb&&wb.ocr))return{err:'On-device recognition is only available in the desktop app. Choose "Online" in ⚙ Settings → Handwriting to text.'};
  /* thin ink can read as nothing: if the first rendering finds no text, retry once with a bolder, larger one */
  let last=null;
  for(const [xh,lwm] of [[OCR_XH,1],[64,1.8]]){
   const png=await strokesToPng(ss,xh,lwm);if(!png)return{err:'Select pen strokes (not highlighter) to recognize'};
-  const r=await wb.ocr(png,S.tl);if(!r||!r.ok)return{err:(r&&r.error)||'On-device recognition failed'};
+  let r=await wb.ocr(png,S.tl);for(let k=0;k<20&&r&&!r.ok&&/Still recognizing/.test(r.error||'');k++){await new Promise(q=>setTimeout(q,250));r=await wb.ocr(png,S.tl)} /* the search indexer may be finishing a line */
+  if(!r||!r.ok)return{err:(r&&r.error)||'On-device recognition failed'};
   last=r;if(r.text&&r.text.trim())return{text:r.text}}
  return{text:last?last.text:''}}
 async function hw(){const ss=S.sel.filter(i=>i.t=='s');if(!ss.length)return toast('Lasso-select your handwriting first');toast('Recognizing…');
@@ -1734,6 +1883,74 @@ async function hw(){const ss=S.sel.filter(i=>i.t=='s');if(!ss.length)return toas
   if(!txt&&!dev){const ink=ss.map(s=>[s.pts.map(p=>Math.round(p[0]-b[0]+10)),s.pts.map(p=>Math.round(p[1]-b[1]+10)),s.pts.map((p,i)=>i*10)]),pl={ink,lang:S.tl,w:Math.round(b[2]-b[0]+20),h:Math.round(b[3]-b[1]+20)};if(window.wb)txt=await wb.recognize(pl);else{const r=await fetch('/api/handwriting',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(pl)});if(!r.ok)throw 0;txt=(await r.json()).text}}
   if(!txt)return toast('Nothing recognized');const n=await mkItem(txt,b[0],b[3]+12,cfg.text.size,S.color);push();addI(n);save();draw();toast('Recognized: '+txt)}
  catch(e){toast(ST.hwEngine==='device'?'On-device recognition failed: '+(e&&e.message||e):(window.wb?'Online recognition needs an internet connection. For offline use, switch to On-device in ⚙ Settings → Handwriting to text.':'Recognition needs the local server (python server.py) or a browser with the Handwriting API'),6000)}}
+/* ---- Search index for handwriting and scanned pages (desktop): the bundled on-device OCR reads each board's ink line by line, and PDF
+   pages that came without text, in the background while you are idle. The text goes into the board's `hq` field (never sent anywhere).
+   `hs` fingerprints what was read, so a board is only read again after its ink changes. ---- */
+const IXV=1;let ixBusy=false,ixLast=Date.now(),ixDone=0;
+['pointerdown','pointermove','keydown','wheel'].forEach(t=>addEventListener(t,()=>{ixLast=Date.now()},{capture:true,passive:true}));
+const ixIdle=()=>Date.now()-ixLast>20000&&!drag&&!hwMath.busy&&!_expBusy&&!autoBackupNow.busy;
+const ixInk=items=>(items||[]).filter(i=>i&&i.t=='s'&&Array.isArray(i.pts)&&i.pts.length&&!(i.tool&&i.tool[0]=='h'));
+const ixPages=items=>(items||[]).filter(i=>i&&i.t=='i'&&i.pg&&typeof i.src=='string'&&!i.txt);
+const ixSig=r=>{const ink=ixInk(r.items),pg=ixPages(r.items);return IXV+':'+ink.length+':'+BoardCore.boardSig(ink,[])+':'+pg.length+':'+pg.map(p=>p.src.length).join(',')};
+const ixBox=s=>{let x0=1e18,y0=1e18,x1=-1e18,y1=-1e18;for(const p of s.pts){if(p[0]<x0)x0=p[0];if(p[0]>x1)x1=p[0];if(p[1]<y0)y0=p[1];if(p[1]>y1)y1=p[1]}return[x0,y0,x1,y1]};
+async function ixPagePng(src){const m=img(src);if(!m.complete)await new Promise(r=>{m.addEventListener('load',r,{once:true});m.addEventListener('error',r,{once:true});setTimeout(r,8000)});if(!m.naturalWidth)return null;
+ const k=Math.min(1,1700/m.naturalWidth),c=document.createElement('canvas');c.width=Math.round(m.naturalWidth*k);c.height=Math.round(m.naturalHeight*k);const g=c.getContext('2d');g.fillStyle='#fff';g.fillRect(0,0,c.width,c.height);g.filter='grayscale(1)';g.drawImage(m,0,0,c.width,c.height);
+ const b=await new Promise(r=>c.toBlob(r,'image/png'));c.width=c.height=0;return b&&b.size<6e6?new Uint8Array(await b.arrayBuffer()):null}
+/* the text of one board, or null when interrupted (the user came back, or the engine is busy with ✍→T) */
+async function ixBoard(r){const out=[],ink=ixInk(r.items),ocr=async png=>{if(!png)return true;const x=await wb.ocr(png,S.tl);if(x&&x.ok){const t=String(x.text||'').replace(/\s+/g,' ').trim();if(t)out.push(t);return true}return !/Still recognizing/.test(x&&x.error||'')};
+ for(const g of BoardCore.inkLines(ink.map(ixBox))){if(!ixIdle())return null;if(!await ocr(await strokesToPng(g.map(k=>ink[k]),OCR_XH,1)))return null}
+ for(const p of ixPages(r.items).slice(0,60)){if(!ixIdle())return null;if(!await ocr(await ixPagePng(p.src)))return null}
+ return out.join(' ').slice(0,30000)}
+async function ixStep(){if(ixBusy||!ixIdle()||!(window.wb&&wb.ocr)||ST.ixHw===false)return;ixBusy=true;
+ try{const metas=(await txMeta()).filter(m=>m&&!m.folder&&!m.del&&!m.locked&&!(m.hsAt&&m.hsAt>=(m.mt||m.t||0))).sort((a,b)=>(b.mt||b.t||0)-(a.mt||a.t||0));
+  for(const m of metas){if(!ixIdle())return;
+   if(S.id===m.id&&DIRTY)continue; /* the open board is mid-edit: next round */
+   const r=await tx('readonly',s=>s.get(m.id));if(!r||r.locked||r.del||!Array.isArray(r.items))continue;const sig=ixSig(r);
+   const hq=r.hs===sig?r.hq||'':await ixBoard(r);if(hq===null)return;
+   const fresh=await tx('readonly',s=>s.get(m.id));if(!fresh||ixSig(fresh)!==sig)continue; /* changed while we read it: next round */
+   await tx('readwrite',s=>s.put({...fresh,hq,hs:sig,hsAt:Date.now()}));ixDone++}}
+ catch(e){console.warn('search index:',e)}finally{ixBusy=false}}
+setInterval(ixStep,15000);
+/* ---- Handwriting -> LaTeX: strokes -> 384x384 image -> pix2text-mfr model in a worker (mfr-worker.js + mfr-core.js).
+   The model is downloaded once, only when the user agrees, hash-checked and kept in IndexedDB; recognition itself is offline. ---- */
+const MFR_SIDE=384,MFR_IDLE=60000;let mfrW=null,mfrSeq=0,mfrIdle=0,mrep=null;const mfrCb=new Map();
+function mfrStop(){clearTimeout(mfrIdle);if(mfrW){mfrW.terminate();mfrW=null}for(const c of mfrCb.values())c.r({ok:false,error:'the recognition engine stopped'});mfrCb.clear()}
+function mfrAsk(op,extra,onProgress,transfer){
+ if(!mfrW){mfrW=new Worker('mfr-worker.js');mfrW.onmessage=e=>{const m=e.data||{},c=mfrCb.get(m.id);if(!c)return;if(m.progress){if(c.p)c.p(m.progress);return}mfrCb.delete(m.id);c.r(m)};mfrW.onerror=e=>{e.preventDefault();mfrStop()}}
+ const id=++mfrSeq;clearTimeout(mfrIdle);
+ return new Promise(r=>{mfrCb.set(id,{r,p:onProgress});mfrW.postMessage(Object.assign({id,op},extra),transfer||[])}).then(m=>{if(!mfrCb.size){clearTimeout(mfrIdle);mfrIdle=setTimeout(mfrStop,MFR_IDLE)}return m})} /* an idle worker is closed so its ~0.5 GB of model memory is freed */
+const mfrCancel=()=>{if(mfrW)mfrW.postMessage({op:'cancel'})};
+const mfrMB=b=>Math.round(b/1048576);
+/* Asks first, then downloads with a progress bar and a Cancel button. Resolves true when the model is installed. */
+async function mfrInstall(st){
+ if(!(await askConfirm('Download the math recognition model?',t_('Handwriting → LaTeX needs a recognition model ({n} MB, MIT licence), downloaded once from Hugging Face and jsDelivr and kept on this device. After that it works offline and your handwriting never leaves your device. You can remove it in ⚙ Settings → Handwriting to LaTeX.',{n:mfrMB(st.total)}),'Download',false)))return false;
+ let close=null,bar=null,txt=null,fin=false;
+ const shown=dlg({title:'Downloading the math model…',hideOk:true,body:c=>{close=c;const w=document.createElement('div');bar=document.createElement('progress');bar.max=1;bar.value=0;bar.style.width='100%';txt=document.createElement('div');txt.style.cssText='opacity:.75;font-size:12px;margin-top:6px';txt.textContent='Starting…';w.append(bar,txt);return w}});
+ shown.then(()=>{if(!fin)mfrCancel()});
+ const r=await mfrAsk('install',{},p=>{if(bar){bar.value=p.total?p.done/p.total:0;txt.textContent=mfrMB(p.done)+' / '+mfrMB(p.total)+' MB'}});
+ fin=true;if(close)close(true);
+ if(!r.ok){toast(r.error==='cancelled'?t_('Download cancelled'):t_('Download failed: {e}',{e:r.error}),6000);return false}
+ return !!r.installed}
+/* The selected strokes, black on white, stretched onto the model's square input (the model was trained on stretched formula crops). */
+function mfrPixels(ss){const src=strokesCanvas(ss,OCR_XH,1);if(!src)return null;
+ const c=document.createElement('canvas');c.width=c.height=MFR_SIDE;const g=c.getContext('2d',{willReadFrequently:true});g.fillStyle='#fff';g.fillRect(0,0,MFR_SIDE,MFR_SIDE);g.imageSmoothingQuality='high';g.drawImage(src,0,0,MFR_SIDE,MFR_SIDE);
+ const d=g.getImageData(0,0,MFR_SIDE,MFR_SIDE).data;src.width=src.height=c.width=c.height=0;return d}
+async function hwMath(){const ss=S.sel.filter(i=>i.t=='s'&&i.pts&&i.pts.length&&!(i.tool&&i.tool[0]=='h'));if(!ss.length)return toast('Lasso-select a handwritten formula first');
+ if(!window.Worker||!window.indexedDB)return toast('Handwriting → LaTeX is not supported in this browser',5000);
+ if(hwMath.busy)return;hwMath.busy=true;
+ try{const st=await mfrAsk('status');if(!st.ok)return toast(t_('Math recognition is unavailable: {e}',{e:st.error}),6000);
+  if(!st.installed&&!(await mfrInstall(st)))return;
+  const px=mfrPixels(ss);if(!px)return toast('Select pen strokes (not highlighter) to recognize');
+  let closeR=null,fin=false;
+  dlg({title:'Recognizing formula…',hideOk:true,body:c=>{closeR=c;const d=document.createElement('div');d.style.cssText='opacity:.75;font-size:13px';d.textContent='This takes a few seconds.';return d}}).then(()=>{if(!fin)mfrCancel()}); /* Cancel or Esc stops it */
+  const r=await mfrAsk('recognize',{rgba:px},null,[px.buffer]);fin=true;if(closeR)closeR(true);
+  if(!r.ok)return toast(r.error==='cancelled'?'Cancelled':t_('Math recognition failed: {e}',{e:r.error}),6000);
+  if(!r.latex)return toast('No formula recognized');
+  toast(r.problems.length?t_('Check the result: {e}',{e:r.problems[0]}):r.stopped!=='eos'?t_('Check the result: the formula may be incomplete'):t_('Recognized — check it, then Insert'),r.problems.length||r.stopped!=='eos'?6000:2500);
+  const b=bnds(ss);mp=[b[0],b[1]];medit=null;mcell=null;mrep={ss,b,mp,color:ss[0].color||S.color};
+  closeTransient('mq');$('#mq b').textContent='LaTeX (recognized)';$('#mrepL').hidden=0;$('#ml').value=r.latex;$('#mq').hidden=0;previewMath();$('#ml').focus()}
+ finally{hwMath.busy=false}}
+const mrepOff=()=>{mrep=null;$('#mrepL').hidden=1};
 /* ---------- export ---------- */
 const keepColors=i=>i.t=='i'||!!i.imp;
 /* Like paint(), but when inverting for export, imported content (images, PDF pages, slides, docs) is pre-inverted so the final whole-canvas invert returns it to its original colors */
@@ -1777,7 +1994,7 @@ async function pickExportBoards(what){await saveNow();if(!S.id)return[];
  const ex=await linkedBoardsOf([S.id]);if(!ex.length)return[];
  const yes=await dlg({title:'🔗 Linked boards',msg:'“'+(S.title||'Untitled')+'” links to '+ex.length+' other board'+(ex.length==1?'':'s')+': '+linkedNames(ex)+'. Put '+(ex.length==1?'it':'them')+' in the '+what+' too so the links still work?'+(ex.length>25?' That is a lot of boards, so the file can get large and take a while.':''),ok:'Include linked boards',cancel:'Only this board'});
  if(!yes)return[];
- const okm=new Map(),skipped=[];for(const r of ex){if(r.locked&&!await askPassword(r)){skipped.push(r);continue}okm.set(r.id,r)}
+ const okm=new Map(),skipped=[];for(const r of ex){if(r.locked&&!await askPassword(r)){skipped.push(r);continue}try{okm.set(r.id,await vRead((await tx('readonly',s=>s.get(r.id)))||r))}catch(e){skipped.push(r)}}
  /* keep only boards still reachable through boards that are allowed in (a locked board you skipped does not let its own links through) */
  const seen=new Set([S.id]),keep=[],q=[S.items];while(q.length){for(const l of linkRefs(q.shift())){if(seen.has(l.id)||!okm.has(l.id))continue;seen.add(l.id);const r=okm.get(l.id);keep.push(r);q.push(r.items)}}
  if(ex.length>keep.length)toast((ex.length-keep.length)+' linked board'+(ex.length-keep.length==1?' was':'s were')+' left out (locked or unreachable)');
@@ -1908,8 +2125,10 @@ const bsl=(id,f)=>$(id).oninput=e=>{const c=cfg[S.tool];if(c){f(c,+e.target.valu
 $('#bcs').oninput=e=>setColor(e.target.value);$('#bac').onclick=()=>{if(!S.colors.includes(S.color)){S.colors.push(S.color);Wr('wb.colors',S.colors);swBrush()}};
 function swBrush(){const b=$('#bsws');b.innerHTML='';S.colors.forEach(c=>{const x=document.createElement('button');x.className='sw';x.style.background=c;x.title=c;x.style.outline=c==S.color?'2px solid var(--ac)':'';x.onclick=()=>setColor(c);x.ondblclick=()=>{S.colors=S.colors.filter(q=>q!=c);Wr('wb.colors',S.colors);swBrush()};b.append(x)});const p=$('#bpl');p.innerHTML='<option value="">Palettes…</option>'+Object.keys(pals).map(n=>`<option value="${n}">${n}</option>`).join('');p.value='';if(S.tool=='tape'&&typeof tapeUI=='function')tapeUI()}
 $('#bsp').onclick=()=>{const n=$('#bpn').value.trim();if(!n)return toast('Name the palette first');pals[n]=[...S.colors];Wr('wb.pals',pals);$('#bpn').value='';swBrush();toast('Palette saved')};$('#ersz').oninput=e=>{cfg.erase.size=+e.target.value;Wr('wb.cfg',cfg);updateBrushCursor()};$('#erobj').onchange=e=>{S.eraseWhole=e.target.checked;Wr('wb.eraseWhole',S.eraseWhole)};S.eraseWhole=L('wb.eraseWhole',true);S.eraseOnly=L('wb.eraseOnly','');const setEraseOnly=v=>{S.eraseOnly=v;Wr('wb.eraseOnly',v);$('#erhl').checked=v=='hl';$('#ertp').checked=v=='tape'};$('#erhl').onchange=e=>setEraseOnly(e.target.checked?'hl':'');$('#ertp').onchange=e=>setEraseOnly(e.target.checked?'tape':'');$('#bpl').onchange=e=>{if(pals[e.target.value]){S.colors=[...pals[e.target.value]];Wr('wb.colors',S.colors);swBrush();setColor(S.colors[0])}};
-$('#tg').onclick=e=>{S.straight=!S.straight;e.target.classList.toggle('on',S.straight)};$('#tsn').onclick=e=>{S.snap=!S.snap;e.target.classList.toggle('on',S.snap)};
-$('#hw').onclick=hw;$('#nn').onclick=newNote;
+$('#tg').onclick=e=>{S.straight=!S.straight;e.target.classList.toggle('on',S.straight)};
+S.gsnap=L('wb.gsnap',false);S.guides=L('wb.guides',true);$('#tgr').classList.toggle('on',S.gsnap);$('#tgd').classList.toggle('on',S.guides);
+$('#tal').onclick=()=>autoLayout('TB');$('#tgr').onclick=e=>{S.gsnap=!S.gsnap;Wr('wb.gsnap',S.gsnap);e.currentTarget.classList.toggle('on',S.gsnap)};$('#tgd').onclick=e=>{S.guides=!S.guides;Wr('wb.guides',S.guides);e.currentTarget.classList.toggle('on',S.guides)};$('#tsn').onclick=e=>{S.snap=!S.snap;e.target.classList.toggle('on',S.snap)};
+$('#hw').onclick=hw;$('#hwm').onclick=hwMath;$('#nn').onclick=newNote;
 $('#bn').onclick=async()=>{closeTransient();$('#np').hidden=1;await saveNow();showHome()};
 const delSel=()=>{if(!S.sel.length)return;push();S.items=S.items.filter(i=>!S.sel.includes(i));S.sel=[];save();draw()};$('#dl').onclick=delSel;
 $('#ti').oninput=e=>{S.title=e.target.value;save()};$('#favnote').onclick=async()=>{S.fav=!S.fav;$('#favnote').textContent=S.fav?'★':'☆';$('#favnote').title=S.fav?'Remove from favorites':'Add to favorites';await saveNow()};
@@ -2051,12 +2270,13 @@ let lastCvClick=null;cv.addEventListener('pointerdown',e=>{if(e.button===0)lastC
 function mathSpot(){const W=cv.clientWidth,H=cv.clientHeight;let p=lastCvClick;if(p){const sx=p[0]*S.z+S.ox,sy=p[1]*S.z+S.oy;if(sx<0||sy<0||sx>W||sy>H)p=null}if(!p)p=[(W/2-S.ox)/S.z-60,(H/2-S.oy)/S.z-20];return paperPoint(p)}
 $('#mathd').onclick=()=>{closeTransient('mq');medit=null;mp=mathSpot();mcell=tbMathTarget();$('#mq b').textContent=mcell?'LaTeX \u2192 cell '+TBCOL(mcell.c)+(mcell.r+1):'LaTeX';$('#mq').hidden=0;$('#ml').focus()};$('#lyd').onclick=()=>{closeTransient('lp');const p=$('#lp');p.hidden=!p.hidden;if(!p.hidden)renderLayers()};$('#taped').onclick=()=>setTool('tape');
 $('#pl1').onclick=()=>{$('#fi').click();$('#plm').hidden=1};$('#pl2').onclick=()=>{startPdfImport('board');$('#plm').hidden=1};$('#pl4').onclick=()=>{pdfImportContext='board';$('#docf').click();$('#plm').hidden=1};
-$('#exm').onclick=async e=>{const x=e.target.dataset.x;if(!x)return;$('#exm').hidden=1;if(x=='fit')return fitAll();if(x=='copy')return saveCopy();if(x=='open')return $('#of').click();if(x=='lan')return lanDialog();
+$('#exm').onclick=async e=>{const x=e.target.dataset.x;if(!x)return;$('#exm').hidden=1;if(x=='fit')return fitAll();if(x=='copy')return saveCopy();if(x=='ver')return verDialog({id:S.id,title:S.title});if(x=='md')return mdExport([S.id]);if(x=='open')return $('#of').click();if(x=='lan')return lanDialog();
  if(x=='pdf'){closeTransient('pdfq');$('#pdfq').hidden=0;positionUnder($('#pdfq'),$('#exb'));return}if(x=='selpng'){if(!S.sel.length)return toast('Select something first');const keep=S.items;S.items=S.sel;const c=rexp(false,2,0,bnds(S.sel));S.items=keep;return dlf((S.title||'note')+'-selection.png',await new Promise(r=>c.toBlob(r,'image/png')))}if(x=='svg'){try{return exportAs('svg',false,await pickExportBoards('SVG'))}catch(err){console.error(err);return toast('Export failed')}}exportAs(x)};
 $('#pdfcancel').onclick=()=>$('#pdfq').hidden=1;$('#pdfsave').onclick=async()=>{const inv=$('#pdfinv').checked;$('#pdfq').hidden=1;try{exportAs('pdf',inv,await pickExportBoards('PDF'))}catch(err){console.error(err);toast('Export failed')}};
 $('#of').onchange=e=>{const f=e.target.files[0];e.target.value='';f&&openBoardFile(f)};
 const b64=t=>{const u=new TextEncoder().encode(t);let b='';for(let i=0;i<u.length;i+=8192)b+=String.fromCharCode(...u.subarray(i,i+8192));return btoa(b)};
 async function saveCopy(){await saveNow();let linked=[];
+ {const st=await tx('readonly',s=>s.get(S.id));if(VaultCore.isProtected(st)){const o={...st,items:st.items,recs:await recPack(S.id),src:S.id,app:'RejBoard'};delete o.linked;toast('This protected board is saved encrypted: the file needs its password to open',5000);return dlf((S.title||'board').replace(/[\\/:*?"<>|]/g,'_')+'.rjwb',new Blob(['RJWB1:'+b64(JSON.stringify(o))],{type:'application/octet-stream'}))}}
  const ex=await linkedBoardsOf([S.id]);
  if(ex.length){const yes=await dlg({title:'🔗 Linked boards',msg:'“'+(S.title||'Untitled')+'” links to '+ex.length+' other board'+(ex.length==1?'':'s')+': '+linkedNames(ex)+'. Include '+(ex.length==1?'it':'them')+' in the copy so the links still work when the file is opened?',ok:'Include linked boards',cancel:'Only this board'});if(yes)linked=await packBoards(ex)}
  dlf((S.title||'board').replace(/[\\/:*?"<>|]/g,'_')+'.rjwb',new Blob(['RJWB1:'+b64(JSON.stringify({title:S.title,items:S.items,bg:S.bg,pat:S.pat,gs:S.gs,gd:S.gd,layers:S.layers,tags:S.tags,pg:S.pg,recs:await recPack(S.id),src:S.id,linked:linked.length?linked:undefined}))],{type:'application/octet-stream'}))}
@@ -2127,8 +2347,8 @@ async function openBoardFile(f,stay){const t=await f.text();if(!t.startsWith('RJ
  const chosen=extras.length?await pickLinked(extras,n.title||'This board'):[];
  const newId=uid(),map={};if(n.src)map[n.src]=newId;let k=0;for(const b of chosen)map[b.id]=uid()+(k++);
  let nl=0;if(chosen.length){const fid=uid();await tx('readwrite',s=>s.put({id:fid,folder:1,name:('Linked with “'+(n.title||'board')+'”').slice(0,60),parent:CF,color:'#cdeffd',t:Date.now()}));await writeImported(chosen,map,fid);nl=chosen.length;refreshBT().then(()=>lfUi())}
- n.id=newId;n.t=n.ct=n.mt=Date.now();n.parent=CF;delete n.linked;delete n.src;n.items=relinkItems(n.items,map);const rr=n.recs;delete n.recs;const nr=await recUnpack(rr,n.id);if(stay)await tx('readwrite',s=>s.put(n));else{await openNote(n);save()}toast((stay?'Board imported: '+(n.title||'Untitled'):'Board opened')+(nl?' with '+nl+' linked board'+(nl==1?'':'s')+' (folder “Linked with …”)':'')+(nr?' and '+nr+' voice recording'+(nr==1?'':'s'):''))}catch(x){toast('Could not open that file')}}
-const SHP=[['rect','Rectangle'],['ell','Ellipse'],['tri','Triangle'],['rtri','Right triangle'],['dia','Diamond'],['pent','Pentagon'],['hex','Hexagon'],['oct','Octagon'],['star','Star'],['line','Line'],['arr','Arrow'],['darr','Double arrow'],['cyl','Cylinder'],['cone','Cone'],['sphere','Sphere'],['cube','Cube'],['prism','Prism'],['xyz','XYZ Plane'],['trap','Trapezoid'],['para','Parallelogram'],['heart','Heart'],['cross','Cross'],['cloud','Cloud'],['hexagram','Hexagram']],PASTEL=['#ffb3c6','#ffe08a','#b9fbc0','#a2d2ff','#e4c1f9','#ffd6a5'];
+ n.id=newId;n.t=n.ct=n.mt=Date.now();n.parent=CF;delete n.linked;delete n.src;n.items=relinkItems(n.items,map);const rr=n.recs;delete n.recs;const nr=await recUnpack(rr,n.id);if(stay||VaultCore.isProtected(n))await tx('readwrite',s=>s.put(n));else{await openNote(n);save()}toast((stay?'Board imported: '+(n.title||'Untitled'):'Board opened')+(nl?' with '+nl+' linked board'+(nl==1?'':'s')+' (folder “Linked with …”)':'')+(nr?' and '+nr+' voice recording'+(nr==1?'':'s'):''))}catch(x){toast('Could not open that file')}}
+const SHP=[['rect','Rectangle'],['ell','Ellipse'],['tri','Triangle'],['rtri','Right triangle'],['dia','Diamond'],['pent','Pentagon'],['hex','Hexagon'],['oct','Octagon'],['star','Star'],['line','Line'],['arr','Arrow'],['darr','Double arrow'],['cyl','Cylinder'],['cone','Cone'],['sphere','Sphere'],['cube','Cube'],['prism','Prism'],['xyz','XYZ Plane'],['trap','Trapezoid'],['para','Parallelogram'],['heart','Heart'],['cross','Cross'],['cloud','Cloud'],['hexagram','Hexagram'],['frame','Container'],['lane','Swimlane']],PASTEL=['#ffb3c6','#ffe08a','#b9fbc0','#a2d2ff','#e4c1f9','#ffd6a5'];
 const chip=(c,on,f)=>{const b=document.createElement('button');b.className='sw'+(on?' on':'');b.style.background=c||'repeating-linear-gradient(45deg,#ddd 0 4px,#fff 4px 8px)';b.onclick=f;return b};
 function shapeIcon(k){const g=G[k]||G.rect,bx=(k=='rect'||k=='ell')?[3,6,22,16]:[4,4,20,20],ln=LINEK.includes(k);let o='';
  g(bx[0],bx[1],bx[2],bx[3],{size:1.8,fx:0,fy:ln?1:0}).forEach(p=>{if(p.tx!=null)o+=`<text x="${p.x.toFixed(1)}" y="${p.y.toFixed(1)}" font-size="${p.fs.toFixed(1)}" fill="currentColor" stroke="none" font-family="system-ui,sans-serif">${p.tx}</text>`;else o+=`<path d="${p.d}"${p.h?' stroke-dasharray="2 2"':''}/>`});
@@ -2283,7 +2503,35 @@ function dlg(o){return new Promise(res=>{
 })}
 const askText=(title,label,value='',ok='Save',msg='')=>dlg({title,msg,fields:[{label,value}],ok}).then(v=>v==null?null:v[0].trim());
 const askConfirm=(title,msg,ok='Delete',danger=true)=>dlg({title,msg,ok,danger}).then(v=>!!v);
-async function askPassword(n,title='Password required'){const v=await dlg({title,msg:`“${n.title}” is protected. Enter its password to continue.`,fields:[{label:'Password',type:'password'}],ok:'Unlock',validate:async([p])=>(await hashPass(p))===n.locked?'':'Incorrect password — please try again.'});return !!v}
+/* ---------- protected boards (vault-core.js): the content is encrypted; the password unlocks this board's key ---------- */
+const VK=new Map(); /* board id -> content key, for boards unlocked in this session (memory only, never stored) */
+let pwFails=0,pwUntil=0;
+async function pwCheck(n,p){const r=(await tx('readonly',s=>s.get(n.id)))||n;
+ if(VaultCore.isProtected(r)){try{VK.set(r.id,await VaultCore.open(p,r.enc.head));return true}catch(e){return false}}
+ return typeof r.locked==='string'&&(await hashPass(p))===r.locked}
+/* asks for the board's password; repeated wrong guesses wait longer and longer. A board still using the old hash-only lock is
+   encrypted right after its first successful unlock. */
+async function askPassword(n,title='Password required'){
+ const v=await dlg({title,msg:`“${n.title}” is protected. Enter its password to continue.`,fields:[{label:'Password',type:'password'}],ok:'Unlock',validate:async([p])=>{
+  const w=pwUntil-Date.now();if(w>0)return t_('Too many attempts. Try again in {n} s.',{n:Math.ceil(w/1000)});
+  if(await pwCheck(n,p)){pwFails=0;return ''}if(++pwFails>=5)pwUntil=Date.now()+Math.min(300e3,1000*2**(pwFails-4));return 'Incorrect password — please try again.'}});
+ if(!v)return false;
+ const r=await tx('readonly',s=>s.get(n.id));if(VaultCore.isLegacy(r))await vUpgrade(r,v[0]);
+ return true}
+/* a stored board -> a board the editor can show (decrypted with the key from askPassword) */
+async function vRead(r){if(!VaultCore.isProtected(r))return r;const k=VK.get(r.id);if(!k)throw new Error('This board is locked');return VaultCore.unseal(r,k)}
+/* rewrites every version of a board with fn(rec), so its history is encrypted or decrypted together with the board */
+async function vMapVersions(b,fn,noThumb){for(const m of await verList(b)){const d=await vtx('readonly',(mm,dd)=>dd.get(m.id));if(!d||!d.rec)continue;let rec;try{rec=await fn(BoardCore.dbOut(d.rec))}catch(e){continue}
+ const n=VaultCore.isProtected(rec)?null:Array.isArray(rec.items)?rec.items.length:m.n;
+ await vtx('readwrite',(mm,dd)=>{dd.put({id:m.id,rec:BoardCore.dbPackRec(rec,true)});mm.put(noThumb?{...m,th:'',n}:{...m,n})})}}
+/* voice recordings of a board: sealed with the board's key, or opened again */
+async function vRecs(b,key,seal){for(const r of(await rtx('readonly',s=>s.index('b').getAll(IDBKeyRange.only(b))))||[]){if(!!r.ev===seal||!r.blob)continue;
+ try{const u=new Uint8Array(await r.blob.arrayBuffer()),o=seal?await VaultCore.sealBytes(key,u):await VaultCore.unsealBytes(key,u);
+  const nr={...r,blob:new Blob([o],{type:seal?'application/octet-stream':(r.mime||'audio/webm')})};if(seal)nr.ev=1;else delete nr.ev;await rtx('readwrite',s=>s.put(nr))}catch(e){}}}
+async function vProtect(r,pw){const{key,head}=await VaultCore.create(pw),plain={...r,items:r.items};delete plain.locked;
+ const sealed=await VaultCore.seal(plain,key,head);await tx('readwrite',s=>s.put(sealed));VK.set(r.id,key);
+ await vRecs(r.id,key,true);await vMapVersions(r.id,async v=>VaultCore.isProtected(v)?v:await VaultCore.seal({...v,items:v.items},key,head),true)}
+async function vUpgrade(r,pw){try{await vProtect(r,pw);toast('This board is now encrypted with its password 🔒',4000)}catch(e){console.error(e)}}
 
 /* ---- board / folder data helpers ---- */
 const tagList=s=>(s||'').split(',').map(t=>t.trim().replace(/^#/,'')).filter(Boolean);
@@ -2341,18 +2589,35 @@ async function editTagsDialog(n,allTags){
  if(v==null)return false;
  await updateBoard(n,{tags:[...new Set(tagList(v[0]))].join(', ')});return true}
 async function lockBoard(n){
- const v=await dlg({title:'Lock board',msg:`Choose a password for “${n.title}”. You will need it every time you open this board. If you forget it there is no way to recover it.`,fields:[{label:'New password',type:'password'},{label:'Confirm password',type:'password'}],ok:'Lock board',validate:([a,b])=>!a?'Please enter a password.':a!==b?'The passwords do not match.':''});
+ const v=await dlg({title:'Lock board',msg:t_('Choose a password for “{title}”. The board, its pictures, its history and its voice recordings are encrypted with it. If you forget it, the board cannot be recovered by anyone. The title and tags stay visible.',{title:n.title}),fields:[{label:'New password',type:'password'},{label:'Confirm password',type:'password'}],ok:'Lock board',validate:([a,b])=>!a?'Please enter a password.':a.length<4?'Use at least 4 characters.':a!==b?'The passwords do not match.':''});
  if(!v)return false;
- await updateBoard(n,{locked:await hashPass(v[0])});toast('Board locked 🔒');
+ if(n.id===S.id)await saveNow();
+ const r=await tx('readonly',s=>s.get(n.id));if(!r||r.folder)return false;
+ try{await vProtect(r,v[0])}catch(e){toast(t_('Could not lock the board: {e}',{e:e&&e.message||e}),6000);return false}
+ toast('Board locked and encrypted 🔒');
  if(n.id===S.id)await leaveBoard();
  return true}
 async function unlockBoard(n){
  if(!await askPassword(n,'Remove password'))return false;
- await updateBoard(n,{locked:null});toast('Password removed 🔓');return true}
+ const r=await tx('readonly',s=>s.get(n.id));if(!r)return false;let plain;
+ try{plain=await vRead(r)}catch(e){toast(e.message,5000);return false}
+ const key=VK.get(n.id);delete plain.locked;await tx('readwrite',s=>s.put(plain));
+ if(key){await vRecs(n.id,key,false);await vMapVersions(n.id,async v=>{if(!VaultCore.isProtected(v))return v;const x=await VaultCore.unseal(v,key);delete x.locked;return x},false)}
+ VK.delete(n.id);toast('Password removed 🔓');return true}
+async function changePassword(n){
+ const r=await tx('readonly',s=>s.get(n.id));if(!VaultCore.isProtected(r))return false;
+ const v=await dlg({title:'Change password',msg:t_('New password for “{title}”. Nothing needs to be re-encrypted, so this is instant.',{title:n.title}),fields:[{label:'Current password',type:'password'},{label:'New password',type:'password'},{label:'Confirm new password',type:'password'}],ok:'Change',validate:async([o,a,b])=>{
+  const w=pwUntil-Date.now();if(w>0)return t_('Too many attempts. Try again in {n} s.',{n:Math.ceil(w/1000)});if(!a||a.length<4)return 'Use at least 4 characters.';if(a!==b)return 'The new passwords do not match.';
+  try{await VaultCore.open(o,r.enc.head);pwFails=0;return ''}catch(e){if(++pwFails>=5)pwUntil=Date.now()+Math.min(300e3,1000*2**(pwFails-4));return 'The current password is not right.'}}});
+ if(!v)return false;
+ const head=await VaultCore.rewrap(v[0],v[1],r.enc.head),cur=await tx('readonly',s=>s.get(n.id));
+ await tx('readwrite',s=>s.put({...cur,items:cur.items,enc:{...cur.enc,head}}));
+ await vMapVersions(n.id,async x=>VaultCore.isProtected(x)?{...x,items:x.items,enc:{...x.enc,head}}:x,false);
+ toast('Password changed 🔒');return true}
 async function openBoardGuarded(n){
  if(n.locked&&!await askPassword(n))return;
- await saveNow();const fresh=(await tx('readonly',s=>s.get(n.id)))||n;await openNote(fresh)}
-
+ await saveNow();const fresh=(await tx('readonly',s=>s.get(n.id)))||n;
+ try{await openNote(await vRead(fresh))}catch(e){toast(e.message,5000)}}
 /* ---- cute icons ---- */
 const ICON_LOCK='<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M7.5 10.5V7.8a4.5 4.5 0 0 1 9 0v2.7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><rect x="4.4" y="10" width="15.2" height="11" rx="4.2" fill="#ffc2d9" stroke="currentColor" stroke-width="1.6"/><path d="M12 18.4c-2.6-1.7-3.5-2.8-3.5-4a1.8 1.8 0 0 1 3.5-.6 1.8 1.8 0 0 1 3.5.6c0 1.2-.9 2.3-3.5 4z" fill="#fff"/><path d="M20.6 2.6l.6 1.4 1.4.6-1.4.6-.6 1.4-.6-1.4-1.4-.6 1.4-.6z" fill="#ffd45e"/></svg>';
 const ICON_TAG='<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M3.5 12.2V5.8a2.3 2.3 0 0 1 2.3-2.3h6.4a2 2 0 0 1 1.4.6l7.2 7.2a2 2 0 0 1 0 2.8l-6.4 6.4a2 2 0 0 1-2.8 0l-7.5-7.5a2 2 0 0 1-.6-1.4z" fill="#c9b6ff" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="8" cy="8" r="1.7" fill="#fff" stroke="currentColor" stroke-width="1.2"/><path d="M14.6 9.4l.55 1.3 1.3.55-1.3.55-.55 1.3-.55-1.3-1.3-.55 1.3-.55z" fill="#fff"/></svg>';
@@ -2413,7 +2678,7 @@ async function renderHome(){
  if($('#hpdf'))$('#hpdf').onclick=()=>{pdfImportContext='home';$('#docf').click()};
  if($('#hsel'))$('#hsel').onclick=()=>{HV.selMode=!HV.selMode;HV.sel=new Set();renderHome()};
  $('#hbk').onclick=backup;$('#hsf').onclick=sfDialog;$('#hrs').onclick=()=>{$('#np').hidden=0;listNotes();$('#rf').click();$('#np').hidden=1};
- if(sec==='trash')$('#hempty').onclick=async()=>{if(!TR.length)return;if(!await askConfirm('Empty trash','Permanently delete all boards in Trash? This cannot be undone.','Empty trash'))return;await tx('readwrite',s=>TR.forEach(n=>s.delete(n.id)));await recDelBoards(TR.map(n=>n.id));HV.q='';await renderHome()};
+ if(sec==='trash')$('#hempty').onclick=async()=>{if(!TR.length)return;if(!await askConfirm('Empty trash','Permanently delete all boards in Trash? This cannot be undone.','Empty trash'))return;await tx('readwrite',s=>TR.forEach(n=>s.delete(n.id)));await recDelBoards(TR.map(n=>n.id));await verDelBoards(TR.map(n=>n.id));HV.q='';await renderHome()};
 
  /* breadcrumb for folders */
  const cr=$('#crumb');
@@ -2463,7 +2728,7 @@ async function renderHome(){
  else if(isTag)boards=N.filter(n=>tagList(n.tags).includes(sec.slice(4)));
  else if(isF)boards=N.filter(n=>n.parent==CF);
  else boards=N.filter(n=>!n.parent||!F.find(f=>f.id===n.parent));
- if(q){const base=sec==='trash'?TR:sec==='fav'?N.filter(n=>n.fav):sec==='protected'?PR:isTag?boards:N;boards=base.filter(n=>(n.title+' '+(n.tags||'')+' '+(n.locked?'':(n.q||''))).toLowerCase().includes(q))}
+ if(q){const base=sec==='trash'?TR:sec==='fav'?N.filter(n=>n.fav):sec==='protected'?PR:isTag?boards:N;boards=base.filter(n=>BoardCore.textMatch(n.title+' '+(n.tags||'')+' '+(n.locked?'':(n.q||'')+' '+(n.hq||'')+' '+(n.pq||'')),q))}
  boards=[...boards].sort(bcmp);
  const g=section(sec==='all'||isF?'Boards':sec==='fav'?'Favorite boards':sec==='trash'?'Trashed boards':sec==='protected'?'Password-protected boards':'Boards','grid');
  if(!boards.length)g.textContent=q?'No matching boards.':sec==='fav'?'No favorite boards yet.':sec==='trash'?'Trash is empty.':sec==='protected'?'No protected boards yet. Use a board’s ⋮ menu → “Lock with password”.':'No boards here yet.';
@@ -2480,7 +2745,7 @@ async function renderHome(){
   mk(picked.length===shown.length&&shown.length?'Select none':'Select all',()=>{if(picked.length===shown.length)sel.clear();else shown.forEach(b=>sel.add(b.id));cards();refreshBar()},true);
   if(sec==='trash'){
    mk('↩ Restore',async()=>{for(const b of picked)await updateBoard(b,{del:0});toast('Restored '+picked.length+' board'+(picked.length==1?'':'s'));fin()});
-   mk('🗑 Delete permanently',async()=>{if(!await askConfirm('Delete permanently','Permanently delete '+picked.length+' selected board'+(picked.length==1?'':'s')+'? This cannot be undone.','Delete'))return;await tx('readwrite',s=>picked.forEach(b=>s.delete(b.id)));await recDelBoards(picked.map(b=>b.id));fin()});
+   mk('🗑 Delete permanently',async()=>{if(!await askConfirm('Delete permanently','Permanently delete '+picked.length+' selected board'+(picked.length==1?'':'s')+'? This cannot be undone.','Delete'))return;await tx('readwrite',s=>picked.forEach(b=>s.delete(b.id)));await recDelBoards(picked.map(b=>b.id));await verDelBoards(picked.map(b=>b.id));fin()});
   }else{
    const allFav=picked.every(b=>b.fav);
    mk(allFav?'☆ Unfavorite':'⭐ Favorite',async()=>{for(const b of picked)await updateBoard(b,{fav:!allFav});fin()});
@@ -2505,14 +2770,16 @@ async function renderHome(){
   const mi=(label,fn)=>{const b=document.createElement('button');b.textContent=label;b.onclick=async e=>{e.stopPropagation();closeBoardMenus();await fn()};menu.append(b)};
   if(sec==='trash'){
    mi('↩  Restore',async()=>{await updateBoard(n,{del:0});renderHome()});
-   mi('🗑  Delete permanently',async()=>{if(!await askConfirm('Delete permanently',`Permanently delete “${n.title}”? This cannot be undone.`,'Delete'))return;await tx('readwrite',s=>s.delete(n.id));await recDelBoards([n.id]);renderHome()});
+   mi('🗑  Delete permanently',async()=>{if(!await askConfirm('Delete permanently',`Permanently delete “${n.title}”? This cannot be undone.`,'Delete'))return;await tx('readwrite',s=>s.delete(n.id));await recDelBoards([n.id]);await verDelBoards([n.id]);renderHome()});
   }else{
    mi(n.fav?'★  Remove favorite':'☆  Add to favorites',async()=>{await updateBoard(n,{fav:!n.fav});renderHome()});
    mi('⧉  Copy board',async()=>{const cur=(await tx('readonly',s=>s.get(n.id)))||n;const c={...structuredClone(cur),id:uid(),title:n.title+' copy',t:Date.now(),ct:Date.now(),mt:Date.now(),fav:false,del:0};await tx('readwrite',s=>s.put(c));renderHome()});
+   mi('🕘  Version history',()=>verDialog(n));
    mi('☁  Save to sync folder',()=>sfBackup([n.id]));
    mi('📁  Move board',async()=>{if(await moveBoardDialog(n,F))renderHome()});
    mi('🏷  Edit tags',async()=>{if(await editTagsDialog(n,tagNames))renderHome()});
    mi(n.locked?'🔓  Remove password':'🔐  Lock with password',async()=>{if(n.locked?await unlockBoard(n):await lockBoard(n))renderHome()});
+   if(n.enc)mi('🔑  Change password',async()=>{if(await changePassword(n))renderHome()});
    mi('🗑  Move to Trash',async()=>{if(!await askConfirm('Move to Trash',`Move “${n.title}” to the Trash? You can restore it later.`,'Move to Trash'))return;await updateBoard(n,{del:Date.now()});if(n.id===S.id)await leaveBoard();renderHome()});
   }
   more.onclick=e=>{e.stopPropagation();const open=menu.classList.contains('open');closeBoardMenus();if(!open){menu.classList.add('open');d.classList.add('mopen')}};
@@ -2551,11 +2818,23 @@ function openSettings(){const m=$('#stm');m.hidden=0;m.innerHTML='';m.onclick=e=
  R('Writing sounds',TG(ST,'snd'),'Pencil scratch, ballpoint, fountain pen, calligraphy, soft brush and the three highlighters');R('Eraser and tape sounds',TG(ST,'sndEr'),'Also play sounds for the eraser and the tape tool (needs Writing sounds on)');
  R('Sound volume',(()=>{const i=document.createElement('input');i.type='range';i.min=0;i.max=100;i.value=ST.sndVol??60;i.style.width='150px';i.oninput=()=>{ST.sndVol=+i.value;Wr('wb.st',ST)};return i})());
  H('Storage','How boards are kept on this device.');
+ if(window.wb&&wb.backup){R('Automatic daily backups',TG(ST,'autoBk'),t_('A full backup every day into the app’s data folder: the newest 7 daily, 4 weekly and 6 monthly copies are kept. Last backup: {when}',{when:L('wb.abk',0)?new Date(L('wb.abk',0)).toLocaleString():t_('never')}));
+  R('Backups',(()=>{const w=document.createElement('div');w.style.cssText='display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end';const a=document.createElement('button');a.textContent='Back up now';a.onclick=async()=>{a.disabled=true;toast('Backing up…',60000);const r=await autoBackupNow();a.disabled=false;toast(r.ok?t_('Backup saved ({n} MB)',{n:(r.bytes/1048576).toFixed(1)}):t_('Backup failed: {e}',{e:r.error}),5000)};
+   const o=document.createElement('button');o.textContent='Open folder';o.onclick=()=>wb.backup.open();const rs=document.createElement('button');rs.textContent='Restore…';rs.onclick=restoreBackupDialog;w.append(a,o,rs);return w})())}
+ else box.insertAdjacentHTML('beforeend','<p style="margin:4px 0 0;opacity:.65;font-size:11px">In the browser your boards live in this browser’s storage. Use Backup on the home screen regularly; the desktop app also backs up automatically every day.</p>');
  R('Compact board storage',(()=>{const b=document.createElement('button');const r=()=>{b.textContent=ST.dbPack!==false?'On':'Off';b.className=ST.dbPack!==false?'on':''};r();
   b.onclick=async()=>{if(b.disabled)return;b.disabled=true;ST.dbPack=ST.dbPack===false;r();svST();toast(ST.dbPack?'Converting boards to compact storage…':'Converting boards for older versions…',4000);const n=await dbConvertAll(ST.dbPack);toast('Done: '+n+' board'+(n==1?'':'s')+' converted',3500);b.disabled=false};return b})(),'On: crowded boards save much faster. Turn Off before installing an older version of RejBoard: every board is converted back to the classic format (and stays that way until you turn it On again).');
+ R('Export all boards to Markdown',(()=>{const b=document.createElement('button');b.textContent='Export (.zip)';b.onclick=mdExportAll;return b})(),'Every board as a Markdown file in its folders, with images and a picture of the ink. Opens in Obsidian, VS Code or any text editor. Password-protected boards are skipped.');
  H('Canvas','How moving around and drawing on the canvas behaves.');R('Mouse wheel zoom',TG(ST,'wheel'),'Off = wheel scrolls, Ctrl+wheel zooms');R('Return to select after drawing shapes',TG(ST,'rts'),'After a shape or tape the Select tool comes back');R('Right-drag pans the canvas',TG(ST,'rdrag'));
  R('Low latency inking (restart app)',TG(ST,'ll'),'Uses a lower-latency canvas; takes effect next launch');R('Autosave',TG(ST,'auto'),'Off = save with Ctrl+S');
  H('Handwriting to text','Which engine turns selected handwriting into editable text.');R('Recognition engine',SG('hwEngine',[['online','Online (Google)'],['device','On-device (offline)']]),'Online sends only the ink points to a Google handwriting service. On-device uses the built-in Tesseract engine (the same on Windows, macOS and Linux): nothing leaves your computer. Desktop app only.');box.insertAdjacentHTML('beforeend','<p style="margin:4px 0 0;opacity:.65;font-size:11px">The on-device engine works best on neat, separated (printed) handwriting; for cursive, Online is usually more accurate.</p>');
+ if(window.wb&&wb.ocr)R('Search my handwriting',TG(ST,'ixHw'),'While you are idle, the on-device engine reads your handwriting and scanned PDF pages so search can find them. Nothing leaves your computer. Works best on neat handwriting.');
+ H('Handwriting to LaTeX','✍→∑ turns a handwritten formula selected with the lasso into LaTeX, using an on-device model (pix2text-mfr, MIT licence).');
+ R('Math recognition model',(()=>{const w=document.createElement('div');w.style.cssText='display:flex;align-items:center;gap:8px';const s=document.createElement('span');s.style.cssText='opacity:.75;font-size:12px';const b=document.createElement('button');w.append(s,b);
+  const show=async()=>{b.disabled=true;s.textContent='…';const st=await mfrAsk('status');b.disabled=false;if(!st.ok){s.textContent=st.error;b.hidden=1;return}
+   s.textContent=st.installed?t_('Installed ({n} MB)',{n:mfrMB(st.total)}):t_(st.bytes?'Partly downloaded':'Not downloaded');b.textContent=st.installed?'Remove':'Download';
+   b.onclick=async()=>{if(st.installed){if(!confirmTwice(b))return;b.disabled=true;await mfrAsk('remove');mfrStop();toast('Math recognition model removed')}else await mfrInstall(st);show()}};
+  show();return w})(),'Downloaded once, then recognition runs offline: your handwriting never leaves the device. Remove it to free the space.');
  H('Updates','Check for RejBoard updates. Checks contact GitHub over HTTPS only when you ask or enable automatic checks.');
  const updateBox=document.createElement('div');updateBox.style.cssText='display:flex;flex-direction:column;gap:8px;min-width:0';
  const updateVersion=document.createElement('div');updateVersion.textContent='Current version: …';updateVersion.setAttribute('role','status');
@@ -2927,14 +3206,34 @@ function buildOsp(){const sb=$('#sb');if(!sb||$('#osp'))return;const p=document.
  OSFILL.forEach(c=>{const b=chip(c,false,()=>osChg(()=>osShapes().forEach(i=>i.fill=c)));b.dataset.c=c;b.title=c;rf.append(b)});
  const pf=document.createElement('input');pf.type='color';pf.id='osfi';pf.title='Any fill color';pf.oninput=()=>osLive(()=>osShapes().forEach(i=>i.fill=pf.value));pf.onchange=()=>{osPushed=false};rf.append(pf);
  const rkn=row('osrk','Connected line'),kl=document.createElement('label');kl.className='tgl';kl.title='Snap the line to the shapes at its ends and keep it attached when they move';kl.innerHTML='<input type="checkbox" id="osck"><i></i>Connect to shapes';const kc=kl.querySelector('input');kc.onchange=()=>osChg(()=>osShapes().filter(i=>['line','arr','darr'].includes(i.shp)).forEach(i=>{if(kc.checked){delete i.nc;if(window.rbLinkEnds)window.rbLinkEnds(i)}else{i.nc=true;i.lk0=i.lk1=null;i.n0=i.n1=null}}));rkn.append(kl);
+  const osLines=()=>osShapes().filter(i=>LINEK.includes(i.shp));
+ const rr=row('osrr','Route');[['s','Straight'],['c','Curved'],['o','Elbow']].forEach(([k,n])=>{const b=btn(n,n);b.dataset.rt=k;b.onclick=()=>osChg(()=>osLines().forEach(i=>lineRoute(i,k)));rr.append(b)});
+ const rh=row('osrh','Arrowheads');['Line start','Line end'].forEach((t,w)=>{const lb=document.createElement('span');lb.className='osv';lb.textContent=t;const se=document.createElement('select');se.id='osah'+w;
+  [['none','None'],['arrow','Arrow'],['tri','Triangle'],['circle','Dot'],['diamond','Diamond'],['bar','Bar']].forEach(([v,n])=>{const o=document.createElement('option');o.value=v;o.textContent=n;se.append(o)});
+  se.onchange=()=>osChg(()=>osLines().forEach(i=>{i['ah'+w]=se.value}));rh.append(lb,se)});
+ const rgw=row('osrg','Text'),gl=document.createElement('label');gl.className='tgl';gl.title='The shape grows taller when its text does not fit';gl.innerHTML='<input type="checkbox" id="osgf"><i></i>Grow to fit text';const gc=gl.querySelector('input');
+ gc.onchange=()=>osChg(()=>osShapes().filter(i=>!LINEK.includes(i.shp)).forEach(i=>{if(gc.checked){delete i.fit;i.h=fitHeight(i,i.label,i.h)}else i.fit=false}));rgw.append(gl);
+ const ral=row('osral','Auto-arrange');[['TB','↓ Top to bottom'],['LR','→ Left to right']].forEach(([d,n])=>{const b=btn(n,'Arrange the selected shapes automatically, following their connecting lines');b.onclick=()=>autoLayout(d);ral.append(b)});
+ const rln=row('osrln','Swimlane');const ab=btn('＋ Add lane below','Add another lane of the same size underneath');ab.onclick=()=>{const l=osShapes().filter(i=>i.shp==='lane');if(l.length==1)addLaneBelow(l[0])};rln.append(ab);
+ const rj=row('osrj','Crossings'),jl=document.createElement('label');jl.className='tgl';jl.title='Draw a small jump where this line crosses lines underneath it';jl.innerHTML='<input type="checkbox" id="osjp"><i></i>Line jumps';const jc=jl.querySelector('input');
+ jc.onchange=()=>osChg(()=>osLines().forEach(i=>{if(jc.checked)i.jmp=1;else delete i.jmp}));
+ const lb=btn('✎ Label','Write text on this line (or double-click the line)');lb.id='oslb';lb.onclick=()=>{const l=osLines();if(l.length==1)editShapeText(l[0])};rj.append(jl,lb);
  p.addEventListener('mousedown',e=>e.stopPropagation())}
+/* straight / curved / elbow for a connector */
+function lineRoute(i,k){if(k=='o'){i.rt='orth';i.cm=null;delete i.cv;return}delete i.rt;
+ if(k=='s'){i.cm=null;i.cv=0;return}delete i.cv;
+ if(i.lk0&&i.lk1){i.cm=null;return} /* connected at both ends: the automatic S-curve */
+ const[a,b]=spEnds(i),m=[(a[0]+b[0])/2,(a[1]+b[1])/2];i.cm=[m[0]-(b[1]-a[1])*.2,m[1]+(b[0]-a[0])*.2]}
 function osStack(){const p=$('#osp'),sb=$('#sb');if(!p||p.hidden)return;const h=sb.hidden?0:Math.ceil(sb.getBoundingClientRect().height);p.style.bottom='calc(var(--pb,86px) + '+(h+(h?8:0))+'px)'}
 function ospSync(blocked){const p=$('#osp');if(!p)return;const k=(blocked||textEditor)?'':osKind();if(!k){if(!p.hidden)p.hidden=true;return}
  if(p.hidden)p.hidden=false;const show=(id,v)=>{const e=$('#'+id);if(e.hidden!==!v)e.hidden=!v},st=k=='stroke',sh=k=='shape';
  show('osrb',st);show('osrs',st||sh);show('osrl',st||sh);show('osrc',sh);show('osrf',sh);
  $('#osrs b').textContent=sh?'Border width':'Brush size';$('#osrcol b').textContent=sh?'Border color':'Color';
  const T=osTargets(k),f=T[0],ae=document.activeElement,low=v=>String(v||'').toLowerCase();
- const isLn=sh&&T.length>0&&T.every(q=>['line','arr','darr'].includes(q.shp));show('osrk',isLn);if(isLn){const ck=$('#osck');if(ck)ck.checked=T.every(q=>!q.nc)}
+ const isLn=sh&&T.length>0&&T.every(q=>['line','arr','darr'].includes(q.shp));show('osrk',isLn);show('osrr',isLn);show('osrh',isLn);show('osrj',isLn);const clo=sh&&T.length>0&&T.every(q=>!LINEK.includes(q.shp)&&q.shp!=='xyz');show('osrg',clo);show('osral',sh&&T.filter(q=>!LINEK.includes(q.shp)).length>=2);show('osrln',sh&&T.length==1&&T[0].shp==='lane');if(clo)$('#osgf').checked=T.every(q=>q.fit!==false);if(isLn){const ck=$('#osck');if(ck)ck.checked=T.every(q=>!q.nc)
+  const rk=q=>q.rt==='orth'?'o':(q.cm||(q.cv!==0&&q.lk0&&q.lk1))?'c':'s',r0=rk(T[0]),rs=T.every(q=>rk(q)==r0)?r0:'';p.querySelectorAll('[data-rt]').forEach(b=>b.classList.toggle('on',b.dataset.rt==rs));
+  [0,1].forEach(w=>{const se=$('#osah'+w),v=q=>q['ah'+w]||({line:['none','none'],arr:['none','arrow'],darr:['arrow','arrow']}[q.shp]||['none','none'])[w],v0=v(T[0]);if(ae!==se)se.value=T.every(q=>v(q)==v0)?v0:''});
+  $('#osjp').checked=T.every(q=>!!q.jmp);$('#oslb').hidden=T.length!==1}
  if(f){const rg=$('#ossz');rg.max=sh?Math.max(12,Math.ceil(f.size||1)):60;if(ae!==rg){rg.value=Math.round(f.size||1)}$('#osszv').textContent=Math.round(f.size||1);
   if(st&&ae!==$('#osbr'))$('#osbr').value=T.every(q=>q.tool==f.tool)?f.tool:'';
   const lt=T.every(q=>(q.lineType||'solid')==(f.lineType||'solid'))?(f.lineType||'solid'):'';p.querySelectorAll('[data-lt]').forEach(b=>b.classList.toggle('on',b.dataset.lt==lt));
@@ -2986,6 +3285,7 @@ function PB(){const parts=[];let d='',pl=null,cx_=0,cy_=0,sx_=0,sy_=0;const o={
   for(let k=1;k<=n;k++){const am=a0+(a1-a0)*(k-1)/n,a=a0+(a1-a0)*k/n,x=cx+rx*Math.cos(a),y=cy+ry*Math.sin(a);d+=`A${f2(rx)} ${f2(ry)} 0 0 ${a1>a0?1:0} ${f2(x)} ${f2(y)}`;for(let j=1;j<=8;j++){const aa=am+(a-am)*j/8;pl.push([cx+rx*Math.cos(aa),cy+ry*Math.sin(aa)])}cx_=x;cy_=y}return o},
  Z(){d+='Z';pl.push([sx_,sy_]);return o},
  end(f,h){parts.push({d,pl,f:!!f,h:!!h});d='';pl=null;return o},
+ F(){parts.push({d,pl,f:false,h:false,fc:true});d='';pl=null;return o}, /* filled with the line colour (solid arrowheads) */
  T(s,x,y,fs){parts.push({tx:s,x,y,fs});return o},
  out(){return parts}};return o}
 const pg=pts=>{const o=PB();pts.forEach((q,k)=>k?o.L(q[0],q[1]):o.M(q[0],q[1]));return o.Z().end(1).out()};
@@ -3013,6 +3313,8 @@ const G={
  para:(x,y,w,h)=>pg([[x+w*.25,y],[x+w,y],[x+w*.75,y+h],[x,y+h]]),
  cross:(x,y,w,h)=>pg([[.33,0],[.67,0],[.67,.33],[1,.33],[1,.67],[.67,.67],[.67,1],[.33,1],[.33,.67],[0,.67],[0,.33],[.33,.33]].map(p=>[x+p[0]*w,y+p[1]*h])),
  heart:(x,y,w,h)=>upath('M.5 1C.1 .68 0 .45 0 .28C0 .1 .14 0 .28 0C.4 0 .5 .08 .5 .22C.5 .08 .6 0 .72 0C.86 0 1 .1 1 .28C1 .45 .9 .68 .5 1Z',x,y,w,h),
+ frame:(x,y,w,h)=>{const hh=Math.min(34,h*.3),o=PB();pgo(o,[[x,y],[x+w,y],[x+w,y+h],[x,y+h]]).end(1);return pline(o,[[x,y+hh],[x+w,y+hh]]).out()}, /* container: title bar on top */
+ lane:(x,y,w,h)=>{const hw=Math.min(38,w*.25),o=PB();pgo(o,[[x,y],[x+w,y],[x+w,y+h],[x,y+h]]).end(1);return pline(o,[[x+hw,y],[x+hw,y+h]]).out()}, /* swimlane: title band on the left */
  cloud:(x,y,w,h)=>upath('M.22 1C.09 1 0 .88 0 .72C0 .56 .1 .46 .24 .46C.24 .2 .4 0 .56 0C.72 0 .8 .1 .84 .28C.94 .28 1 .4 1 .58C1 .8 .9 1 .76 1Z',x,y,w,h),
  line:(x,y,w,h,i)=>{const[a,b]=lend(x,y,w,h,i);return PB().M(a[0],a[1]).L(b[0],b[1]).end().out()},
  arr:(x,y,w,h,i)=>{const[a,b]=lend(x,y,w,h,i),o=PB().M(a[0],a[1]).L(b[0],b[1]).end();return pline(o,ahead(a,b,hlen(a,b,i))).out()},
@@ -3036,8 +3338,13 @@ function mkSp(k,a,b,shift){let[x0,y0]=a,[x1,y1]=b;if(shift){if(LINEK.includes(k)
  const st=S.shapeStyle||{};return{t:'sp',shp:k,x:Math.min(x0,x1),y:Math.min(y0,y1),w:Math.abs(x1-x0),h:Math.abs(y1-y0),fx:x1<x0?1:0,fy:y1<y0?1:0,rot:0,size:cfg.shape.size,color:st.border||S.color,fill:(st.fill||S.fill)||undefined,lineType:st.lineType||'solid',cornerType:st.cornerType||'rounded'}}
 /* ===== text inside shapes: shape.label holds the text; it is laid out inside the shape's inscribed area, auto-sized, rotates/scales with the shape ===== */
 var spEditing=null,SPMC=null;
-function spLabelable(i){return !!i&&i.t=='sp'&&!['line','arr','darr','xyz'].includes(i.shp)}
-function spTextBox(i){const k=i.shp,x=i.x,y=i.y,w=i.w,h=i.h;let fx=.84,fy=.78,cx=.5,cy=.5;
+function spLabelable(i){return !!i&&i.t=='sp'&&i.shp!=='xyz'}
+const isLine=i=>!!i&&i.t=='sp'&&LINEK.includes(i.shp);
+const isBox=i=>!!i&&i.t=='sp'&&(i.shp==='frame'||i.shp==='lane'); /* containers carry what is inside them */
+function spTextBox(i){if(i.shp==='frame'){const hh=Math.min(34,i.h*.3);return[i.x+i.w/2,i.y+hh/2,Math.max(10,i.w*.94),Math.max(10,hh*.86)]}
+ if(i.shp==='lane'){const hw=Math.min(38,i.w*.25);return[i.x+hw/2,i.y+i.h/2,Math.max(10,i.h*.94),Math.max(10,hw*.86)]} /* laid out along the band, drawn turned 90° */
+ if(isLine(i)){const q=window.rbLineLabel?window.rbLineLabel(i):[i.x+i.w/2,i.y+i.h/2];return[q[0],q[1],Math.max(60,Math.min(260,Math.hypot(i.w,i.h)*.8)),1e6]} /* a line's label sits halfway along it */
+ const k=i.shp,x=i.x,y=i.y,w=i.w,h=i.h;let fx=.84,fy=.78,cx=.5,cy=.5;
  if(['ell','dia','heart','cloud','star','hexagram','sphere'].includes(k)){fx=.62;fy=.6}
  else if(['hex','oct','pent'].includes(k)){fx=.72;fy=.7}
  else if(k=='tri'){fx=.5;fy=.42;cy=.66}
@@ -3051,27 +3358,38 @@ function spTextBox(i){const k=i.shp,x=i.x,y=i.y,w=i.w,h=i.h;let fx=.84,fy=.78,cx
 function spWrap(c,text,maxW){const out=[];String(text).split('\n').forEach(par=>{if(par===''){out.push('');return}let line='';par.split(' ').forEach(word=>{let t=line?line+' '+word:word;if(c.measureText(t).width<=maxW){line=t;return}if(line){out.push(line);line=''}
   if(c.measureText(word).width<=maxW){line=word;return}
   let chunk='';for(const ch of word){if(c.measureText(chunk+ch).width>maxW&&chunk){out.push(chunk);chunk=ch}else chunk+=ch}line=chunk});out.push(line)});return out}
-function spLabelLayout(c,i,text){const b=spTextBox(i),tw=b[2],th=b[3],fam=FF.sans||'system-ui,sans-serif';let fs=Math.min(32,Math.max(10,Math.min(i.w,i.h)*.28)),lines=[];
+function spLabelLayout(c,i,text){const b=spTextBox(i),tw=b[2],th=b[3],fam=FF.sans||'system-ui,sans-serif';
+ if(isLine(i)){const fs=Math.max(12,Math.min(24,10+(i.size||2)*1.6));c.save();c.font=fs+'px '+fam;const lines=spWrap(c,text,tw);c.restore();return{lines,fs,lh:fs*1.25,cx:b[0],cy:b[1],tw,th:Math.max(1,lines.length)*fs*1.25,fam}}
+ let fs=Math.min(32,Math.max(10,Math.min(i.w,i.h)*.28)),lines=[];
  c.save();for(;;fs-=1){c.font=fs+'px '+fam;lines=spWrap(c,text,tw);if(lines.length*fs*1.25<=th||fs<=7)break}c.restore();
  return{lines,fs,lh:fs*1.25,cx:b[0],cy:b[1],tw,th,fam}}
-function spLabelColor(i){if(i.lcolor)return i.lcolor;return(i.fill&&/^#[0-9a-f]{6}$/i.test(i.fill))?(lum(i.fill)>.55?'#222222':'#ffffff'):(i.color||'#000000')}
-function spDrawLabel(c,i){const L=spLabelLayout(c,i,i.label);c.save();c.font=L.fs+'px '+L.fam;c.textAlign='center';c.textBaseline='middle';c.fillStyle=spLabelColor(i);const y0=L.cy-(L.lines.length-1)*L.lh/2;L.lines.forEach((t,k)=>c.fillText(t,L.cx,y0+k*L.lh));c.restore()}
+const paperFill=()=>PAP[S.bg]||'#ffffff';
+function spLabelColor(i){if(i.lcolor)return i.lcolor;if(isLine(i))return i.color||'#000000';return(i.fill&&/^#[0-9a-f]{6}$/i.test(i.fill))?(lum(i.fill)>.55?'#222222':'#ffffff'):(i.color||'#000000')}
+function spDrawLabel(c,i){const L=spLabelLayout(c,i,i.label);c.save();c.font=L.fs+'px '+L.fam;if(i.shp==='lane'){c.translate(L.cx,L.cy);c.rotate(-Math.PI/2);c.translate(-L.cx,-L.cy)}
+ if(isLine(i)){const w=Math.max(...L.lines.map(t=>c.measureText(t).width),4),h=L.lines.length*L.lh;c.fillStyle=paperFill();c.beginPath();c.roundRect?c.roundRect(L.cx-w/2-5,L.cy-h/2-2,w+10,h+4,5):c.rect(L.cx-w/2-5,L.cy-h/2-2,w+10,h+4);c.fill()} /* a paper-coloured pill keeps the label readable over the line */c.textAlign='center';c.textBaseline='middle';c.fillStyle=spLabelColor(i);const y0=L.cy-(L.lines.length-1)*L.lh/2;L.lines.forEach((t,k)=>c.fillText(t,L.cx,y0+k*L.lh));c.restore()}
 function spLabelSvg(i){if(!i.label||!spLabelable(i))return'';if(!SPMC)SPMC=document.createElement('canvas').getContext('2d');const L=spLabelLayout(SPMC,i,i.label),y0=L.cy-(L.lines.length-1)*L.lh/2;
- return L.lines.map((t,k)=>t?`<text x="${f2(L.cx)}" y="${f2(y0+k*L.lh)}" font-size="${f2(L.fs)}" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" fill="${spLabelColor(i)}">${escHtml(t)}</text>`:'').join('')}
+ const bg=isLine(i)?(()=>{const w=Math.max(...L.lines.map(t=>{SPMC.font=L.fs+'px '+L.fam;return SPMC.measureText(t).width}),4),h=L.lines.length*L.lh;return`<rect x="${f2(L.cx-w/2-5)}" y="${f2(L.cy-h/2-2)}" width="${f2(w+10)}" height="${f2(h+4)}" rx="5" fill="${paperFill()}"/>`})():'';
+ const turn=i.shp==='lane'?` transform="rotate(-90 ${f2(L.cx)} ${f2(L.cy)})"`:'';
+ return bg+L.lines.map((t,k)=>t?`<text${turn} x="${f2(L.cx)}" y="${f2(y0+k*L.lh)}" font-size="${f2(L.fs)}" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" fill="${spLabelColor(i)}">${escHtml(t)}</text>`:'').join('')}
 function spAt(p){/* topmost editable closed shape whose box contains the point (works for unfilled shapes too) */
- for(let n=S.items.length-1;n>=0;n--){const i=S.items[n];if(!spLabelable(i)||!act(i))continue;const c=[i.x+i.w/2,i.y+i.h/2],q=i.rot?rotPoint(p,c[0],c[1],-i.rot):p;if(q[0]>=i.x&&q[0]<=i.x+i.w&&q[1]>=i.y&&q[1]<=i.y+i.h)return i}return null}
+ for(let n=S.items.length-1;n>=0;n--){const i=S.items[n];if(!spLabelable(i)||isLine(i)||!act(i))continue;const c=[i.x+i.w/2,i.y+i.h/2],q=i.rot?rotPoint(p,c[0],c[1],-i.rot):p;if(q[0]>=i.x&&q[0]<=i.x+i.w&&q[1]>=i.y&&q[1]<=i.y+i.h)return i}return null}
+/* height a shape needs so its text fits at a readable size (never less than h0). Shapes grow downward; rotated ones keep their size. */
+function fitHeight(it,text,h0){if(it.rot||!text||!String(text).trim()||isLine(it)||['frame','lane'].includes(it.shp))return h0;if(!SPMC)SPMC=document.createElement('canvas').getContext('2d');
+ const keep=it.h;it.h=h0;const tb=spTextBox(it),fy=tb[3]/h0,fs=Math.max(14,Math.min(20,Math.min(it.w,h0)*.22));it.h=keep;SPMC.font=fs+'px '+(FF.sans||'system-ui,sans-serif');
+ const need=spWrap(SPMC,text,tb[2]).length*fs*1.25;return need<=tb[3]?h0:Math.ceil(need/Math.max(.2,fy)+8)}
 function editShapeText(it){
  if(!spLabelable(it)||spEditing||textEditor)return;if(!SPMC)SPMC=document.createElement('canvas').getContext('2d');
- spEditing=it;S.sel=[it];draw();
+ spEditing=it;S.sel=[it];draw();const h0=it.h,fit=it.fit!==false;
  const wrap=document.createElement('div');wrap.id='spte';const ed=document.createElement('div');ed.contentEditable='true';ed.spellcheck=false;ed.className='spte-in';wrap.append(ed);
  ed.textContent=it.label||'';
- const place=()=>{const L=spLabelLayout(SPMC,it,ed.innerText.replace(/\u200b/g,'')||' '),z=S.z,l=(L.cx-L.tw/2)*z+S.ox,t=(L.cy-L.th/2)*z+S.oy;
-  Object.assign(wrap.style,{left:l+'px',top:t+'px',width:L.tw*z+'px',height:L.th*z+'px',transformOrigin:((it.x+it.w/2)*z+S.ox-l)+'px '+((it.y+it.h/2)*z+S.oy-t)+'px',transform:it.rot?`rotate(${it.rot}rad)`:''});
+ const place=()=>{const tx_=ed.innerText.replace(/\u200b/g,'');if(fit){const nh=fitHeight(it,tx_,h0);if(nh!==it.h){it.h=nh;draw()}}const L=spLabelLayout(SPMC,it,tx_||' '),z=S.z,l=(L.cx-L.tw/2)*z+S.ox,t=(L.cy-L.th/2)*z+S.oy;
+  Object.assign(wrap.style,{left:l+'px',top:t+'px',width:L.tw*z+'px',height:L.th*z+'px',transformOrigin:((it.x+it.w/2)*z+S.ox-l)+'px '+((it.y+it.h/2)*z+S.oy-t)+'px',transform:it.rot?`rotate(${it.rot}rad)`:''});if(it.shp==='lane')Object.assign(wrap.style,{transformOrigin:'50% 50%',transform:(it.rot?`rotate(${it.rot}rad) `:'')+'rotate(-90deg)'});
   Object.assign(ed.style,{font:(L.fs*z)+'px '+L.fam,lineHeight:'1.25',color:spLabelColor(it)})};
  place();$('#w').append(wrap);
  let closed=false;const done=ok=>{if(closed)return;closed=true;const v=ed.innerText.replace(/\u00a0/g,' ').replace(/\u200b/g,'').replace(/\n+$/,'');
   document.removeEventListener('pointerdown',away,true);wrap.remove();spEditing=null;
-  if(ok&&v!==(it.label||'')){push();if(v.trim())it.label=v;else delete it.label;save()}
+  const hF=fit?fitHeight(it,v,h0):h0;it.h=h0; /* undo returns to the original size together with the original text */
+  if(ok&&v!==(it.label||'')){push();it.h=hF;if(v.trim())it.label=v;else delete it.label;save()}
   S.sel=S.items.includes(it)?[it]:[];draw()};
  const away=e=>{if(!wrap.contains(e.target))done(true)};
  document.addEventListener('pointerdown',away,true);
@@ -3083,13 +3401,16 @@ function editShapeText(it){
 function drawSp(c,i){const g=G[i.shp];if(!g)return;const parts=g(i.x,i.y,i.w,i.h,i),sh=(i.cornerType||'rounded')==='sharp';
  c.lineWidth=Math.max(.5,i.size||2);c.strokeStyle=i.color||'#000';c.lineJoin=sh?'miter':'round';c.lineCap=sh?'butt':'round';c.miterLimit=10;
  if(i.fill){c.save();c.fillStyle=i.fill;parts.forEach(p=>{if(p.f)c.fill(new Path2D(p.d))});c.restore()}
+ if(parts.some(p=>p.fc)){c.save();c.fillStyle=i.color||'#000';parts.forEach(p=>{if(p.fc)c.fill(new Path2D(p.d))});c.restore()}
  parts.forEach(p=>{if(p.tx!=null){c.save();c.fillStyle=i.color||'#000';c.font=`${p.fs}px system-ui,sans-serif`;c.fillText(p.tx,p.x,p.y);c.restore();return}shapeDash(c,i,p.h);c.stroke(new Path2D(p.d))});c.setLineDash([]);if(i.label&&i!==spEditing&&spLabelable(i))spDrawLabel(c,i)}
 function spSvg(i){const g=G[i.shp];if(!g)return'';const dm={solid:'',dashed:'10 7',dotted:'2 7',dashdot:'10 5 2 5',longdash:'18 7',shortdash:'5 5'},sh=(i.cornerType||'rounded')==='sharp';let o='';
  g(i.x,i.y,i.w,i.h,i).forEach(p=>{if(p.tx!=null){o+=`<text x="${f2(p.x)}" y="${f2(p.y)}" font-size="${f2(p.fs)}" font-family="sans-serif" fill="${i.color}">${p.tx}</text>`;return}const da=p.h?'7 6':(dm[i.lineType||'solid']||'');
-  o+=`<path d="${p.d}" fill="${p.f&&i.fill?i.fill:'none'}" stroke="${i.color}" stroke-width="${i.size||2}" stroke-linejoin="${sh?'miter':'round'}" stroke-linecap="${sh?'butt':'round'}"${da?` stroke-dasharray="${da}"`:''}/>`});
+  o+=`<path d="${p.d}" fill="${p.fc?i.color:p.f&&i.fill?i.fill:'none'}" stroke="${i.color}" stroke-width="${i.size||2}" stroke-linejoin="${sh?'miter':'round'}" stroke-linecap="${sh?'butt':'round'}"${da?` stroke-dasharray="${da}"`:''}/>`});
  o+=spLabelSvg(i);return i.rot?`<g transform="rotate(${(i.rot*180/Math.PI).toFixed(3)} ${f2(i.x+i.w/2)} ${f2(i.y+i.h/2)})">${o}</g>`:o}
 function spAabb(i){if(!i.rot)return[i.x,i.y,i.x+i.w,i.y+i.h];const c=[i.x+i.w/2,i.y+i.h/2],k=[[i.x,i.y],[i.x+i.w,i.y],[i.x+i.w,i.y+i.h],[i.x,i.y+i.h]].map(p=>rotPoint(p,c[0],c[1],i.rot));return[Math.min(...k.map(p=>p[0])),Math.min(...k.map(p=>p[1])),Math.max(...k.map(p=>p[0])),Math.max(...k.map(p=>p[1]))]}
 function spHit(i,p,r=0){const g=G[i.shp];if(!g)return false;const c=[i.x+i.w/2,i.y+i.h/2],q=i.rot?rotPoint(p,c[0],c[1],-i.rot):p,tol=(i.size||2)/2+r+Math.max(4,7/S.z);
+ if(i.shp==='frame'&&q[0]>=i.x&&q[0]<=i.x+i.w&&q[1]>=i.y&&q[1]<=i.y+Math.min(34,i.h*.3))return true; /* a container is grabbed by its title bar */
+ if(i.shp==='lane'&&q[1]>=i.y&&q[1]<=i.y+i.h&&q[0]>=i.x&&q[0]<=i.x+Math.min(38,i.w*.25))return true;
  for(const t of g(i.x,i.y,i.w,i.h,i)){if(!t.pl||t.h)continue;for(let k=1;k<t.pl.length;k++)if(ds(q,t.pl[k-1],t.pl[k])<tol)return true;if(i.fill&&t.f&&t.pl.length>2&&pip(q,t.pl))return true}return false}
 const spFrame=i=>({c:[i.x+i.w/2,i.y+i.h/2],W:i.w,H:i.h,r:i.rot||0,line:LINEK.includes(i.shp)});
 function spEnds(i){const F=spFrame(i),a=[i.fx?i.x+i.w:i.x,i.fy?i.y+i.h:i.y],b=[i.fx?i.x:i.x+i.w,i.fy?i.y:i.y+i.h];return[rotPoint(a,F.c[0],F.c[1],F.r),rotPoint(b,F.c[0],F.c[1],F.r)]}
@@ -3151,12 +3472,13 @@ async function importSelectedPdf(){const ch=pdfChosen();if(ch.err)return toast(c
  const dpi=+$('#pdfqly').value,arr=$('#pdfarr').value,home=pdfImportContext=='home',file=pdfImportFile,doc=pdfImportDoc,KD=docKind(file.name);
  $('#pdfm').hidden=true;pdfThumbRun++;toast(`Importing ${selected.length} ${KD.unit.toLowerCase()}${selected.length==1?'':'s'} …`,120000);
  try{const scale=dpi/72,PX=96/72,imgs=[];
-  for(const n of selected){const pg=await doc.getPage(n),v=pg.getViewport({scale}),c=document.createElement('canvas');c.width=Math.ceil(v.width);c.height=Math.ceil(v.height);await pg.render({canvasContext:c.getContext('2d'),viewport:v}).promise;const v1=pg.getViewport({scale:1});imgs.push({n,w:v1.width*PX,h:v1.height*PX,src:c.toDataURL('image/jpeg',.92)});c.width=c.height=0}
+  for(const n of selected){const pg=await doc.getPage(n),v=pg.getViewport({scale}),c=document.createElement('canvas');c.width=Math.ceil(v.width);c.height=Math.ceil(v.height);await pg.render({canvasContext:c.getContext('2d'),viewport:v}).promise;const v1=pg.getViewport({scale:1});let txt='';try{txt=(await pg.getTextContent()).items.map(x=>x.str||'').join(' ').replace(/\s+/g,' ').trim().slice(0,20000)}catch(_){} /* the page's own text, so it can be searched */
+  imgs.push({n,w:v1.width*PX,h:v1.height*PX,src:c.toDataURL('image/jpeg',.92),txt});c.width=c.height=0}
   const gap=24,pw=imgs[0].w,ph=imgs[0].h,id=Date.now(),lname=KD.pre+file.name.slice(0,12);
   if(home){/* importing from the home screen always makes a NEW board whose pages match the document */
    await newNote();const base=file.name.replace(/\.[^.]+$/,'')||'Imported';S.title=base;$('#ti').value=base;try{BTITLE[S.id]=base}catch(_){}}
   push();S.layers.unshift({id,name:lname,vis:1,lock:1});
-  const put=(im,x,y,w,h,k)=>S.items.push({t:'i',src:im.src,x,y,w,h,ly:id,pg:k+1});
+  const put=(im,x,y,w,h,k)=>S.items.push({t:'i',src:im.src,x,y,w,h,ly:id,pg:k+1,...(im.txt?{txt:im.txt}:{})});
   if(home){
    if(arr=='stack'){/* paged board: page size = document size, one board page per document page */
     const match=(a,b)=>Math.abs(a-b)<=Math.max(2,.012*b);let size='pdf',o='p';
@@ -3240,11 +3562,24 @@ let HOV=null;
 /* ---- curve model: manual mid-handle (cm) or automatic side-aware S-curve for connected ends ---- */
 function lcv(i,a,b){if(i.cm){const q=[2*i.cm[0]-(a[0]+b[0])/2,2*i.cm[1]-(a[1]+b[1])/2];return[[a[0]+2/3*(q[0]-a[0]),a[1]+2/3*(q[1]-a[1])],[b[0]+2/3*(q[0]-b[0]),b[1]+2/3*(q[1]-b[1])]]}
  if(i.cv!==0&&i.n0&&i.n1&&i.lk0&&i.lk1){const d=Math.max(30,dst(a,b)*.4);return[[a[0]+i.n0[0]*d,a[1]+i.n0[1]*d],[b[0]+i.n1[0]*d,b[1]+i.n1[1]*d]]}return null}
-const lg=k=>(x,y,w,h,i)=>{const[a,b]=lend(x,y,w,h,i),c=lcv(i||{},a,b),o=PB().M(a[0],a[1]);c?o.C(c[0][0],c[0][1],c[1][0],c[1][1],b[0],b[1]):o.L(b[0],b[1]);o.end();
- const L=hlen(a,b,i),f0=c?c[0]:b,f1=c?c[1]:a;if(k=='darr')pline(o,ahead(f0,a,L));if(k!='line')pline(o,ahead(f1,b,L));return o.out()};
+const AHD={line:['none','none'],arr:['none','arrow'],darr:['arrow','arrow']}; /* default heads; ah0 / ah1 override them */
+/* the line's path without jumps, in its own frame: elbow route, curve (flattened) or straight */
+function lpoly(i,a,b){if(i.rt==='orth')return DiagramCore.orthoRoute(a,i.n0,b,i.n1,{gap:Math.max(16,(i.size||2)*5)});const c=lcv(i,a,b);if(!c)return[a,b];const P=[a];
+ for(let k=1;k<=16;k++){const t=k/16,u=1-t;P.push([u*u*u*a[0]+3*u*u*t*c[0][0]+3*u*t*t*c[1][0]+t*t*t*b[0],u*u*u*a[1]+3*u*u*t*c[0][1]+3*u*t*t*c[1][1]+t*t*t*b[1]])}return P}
+const lpolyOf=q=>{const[a,b]=lend(q.x,q.y,q.w,q.h,q);return lpoly(q,a,b)};
+/* connectors underneath this one (earlier on the board) that it jumps over; at most 150 */
+function lowerLines(i){const k=S.items.indexOf(i);if(k<1)return[];const out=[];for(let j=0;j<k&&out.length<150;j++){const q=S.items[j];if(isL(q)&&!q.rot&&act(q))out.push(lpolyOf(q))}return out}
+const lg=k=>(x,y,w,h,i)=>{i=i||{};const[a,b]=lend(x,y,w,h,i),o=PB(),orth=i.rt==='orth',c=orth?null:lcv(i,a,b),P=(orth||i.jmp)?lpoly(i,a,b):null;
+ if(P){const ops=i.jmp&&!i.rot?DiagramCore.hops(P,lowerLines(i),Math.max(4,(i.size||2)*2.2)):[{M:P[0]},...P.slice(1).map(q=>({L:q}))];
+  for(const s of ops){if(s.M)o.M(s.M[0],s.M[1]);else if(s.L)o.L(s.L[0],s.L[1]);else if(s.J)o.E(s.J.c[0],s.J.c[1],s.J.r,s.J.r,s.J.ang+Math.PI,s.J.ang+2*Math.PI)}o.end()}
+ else{o.M(a[0],a[1]);c?o.C(c[0][0],c[0][1],c[1][0],c[1][1],b[0],b[1]):o.L(b[0],b[1]);o.end()}
+ const L=hlen(a,b,i),K=AHD[k]||AHD.line,f0=P?P[1]:c?c[0]:b,f1=P?P[P.length-2]:c?c[1]:a;
+ [[i.ah0||K[0],a,f0],[i.ah1||K[1],b,f1]].forEach(([kind,tip,from])=>{const hd=DiagramCore.head(kind,tip,from,L);if(!hd)return;if(hd.fill){hd.pl.forEach((q,n)=>n?o.L(q[0],q[1]):o.M(q[0],q[1]));o.Z();o.F()}else pline(o,hd.pl)});
+ return o.out()};
+window.rbLineLabel=i=>{const[a,b]=lend(i.x,i.y,i.w,i.h,i);if(i.rt==='orth')return DiagramCore.polyMid(lpoly(i,a,b));const c=lcv(i,a,b);return c?[(a[0]+3*c[0][0]+3*c[1][0]+b[0])/8,(a[1]+3*c[0][1]+3*c[1][1]+b[1])/8]:mid(a,b)};
 G.line=lg('line');G.arr=lg('arr');G.darr=lg('darr');
-const _sa=spAabb;spAabb=i=>{let b=_sa(i);if(isL(i)&&(i.cm||i.n0)){const c=i.rot?[i.x+i.w/2,i.y+i.h/2]:null;for(const t of G[i.shp](i.x,i.y,i.w,i.h,i))if(t.pl)for(let p of t.pl){if(c)p=rotPoint(p,c[0],c[1],i.rot);b=[Math.min(b[0],p[0]),Math.min(b[1],p[1]),Math.max(b[2],p[0]),Math.max(b[3],p[1])]}}return b};
-function mh(i){const[a,b]=spEnds(i),c=lcv(i,a,b);return c?[(a[0]+3*c[0][0]+3*c[1][0]+b[0])/8,(a[1]+3*c[0][1]+3*c[1][1]+b[1])/8]:mid(a,b)}
+const _sa=spAabb;spAabb=i=>{let b=_sa(i);if(isL(i)&&(i.cm||i.n0||i.n1||i.rt||i.jmp||i.ah0||i.ah1)){const c=i.rot?[i.x+i.w/2,i.y+i.h/2]:null;for(const t of G[i.shp](i.x,i.y,i.w,i.h,i))if(t.pl)for(let p of t.pl){if(c)p=rotPoint(p,c[0],c[1],i.rot);b=[Math.min(b[0],p[0]),Math.min(b[1],p[1]),Math.max(b[2],p[0]),Math.max(b[3],p[1])]}}return b};
+function mh(i){const[a,b]=spEnds(i);if(i.rt==='orth')return DiagramCore.polyMid(lpoly(i,a,b));const c=lcv(i,a,b);return c?[(a[0]+3*c[0][0]+3*c[1][0]+b[0])/8,(a[1]+3*c[0][1]+3*c[1][1]+b[1])/8]:mid(a,b)}
 /* ---- connection targets & anchors ---- */
 const SIDE={n:[0,-1],s:[0,1],e:[1,0],w:[-1,0]};
 const tgtOK=(t,s)=>t!==s&&!isL(t)&&['sp','t','m','i','tb'].includes(t.t)&&act(t);
@@ -3289,11 +3624,11 @@ window.linkedCluster=linkedCluster; /* the select / move handler lives outside t
 function linkEnds(o){const E=spEnds(o);[0,1].forEach(w=>{const h=findT(E[w],o);if(h)o['lk'+w]={id:(h.t.id??=uid()),s:h.side}});if(o.lk0&&o.lk1&&o.lk0.id===o.lk1.id){o.lk0=o.lk1=null}}
 window.rbLinkEnds=linkEnds;
 const _d0=draw0;draw0=function(){relinkAll();_d0();if(HOV){const b=bnds([HOV.t]);cx.save();cx.setTransform(dpr*S.z,0,0,dpr*S.z,dpr*S.ox,dpr*S.oy);cx.strokeStyle='#22c55e';cx.fillStyle='#22c55e';cx.lineWidth=2/S.z;cx.setLineDash([6/S.z,4/S.z]);cx.strokeRect(b[0],b[1],b[2]-b[0],b[3]-b[1]);cx.setLineDash([]);const m=(b[0]+b[2])/2,n=(b[1]+b[3])/2;(()=>{const sp=sidePts(HOV.t,b);return[sp.n,sp.s,sp.w,sp.e]})().forEach(q=>{cx.beginPath();cx.arc(q[0],q[1],4/S.z,0,7);cx.fill()});cx.restore()}};
-const _so=spOverlay;spOverlay=function(c,i){_so(c,i);if(!isL(i))return;const[a,b]=spEnds(i),m=mh(i),z=S.z;c.save();c.lineWidth=1.5/z;c.fillStyle='#fff';c.strokeStyle='#f97316';c.beginPath();c.arc(m[0],m[1],6/z,0,7);c.fill();c.stroke();
+const _so=spOverlay;spOverlay=function(c,i){_so(c,i);if(!isL(i))return;const[a,b]=spEnds(i),m=mh(i),z=S.z;c.save();c.lineWidth=1.5/z;c.fillStyle='#fff';c.strokeStyle='#f97316';if(i.rt!=='orth'){c.beginPath();c.arc(m[0],m[1],6/z,0,7);c.fill();c.stroke()}
  c.strokeStyle='#22c55e';[[a,i.lk0],[b,i.lk1]].forEach(([q,l])=>{if(l){c.beginPath();c.arc(q[0],q[1],9/z,0,7);c.stroke()}});c.restore()};
 const _sd=spDown;spDown=function(p){const q=S.sel[0];if(isL(q)){const[a,b]=spEnds(q),m=mh(q),z=S.z;
  if((q.cm||q.lk0||q.lk1)&&Math.hypot(p[0]-(q.x+q.w/2),p[1]-(q.y+q.h/2-q.h/2-28/z))<13/z)return true;
- if(dst(p,m)<11/z&&dst(p,a)>14/z&&dst(p,b)>14/z){push();spSetEnds(q,a,b);drag={k:'spcm',item:q};return true}}return _sd(p)};
+ if(q.rt!=='orth'&&dst(p,m)<11/z&&dst(p,a)>14/z&&dst(p,b)>14/z){push();spSetEnds(q,a,b);drag={k:'spcm',item:q};return true}}return _sd(p)};
 const _xf=xf;xf=function(L,fn,sx,sy){L.forEach(i=>{if(isL(i)&&i.cm)i.cm=fn(i.cm[0],i.cm[1])});return _xf(L,fn,sx,sy)};
 const _pp=paste;paste=function(){_pp();const n=S.sel,m={};n.forEach(i=>{if(i.id){const o=i.id;i.id=uid();m[o]=i.id}});n.forEach(i=>{if(isL(i))['lk0','lk1'].forEach(k=>{if(i[k])i[k]=m[i[k].id]?{...i[k],id:m[i[k].id]}:null})})};
 cv.addEventListener('pointermove',e=>{const p=pt(e),d=drag;HOV=null;if(!d)return;
@@ -3303,7 +3638,7 @@ cv.addEventListener('pointerup',e=>{const d=drag;if(!d)return;
  if(d.k=='spcm')save();
  else if(d.k=='spend'){const i=d.item,h=findT(spEnds(i)[d.w],i),oth=i['lk'+(1-d.w)],ok=h&&!(oth&&h.t.id&&oth.id===h.t.id);i['lk'+d.w]=ok?{id:(h.t.id??=uid()),s:h.side}:null;if(ok)i.cv=undefined}
  else if(d.k=='sh'){const ln=window.rbCur();if(ln&&isL(ln)){if(ncOf(ln))ln.nc=true;else linkEnds(ln)}}HOV=null},true);
-cv.addEventListener('dblclick',e=>{const q=S.sel[0];if(S.sel.length!=1||!isL(q))return;const p=pt(e);if(dst(p,mh(q))>14/S.z)return;e.stopImmediatePropagation();push();
+cv.addEventListener('dblclick',e=>{const q=S.sel[0];if(S.sel.length!=1||!isL(q)||q.label||q.rt==='orth')return;const p=pt(e);if(dst(p,mh(q))>14/S.z)return;e.stopImmediatePropagation();push();
  if(q.cm)q.cm=null;else q.cv=q.cv===0?undefined:0;draw();save()},true);
 /* ---- sketch -> clean shape ---- */
 function skSnap(s){const P=s.pts.map(p=>[p[0],p[1]]),n=P.length;if(n<8)return null;let len=0;const cu=[0];for(let k=1;k<n;k++)cu.push(len+=dst(P[k],P[k-1]));
@@ -3366,7 +3701,9 @@ async function loadPack(l){
  try{pk=await getJSON(l+'.json');if(!pk||!pk.s)throw new Error('bad pack');Wr(PK+l,pk);toast('Language pack ready. It now works offline.');return pk}
  catch(e){toast('Could not download the language pack. Check your connection and try again.',5000);return null}}
 async function setLang(l){
- if(l!='en'){const pk=await loadPack(l);if(!pk){$('#lg').value=cur;return false}dict=pk.s}else dict={};
+ if(l!='en'){const cached=!!(L(PK+l,null)||{}).s,pk=await loadPack(l);if(!pk){$('#lg').value=cur;return false}dict=pk.s;
+  /* a pack cached by an older version misses newer strings: refresh it quietly from the bundled (desktop) or online copy */
+  if(cached)getJSON(l+'.json').then(fr=>{if(fr&&fr.s&&JSON.stringify(fr.s)!==JSON.stringify(pk.s)){Wr(PK+l,fr);if(cur===l){dict=fr.s;sweep()}}}).catch(()=>{})}else dict={};
  cur=l;Wr('wb.ui',l);document.documentElement.lang=l;document.body.dir=RTL.includes(l)?'rtl':'ltr';$('#lg').value=l;
  document.querySelectorAll('[data-i]').forEach(e=>{e.textContent=T.en[e.dataset.i]});
  if(!$('#hm').hidden)renderHome();sweep();return true}
@@ -3416,7 +3753,8 @@ async function recFinish(){
  const blob=new Blob(chunks,{type:mime});recUi();
  if(dur<1||!blob.size)return toast('Recording was too short, so it was not saved');
  const n=((await rtx('readonly',s=>s.index('b').count(IDBKeyRange.only(board))))||0)+1;
- const rec={id:uid(),board,name:'Recording '+n+' \u2014 '+new Date().toLocaleString([],{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}),t:Date.now(),dur,mime,size:blob.size,blob};
+ let rec_b=blob;{const br=await tx('readonly',s=>s.get(board));if(VaultCore.isProtected(br)){const k=VK.get(board);if(!k)return toast('⚠ The recording was not saved: the board is locked',6000);rec_b=new Blob([await VaultCore.sealBytes(k,new Uint8Array(await blob.arrayBuffer()))],{type:'application/octet-stream'})}}
+ const rec={id:uid(),board,name:'Recording '+n+' \u2014 '+new Date().toLocaleString([],{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}),t:Date.now(),dur,mime,size:blob.size,blob:rec_b,...(rec_b!==blob?{ev:1}:{})};
  const ok=await rtx('readwrite',s=>s.put(rec));
  if(ok===undefined)return toast('\u26a0 Could not save the recording (no storage space?)',6000);
  toast('\ud83c\udf99 Recording saved to \u201c'+title+'\u201d',3500);
@@ -3432,7 +3770,8 @@ function recStopPlay(){const a=RC.audio;if(a){a.onended=a.ontimeupdate=a.onpause
 async function recToggle(r){
  if(RC.cur===r.id&&RC.audio){if(RC.audio.paused)RC.audio.play().catch(()=>{});else RC.audio.pause();return}
  if(RC.mr&&!RC.paused)toast('Tip: playback while recording can be picked up by the microphone \u2014 use headphones',4000);
- recStopPlay();const a=RC.audio||(RC.audio=new Audio());RC.cur=r.id;RC.url=URL.createObjectURL(r.blob);a.src=RC.url;a.playbackRate=RC.rate;
+ let pb=r.blob;if(r.ev){const k=VK.get(r.board);if(!k)return toast('Unlock the board to play this recording',5000);try{pb=new Blob([await VaultCore.unsealBytes(k,new Uint8Array(await r.blob.arrayBuffer()))],{type:r.mime||'audio/webm'})}catch(e){return toast('This recording could not be decrypted',5000)}}
+ recStopPlay();const a=RC.audio||(RC.audio=new Audio());RC.cur=r.id;RC.url=URL.createObjectURL(pb);a.src=RC.url;a.playbackRate=RC.rate;
  await new Promise(res=>{a.onloadedmetadata=()=>{if(a.duration===Infinity||isNaN(a.duration)){a.ontimeupdate=()=>{a.ontimeupdate=null;a.currentTime=0;res()};a.currentTime=1e101}else res()};a.onerror=()=>res()});
  if(RC.cur!==r.id)return;
  a.onplay=a.onpause=recRows;a.ontimeupdate=recRows;a.onended=()=>{a.currentTime=0;recRows()};
@@ -3475,9 +3814,9 @@ if(window.wb&&wb.onBrowserAddImage)wb.onBrowserAddImage(u=>{try{ingest({files:[]
 function recPanel(show){const p=$('#recp');p.hidden=show===undefined?!p.hidden:!show;if(!p.hidden){closeTransient();recLoadList()}}
 
 /* --- recordings travel with a board in .rjwb files and local-network shares --- */
-async function recPack(boardId){const rs=(await rtx('readonly',s=>s.index('b').getAll(IDBKeyRange.only(boardId))))||[],out=[];for(const r of rs)out.push({name:r.name,t:r.t,dur:r.dur,mime:r.mime,data:await blobToDataURL(r.blob)});return out}
-async function recUnpack(list,newBoard){let n=0;if(!Array.isArray(list))return 0;for(const x of list){try{if(!x||typeof x.data!=='string'||!x.data.startsWith('data:'))continue;const b=dataURLToBlob(x.data),mime=b.type;if(!mime.startsWith('audio/'))continue;
- const ok=await rtx('readwrite',s=>s.put({id:uid()+n,board:newBoard,name:String(x.name||'Recording').slice(0,200),t:+x.t||Date.now(),dur:Math.max(0,+x.dur||0),mime:b.type||mime,size:b.size,blob:b}));if(ok!==undefined)n++}catch(e){}}return n}
+async function recPack(boardId){const rs=(await rtx('readonly',s=>s.index('b').getAll(IDBKeyRange.only(boardId))))||[],out=[];for(const r of rs)out.push({name:r.name,t:r.t,dur:r.dur,mime:r.mime,...(r.ev?{ev:1}:{}),data:await blobToDataURL(r.blob)});return out}
+async function recUnpack(list,newBoard){let n=0;if(!Array.isArray(list))return 0;for(const x of list){try{if(!x||typeof x.data!=='string'||!x.data.startsWith('data:'))continue;const b=dataURLToBlob(x.data),sealed=!!x.ev&&b.type==='application/octet-stream',mime=sealed?String(x.mime||''):b.type;if(!/^audio\/[\w.+-]+(;.*)?$/.test(mime))continue;
+ const ok=await rtx('readwrite',s=>s.put({id:uid()+n,board:newBoard,name:String(x.name||'Recording').slice(0,200),t:+x.t||Date.now(),dur:Math.max(0,+x.dur||0),mime:sealed?mime:(b.type||mime),size:b.size,blob:b,...(sealed?{ev:1}:{})}));if(ok!==undefined)n++}catch(e){}}return n}
 /* --- wire into the app --- */
 (()=>{
  const p=document.createElement('div');p.id='recp';p.className='pop';p.hidden=true;document.body.append(p);
@@ -3597,7 +3936,7 @@ async function sfImport(files){
   await tx('readwrite',s=>s.put(r));await recUnpack(n.recs,id);
   if(p.act==='replace'&&id===S.id)reopen=r;
   res[p.act==='new'?'added':p.act==='replace'?'replaced':'both']++}
- if(reopen)await openNote(reopen);
+ if(reopen)await reopenStored(reopen);
  try{await refreshBT()}catch(e){}if(!$('#hm').hidden)renderHome();
  const bits=[res.added&&res.added+' added',res.replaced&&res.replaced+' replaced',res.both&&res.both+' kept as copy',res.skipped&&res.skipped+' skipped',res.bad&&res.bad+' not a RejBoard file'].filter(Boolean);
  toast('☁ Import: '+(bits.join(', ')||'nothing to import'),6000);return res}
