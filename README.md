@@ -165,6 +165,9 @@ The web build stores boards in your browser's IndexedDB, so they are not shared 
 
 Use **Backup** on the home screen regularly. Backups include voice recordings.
 
+- **Automatic backups (desktop):** once a day the app writes a full backup to a `backups` folder in its data folder and keeps the newest 7 daily, 4 weekly and 6 monthly copies. *Settings → Storage* has **Back up now**, **Open folder** and **Restore…**. Restoring first saves each board it replaces to that board's version history.
+- **Version history:** while you edit, the board as it was before your changes is saved every 10 minutes at most; recent versions are kept, then one per hour, day and week (up to 60 per board). Open it from **Export → Version history** or a board's ⋮ menu: **Restore** (the current state is saved first, so a restore can be undone) or **Open as copy**. **Save a version now** keeps a named version.
+
 **Compact board storage.** Boards are saved with each stroke's points packed into one array, which makes saving crowded boards several times faster. Boards written this way cannot be opened by older versions of RejBoard. Before installing an older version, turn **Settings → Storage → Compact board storage** Off: every board is converted back to the classic format (and stays that way until you turn it On again). A **Backup** file is always in the classic format and works with every version.
 
 ### Using a synced folder (OneDrive, Google Drive, Dropbox, Nextcloud)
@@ -189,6 +192,7 @@ RejBoard has no account system, no telemetry and no analytics. Only the optional
 | Drawing, text, math, tables, PDF, export, recordings | None | Nothing |
 | Equation solver, graph plotter | None | Nothing (computed on your device; the libraries are bundled and only fetched from a CDN if the bundled copy is missing). |
 | Handwriting to text, **On-device** engine | None | Nothing. Strokes are rasterized in memory, recognized by a bundled engine and discarded. |
+| Handwriting to LaTeX (✍→∑) | Once, when you agree to download the model | A one-time download of the recognition model (about 126 MB) from Hugging Face and jsDelivr. Nothing about you or your ink is sent; recognition itself runs on your device. |
 | Handwriting to text, **Online** engine (default) | Required | The ink points of the selected strokes, sent to an unofficial Google Input Tools endpoint. |
 | In-app browser and video panel (desktop) | Required | Whatever you browse. See the notes below. |
 | UI language packs | Once per language, if not bundled | A request for a pack file from this repository. Nothing about you is sent. |
@@ -216,6 +220,15 @@ Select handwriting with the lasso and press **✍→T**. Choose an engine in *Se
 | Engine consistency | n/a | Identical on Windows, macOS and Linux. The operating system's OCR is not used. |
 
 Every release build ships the on-device engine with English language data, so it works with nothing extra to install.
+
+### Handwriting to LaTeX
+
+Select a handwritten formula with the lasso and press **✍→∑** (in the panel with ✍→T). The recognized LaTeX opens in the LaTeX editor with a live preview, so you can check and fix it; **Insert** places the formula at about the size of your handwriting and, with *Replace the handwriting* ticked, removes the strokes (one Undo brings them back).
+
+- **Model:** [pix2text-mfr](https://huggingface.co/breezedeus/pix2text-mfr) (MIT licence), run with ONNX Runtime (WebAssembly) in a background worker, so drawing never stalls. Works in the desktop app and the web app.
+- **Download on first use:** about 126 MB, only after you agree. Every file is pinned to an exact version and checked against its SHA-256 hash before it is stored, and again each time it is loaded. Remove it in *Settings → Handwriting to LaTeX*.
+- **Offline afterwards:** your handwriting never leaves your device. A recognition takes a few seconds on a typical laptop.
+- **Accuracy:** best on neatly written formulas. Always check the result before inserting; a warning appears when the LaTeX looks incomplete.
 
 ### Local-network sharing
 
@@ -247,7 +260,14 @@ The embedded browser and video panels use a **non-persistent Electron session** 
 
 ### Password-protected boards
 
-Locking a board hides its thumbnail, lists it under **Protected** and asks for the password before opening. This is an **access gate in the app, not encryption at rest**: board content is stored unencrypted on disk. Treat it as a privacy convenience, not as protection against someone with access to your device's files.
+Locking a board **encrypts** it. Its ink, text, pictures, PDF pages, thumbnail, search text, version history and voice recordings are sealed with AES-256-GCM under a random key for that board, and the key is protected by your password (PBKDF2-SHA-256, 600,000 iterations, per-board salt). Without the password the content cannot be read, from the app or from its files on disk. The **title and tags stay readable** so the board can be listed.
+
+- **Change password** (board menu) is instant; **Remove password** decrypts the board again.
+- Repeated wrong passwords make you wait longer before the next try.
+- `.rjwb` copies, sync-folder files, LAN shares and backups of a locked board stay encrypted: the receiver needs the password.
+- **Forgetting the password means the board is gone.** Nobody, including the developer, can recover it.
+- Boards locked with an earlier version (password check only) are encrypted the first time you unlock them.
+- **Lock sensitive boards before you write in them.** Content a board had *before* it was locked can linger on disk in the browser database's internal log until it is compacted, and in automatic backups made before locking, until they rotate out.
 
 ---
 
@@ -256,7 +276,7 @@ Locking a board hides its thumbnail, lists it under **Protected** and asks for t
 <details>
 <summary><b>Home screen and organization</b></summary>
 
-- Boards grid with thumbnails, created and modified dates, and search across titles, text and `#tags`.
+- Boards grid with thumbnails, created and modified dates, and search across titles, tags, everything typed (text, sticky notes, LaTeX, tables, shape labels, graph formulas), the text of imported PDF pages and, on desktop, your **handwriting** and scanned pages (read on-device while you are idle). Every word must match, in any order, ignoring capitals and accents.
 - Sort boards by name, date created or date modified; sort folders by name. Choices are remembered.
 - Sidebar: **All notes · Favorites · Protected · Trash**, then **Tags** and **Folders**.
 - **Folders** nest without limit, with rename, color, subfolder and delete (contents move up one level). Drag boards onto a folder to move them.
@@ -313,6 +333,11 @@ Locking a board hides its thumbnail, lists it under **Protected** and asks for t
 - **Sketch and snap** (off by default, toggle in settings): rough circles, ellipses, rectangles, triangles, diamonds, pentagons, hexagons, lines, curves and arrows become clean shapes.
 - **Dynamic connectors:** lines and arrows attach to the true outline of a shape (including cones, stars, hearts and rotated shapes). Attached ends follow their shapes and bend into smooth S-curves.
 - **Move connected shapes together** (setting, on by default): dragging a shape or connector moves everything linked to it. Hold **Alt** to move only the selection.
+- **Connector styles** (style bar of a selected line): **Route** straight, curved or **Elbow** (right angles that leave and enter along the shapes' sides); **Arrowheads** for each end (none, arrow, triangle, dot, diamond, bar); **Line jumps** (a small arc where the line crosses lines underneath it); **✎ Label** (or double-click the line) puts text halfway along it, on a paper-coloured background.
+- **Text in shapes grows the shape:** when the text no longer fits at a readable size the shape gets taller as you type (one Undo restores both). Turn it off per shape with *Grow to fit text*.
+- **Containers and swimlanes** (shape picker): drag a container by its title bar, or a swimlane by its side band, and everything inside comes along, nested containers included. New ones go behind what is already on the board. *＋ Add lane below* stacks lanes of the same size.
+- **Snap to grid** and **Smart guides** (tools panel, ⋯): moving a selection snaps to the paper grid, or to the edges and centres of nearby shapes with pink guide lines. Hold **Ctrl** while dragging to move freely.
+- **Auto-layout:** arranges connected shapes in layers following their arrows, top to bottom or left to right (style bar with two or more shapes selected, or *Auto-layout* in the tools panel for the whole diagram). One Undo puts everything back.
 - **Layers:** add, rename, hide, lock, reorder, delete.
 - **Transparent ruler** with a graduated scale and live angle readout. Rotate by dragging either end (Shift for 15° steps). Strokes started on the numbered edge draw perfectly straight lines.
 
@@ -372,7 +397,8 @@ Operators: `+ - * / ^ % &` and `= <> < > <= >=` (`^` is left-associative, as in 
 <details>
 <summary><b>Export and backup</b></summary>
 
-- **Formats:** PNG, SVG, PDF, selection as PNG, JSON, and `.rjwb` (RejBoard's own format, which includes recordings).
+- **Formats:** PNG, SVG, PDF, selection as PNG, JSON, **Markdown** and `.rjwb` (RejBoard's own format, which includes recordings).
+- **Markdown (.zip):** typed content in reading order (text, sticky notes as quotes, LaTeX as `$$` blocks, tables with computed values, links, shape labels), images as files, a picture of the ink, and front matter with title, tags and dates. **Settings → Storage → Export all boards to Markdown** exports the whole library in its folders, ready for Obsidian or any editor (password-protected boards are skipped).
 - **Infinite boards export as a single PDF page** containing everything. Bounds account for rotation and pen width, and very large boards lower pixel density instead of failing.
 - **Linked boards:** when a board links to others you can include them. In PDF they follow page by page and links jump to the right page; in SVG they stack below with links between them.
 - **Invert colors** (optional): inverts your ink, shapes, text, math and paper, but not imported content (images, PDF pages, imported documents).
@@ -452,6 +478,7 @@ RejBoard is intentionally dependency-light. The entire editor is a single static
 | `index.html` | The whole application: UI, canvas engine, storage, import / export. |
 | `main.js` | Electron main process: window, IPC handlers, document conversion, remote image fetch, language packs, ephemeral browser session cleanup. |
 | `preload.js` | The only bridge between renderer and main (`window.wb`), exposed through `contextBridge`. |
+| `mfr-core.js` `mfr-worker.js` | Handwriting → LaTeX: the pinned model files and hashes, image preparation, decoding (unit-tested), and the worker that downloads, verifies and runs the model. |
 | `ocr.js` | On-device handwriting recognition: validates input (PNG only, 6 MB cap, one job at a time), runs a bundled Tesseract.js worker, releases it after 30 s idle. |
 | `lan.js` | Local-network discovery and encrypted transfer. |
 | `sw.js` + `manifest.json` | Offline cache and installability for the PWA. |
@@ -510,6 +537,13 @@ npm start
 .
 ├── index.html            # the application
 ├── board-core.js         # pure board logic (history, storage format, cache fingerprint); unit-tested
+├── mfr-core.js           # handwriting -> LaTeX: pinned model, decoding, download checks; unit-tested
+├── versions-core.js      # version history: when to snapshot, which versions to keep; unit-tested
+├── vault-core.js         # per-board encryption (WebCrypto); unit-tested
+├── diagram-core.js       # elbow routes, line jumps, arrowheads, guides, auto-layout; unit-tested
+├── md-core.js            # Markdown + .zip export; unit-tested
+├── backup-store.js       # automatic daily backups (Electron main process); unit-tested
+├── mfr-worker.js         # handwriting -> LaTeX worker (ONNX Runtime, WebAssembly)
 ├── main.js  preload.js   # Electron main process and bridge
 ├── ocr.js  lan.js        # on-device OCR, LAN sharing
 ├── sw.js  manifest.json  # PWA
@@ -580,7 +614,8 @@ To regenerate strings, run `python tools/extract-strings.py` followed by `python
 - **No cross-device sync.** By design. Use Backup, `.rjwb` files or LAN sharing to move boards.
 - **Online handwriting recognition** depends on an unofficial Google endpoint that may change or stop working. Swap the `hw` handler in `main.js` and `recognize()` in `server.py` to use another engine.
 - **On-device recognition** is tuned for neat, printed handwriting and is weaker on cursive.
-- **Board passwords are an access gate**, not encryption at rest.
+- **Locked boards keep their title and tags readable**, and content written before a board was locked can linger in the database's internal log and in older automatic backups (see [Password-protected boards](#password-protected-boards)).
+- **Automatic backups and handwriting search are desktop-only**; the browser cannot write backup files or run the on-device recognizer.
 - **Embedded browsing and video** are subject to site, DRM and codec restrictions; the feature is desktop-only.
 - **Legacy binary `.doc` / `.ppt`** import needs LibreOffice (or Microsoft Office on Windows).
 - **Machine-translated UI strings** have not been reviewed by native speakers.

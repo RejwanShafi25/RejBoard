@@ -1,4 +1,24 @@
 # Changelog
+## [Unreleased]
+### Added
+- **Version history.** Every board keeps earlier versions automatically (at most one every 10 minutes while you edit, thinned to hourly, daily and weekly, up to 60 per board). Restore one (the current state is saved first, so it can be undone), open it as a copy, or save a named version. **Export → Version history** or a board's ⋮ menu.
+- **Automatic daily backups** (desktop) into the app's data folder, keeping 7 daily, 4 weekly and 6 monthly copies, with **Back up now**, **Open folder** and **Restore…** in **Settings → Storage**. Restoring saves each replaced board to its version history first.
+- **Real encryption for password-protected boards.** Ink, text, pictures, PDF pages, thumbnail, search text, history and voice recordings are encrypted (AES-256-GCM, key protected by PBKDF2-SHA-256 with 600,000 iterations). New **Change password**; growing waits after wrong passwords; boards locked with an older version are encrypted on their next unlock; copies, sync files, LAN shares and backups of locked boards stay encrypted.
+- **Markdown export** of a board, or of the whole library in its folders (**Settings → Storage**), as a .zip with images and a picture of the ink.
+- **Better search:** every word must match (any order, accents and capitals ignored); shape labels, graph formulas and the text of imported PDF pages are searchable; the 4,000-character limit per board is gone; on desktop, handwriting and scanned pages are read on-device while you are idle so search finds them (**Settings → Handwriting to text → Search my handwriting**).
+- **Handwriting → LaTeX (✍→∑).** Lasso a handwritten formula and press ✍→∑ to turn it into LaTeX, check it in the LaTeX editor with a live preview, then insert it at the size of your handwriting, optionally replacing the strokes (one Undo restores them). Uses the pix2text-mfr model (MIT) in a background worker, in both the desktop and web app. The model (about 126 MB) is downloaded once, only after you agree, verified by SHA-256 and kept on your device; recognition then runs offline. Manage it in **Settings → Handwriting to LaTeX**.
+- The new screens (version history, backups, protected boards, Markdown export, ✍→∑) are translated into all 22 languages, and version times ("5 minutes ago", "Yesterday") follow the app language.
+- **Cancel** while ✍→∑ is recognizing a formula.
+- **Diagram tools.** Elbow (right-angle) connector routes, line jumps at crossings, text labels on lines, arrowhead styles for each end (arrow, triangle, dot, diamond, bar), shapes that grow to fit their text, containers and swimlanes that carry what is inside them, Snap to grid, Smart guides (hold Ctrl to move freely) and one-click Auto-layout of connected shapes. All translated into the 22 languages.
+
+### Changed
+- Protected boards save as fast as unprotected ones: ink is encrypted as binary numbers instead of text (about 250 ms → 35 ms per autosave on a 210,000-point board), and the thumbnail is no longer redrawn on every save. Boards protected earlier still open.
+
+### Fixed
+- A language pack downloaded by an older version is refreshed quietly, so new screens are translated without removing and re-adding the language.
+- Web app: an update could pair the new page with an older script still in the browser's HTTP cache, leaving the app broken until the next update. New versions now fetch every app file fresh.
+- Replacing the open protected board from the sync folder, or restoring a backup while it is open, no longer lets the editor's old copy be autosaved over what was just put back.
+
 ## [1.3.2]
 ### Added
 - **Equation solver** (🧮 in the dock) with step-by-step working: solve equations and systems, differentiate, integrate (indefinite and definite), simplify, expand, factor, limits and plain calculation. Exact answers where possible (fractions, radicals, complex roots, general trig solutions), every answer is checked, and an equation with no closed form falls back to labelled numeric roots. Insert the answer or the grouped steps on the board.
