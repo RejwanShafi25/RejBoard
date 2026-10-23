@@ -39,6 +39,7 @@
       "main.js",
       "lan.js",
       "ocr.js",
+      "backup-store.js",
       "preload.js",
       "manifest.json",
       "sw.js",

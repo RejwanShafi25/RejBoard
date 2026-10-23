@@ -18,6 +18,15 @@ contextBridge.exposeInMainWorld('wb', {
     ready: () => ipcRenderer.send('app:ready'),
     board: t => ipcRenderer.send('app:board', String(t || ''))
   },
+  backup: {
+    begin: () => ipcRenderer.invoke('backup:begin'),
+    chunk: (t, s) => ipcRenderer.invoke('backup:chunk', t, s),
+    end: t => ipcRenderer.invoke('backup:end', t),
+    abort: t => ipcRenderer.invoke('backup:abort', t),
+    list: () => ipcRenderer.invoke('backup:list'),
+    read: n => ipcRenderer.invoke('backup:read', n),
+    open: () => ipcRenderer.invoke('backup:open')
+  },
   fetchRemoteImage: url => ipcRenderer.invoke('image:fetch-remote', url),
   updates: {
     getVersion: () => ipcRenderer.invoke('updates:version'),

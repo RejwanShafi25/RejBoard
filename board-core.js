@@ -297,9 +297,79 @@
   /* The small record kept in the board index: everything about a board except its (possibly huge) items, plus the ids of the boards it links to. */
   function metaOf(v, lk) {
     const m = {};
-    for (const k in v) if (k !== 'items') m[k] = v[k]; // for-in never touches a lazy `items` getter
+    for (const k in v) if (k !== 'items' && k !== 'enc') m[k] = v[k]; // for-in never touches a lazy `items` getter; encrypted content stays out of the index
     if (lk) m.lk = lk;
     return m;
+  }
+
+  /* ---------- search ---------- */
+  const Q_MAX = 20000, PQ_MAX = 40000; // characters kept per board in the (small) board index
+  const squash = s => String(s).replace(/\s+/g, ' ').trim();
+  /* The searchable text of a board: q = everything typed (text, sticky notes, LaTeX, shape labels, table cells, links, graph formulas),
+     pq = text of imported PDF pages. Kept separate so a long PDF never pushes your own notes out of the index. */
+  function searchText(items) {
+    const q = [], pq = [];
+    let nq = 0, np = 0;
+    const add = (a, s, cap, n) => { if (s == null || n >= cap) return n; const t = squash(s); if (!t) return n; a.push(t); return n + t.length + 1; };
+    for (const i of Array.isArray(items) ? items : []) {
+      if (!i || typeof i !== 'object') continue;
+      nq = add(q, i.srcText || i.text || i.latex, Q_MAX, nq);
+      if (i.label) nq = add(q, i.label, Q_MAX, nq);
+      if (Array.isArray(i.cells)) for (const r of i.cells) if (Array.isArray(r)) for (const c of r) if (typeof c === 'string' && c) nq = add(q, c, Q_MAX, nq);
+      if (Array.isArray(i.fns)) for (const f of i.fns) if (f && f.text) nq = add(q, f.text, Q_MAX, nq);
+      if (typeof i.txt === 'string') np = add(pq, i.txt, PQ_MAX, np);
+    }
+    return { q: q.join(' ').slice(0, Q_MAX), pq: pq.join(' ').slice(0, PQ_MAX) };
+  }
+  /* Lower case, accents removed and compatibility forms unified, so "Café", "cafe" and "ＣＡＦＥ" all match. */
+  const fold = s => String(s == null ? '' : s).normalize('NFKD').replace(/[̀-ͯ]/g, '').toLowerCase();
+  /* Every word of the query must appear somewhere in the text (any order). An empty query matches everything. */
+  function textMatch(hay, query) {
+    const words = fold(query).split(/\s+/).filter(Boolean);
+    if (!words.length) return true;
+    const h = fold(hay);
+    return words.every(w => h.includes(w));
+  }
+
+  /* Handwriting -> lines of ink, so each line can be recognized at a readable size.
+     boxes: [[x0, y0, x1, y1], ...] (one per stroke). Returns groups of indices: strokes whose vertical centres fall inside the same band
+     form a line; a line is split where there is a wide horizontal gap or when it gets too long to recognize at once. */
+  function inkLines(boxes, { gapK = 3, maxLenK = 30, maxGroups = 400 } = {}) {
+    const ok = b => Array.isArray(b) && b.length >= 4 && b.every(Number.isFinite) && b[2] >= b[0] && b[3] >= b[1];
+    const idx = [];
+    (Array.isArray(boxes) ? boxes : []).forEach((b, k) => { if (ok(b)) idx.push(k); });
+    if (!idx.length) return [];
+    const B = k => boxes[k], h = k => Math.max(1, B(k)[3] - B(k)[1]), cy = k => (B(k)[1] + B(k)[3]) / 2;
+    const hs = idx.map(h).sort((a, b) => a - b), med = hs[hs.length >> 1];
+    /* lines are built from letter-sized strokes first; small marks (i-dots, accents, commas) then join the nearest line */
+    const big = idx.filter(k => h(k) >= med * 0.5).sort((a, b) => cy(a) - cy(b)), small = idx.filter(k => h(k) < med * 0.5);
+    const lines = [];
+    for (const k of big) {
+      const L = lines[lines.length - 1];
+      if (L && cy(k) <= L.y1 + med * 0.25 && cy(k) >= L.y0 - med * 0.25) { L.m.push(k); L.y0 = Math.min(L.y0, B(k)[1]); L.y1 = Math.max(L.y1, B(k)[3]); }
+      else lines.push({ y0: B(k)[1], y1: B(k)[3], m: [k] });
+    }
+    for (const k of small.sort((a, b) => cy(a) - cy(b))) {
+      let best = null, bd = Infinity;
+      for (const L of lines) { const d = cy(k) < L.y0 ? L.y0 - cy(k) : cy(k) > L.y1 ? cy(k) - L.y1 : 0; if (d < bd) { bd = d; best = L; } }
+      if (best && bd <= med * 0.75) best.m.push(k);
+      else lines.push({ y0: B(k)[1], y1: B(k)[3], m: [k] });
+    }
+    lines.sort((a, b) => a.y0 - b.y0);
+    const out = [];
+    for (const L of lines) {
+      L.m.sort((a, b) => B(a)[0] - B(b)[0]);
+      let cur = [], x0 = 0, xr = 0;
+      for (const k of L.m) {
+        const b = B(k);
+        if (cur.length && (b[0] - xr > gapK * med || b[2] - x0 > maxLenK * med)) { out.push(cur); cur = []; }
+        if (!cur.length) { x0 = b[0]; xr = b[2]; }
+        cur.push(k); xr = Math.max(xr, b[2]);
+      }
+      if (cur.length) out.push(cur);
+      if (out.length >= maxGroups) return out.slice(0, maxGroups);
+    }
+    return out;
   }
 
   /* Which board to open at start-up: the one that was open last if it is still there and usable, else the most recently changed usable one. */
@@ -329,7 +399,7 @@
   }
 
   return {
-    metaOf, pickStart, shiftSnap, flatten, inflate, packItems, unpackItems, trimHist, addEntry, addIdx, pushDeep, pushAdd, undoStep, redoStep,
+    metaOf, pickStart, shiftSnap, flatten, inflate, searchText, textMatch, fold, inkLines, packItems, unpackItems, trimHist, addEntry, addIdx, pushDeep, pushAdd, undoStep, redoStep,
     dbPackItems, dbUnpackItems, dbPackRec, dbLazy, dbOut, boardSig, sameSet, strokeNear
   };
 });
