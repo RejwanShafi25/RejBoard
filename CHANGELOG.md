@@ -1,5 +1,5 @@
 # Changelog
-## [Unreleased]
+## [1.3.3]
 ### Added
 - **Version history.** Every board keeps earlier versions automatically (at most one every 10 minutes while you edit, thinned to hourly, daily and weekly, up to 60 per board). Restore one (the current state is saved first, so it can be undone), open it as a copy, or save a named version. **Export → Version history** or a board's ⋮ menu.
 - **Automatic daily backups** (desktop) into the app's data folder, keeping 7 daily, 4 weekly and 6 monthly copies, with **Back up now**, **Open folder** and **Restore…** in **Settings → Storage**. Restoring saves each replaced board to its version history first.
