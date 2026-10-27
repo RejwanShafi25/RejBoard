@@ -1,6 +1,6 @@
 // Offline cache: app shell first, everything else cached as it is used.
-const V='rw-v12';
+const V='rw-v13';
 /* The shell is fetched with cache:'reload' so a new version never pairs a fresh index.html with an older script left in the browser's HTTP cache. */
-self.addEventListener('install',e=>{e.waitUntil(caches.open(V).then(c=>c.addAll(['./','index.html','board-core.js','versions-core.js','md-core.js','vault-core.js','diagram-core.js','math-engine.js','graph-core.js','mfr-core.js','mfr-worker.js','manifest.json','icon.svg','icon-192.png','icon-512.png'].map(u=>new Request(u,{cache:'reload'})))).then(()=>self.skipWaiting()))});
+self.addEventListener('install',e=>{e.waitUntil(caches.open(V).then(c=>c.addAll(['./','index.html','board-core.js','versions-core.js','md-core.js','vault-core.js','diagram-core.js','templates-core.js','schema-core.js','interop-core.js','scanner-core.js','math-engine.js','graph-core.js','mfr-core.js','mfr-worker.js','manifest.json','icon.svg','icon-192.png','icon-512.png'].map(u=>new Request(u,{cache:'reload'})))).then(()=>self.skipWaiting()))});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!=V).map(x=>caches.delete(x)))).then(()=>self.clients.claim()))});
 self.addEventListener('fetch',e=>{if(e.request.method!='GET'||e.request.cache==='no-store')return; /* no-store: the math model download, already kept in IndexedDB - never a second copy here */e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request).then(res=>{if(res.ok||res.type=='opaque'){const cp=res.clone();caches.open(V).then(c=>c.put(e.request,cp))}return res}).catch(()=>caches.match('index.html'))))});

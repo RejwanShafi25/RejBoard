@@ -174,3 +174,8 @@ test('zip of nothing is a valid empty archive', () => {
 test('typed entity-like text stays literal', () => {
   assert.equal(M.esc('a &lt; b &#60; c & d'), 'a \\&lt; b \\&#60; c & d');
 });
+
+test('checklists become Markdown task lists', () => {
+  const { md } = M.boardToMd({ title: 'C', items: [{ t: 'ck', x: 0, y: 0, title: 'Trip', rows: [{ text: 'Passport', done: true }, { text: 'Book *hotel*', done: false, due: Date.UTC(2026, 9, 27, 9, 0) }, { text: '  ' }] }] });
+  assert.ok(md.includes('**Trip**\n\n- [x] Passport\n- [ ] Book \\*hotel\\* (due 2026-10-27 09:00)\n'), md);
+});

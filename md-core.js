@@ -154,6 +154,7 @@
       else if (i.t === 'tb') s = table(i);
       else if (i.t === 'l') { const u = httpsUrl(i.text); s = u ? '[' + esc(i.text) + '](' + mdUrl(u) + ')' : esc(i.text || ''); }
       else if (i.t === 'sp' && i.label) s = esc(i.label);
+      else if (i.t === 'ck' && Array.isArray(i.rows)) s = (i.title ? '**' + esc(i.title) + '**\n\n' : '') + i.rows.filter(r => r && String(r.text || '').trim()).map(r => '- [' + (r.done ? 'x' : ' ') + '] ' + esc(r.text) + (r.due ? ' (due ' + new Date(r.due).toISOString().slice(0, 16).replace('T', ' ') + ')' : '')).join('\n');
       else if (i.t === 'gr' && Array.isArray(i.fns)) { const f = i.fns.map(f => f && String(f.text || '').trim()).filter(Boolean); if (f.length) s = 'Graph: ' + f.map(x => '$' + texEsc(x) + '$').join(', '); }
       else if (i.t === 'i' && i.src) {
         const d = dataUrlImage(i.src);

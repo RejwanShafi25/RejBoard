@@ -123,14 +123,26 @@
   /* ---------- arrowheads ----------
      kind: 'none' | 'arrow' | 'tri' | 'circle' | 'diamond' | 'bar'. tip: end point, from: a point the line arrives from, L: size.
      Returns {pl: polyline, fill: true for solid heads} or null. */
-  const HEADS = ['none', 'arrow', 'tri', 'circle', 'diamond', 'bar'];
+  /* the last six are crow's-foot (ER) ends: exactly one, one, many, zero-or-one, one-or-many, zero-or-many */
+  const HEADS = ['none', 'arrow', 'tri', 'circle', 'diamond', 'bar', 'one', 'only', 'many', 'zone', 'omany', 'zmany', 'htri', 'hdiamond'];
   function head(kind, tip, from, L) {
     if (!kind || kind === 'none' || !fin(tip) || !fin(from) || !(L > 0)) return null;
     const t = Math.atan2(tip[1] - from[1], tip[0] - from[0]), u = [Math.cos(t), Math.sin(t)], v = [-u[1], u[0]];
     const at = (a, b) => [tip[0] + u[0] * a + v[0] * b, tip[1] + u[1] * a + v[1] * b];
+    /* crow's foot: built from small pieces (bars, a ring, the three-pronged foot) placed back from the tip */
+    if (['one', 'only', 'many', 'zone', 'omany', 'zmany'].includes(kind)) {
+      const s = L * .55, bar = d => ({ pl: [at(-d, -s * .6), at(-d, s * .6)], fill: false }), foot = { pl: [at(0, -s * .6), at(-s, 0), at(0, s * .6)], fill: false },
+        ring = d => { const r = s * .32, c = at(-d - r, 0), pl = []; for (let k = 0; k <= 16; k++) { const a = k / 16 * Math.PI * 2; pl.push([c[0] + r * Math.cos(a), c[1] + r * Math.sin(a)]); } return { pl, fill: false, paper: true }; };
+      const parts = kind === 'one' ? [bar(s * .5)] : kind === 'only' ? [bar(s * .35), bar(s * .7)] : kind === 'many' ? [foot] :
+        kind === 'zone' ? [bar(s * .35), ring(s * .6)] : kind === 'omany' ? [foot, bar(s * 1.2)] : [foot, ring(s * 1.05)];
+      return Object.assign(parts[0], { more: parts.slice(1) });
+    }
     if (kind === 'arrow') return { pl: [at(-L * Math.cos(.45), -L * Math.sin(.45)), tip.slice(), at(-L * Math.cos(.45), L * Math.sin(.45))], fill: false };
     if (kind === 'tri') return { pl: [tip.slice(), at(-L, -L * .45), at(-L, L * .45), tip.slice()], fill: true };
     if (kind === 'diamond') return { pl: [tip.slice(), at(-L * .6, -L * .35), at(-L * 1.2, 0), at(-L * .6, L * .35), tip.slice()], fill: true };
+    /* hollow (UML inheritance / aggregation): paper-filled so the line does not show through */
+    if (kind === 'htri') return { pl: [tip.slice(), at(-L * 1.1, -L * .55), at(-L * 1.1, L * .55), tip.slice()], fill: false, paper: true };
+    if (kind === 'hdiamond') return { pl: [tip.slice(), at(-L * .6, -L * .38), at(-L * 1.2, 0), at(-L * .6, L * .38), tip.slice()], fill: false, paper: true };
     if (kind === 'bar') return { pl: [at(-L * .15, -L * .5), at(-L * .15, L * .5)], fill: false };
     if (kind === 'circle') { const r = L * .32, c = at(-r, 0), pl = []; for (let k = 0; k <= 16; k++) { const a = k / 16 * Math.PI * 2; pl.push([c[0] + r * Math.cos(a), c[1] + r * Math.sin(a)]); } return { pl, fill: true }; }
     return null;
@@ -238,5 +250,88 @@
     return res;
   }
 
-  return { HEADS, orthoRoute, simplify, crossings, hops, polyMid, head, guideSnap, gridSnap, inside, layered };
+  /* ---------- Mermaid flowcharts ----------
+     parseMermaid(text) -> {dir, nodes:[{id, label, shape}], edges:[{from, to, label, style, arrow, back}], errors:[...]}
+     Shapes follow Mermaid's brackets: [rect] (round) ([stadium]) [[subroutine]] [(database)] ((circle)) {decision} {{hexagon}}
+     [/parallelogram/] [\alt\] [/trapezoid\] [\trapezoid alt/] >flag]. Unknown lines (styles, classes, clicks) are skipped, never fatal.
+     Input is untrusted: size, node and edge counts and label lengths are capped. */
+  const MM_SHAPES = [['([', '])', 'stadium'], ['[[', ']]', 'subroutine'], ['[(', ')]', 'database'], ['((', '))', 'circle'], ['{{', '}}', 'hexagon'],
+    ['[/', '/]', 'parallelogram'], ['[\\', '\\]', 'parallelogram'], ['[/', '\\]', 'trapezoid'], ['[\\', '/]', 'trapezoid'], ['[', ']', 'rect'], ['(', ')', 'round'], ['{', '}', 'decision'], ['>', ']', 'flag']];
+  const EDGE = /^(<)?(-{2,}>|-{3,}|={2,}>|={3,}|-\.+->|-\.+-|--o|--x|~~~)(?:\|([^|]*)\|)?/;
+  const EDGE_TXT = /^(<)?(--|==|-\.)\s+(.+?)\s+(-{2,}>|-{3,}|={2,}>|={3,}|\.+->|\.+-)/;
+  const unq = s => { s = String(s).trim(); if (s.length > 1 && s[0] === '"' && s[s.length - 1] === '"') s = s.slice(1, -1); return s.replace(/#quot;/g, '"').replace(/<br\s*\/?>/gi, '\n').slice(0, 200); };
+  function parseMermaid(text, lim) {
+    const L = Object.assign({ chars: 50000, nodes: 500, edges: 2000 }, lim || {});
+    const out = { dir: 'TB', nodes: [], edges: [], errors: [] }, byId = new Map();
+    const src = String(text == null ? '' : text).slice(0, L.chars).replace(/%%.*$/gm, '');
+    /* statements end at a newline, or at ';' outside quotes and brackets (labels may contain ';', e.g. "#quot;") */
+    const stmts = [];
+    { let cur = '', q = false, d = 0;
+      for (const ch of src) {
+        if (ch === '"') q = !q; else if (!q && '[({'.includes(ch)) d++; else if (!q && '])}'.includes(ch)) d = Math.max(0, d - 1);
+        if (ch === '\n' || (ch === ';' && !q && !d)) { stmts.push(cur); cur = ''; q = false; d = 0; } else cur += ch;
+      }
+      stmts.push(cur); }
+    for (let k = stmts.length - 1; k >= 0; k--) { stmts[k] = stmts[k].trim(); if (!stmts[k]) stmts.splice(k, 1); }
+    if (!stmts.length) return out;
+    const h = /^(flowchart|graph)\b\s*(TD|TB|BT|LR|RL)?/i.exec(stmts[0]);
+    if (h) { out.dir = (h[2] || 'TB').toUpperCase() === 'TD' ? 'TB' : (h[2] || 'TB').toUpperCase(); stmts.shift(); }
+    const node = (id, label, shape) => {
+      let n = byId.get(id);
+      if (!n) { if (out.nodes.length >= L.nodes) return null; n = { id, label: id, shape: 'rect' }; byId.set(id, n); out.nodes.push(n); }
+      if (label != null) { n.label = label; n.shape = shape; }
+      return n;
+    };
+    /* one node reference at s[i]: id plus optional bracket shape. Returns {n, i} or null */
+    const readNode = (s, i) => {
+      const m = /^[\p{L}\p{N}_]+/u.exec(s.slice(i)); // no '-' or '.': "A-->B" must read as A, edge, B
+      if (!m) return null;
+      const id = m[0].slice(0, 60); let j = i + m[0].length;
+      for (const [o, c, shape] of MM_SHAPES) {
+        if (!s.startsWith(o, j)) continue;
+        const k = s.indexOf(c, j + o.length);
+        if (k < 0) continue;
+        return { n: node(id, unq(s.slice(j + o.length, k)), shape), i: k + c.length };
+      }
+      return { n: node(id), i: j };
+    };
+    const readGroup = (s, i) => { const g = []; for (;;) { while (s[i] === ' ') i++; const r = readNode(s, i); if (!r) break; if (r.n) g.push(r.n); i = r.i; while (s[i] === ' ') i++; if (s[i] === '&') { i++; continue; } break; } return { g, i }; };
+    for (const st of stmts) {
+      if (/^(classDef|class|style|linkStyle|click|subgraph|end|direction|accTitle|accDescr|title)\b/i.test(st)) continue;
+      let r = readGroup(st, 0);
+      if (!r.g.length) { out.errors.push(st.slice(0, 80)); continue; }
+      let i = r.i, left = r.g;
+      while (i < st.length) {
+        const rest = st.slice(i).replace(/^\s+/, ''), skip = st.length - i - rest.length;
+        let m = EDGE_TXT.exec(rest), label = '', op = '', back = false;
+        if (m) { back = !!m[1]; label = m[3]; op = m[2] + m[4]; }
+        else if ((m = EDGE.exec(rest))) { back = !!m[1]; op = m[2]; label = m[3] || ''; }
+        else { out.errors.push(st.slice(0, 80)); break; }
+        i += skip + m[0].length;
+        const rr = readGroup(st, i);
+        if (!rr.g.length) { out.errors.push(st.slice(0, 80)); break; }
+        const style = /=/.test(op) ? 'thick' : /\./.test(op) ? 'dotted' : op === '~~~' ? 'invisible' : 'solid';
+        const arrow = />$|o$|x$/.test(op);
+        for (const a of left) for (const b of rr.g) if (out.edges.length < L.edges) out.edges.push({ from: a.id, to: b.id, label: unq(label), style, arrow, back });
+        left = rr.g; i = rr.i;
+      }
+    }
+    return out;
+  }
+  /* the reverse: shapes and connectors -> Mermaid flowchart text (ids are made safe; labels are quoted) */
+  const MM_OUT = { rect: ['[', ']'], round: ['(', ')'], stadium: ['([', '])'], subroutine: ['[[', ']]'], database: ['[(', ')]'], circle: ['((', '))'], decision: ['{', '}'], hexagon: ['{{', '}}'], parallelogram: ['[/', '/]'], trapezoid: ['[/', '\\]'], flag: ['>', ']'] };
+  function toMermaid(dir, nodes, edges) {
+    const ids = new Map(), q = s => '"' + String(s == null ? '' : s).replace(/"/g, '#quot;').replace(/\n/g, '<br>') + '"';
+    const lines = ['flowchart ' + (['TB', 'BT', 'LR', 'RL'].includes(dir) ? dir : 'TB')];
+    (nodes || []).forEach((n, k) => { const id = 'n' + (k + 1); ids.set(n.id, id); const b = MM_OUT[n.shape] || MM_OUT.rect; lines.push('  ' + id + b[0] + q(n.label) + b[1]); });
+    for (const e of edges || []) {
+      const a = ids.get(e.from), b = ids.get(e.to);
+      if (!a || !b) continue;
+      const op = e.style === 'dotted' ? (e.arrow ? '-.->' : '-.-') : e.style === 'thick' ? (e.arrow ? '==>' : '===') : (e.arrow ? '-->' : '---');
+      lines.push('  ' + a + ' ' + op + (e.label ? '|' + q(e.label) + '|' : '') + ' ' + b);
+    }
+    return lines.join('\n') + '\n';
+  }
+
+  return { HEADS, orthoRoute, simplify, crossings, hops, polyMid, head, guideSnap, gridSnap, inside, layered, parseMermaid, toMermaid };
 });

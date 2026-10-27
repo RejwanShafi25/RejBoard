@@ -93,6 +93,58 @@ test('arrowheads point at the tip, solid ones are closed', () => {
   assert.equal(D.head('???', [1, 1], [0, 0], 10), null);
 });
 
+test('crow\'s-foot ends are drawn as several open pieces', () => {
+  const k = D.head('zmany', [100, 0], [0, 0], 20);
+  assert.equal(k.fill, false);
+  assert.equal(k.more.length, 1, 'foot + ring');
+  assert.equal(D.head('only', [100, 0], [0, 0], 20).more.length, 1, 'two bars');
+  assert.equal(D.head('many', [100, 0], [0, 0], 20).pl.length, 3, 'three prongs');
+  for (const h of ['one', 'only', 'many', 'zone', 'omany', 'zmany']) assert.ok(D.HEADS.includes(h));
+});
+
+/* ---------------- Mermaid ---------------- */
+test('parseMermaid reads a typical flowchart', () => {
+  const m = D.parseMermaid(`flowchart LR
+    A([Start]) --> B[/Read input/]
+    B --> C{Valid?}
+    C -->|yes| D[(Save)]
+    C -- no --> E[Show error]
+    E -.-> B
+    D ==> F((End))  %% comment
+    classDef x fill:#f9f`);
+  assert.equal(m.dir, 'LR');
+  assert.deepEqual(m.nodes.map(n => [n.id, n.label, n.shape]), [['A', 'Start', 'stadium'], ['B', 'Read input', 'parallelogram'], ['C', 'Valid?', 'decision'], ['D', 'Save', 'database'], ['E', 'Show error', 'rect'], ['F', 'End', 'circle']]);
+  assert.deepEqual(m.edges.map(e => [e.from, e.to, e.label, e.style, e.arrow]), [['A', 'B', '', 'solid', true], ['B', 'C', '', 'solid', true], ['C', 'D', 'yes', 'solid', true], ['C', 'E', 'no', 'solid', true], ['E', 'B', '', 'dotted', true], ['D', 'F', '', 'thick', true]]);
+  assert.deepEqual(m.errors, []);
+});
+
+test('parseMermaid handles chains, &, no spaces, quotes and graph TD', () => {
+  const m = D.parseMermaid('graph TD\nA-->B & C --- D\nX["He said #quot;hi#quot;"] --> Y{{Prep}}; Y --> Z[[Sub]]');
+  assert.equal(m.dir, 'TB');
+  assert.deepEqual(m.edges.map(e => e.from + e.to + (e.arrow ? '>' : '-')), ['AB>', 'AC>', 'BD-', 'CD-', 'XY>', 'YZ>']);
+  assert.equal(m.nodes.find(n => n.id === 'X').label, 'He said "hi"');
+  assert.equal(m.nodes.find(n => n.id === 'Y').shape, 'hexagon');
+  assert.equal(m.nodes.find(n => n.id === 'Z').shape, 'subroutine');
+});
+
+test('parseMermaid never throws on junk and stays within its limits', () => {
+  for (const t of [null, '', 'flowchart', '-->', '[[[[', 'A[unclosed --> B', '\u0000￿', 'A -->', 'subgraph x\nA-->B\nend']) assert.equal(typeof D.parseMermaid(t), 'object');
+  const big = 'flowchart TD\n' + Array.from({ length: 3000 }, (_, k) => 'n' + k + ' --> n' + (k + 1)).join('\n');
+  const t = Date.now(), m = D.parseMermaid(big);
+  assert.ok(m.nodes.length <= 500 && m.edges.length <= 2000 && Date.now() - t < 2000);
+  assert.ok(D.parseMermaid('A["' + 'x'.repeat(5000) + '"]').nodes[0].label.length <= 200);
+});
+
+test('toMermaid writes text that parses back to the same diagram', () => {
+  const nodes = [{ id: 'a', label: 'Start', shape: 'stadium' }, { id: 'b', label: 'Is it "ok"?', shape: 'decision' }, { id: 'c', label: 'Line 1\nLine 2', shape: 'rect' }];
+  const edges = [{ from: 'a', to: 'b', label: '', style: 'solid', arrow: true }, { from: 'b', to: 'c', label: 'yes', style: 'dotted', arrow: true }, { from: 'c', to: 'zz', label: '', style: 'solid', arrow: true }];
+  const txt = D.toMermaid('LR', nodes, edges);
+  const back = D.parseMermaid(txt);
+  assert.equal(back.dir, 'LR');
+  assert.deepEqual(back.nodes.map(n => [n.label, n.shape]), nodes.map(n => [n.label, n.shape]));
+  assert.deepEqual(back.edges.map(e => [e.label, e.style]), [['', 'solid'], ['yes', 'dotted']], 'an edge to a missing node is dropped');
+});
+
 /* ---------------- guides / grid ---------------- */
 test('guideSnap aligns edges and centres within the tolerance and reports the guide lines', () => {
   const r = D.guideSnap([103, 300, 203, 350], [[100, 0, 200, 50]], 6);

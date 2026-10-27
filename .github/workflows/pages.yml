@@ -45,11 +45,11 @@ jobs:
       - name: Assemble site
         run: |
           mkdir _site
-          cp index.html board-core.js versions-core.js md-core.js vault-core.js diagram-core.js math-engine.js graph-core.js mfr-core.js mfr-worker.js manifest.json sw.js icon.svg icon-192.png icon-512.png og-image.jpg robots.txt sitemap.xml googlec39715c0827ef8e4.html _site/
+          cp index.html board-core.js versions-core.js md-core.js vault-core.js diagram-core.js templates-core.js schema-core.js interop-core.js scanner-core.js math-engine.js graph-core.js mfr-core.js mfr-worker.js manifest.json sw.js icon.svg icon-192.png icon-512.png og-image.jpg robots.txt sitemap.xml googlec39715c0827ef8e4.html _site/
           cp -r vendor _site/vendor
           cp -r welcome _site/welcome
           touch _site/.nojekyll
-          for f in welcome/index.html index.html board-core.js versions-core.js md-core.js vault-core.js diagram-core.js math-engine.js graph-core.js mfr-core.js mfr-worker.js manifest.json sw.js vendor/tex-svg.js vendor/jspdf.umd.min.js vendor/pdf.min.js vendor/pdf.worker.min.js vendor/math.min.js vendor/nerdamer.all.min.js vendor/ort/ort.wasm.min.js vendor/ort/ort-wasm-simd-threaded.mjs; do
+          for f in welcome/index.html index.html board-core.js versions-core.js md-core.js vault-core.js diagram-core.js templates-core.js schema-core.js interop-core.js scanner-core.js math-engine.js graph-core.js mfr-core.js mfr-worker.js manifest.json sw.js vendor/tex-svg.js vendor/jspdf.umd.min.js vendor/pdf.min.js vendor/pdf.worker.min.js vendor/math.min.js vendor/nerdamer.all.min.js vendor/ort/ort.wasm.min.js vendor/ort/ort-wasm-simd-threaded.mjs; do
             test -s "_site/$f" || { echo "missing $f"; exit 1; }
           done
 

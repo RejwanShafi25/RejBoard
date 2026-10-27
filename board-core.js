@@ -317,6 +317,7 @@
       if (i.label) nq = add(q, i.label, Q_MAX, nq);
       if (Array.isArray(i.cells)) for (const r of i.cells) if (Array.isArray(r)) for (const c of r) if (typeof c === 'string' && c) nq = add(q, c, Q_MAX, nq);
       if (Array.isArray(i.fns)) for (const f of i.fns) if (f && f.text) nq = add(q, f.text, Q_MAX, nq);
+      if (i.t === 'ck') { if (i.title) nq = add(q, i.title, Q_MAX, nq); if (Array.isArray(i.rows)) for (const r of i.rows) if (r && r.text) nq = add(q, r.text, Q_MAX, nq); } /* checklists */
       if (typeof i.txt === 'string') np = add(pq, i.txt, PQ_MAX, np);
     }
     return { q: q.join(' ').slice(0, Q_MAX), pq: pq.join(' ').slice(0, PQ_MAX) };

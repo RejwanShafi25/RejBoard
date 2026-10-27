@@ -10,11 +10,37 @@
 - The new screens (version history, backups, protected boards, Markdown export, ✍→∑) are translated into all 22 languages, and version times ("5 minutes ago", "Yesterday") follow the app language.
 - **Cancel** while ✍→∑ is recognizing a formula.
 - **Diagram tools.** Elbow (right-angle) connector routes, line jumps at crossings, text labels on lines, arrowhead styles for each end (arrow, triangle, dot, diamond, bar), shapes that grow to fit their text, containers and swimlanes that carry what is inside them, Snap to grid, Smart guides (hold Ctrl to move freely) and one-click Auto-layout of connected shapes. All translated into the 22 languages.
+- **New board dialog.** Every New button (home screen, ＋ New, the round + button, the Boards menu, *Note here*) asks for the board size, orientation, paper colour, pattern, spacing and line weight, and shows a live preview before the board is created. The last choice is remembered.
+- **Templates.** 61 templates in six groups (Notes, Study, Planners, Creative, Business, Diagrams) with thumbnails, search and category filters: open one as a new board or add it to the current board. Reachable from the New board dialog, the tools panel (**▦ Templates**) and the Boards menu. Template text follows the app language.
+- **New paper:** engineering, millimetre, hexagons, music staff, guitar tab, handwriting practice and calligraphy guides; mint, sky, blush and forest paper colours.
+- **Shape picker sections** (Basic, Lines, 3D, Containers, Flowchart, BPMN, UML, ER) with about 45 new diagram shapes, including UML classes and ER tables with compartments, and crow's-foot line ends for ER diagrams.
+- **Text → diagram (Mermaid).** Paste a Mermaid flowchart to get shapes and connectors, laid out automatically (loops curve around the outside); **Copy board as Mermaid** exports the selection or the whole diagram.
+- **Database schemas.** Paste SQL `CREATE TABLE` statements or dbdiagram.io DBML (shape picker → **🗄 SQL / DBML → tables**) to get tables with keys and crow's-foot relationships, laid out automatically; **Copy board as SQL / DBML** exports them again. Tables show column names on the left and types and keys on the right.
+- **EER notation:** ISA triangle, disjoint/overlap circle, associative entity, partial key attribute; double lines (total participation) and end text (cardinality, multiplicity) on any connector.
+- **Cloud / DevOps, Network and Architecture shape sections** with about 35 generic icons and C4 shapes, and four more templates: database schema, cloud architecture, office network and C4 context.
+- **SysML, Computer science, Security, Wireframe and Planning shape sections** (about 60 shapes): SysML blocks and requirements, arrays and stacks that split their text into cells, logic gates, flip-flops, DFD and threat-model shapes, UX wireframe controls and planning icons. Connector ends gain a hollow triangle (inheritance) and hollow diamond (aggregation).
+- **PlantUML in and out:** class, use case, component and sequence diagrams (shape picker → **🌱 PlantUML → diagram**, **Copy board as PlantUML**).
+- **draw.io in and out:** **Export → Export diagram for draw.io (.drawio)**, and **Export → Import diagram** for draw.io (compressed pages too), PlantUML, Mermaid, SQL and DBML files.
+- All the above translated into the 22 languages.
+
+- **Hold to snap:** hold the pen still at the end of a stroke to turn it into a clean shape.
+- **Checklists with reminders**, including system notifications (desktop and web) for items that are due, whichever board is open.
+- **Sticker library:** badges, shapes, emoji and your own stickers.
+- **App lock PIN** with a recovery code and an idle lock.
+- **Notebooks** with coloured sections and ordered pages, and a navigation bar on each page.
+- **Split view:** look at another board while you work on this one.
+- **Find while presenting** (Ctrl+F in Present mode), with next and previous and a highlight on each match.
+- **PDF outline and bookmarks**, kept in step with page reordering.
+- **Notes synced to voice recordings:** replay notes with the audio and tap a note to hear that moment.
+- **Document scanner** with automatic page detection, perspective correction and clean-up filters.
+- **Web clipper** in the in-app browser: selected text, article text, screenshot or link.
 
 ### Changed
 - Protected boards save as fast as unprotected ones: ink is encrypted as binary numbers instead of text (about 250 ms → 35 ms per autosave on a 210,000-point board), and the thumbnail is no longer redrawn on every save. Boards protected earlier still open.
 
 ### Fixed
+- Several wrong translations shown by the new screens (for example German *Grid* was "Grill" and *Boards* was "Vorlagen"; *Close*, *Done*, *Start*, *Letter*, *Portrait* and the paper and pattern names in many languages).
+- Long words in shape labels are no longer broken in the middle; the text gets smaller instead.
 - A language pack downloaded by an older version is refreshed quietly, so new screens are translated without removing and re-adding the language.
 - Web app: an update could pair the new page with an older script still in the browser's HTTP cache, leaving the app broken until the next update. New versions now fetch every app file fresh.
 - Replacing the open protected board from the sync folder, or restoring a backup while it is open, no longer lets the editor's old copy be autosaved over what was just put back.

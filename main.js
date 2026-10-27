@@ -7,6 +7,8 @@ const path = require('path');
 const fs = require('fs');
 const { autoUpdater } = require('electron-updater');
 const { canAutoUpdate, canInstallNow, RELEASES_URL } = require('./update-policy');
+// Windows shows notifications (checklist reminders) only for an app with a user model id; it matches the installer's appId.
+if (process.platform === 'win32') app.setAppUserModelId('com.rejwan.rejboard');
 // The app used to be called "Rejwan Whiteboard". Electron stores boards in a folder named after the app,
 // so keep using the old folder when it exists; otherwise renaming would make existing boards disappear.
 try { const old = path.join(app.getPath('appData'), 'Rejwan Whiteboard'), cur = path.join(app.getPath('appData'), 'RejBoard');

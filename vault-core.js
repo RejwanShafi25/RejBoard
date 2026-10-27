@@ -15,7 +15,7 @@
   const VERSION = 1, ITER = 600000, ITER_MIN = 100000, ITER_MAX = 5000000;
   const AAD = new TextEncoder().encode('rejboard-vault-1');
   /* the fields that are encrypted; everything else on the record stays as it is */
-  const CONTENT = ['items', 'bg', 'pat', 'gs', 'gd', 'layers', 'pg', 'q', 'pq', 'hq', 'hs', 'hsAt', 'th'];
+  const CONTENT = ['items', 'bg', 'pat', 'gs', 'gd', 'layers', 'bms', 'pg', 'q', 'pq', 'hq', 'hs', 'hsAt', 'th'];
   const MAX_CT = 1.5 * 1024 * 1048576; // refuse absurd ciphertexts before allocating
 
   const C = () => { const c = globalThis.crypto; if (!c || !c.subtle) throw new Error('encryption is not available here (needs a secure context)'); return c; };

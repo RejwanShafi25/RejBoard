@@ -87,3 +87,8 @@ test('inkLines survives junk and is bounded', () => {
   assert.ok(g.length <= 400, 'capped');
   assert.ok(Date.now() - t < 1000);
 });
+
+test('checklist titles and rows are searchable', () => {
+  const { q } = C.searchText([{ t: 'ck', title: 'Groceries', rows: [{ text: 'Milk' }, { text: 'Eggs', done: true }, null] }]);
+  assert.match(q, /Groceries Milk Eggs/);
+});
