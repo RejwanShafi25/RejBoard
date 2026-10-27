@@ -115,7 +115,9 @@ jobs:
           for (const item of files) {
             const name = path.basename(item.url || item.path || '');
             if (!name || !fs.existsSync(path.join('dist', name))) throw new Error(`${metaName} references missing artifact: ${name}`);
-            if (/\.(exe|AppImage|zip)$/i.test(name) && !fs.existsSync(path.join('dist', name + '.blockmap'))) {
+            /* differential updates need a blockmap: a .blockmap file next to the installer, or (AppImage) one embedded in it, recorded as blockMapSize */
+            const embedded = /\.AppImage$/i.test(name) && Number(item.blockMapSize) > 0;
+            if (/\.(exe|AppImage|zip)$/i.test(name) && !embedded && !fs.existsSync(path.join('dist', name + '.blockmap'))) {
               throw new Error(`Missing differential blockmap for ${name}`);
             }
             console.log(`${metaName}: ${name}`);
