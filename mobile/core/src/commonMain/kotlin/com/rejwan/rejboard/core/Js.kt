@@ -14,7 +14,91 @@ object BoardJson {
 
     fun parse(text: String): JsonElement = json.parseToJsonElement(text)
 
-    fun write(element: JsonElement): String = json.encodeToString(JsonElement.serializer(), element)
+    /* Not json.encodeToString: kotlinx re-formats every number through Double.toString ("1.5e-7" -> "1.5E-7", "2e+21" -> "2.0E21"),
+       which breaks byte-for-byte round trips. This writer keeps parsed number text as it was and escapes strings like JSON.stringify. */
+    fun write(element: JsonElement): String = StringBuilder().also { writeTo(it, element) }.toString()
+
+    private fun writeTo(sb: StringBuilder, e: JsonElement) {
+        when (e) {
+            JsonNull -> sb.append("null")
+            is JsonPrimitive -> if (e.isString) quote(sb, e.content) else sb.append(jsNumberText(e.content))
+            is JsonArray -> {
+                sb.append('[')
+                e.forEachIndexed { i, x -> if (i > 0) sb.append(','); writeTo(sb, x) }
+                sb.append(']')
+            }
+            is JsonObject -> {
+                sb.append('{')
+                var first = true
+                for ((k, v) in e) { if (!first) sb.append(','); first = false; quote(sb, k); sb.append(':'); writeTo(sb, v) }
+                sb.append('}')
+            }
+        }
+    }
+
+    private const val HEX = "0123456789abcdef"
+    private fun hex4(sb: StringBuilder, c: Int) { sb.append("\\u"); for (s in intArrayOf(12, 8, 4, 0)) sb.append(HEX[(c shr s) and 15]) }
+
+    /** JSON.stringify string quoting: short escapes, other control characters and lone surrogates as lowercase \u escapes. */
+    private fun quote(sb: StringBuilder, s: String) {
+        sb.append('"')
+        var i = 0
+        while (i < s.length) {
+            val c = s[i]
+            when {
+                c == '"' -> sb.append("\\\"")
+                c == '\\' -> sb.append("\\\\")
+                c == '\b' -> sb.append("\\b")
+                c == '\u000C' -> sb.append("\\f")
+                c == '\n' -> sb.append("\\n")
+                c == '\r' -> sb.append("\\r")
+                c == '\t' -> sb.append("\\t")
+                c.code < 0x20 -> hex4(sb, c.code)
+                c.isHighSurrogate() && i + 1 < s.length && s[i + 1].isLowSurrogate() -> { sb.append(c).append(s[i + 1]); i++ }
+                c.isSurrogate() -> hex4(sb, c.code)
+                else -> sb.append(c)
+            }
+            i++
+        }
+        sb.append('"')
+    }
+}
+
+/** Number text as JavaScript writes it. Text parsed from a file is kept; Kotlin-made text ("1.0E7", "2.0", "1.5E-7") is rewritten. */
+internal fun jsNumberText(c: String): String {
+    if (c.indexOf('E') < 0 && !c.endsWith(".0")) return c
+    val d = c.toDoubleOrNull() ?: return c
+    return jsFormat(d)
+}
+
+/** JavaScript Number.prototype.toString() for a finite double, from the shortest digits Kotlin prints. */
+internal fun jsFormat(d: Double): String {
+    if (d.isNaN()) return "NaN"
+    if (d.isInfinite()) return if (d > 0) "Infinity" else "-Infinity"
+    if (d == 0.0) return "0"
+    val neg = d < 0
+    val s = kotlin.math.abs(d).toString()
+    val ePos = s.indexOfFirst { it == 'E' || it == 'e' }
+    val mant = if (ePos < 0) s else s.substring(0, ePos)
+    val exp = if (ePos < 0) 0 else s.substring(ePos + 1).toInt()
+    val dot = mant.indexOf('.')
+    val intPart = if (dot < 0) mant else mant.substring(0, dot)
+    val all = intPart + (if (dot < 0) "" else mant.substring(dot + 1))
+    val lead = all.indexOfFirst { it != '0' }
+    if (lead < 0) return "0"
+    val digits = all.substring(lead).trimEnd('0')
+    val n = intPart.length + exp - lead // value = 0.digits × 10^n
+    val k = digits.length
+    val out = when {
+        n in k..21 -> digits + "0".repeat(n - k)
+        n in 1..21 -> digits.substring(0, n) + "." + digits.substring(n)
+        n in -5..0 -> "0." + "0".repeat(-n) + digits
+        else -> {
+            val e = n - 1
+            (if (k == 1) digits else digits[0] + "." + digits.substring(1)) + "e" + (if (e < 0) "-" else "+") + kotlin.math.abs(e)
+        }
+    }
+    return if (neg) "-$out" else out
 }
 
 /* Small pieces of JavaScript semantics the ported logic depends on (truthiness, ToNumber, ToInt32). */

@@ -25,7 +25,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
 
       # the golden fixtures must still be what the desktop JS (board-core.js, test/helpers.js) produces
       - name: Golden fixtures are up to date

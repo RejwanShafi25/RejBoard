@@ -90,4 +90,11 @@ tasks.withType<KotlinNativeTest>().configureEach {
 /* simulator tests: the device name must exist on the runner (CI picks one with simctl) */
 tasks.withType<KotlinNativeSimulatorTest>().configureEach {
     providers.gradleProperty("rb.iosSimulator").orNull?.let { device.set(it) }
+    /* the simulator does not get the task's environment, but it can read the Mac's /tmp, so the fixtures go to a fixed folder there */
+    val src = file("golden")
+    doFirst {
+        val dst = File("/tmp/rejboard-golden")
+        dst.deleteRecursively()
+        src.copyRecursively(dst, overwrite = true)
+    }
 }

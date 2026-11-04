@@ -183,12 +183,20 @@ out.fnv = ['', 'a', 'héllo 👋', '{"t":"s"}'].map(s => ({ s, h: fnv(s) }));
 
 /* ---------- write / check ---------- */
 const check = process.argv.includes('--check');
+/* Node versions may differ in the last bit of Math.pow/exp etc., so --check accepts numbers within 1e-12 (relative) */
+const near = (a, b) => {
+  if (typeof a == 'number' && typeof b == 'number') return a === b || Math.abs(a - b) <= 1e-12 * Math.max(1, Math.abs(a), Math.abs(b));
+  if (Array.isArray(a)) return Array.isArray(b) && a.length == b.length && a.every((x, i) => near(x, b[i]));
+  if (a && typeof a == 'object') { if (!b || typeof b != 'object' || Array.isArray(b)) return false; const k = Object.keys(a); return k.length == Object.keys(b).length && k.every(x => near(a[x], b[x])); }
+  return a === b;
+};
+const sameJson = (text, data) => { try { return near(JSON.parse(text), JSON.parse(JSON.stringify(data))); } catch (e) { return false; } };
 let stale = 0;
 for (const [name, data] of Object.entries(out)) {
   const file = path.join(__dirname, name + '.json'), text = JSON.stringify(data) + '\n';
   if (check) {
     const cur = fs.existsSync(file) ? fs.readFileSync(file, 'utf8') : '';
-    if (cur !== text) { console.error('stale golden fixture: ' + path.relative(ROOT, file)); stale++; }
+    if (cur !== text && !sameJson(cur, data)) { console.error('stale golden fixture: ' + path.relative(ROOT, file)); stale++; }
   } else fs.writeFileSync(file, text);
 }
 if (stale) { console.error('Run: node mobile/core/golden/generate.js'); process.exit(1); }

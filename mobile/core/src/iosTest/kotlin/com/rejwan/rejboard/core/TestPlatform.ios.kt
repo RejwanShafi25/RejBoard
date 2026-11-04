@@ -17,9 +17,11 @@ import platform.posix.fopen
 import platform.posix.fread
 import platform.posix.getenv
 
-/** Folders to look in: RB_GOLDEN_DIR (set by the Gradle test task), then paths relative to the working directory. */
+/** Folders to look in: RB_GOLDEN_DIR (set by the Gradle test task), the copy Gradle puts in the Mac's /tmp for the simulator,
+    then paths relative to the working directory. */
 private fun goldenDirs(): List<String> =
-    listOfNotNull(getenv("RB_GOLDEN_DIR")?.toKString()?.takeIf { it.isNotEmpty() }) + listOf("golden", "core/golden", "mobile/core/golden", "../golden")
+    listOfNotNull(getenv("RB_GOLDEN_DIR")?.toKString()?.takeIf { it.isNotEmpty() }) +
+        listOf("/tmp/rejboard-golden", "golden", "core/golden", "mobile/core/golden", "../golden")
 
 actual fun readGolden(name: String): String {
     var f: CPointer<FILE>? = null
