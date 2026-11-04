@@ -13,6 +13,7 @@ import kotlinx.serialization.json.JsonObject
 object BoardSig {
     fun of(items: List<Item>, layers: List<Layer>?): Int = of(items.map { it.raw }, layers?.map { it.raw })
 
+    @kotlin.jvm.JvmName("ofRaw") /* same JVM signature as the List<Item> overload once generics are erased */
     fun of(items: List<JsonObject>, layers: List<JsonObject>?): Int {
         var h = items.size
         fun mix(n: Int) { h = h * 31 + n }

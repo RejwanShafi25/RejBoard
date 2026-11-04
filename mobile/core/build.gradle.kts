@@ -90,6 +90,8 @@ val generateGoldenPath by tasks.registering {
     }
 }
 kotlin.sourceSets.commonTest { kotlin.srcDir(generateGoldenPath) }
+/* srcDir(task) alone does not make the native test compilations run it, so every test compile depends on it explicitly */
+tasks.matching { it.name.startsWith("compile") && it.name.contains("Test") && it.name.contains("Kotlin") }.configureEach { dependsOn(generateGoldenPath) }
 
 /* simulator tests: the device name must exist on the runner (CI picks one with simctl) */
 tasks.withType<KotlinNativeSimulatorTest>().configureEach {
