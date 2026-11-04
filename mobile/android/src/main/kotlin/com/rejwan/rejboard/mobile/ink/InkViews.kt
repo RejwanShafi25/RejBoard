@@ -269,7 +269,22 @@ class FrontBufferedInkView(context: Context, private val editor: BoardEditor, on
         }
 
         override fun onDrawMultiBufferedLayer(canvas: Canvas, bufferWidth: Int, bufferHeight: Int, params: Collection<WetFrame>) {
-            val f = frame ?: return
+            try { drawDry(canvas) } finally { post { onRedrawDone() } } // render thread: hand the in-flight flag back to the UI thread
+        }
+    })
+
+    private fun onRedrawDone() {
+        redrawInFlight = false
+        if (redrawPending) {
+            redrawPending = false
+            redrawAll()
+        }
+    }
+
+    /** The dry layer: paper, then the cached ink chunks, then the overlay (render thread). */
+    private fun drawDry(canvas: Canvas) {
+        run {
+            val f = frame ?: return@run
             f.paper.replay(AndroidCanvas2D(canvas, f.zoom.toFloat()))
             // the pencil grain is scaled for one zoom: re-record the chunks when the zoom changed a lot
             val zoomChanged = nodesZoom == 0.0 || f.zoom / nodesZoom > 1.5 || nodesZoom / f.zoom > 1.5
@@ -304,7 +319,7 @@ class FrontBufferedInkView(context: Context, private val editor: BoardEditor, on
             f.overlay.replay(AndroidCanvas2D(canvas, f.zoom.toFloat()))
             canvas.restore()
         }
-    })
+    }
 
     init {
         holder.addCallback(object : SurfaceHolder.Callback {
@@ -369,16 +384,7 @@ class FrontBufferedInkView(context: Context, private val editor: BoardEditor, on
             }
             redrawInFlight = true
             frame = snapshot()
-            renderer.renderMultiBufferedLayer(emptyList())
-            renderer.execute {
-                post {
-                    redrawInFlight = false
-                    if (redrawPending) {
-                        redrawPending = false
-                        redrawAll()
-                    }
-                }
-            }
+            renderer.renderMultiBufferedLayer(emptyList()) // onDrawMultiBufferedLayer posts onRedrawDone() when it has drawn
         }
     }
 
