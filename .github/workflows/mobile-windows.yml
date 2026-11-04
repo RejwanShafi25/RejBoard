@@ -20,7 +20,7 @@ concurrency:
 jobs:
   windows:
     name: Core tests + MSIX
-    runs-on: windows-latest
+    runs-on: windows-2022 # VS 2022: the v143 toolset the WinUI 3 project builds with (windows-latest has VS 2026 without it)
     timeout-minutes: 75
     steps:
       - uses: actions/checkout@v4
