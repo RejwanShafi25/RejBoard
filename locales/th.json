@@ -1865,5 +1865,7 @@
  "Saving video is not supported on this device": "อุปกรณ์นี้ไม่รองรับการบันทึกวิดีโอ",
  "Recording… {p}%": "กำลังบันทึก… {p}%",
  "🎬 Replay — {title}": "🎬 เล่นซ้ำ — {title}",
- "Your board, drawn again in the order you made it. Save it as a video to share.": "กระดานของคุณถูกวาดใหม่ตามลำดับที่คุณสร้าง บันทึกเป็นวิดีโอเพื่อแชร์"
+ "Your board, drawn again in the order you made it. Save it as a video to share.": "กระดานของคุณถูกวาดใหม่ตามลำดับที่คุณสร้าง บันทึกเป็นวิดีโอเพื่อแชร์",
+ "Brush size in pixels": "ขนาดแปรงเป็นพิกเซล",
+ "Brush size in pixels (0.1–60)": "ขนาดแปรงเป็นพิกเซล (0.1–60)"
 }

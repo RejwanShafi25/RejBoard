@@ -1865,5 +1865,7 @@
  "Saving video is not supported on this device": "Bu cihazda video kaydetme desteklenmiyor",
  "Recording… {p}%": "Kaydediliyor… %{p}",
  "🎬 Replay — {title}": "🎬 Yeniden oynatma — {title}",
- "Your board, drawn again in the order you made it. Save it as a video to share.": "Panonuz, oluşturduğunuz sırayla yeniden çiziliyor. Paylaşmak için video olarak kaydedin."
+ "Your board, drawn again in the order you made it. Save it as a video to share.": "Panonuz, oluşturduğunuz sırayla yeniden çiziliyor. Paylaşmak için video olarak kaydedin.",
+ "Brush size in pixels": "Fırça boyutu (piksel)",
+ "Brush size in pixels (0.1–60)": "Fırça boyutu (piksel, 0,1–60)"
 }

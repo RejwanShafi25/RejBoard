@@ -1865,5 +1865,7 @@
  "Saving video is not supported on this device": "Menyimpan video tidak didukung di perangkat ini",
  "Recording… {p}%": "Merekam… {p}%",
  "🎬 Replay — {title}": "🎬 Putar ulang — {title}",
- "Your board, drawn again in the order you made it. Save it as a video to share.": "Papan Anda digambar lagi sesuai urutan Anda membuatnya. Simpan sebagai video untuk dibagikan."
+ "Your board, drawn again in the order you made it. Save it as a video to share.": "Papan Anda digambar lagi sesuai urutan Anda membuatnya. Simpan sebagai video untuk dibagikan.",
+ "Brush size in pixels": "Ukuran kuas dalam piksel",
+ "Brush size in pixels (0.1–60)": "Ukuran kuas dalam piksel (0,1–60)"
 }

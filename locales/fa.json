@@ -1865,5 +1865,7 @@
  "Saving video is not supported on this device": "ذخیرهٔ ویدیو در این دستگاه پشتیبانی نمی‌شود",
  "Recording… {p}%": "در حال ضبط… {p}٪",
  "🎬 Replay — {title}": "🎬 بازپخش — {title}",
- "Your board, drawn again in the order you made it. Save it as a video to share.": "تختهٔ شما، دوباره به همان ترتیبی که ساختید کشیده می‌شود. برای اشتراک‌گذاری آن را به‌صورت ویدیو ذخیره کنید."
+ "Your board, drawn again in the order you made it. Save it as a video to share.": "تختهٔ شما، دوباره به همان ترتیبی که ساختید کشیده می‌شود. برای اشتراک‌گذاری آن را به‌صورت ویدیو ذخیره کنید.",
+ "Brush size in pixels": "اندازهٔ قلم‌مو به پیکسل",
+ "Brush size in pixels (0.1–60)": "اندازهٔ قلم‌مو به پیکسل (۰٫۱–۶۰)"
 }

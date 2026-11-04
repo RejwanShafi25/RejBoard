@@ -1865,5 +1865,7 @@
  "Saving video is not supported on this device": "Zapisywanie wideo nie jest obsługiwane na tym urządzeniu",
  "Recording… {p}%": "Nagrywanie… {p}%",
  "🎬 Replay — {title}": "🎬 Odtwarzanie — {title}",
- "Your board, drawn again in the order you made it. Save it as a video to share.": "Twoja tablica narysowana ponownie w kolejności, w jakiej ją tworzyłeś. Zapisz ją jako wideo, aby udostępnić."
+ "Your board, drawn again in the order you made it. Save it as a video to share.": "Twoja tablica narysowana ponownie w kolejności, w jakiej ją tworzyłeś. Zapisz ją jako wideo, aby udostępnić.",
+ "Brush size in pixels": "Rozmiar pędzla w pikselach",
+ "Brush size in pixels (0.1–60)": "Rozmiar pędzla w pikselach (0,1–60)"
 }

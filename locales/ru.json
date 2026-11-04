@@ -1865,5 +1865,7 @@
  "Saving video is not supported on this device": "Сохранение видео не поддерживается на этом устройстве",
  "Recording… {p}%": "Запись… {p}%",
  "🎬 Replay — {title}": "🎬 Воспроизведение — {title}",
- "Your board, drawn again in the order you made it. Save it as a video to share.": "Ваша доска, нарисованная заново в том порядке, в каком вы её создавали. Сохраните как видео, чтобы поделиться."
+ "Your board, drawn again in the order you made it. Save it as a video to share.": "Ваша доска, нарисованная заново в том порядке, в каком вы её создавали. Сохраните как видео, чтобы поделиться.",
+ "Brush size in pixels": "Размер кисти в пикселях",
+ "Brush size in pixels (0.1–60)": "Размер кисти в пикселях (0,1–60)"
 }

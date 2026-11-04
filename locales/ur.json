@@ -1865,5 +1865,7 @@
  "Saving video is not supported on this device": "اس آلے پر ویڈیو محفوظ کرنا ممکن نہیں",
  "Recording… {p}%": "ریکارڈنگ… {p}%",
  "🎬 Replay — {title}": "🎬 ری پلے — {title}",
- "Your board, drawn again in the order you made it. Save it as a video to share.": "آپ کا بورڈ، اسی ترتیب سے دوبارہ بنتا ہوا جس میں آپ نے اسے بنایا۔ شیئر کرنے کے لیے ویڈیو کے طور پر محفوظ کریں۔"
+ "Your board, drawn again in the order you made it. Save it as a video to share.": "آپ کا بورڈ، اسی ترتیب سے دوبارہ بنتا ہوا جس میں آپ نے اسے بنایا۔ شیئر کرنے کے لیے ویڈیو کے طور پر محفوظ کریں۔",
+ "Brush size in pixels": "برش کا سائز پکسلز میں",
+ "Brush size in pixels (0.1–60)": "برش کا سائز پکسلز میں (0.1–60)"
 }

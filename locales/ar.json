@@ -1865,5 +1865,7 @@
  "Saving video is not supported on this device": "حفظ الفيديو غير مدعوم على هذا الجهاز",
  "Recording… {p}%": "جارٍ التسجيل… {p}%",
  "🎬 Replay — {title}": "🎬 إعادة التشغيل — {title}",
- "Your board, drawn again in the order you made it. Save it as a video to share.": "لوحتك تُرسم من جديد بالترتيب الذي أنشأتها به. احفظها كفيديو لمشاركتها."
+ "Your board, drawn again in the order you made it. Save it as a video to share.": "لوحتك تُرسم من جديد بالترتيب الذي أنشأتها به. احفظها كفيديو لمشاركتها.",
+ "Brush size in pixels": "حجم الفرشاة بالبكسل",
+ "Brush size in pixels (0.1–60)": "حجم الفرشاة بالبكسل (0.1–60)"
 }

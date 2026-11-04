@@ -1865,5 +1865,7 @@
  "Saving video is not supported on this device": "Video speichern wird auf diesem Gerät nicht unterstützt",
  "Recording… {p}%": "Aufnahme… {p} %",
  "🎬 Replay — {title}": "🎬 Wiedergabe — {title}",
- "Your board, drawn again in the order you made it. Save it as a video to share.": "Dein Board, neu gezeichnet in der Reihenfolge, in der du es erstellt hast. Speichere es als Video zum Teilen."
+ "Your board, drawn again in the order you made it. Save it as a video to share.": "Dein Board, neu gezeichnet in der Reihenfolge, in der du es erstellt hast. Speichere es als Video zum Teilen.",
+ "Brush size in pixels": "Pinselgröße in Pixeln",
+ "Brush size in pixels (0.1–60)": "Pinselgröße in Pixeln (0,1–60)"
 }

@@ -1865,5 +1865,7 @@
  "Saving video is not supported on this device": "Il salvataggio video non è supportato su questo dispositivo",
  "Recording… {p}%": "Registrazione… {p}%",
  "🎬 Replay — {title}": "🎬 Riproduzione — {title}",
- "Your board, drawn again in the order you made it. Save it as a video to share.": "La tua lavagna, ridisegnata nell’ordine in cui l’hai creata. Salvala come video per condividerla."
+ "Your board, drawn again in the order you made it. Save it as a video to share.": "La tua lavagna, ridisegnata nell’ordine in cui l’hai creata. Salvala come video per condividerla.",
+ "Brush size in pixels": "Dimensione del pennello in pixel",
+ "Brush size in pixels (0.1–60)": "Dimensione del pennello in pixel (0,1–60)"
 }

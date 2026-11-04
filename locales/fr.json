@@ -1865,5 +1865,7 @@
  "Saving video is not supported on this device": "L’enregistrement vidéo n’est pas pris en charge sur cet appareil",
  "Recording… {p}%": "Enregistrement… {p} %",
  "🎬 Replay — {title}": "🎬 Relecture — {title}",
- "Your board, drawn again in the order you made it. Save it as a video to share.": "Votre tableau, redessiné dans l’ordre où vous l’avez créé. Enregistrez-le en vidéo pour le partager."
+ "Your board, drawn again in the order you made it. Save it as a video to share.": "Votre tableau, redessiné dans l’ordre où vous l’avez créé. Enregistrez-le en vidéo pour le partager.",
+ "Brush size in pixels": "Taille du pinceau en pixels",
+ "Brush size in pixels (0.1–60)": "Taille du pinceau en pixels (0,1–60)"
 }

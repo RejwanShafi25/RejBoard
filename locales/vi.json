@@ -1865,5 +1865,7 @@
  "Saving video is not supported on this device": "Thiết bị này không hỗ trợ lưu video",
  "Recording… {p}%": "Đang ghi… {p}%",
  "🎬 Replay — {title}": "🎬 Phát lại — {title}",
- "Your board, drawn again in the order you made it. Save it as a video to share.": "Bảng của bạn được vẽ lại theo đúng thứ tự bạn đã tạo. Lưu thành video để chia sẻ."
+ "Your board, drawn again in the order you made it. Save it as a video to share.": "Bảng của bạn được vẽ lại theo đúng thứ tự bạn đã tạo. Lưu thành video để chia sẻ.",
+ "Brush size in pixels": "Cỡ cọ tính bằng pixel",
+ "Brush size in pixels (0.1–60)": "Cỡ cọ tính bằng pixel (0,1–60)"
 }

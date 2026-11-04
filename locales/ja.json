@@ -1865,5 +1865,7 @@
  "Saving video is not supported on this device": "このデバイスでは動画の保存に対応していません",
  "Recording… {p}%": "録画中… {p}%",
  "🎬 Replay — {title}": "🎬 再生 — {title}",
- "Your board, drawn again in the order you made it. Save it as a video to share.": "ボードを作った順番どおりに描き直します。動画として保存して共有できます。"
+ "Your board, drawn again in the order you made it. Save it as a video to share.": "ボードを作った順番どおりに描き直します。動画として保存して共有できます。",
+ "Brush size in pixels": "ブラシのサイズ（ピクセル）",
+ "Brush size in pixels (0.1–60)": "ブラシのサイズ（ピクセル、0.1〜60）"
 }

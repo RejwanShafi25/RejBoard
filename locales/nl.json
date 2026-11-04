@@ -1865,5 +1865,7 @@
  "Saving video is not supported on this device": "Video opslaan wordt op dit apparaat niet ondersteund",
  "Recording… {p}%": "Opnemen… {p}%",
  "🎬 Replay — {title}": "🎬 Afspelen — {title}",
- "Your board, drawn again in the order you made it. Save it as a video to share.": "Je bord, opnieuw getekend in de volgorde waarin je het maakte. Sla het op als video om te delen."
+ "Your board, drawn again in the order you made it. Save it as a video to share.": "Je bord, opnieuw getekend in de volgorde waarin je het maakte. Sla het op als video om te delen.",
+ "Brush size in pixels": "Penseelgrootte in pixels",
+ "Brush size in pixels (0.1–60)": "Penseelgrootte in pixels (0,1–60)"
 }

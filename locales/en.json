@@ -1885,5 +1885,7 @@
  "Saving video is not supported on this device": "Saving video is not supported on this device",
  "Recording… {p}%": "Recording… {p}%",
  "🎬 Replay — {title}": "🎬 Replay — {title}",
- "Your board, drawn again in the order you made it. Save it as a video to share.": "Your board, drawn again in the order you made it. Save it as a video to share."
+ "Your board, drawn again in the order you made it. Save it as a video to share.": "Your board, drawn again in the order you made it. Save it as a video to share.",
+ "Brush size in pixels": "Brush size in pixels",
+ "Brush size in pixels (0.1–60)": "Brush size in pixels (0.1–60)"
 }

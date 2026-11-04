@@ -1865,5 +1865,7 @@
  "Saving video is not supported on this device": "এই ডিভাইসে ভিডিও সংরক্ষণ সমর্থিত নয়",
  "Recording… {p}%": "রেকর্ড হচ্ছে… {p}%",
  "🎬 Replay — {title}": "🎬 রিপ্লে — {title}",
- "Your board, drawn again in the order you made it. Save it as a video to share.": "আপনার বোর্ড, যে ক্রমে আপনি বানিয়েছেন সেই ক্রমে আবার আঁকা হচ্ছে। শেয়ার করতে ভিডিও হিসেবে সংরক্ষণ করুন।"
+ "Your board, drawn again in the order you made it. Save it as a video to share.": "আপনার বোর্ড, যে ক্রমে আপনি বানিয়েছেন সেই ক্রমে আবার আঁকা হচ্ছে। শেয়ার করতে ভিডিও হিসেবে সংরক্ষণ করুন।",
+ "Brush size in pixels": "ব্রাশের আকার পিক্সেলে",
+ "Brush size in pixels (0.1–60)": "ব্রাশের আকার পিক্সেলে (0.1–60)"
 }

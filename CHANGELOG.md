@@ -1,4 +1,8 @@
 # Changelog
+## [Unreleased]
+### Changed
+- **Much finer brush sizes:** pens, pencil and highlighters now go down to **0.1 px** (from 1 px), in 0.1 px steps below 10 px. The size slider is spread out so the small sizes get as much room as the large ones, and a number box next to it takes an exact size. The same applies to the size of selected strokes in the style bar, the shape border width (0.1–12), the eraser (from 0.5 px) and the laser dot (from 1 px). Existing boards look exactly as before.
+
 ## [1.3.4]
 ### Added
 - **Board replay** (**Export → Replay board**): the board draws itself again in the order it was made: ink follows the pen path stroke by stroke, and text, shapes, pictures and everything else fade in one after another. Play, pause, scrub and change the speed (0.5× to 8×), then **Save video** to get an MP4 (WebM where MP4 recording isn't available) of the whole board, fitted into a 1080p frame (portrait for tall boards). Hidden layers stay out. Erased items aren't in the replay, and things that were moved show up where they are now.

@@ -1865,5 +1865,7 @@
  "Saving video is not supported on this device": "此设备不支持保存视频",
  "Recording… {p}%": "正在录制… {p}%",
  "🎬 Replay — {title}": "🎬 回放 — {title}",
- "Your board, drawn again in the order you made it. Save it as a video to share.": "按你创建的顺序重新绘制白板。保存为视频即可分享。"
+ "Your board, drawn again in the order you made it. Save it as a video to share.": "按你创建的顺序重新绘制白板。保存为视频即可分享。",
+ "Brush size in pixels": "画笔大小（像素）",
+ "Brush size in pixels (0.1–60)": "画笔大小（像素，0.1–60）"
 }

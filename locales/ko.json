@@ -1865,5 +1865,7 @@
  "Saving video is not supported on this device": "이 기기에서는 동영상 저장을 지원하지 않습니다",
  "Recording… {p}%": "녹화 중… {p}%",
  "🎬 Replay — {title}": "🎬 다시 재생 — {title}",
- "Your board, drawn again in the order you made it. Save it as a video to share.": "만든 순서대로 보드를 다시 그립니다. 동영상으로 저장해 공유하세요."
+ "Your board, drawn again in the order you made it. Save it as a video to share.": "만든 순서대로 보드를 다시 그립니다. 동영상으로 저장해 공유하세요.",
+ "Brush size in pixels": "브러시 크기(픽셀)",
+ "Brush size in pixels (0.1–60)": "브러시 크기(픽셀, 0.1–60)"
 }

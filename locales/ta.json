@@ -1865,5 +1865,7 @@
  "Saving video is not supported on this device": "இந்தச் சாதனத்தில் வீடியோ சேமிப்பு ஆதரிக்கப்படவில்லை",
  "Recording… {p}%": "பதிவுசெய்கிறது… {p}%",
  "🎬 Replay — {title}": "🎬 மறுஇயக்கம் — {title}",
- "Your board, drawn again in the order you made it. Save it as a video to share.": "நீங்கள் உருவாக்கிய வரிசையிலேயே உங்கள் பலகை மீண்டும் வரையப்படுகிறது. பகிர வீடியோவாகச் சேமிக்கவும்."
+ "Your board, drawn again in the order you made it. Save it as a video to share.": "நீங்கள் உருவாக்கிய வரிசையிலேயே உங்கள் பலகை மீண்டும் வரையப்படுகிறது. பகிர வீடியோவாகச் சேமிக்கவும்.",
+ "Brush size in pixels": "தூரிகை அளவு பிக்சல்களில்",
+ "Brush size in pixels (0.1–60)": "தூரிகை அளவு பிக்சல்களில் (0.1–60)"
 }
