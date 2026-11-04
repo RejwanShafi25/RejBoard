@@ -82,8 +82,8 @@
             </StackPanel>
 
             <!-- Direct2D draws the open board here: pen ink, eraser, pan and zoom -->
-            <!-- Background makes the panel hit-testable: without it, pointer input never reaches the board -->
-            <SwapChainPanel Grid.Row="2" x:Name="BoardPanel" Background="Transparent">
+            <!-- no Background here: SwapChainPanel does not support it (0x802B000A at load) and takes pointer input over its whole area anyway -->
+            <SwapChainPanel Grid.Row="2" x:Name="BoardPanel">
                 <!-- drawing or core failures are shown here instead of a silently blank canvas -->
                 <InfoBar x:Name="ErrorBar" Severity="Error" IsOpen="False" IsClosable="True" Title="Something went wrong"
                          VerticalAlignment="Top" Margin="12" />
