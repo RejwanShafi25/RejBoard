@@ -23,9 +23,12 @@ namespace winrt::RejBoardNative::implementation
         void OnEraserOption(winrt::Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args);
         void OnPenSetting(winrt::Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::Controls::Primitives::RangeBaseValueChangedEventArgs const& args);
         void OnPenToggle(winrt::Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args);
+        void OnPanelToggle(winrt::Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args);
         void OnFingerToggle(winrt::Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args);
 
     private:
+        void Setup();
+        void ReportError(std::wstring const& text);
         void RefreshList(std::string const& select = {});
         void SetStatus(winrt::hstring const& text);
         void ApplyTool();

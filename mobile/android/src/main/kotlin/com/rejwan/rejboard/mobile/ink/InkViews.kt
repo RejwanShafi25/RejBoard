@@ -14,6 +14,7 @@ import android.view.SurfaceView
 import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.graphics.lowlatency.CanvasFrontBufferedRenderer
+import androidx.graphics.surface.SurfaceControlCompat
 import androidx.input.motionprediction.MotionEventPredictor
 import com.rejwan.rejboard.core.ink.BoardEditor
 import com.rejwan.rejboard.core.ink.DrawList
@@ -59,6 +60,10 @@ class InkInput(
 
     private val predictor: MotionEventPredictor = MotionEventPredictor.newInstance(view)
     private var inkPointer = -1
+    /** The pen's side button, as last reported while hovering or by ACTION_BUTTON_PRESS / RELEASE. */
+    private var barrelHeld = false
+    /** The current gesture came as Samsung's S Pen side-button actions (211-214). */
+    private var spenButtonGesture = false
     private var panning = false
     private var lastCx = 0f
     private var lastCy = 0f
@@ -84,7 +89,7 @@ class InkInput(
             else -> InkTool.TOUCH
         }
         var buttons = 0
-        if ((e.buttonState and (MotionEvent.BUTTON_STYLUS_PRIMARY or MotionEvent.BUTTON_STYLUS_SECONDARY)) != 0) buttons = buttons or InkSample.BUTTON_BARREL
+        if (stylusButton(e, toolType) || spenButtonGesture) buttons = buttons or InkSample.BUTTON_BARREL
         // AXIS_TILT is radians from upright, AXIS_ORIENTATION the direction it leans: as PointerEvent tiltX / tiltY degrees
         val tx = Math.toDegrees(atan(tan(tilt.toDouble()) * sin(orient.toDouble())))
         val ty = Math.toDegrees(atan(-tan(tilt.toDouble()) * cos(orient.toDouble())))
@@ -155,10 +160,49 @@ class InkInput(
         if (changed) onChanged()
     }
 
+    /**
+     * Is the pen's side button down? Phones and tablets report it differently: BUTTON_STYLUS_PRIMARY / SECONDARY (the
+     * standard), BUTTON_SECONDARY (several Samsung devices map the S Pen button to it), or only while hovering / through
+     * ACTION_BUTTON_PRESS, which [onGenericMotionEvent] remembers in [barrelHeld].
+     */
+    private fun stylusButton(e: MotionEvent, toolType: Int): Boolean {
+        if (toolType != MotionEvent.TOOL_TYPE_STYLUS) return false
+        val bits = MotionEvent.BUTTON_STYLUS_PRIMARY or MotionEvent.BUTTON_STYLUS_SECONDARY or MotionEvent.BUTTON_SECONDARY
+        return (e.buttonState and bits) != 0 || barrelHeld
+    }
+
+    /** Hover and button events (the view forwards its onGenericMotionEvent here). */
+    fun onGenericMotionEvent(e: MotionEvent): Boolean {
+        val stylus = e.pointerCount > 0 && isStylus(e.getToolType(0))
+        if (!stylus) return false
+        when (e.actionMasked) {
+            MotionEvent.ACTION_HOVER_ENTER, MotionEvent.ACTION_HOVER_MOVE -> {
+                val bits = MotionEvent.BUTTON_STYLUS_PRIMARY or MotionEvent.BUTTON_STYLUS_SECONDARY or MotionEvent.BUTTON_SECONDARY
+                barrelHeld = (e.buttonState and bits) != 0
+            }
+            MotionEvent.ACTION_HOVER_EXIT -> barrelHeld = barrelHeld && (e.buttonState != 0)
+            MotionEvent.ACTION_BUTTON_PRESS -> barrelHeld = true
+            MotionEvent.ACTION_BUTTON_RELEASE -> barrelHeld = false
+        }
+        return false
+    }
+
     @SuppressLint("ClickableViewAccessibility")
     fun onTouchEvent(e: MotionEvent): Boolean {
         predictor.record(e)
-        when (e.actionMasked) {
+        // Samsung S Pen with the side button held: the touch arrives as actions 211 (down), 212 (up), 213 (move), 214
+        // (cancel) instead of the standard ones. Treat them as the standard actions with the button pressed (= eraser).
+        val action = when (e.actionMasked) {
+            SPEN_DOWN -> { spenButtonGesture = true; MotionEvent.ACTION_DOWN }
+            SPEN_UP -> MotionEvent.ACTION_UP
+            SPEN_MOVE -> MotionEvent.ACTION_MOVE
+            SPEN_CANCEL -> MotionEvent.ACTION_CANCEL
+            MotionEvent.ACTION_DOWN -> { spenButtonGesture = false; MotionEvent.ACTION_DOWN }
+            MotionEvent.ACTION_BUTTON_PRESS -> { if (isStylus(e.getToolType(0))) barrelHeld = true; return true }
+            MotionEvent.ACTION_BUTTON_RELEASE -> { if (isStylus(e.getToolType(0))) barrelHeld = false; return true }
+            else -> e.actionMasked
+        }
+        when (action) {
             MotionEvent.ACTION_DOWN -> {
                 val tool = e.getToolType(0)
                 if (isStylus(tool)) stylusSeen = true
@@ -200,13 +244,23 @@ class InkInput(
             MotionEvent.ACTION_UP -> {
                 if (inkPointer >= 0) finishInk(cancelled = (e.flags and 0x20) != 0)
                 panning = false
+                spenButtonGesture = false
             }
             MotionEvent.ACTION_CANCEL -> {
                 if (inkPointer >= 0) finishInk(cancelled = true)
                 panning = false
+                spenButtonGesture = false
             }
         }
         return true
+    }
+
+    companion object {
+        // Samsung S Pen actions while the side button is held (SPen SDK: ACTION_PEN_DOWN / UP / MOVE / CANCEL)
+        const val SPEN_DOWN = 211
+        const val SPEN_UP = 212
+        const val SPEN_MOVE = 213
+        const val SPEN_CANCEL = 214
     }
 }
 
@@ -251,6 +305,7 @@ class FrontBufferedInkView(context: Context, private val editor: BoardEditor, on
     private var redrawScheduled = false
     private var redrawInFlight = false
     private var redrawPending = false
+    private var wetNeedsFull = false
 
     // render thread only: one RenderNode per dry chunk
     private val nodes = java.util.IdentityHashMap<DrawList, RenderNode>()
@@ -269,12 +324,38 @@ class FrontBufferedInkView(context: Context, private val editor: BoardEditor, on
         }
 
         override fun onDrawMultiBufferedLayer(canvas: Canvas, bufferWidth: Int, bufferHeight: Int, params: Collection<WetFrame>) {
-            try { drawDry(canvas) } finally { post { onRedrawDone() } } // render thread: hand the in-flight flag back to the UI thread
+            drawDry(canvas)
+        }
+
+        // the dry frame is now on screen and the front layer hidden (render thread): tell the UI thread
+        override fun onMultiBufferedLayerRenderComplete(
+            frontBufferedLayerSurfaceControl: SurfaceControlCompat,
+            multiBufferedLayerSurfaceControl: SurfaceControlCompat,
+            transaction: SurfaceControlCompat.Transaction,
+        ) {
+            post { onRedrawDone() }
         }
     })
 
+    /** A redraw that never reports back (surface recreated, renderer not ready) must not block every later one. */
+    private val redrawWatchdog = Runnable {
+        if (redrawInFlight) {
+            redrawInFlight = false
+            if (redrawPending) {
+                redrawPending = false
+                redrawAll()
+            }
+        }
+    }
+
     private fun onRedrawDone() {
+        removeCallbacks(redrawWatchdog)
         redrawInFlight = false
+        // presenting the dry frame hid the front layer: if a stroke is being drawn, paint it again in full
+        if (editor.isDrawing) {
+            wetNeedsFull = true
+            drawWet(emptyList())
+        }
         if (redrawPending) {
             redrawPending = false
             redrawAll()
@@ -333,7 +414,12 @@ class FrontBufferedInkView(context: Context, private val editor: BoardEditor, on
                 }
                 redrawAll()
             }
-            override fun surfaceDestroyed(holder: SurfaceHolder) {}
+            override fun surfaceDestroyed(holder: SurfaceHolder) {
+                // whatever was in flight will not report back on this surface
+                removeCallbacks(redrawWatchdog)
+                redrawInFlight = false
+                redrawPending = false
+            }
         })
     }
 
@@ -350,10 +436,22 @@ class FrontBufferedInkView(context: Context, private val editor: BoardEditor, on
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean = input.onTouchEvent(event)
 
+    override fun onGenericMotionEvent(event: MotionEvent): Boolean = input.onGenericMotionEvent(event) || super.onGenericMotionEvent(event)
+
+    // hover (with the S Pen's button state) arrives here, not in onGenericMotionEvent
+    override fun onHoverEvent(event: MotionEvent): Boolean { input.onGenericMotionEvent(event); return super.onHoverEvent(event) }
+
     override fun drawWet(predicted: List<InkSample>) {
         val d = DrawList()
         val clear: Boolean
-        if (editor.wetIncremental) {
+        if (wetNeedsFull && editor.wetIncremental) {
+            // the front layer was hidden by a dry frame: bring the incremental painter up to date and paint the whole stroke
+            wetNeedsFull = false
+            clear = true
+            wetGeneration = editor.wetGeneration
+            editor.paintWetNew(DrawList())
+            editor.paintWet(d)
+        } else if (editor.wetIncremental) {
             // a front buffer keeps its pixels: add the new segments and the provisional end (no prediction: it could not be taken back)
             clear = editor.wetGeneration != wetGeneration
             wetGeneration = editor.wetGeneration
@@ -367,9 +465,15 @@ class FrontBufferedInkView(context: Context, private val editor: BoardEditor, on
         renderer.renderFrontBufferedLayer(WetFrame(d, v.ox, v.oy, v.zoom, clear))
     }
 
+    /**
+     * The stroke ended: draw the dry frame (with the stroke) through the same path as every other redraw. The front layer
+     * keeps showing the wet stroke until that frame is presented, so the ink never blinks out.
+     * renderer.commit() is not used: it renders only while its internal commit count is 0, and a render that never
+     * completed (surface recreated) left that count stuck, so later strokes were saved but never drawn.
+     */
     override fun commitDry() {
-        frame = snapshot()
-        renderer.commit()
+        wetNeedsFull = false
+        redrawAll()
     }
 
     /** Coalesced full redraw: once per display frame at most, and never more than one waiting on the render thread. */
@@ -383,8 +487,9 @@ class FrontBufferedInkView(context: Context, private val editor: BoardEditor, on
                 return@postFrameCallback
             }
             redrawInFlight = true
-            frame = snapshot()
-            renderer.renderMultiBufferedLayer(emptyList()) // onDrawMultiBufferedLayer posts onRedrawDone() when it has drawn
+            frame = snapshot() // always a fresh snapshot: a finished stroke is in it
+            renderer.renderMultiBufferedLayer(emptyList()) // onMultiBufferedLayerRenderComplete posts onRedrawDone()
+            postDelayed(redrawWatchdog, 400)
         }
     }
 
@@ -416,6 +521,11 @@ class SimpleInkView(context: Context, private val editor: BoardEditor, onChanged
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean = input.onTouchEvent(event)
+
+    override fun onGenericMotionEvent(event: MotionEvent): Boolean = input.onGenericMotionEvent(event) || super.onGenericMotionEvent(event)
+
+    // hover (with the S Pen's button state) arrives here, not in onGenericMotionEvent
+    override fun onHoverEvent(event: MotionEvent): Boolean { input.onGenericMotionEvent(event); return super.onHoverEvent(event) }
 
     override fun drawWet(predicted: List<InkSample>) { this.predicted = predicted; invalidate() }
     override fun commitDry() { predicted = emptyList(); invalidate() }

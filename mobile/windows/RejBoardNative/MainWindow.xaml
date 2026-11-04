@@ -31,6 +31,7 @@
         <Grid Grid.Column="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
@@ -42,50 +43,47 @@
                     <StackPanel x:Name="Swatches" Orientation="Horizontal" Spacing="4" VerticalAlignment="Center" />
                     <Slider x:Name="SizeSlider" Minimum="0" Maximum="1000" Width="160" VerticalAlignment="Center" ValueChanged="OnSizeChanged" />
                     <TextBlock x:Name="SizeText" MinWidth="56" VerticalAlignment="Center" />
-                    <!-- the desktop's brush panel: stabiliser, pressure, nib angle, opacity (soft brush and highlighters) -->
-                    <Button Content="Brush settings">
-                        <Button.Flyout>
-                            <Flyout>
-                                <StackPanel Spacing="4" Width="280">
-                                    <TextBlock x:Name="StabText" Text="Stabiliser" />
-                                    <Slider x:Name="StabSlider" Minimum="0" Maximum="100" ValueChanged="OnBrushSetting" />
-                                    <TextBlock x:Name="PressureText" Text="Pressure" />
-                                    <Slider x:Name="PressureSlider" Minimum="0" Maximum="100" ValueChanged="OnBrushSetting" />
-                                    <TextBlock x:Name="AngleText" Text="Nib angle" />
-                                    <Slider x:Name="AngleSlider" Minimum="0" Maximum="180" ValueChanged="OnBrushSetting" />
-                                    <TextBlock x:Name="OpacityText" Text="Opacity" />
-                                    <Slider x:Name="OpacitySlider" Minimum="5" Maximum="100" ValueChanged="OnBrushSetting" />
-                                    <CheckBox x:Name="EraseWholeCheck" Content="Eraser: erase whole strokes" Click="OnEraserOption" />
-                                    <CheckBox x:Name="EraseHighlighterCheck" Content="Eraser: only highlighter" Click="OnEraserOption" />
-                                </StackPanel>
-                            </Flyout>
-                        </Button.Flyout>
-                    </Button>
-                    <!-- the desktop's pen panel: live pressure, pressure feel, switches -->
-                    <Button Content="Pen">
-                        <Button.Flyout>
-                            <Flyout>
-                                <StackPanel Spacing="4" Width="280">
-                                    <TextBlock x:Name="PressureMeterText" Text="Pressure 0.00" />
-                                    <ProgressBar x:Name="PressureMeter" Minimum="0" Maximum="1" />
-                                    <TextBlock x:Name="CurveText" Text="Pressure feel" />
-                                    <Slider x:Name="CurveSlider" Minimum="0" Maximum="100" Value="50" ValueChanged="OnPenSetting" />
-                                    <ToggleSwitch x:Name="PressureToggle" Header="Pressure sensitivity" IsOn="True" Toggled="OnPenToggle" />
-                                    <ToggleSwitch x:Name="TiltToggle" Header="Tilt shading (pencil, soft brush)" IsOn="False" Toggled="OnPenToggle" />
-                                    <ToggleSwitch x:Name="BarrelToggle" Header="Pen button erases" IsOn="True" Toggled="OnPenToggle" />
-                                </StackPanel>
-                            </Flyout>
-                        </Button.Flyout>
-                    </Button>
+                    <!-- the desktop's brush and pen panels open below the toolbar (plain panels, not flyouts: their controls
+                         must exist from the start, the window updates them while it loads) -->
+                    <ToggleButton x:Name="BrushPanelButton" Content="Brush settings" Click="OnPanelToggle" />
+                    <ToggleButton x:Name="PenPanelButton" Content="Pen" Click="OnPanelToggle" />
                     <Button Content="Undo" Click="OnUndo" />
                     <Button Content="Redo" Click="OnRedo" />
                     <ToggleButton x:Name="FingerToggle" Content="Finger draws" IsChecked="True" Click="OnFingerToggle" />
                 </StackPanel>
             </ScrollViewer>
 
+            <StackPanel Grid.Row="1" Orientation="Vertical" Padding="12,0,12,6">
+                <!-- brush: stabiliser, pressure, nib angle, opacity (soft brush and highlighters), and the eraser's options -->
+                <StackPanel x:Name="BrushPanel" Orientation="Horizontal" Spacing="16" Visibility="Collapsed">
+                    <StackPanel Width="160"><TextBlock x:Name="StabText" Text="Stabiliser" />
+                        <Slider x:Name="StabSlider" Minimum="0" Maximum="100" ValueChanged="OnBrushSetting" /></StackPanel>
+                    <StackPanel Width="160"><TextBlock x:Name="PressureText" Text="Pressure" />
+                        <Slider x:Name="PressureSlider" Minimum="0" Maximum="100" ValueChanged="OnBrushSetting" /></StackPanel>
+                    <StackPanel Width="160"><TextBlock x:Name="AngleText" Text="Nib angle" />
+                        <Slider x:Name="AngleSlider" Minimum="0" Maximum="180" ValueChanged="OnBrushSetting" /></StackPanel>
+                    <StackPanel Width="160"><TextBlock x:Name="OpacityText" Text="Opacity" />
+                        <Slider x:Name="OpacitySlider" Minimum="5" Maximum="100" ValueChanged="OnBrushSetting" /></StackPanel>
+                    <StackPanel VerticalAlignment="Center">
+                        <CheckBox x:Name="EraseWholeCheck" Content="Eraser: whole strokes" Click="OnEraserOption" />
+                        <CheckBox x:Name="EraseHighlighterCheck" Content="Eraser: only highlighter" Click="OnEraserOption" />
+                    </StackPanel>
+                </StackPanel>
+                <!-- pen: live pressure, pressure feel, switches -->
+                <StackPanel x:Name="PenPanel" Orientation="Horizontal" Spacing="16" Visibility="Collapsed">
+                    <StackPanel Width="160"><TextBlock x:Name="PressureMeterText" Text="Pressure 0.00" />
+                        <ProgressBar x:Name="PressureMeter" Minimum="0" Maximum="1" Margin="0,12,0,0" /></StackPanel>
+                    <StackPanel Width="160"><TextBlock x:Name="CurveText" Text="Pressure feel" />
+                        <Slider x:Name="CurveSlider" Minimum="0" Maximum="100" Value="50" ValueChanged="OnPenSetting" /></StackPanel>
+                    <ToggleSwitch x:Name="PressureToggle" Header="Pressure sensitivity" IsOn="True" Toggled="OnPenToggle" />
+                    <ToggleSwitch x:Name="TiltToggle" Header="Tilt shading" IsOn="False" Toggled="OnPenToggle" />
+                    <ToggleSwitch x:Name="BarrelToggle" Header="Pen button erases" IsOn="True" Toggled="OnPenToggle" />
+                </StackPanel>
+            </StackPanel>
+
             <!-- Direct2D draws the open board here: pen ink, eraser, pan and zoom -->
             <!-- Background makes the panel hit-testable: without it, pointer input never reaches the board -->
-            <SwapChainPanel Grid.Row="1" x:Name="BoardPanel" Background="Transparent">
+            <SwapChainPanel Grid.Row="2" x:Name="BoardPanel" Background="Transparent">
                 <!-- drawing or core failures are shown here instead of a silently blank canvas -->
                 <InfoBar x:Name="ErrorBar" Severity="Error" IsOpen="False" IsClosable="True" Title="Something went wrong"
                          VerticalAlignment="Top" Margin="12" />
