@@ -57,6 +57,12 @@ class Item(val raw: JsonObject) {
     val shape: String? get() = string("shp")
     val text: String? get() = string("text")
 
+    /** A stroke's points as stored, one row per point (rows may differ in length; non-numbers are NaN). Cached: items are immutable. */
+    val rows: List<DoubleArray> by lazy { com.rejwan.rejboard.core.ink.StrokePainter.points(this) }
+
+    /** Bounding box x0, y0, x1, y1 of [rows] (cached). */
+    val box: DoubleArray by lazy { com.rejwan.rejboard.core.ink.InkGeometry.bounds(rows) }
+
     /** A stroke's points (null when the item has none or they are not clean numeric tuples). */
     val points: PackedPoints? by lazy { Points.flatten(raw["pts"]) }
 

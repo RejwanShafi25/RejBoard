@@ -10,3 +10,24 @@ EXPORTS
     rb_store_import
     rb_board_scene
     rb_board_title
+    rb_free_doubles
+    rb_editor_open
+    rb_editor_close
+    rb_editor_save
+    rb_editor_dirty
+    rb_view_fit
+    rb_view_pan
+    rb_view_zoom
+    rb_view_get
+    rb_set_brush
+    rb_set_eraser
+    rb_ink_begin
+    rb_ink_move
+    rb_ink_end
+    rb_ink_cancel
+    rb_undo
+    rb_redo
+    rb_ink_version
+    rb_draw_paper
+    rb_draw_dry
+    rb_draw_wet

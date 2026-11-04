@@ -3,7 +3,6 @@ package com.rejwan.rejboard.mobile
 import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -32,11 +31,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import com.rejwan.rejboard.core.Board
 import com.rejwan.rejboard.core.BoardStore
 import com.rejwan.rejboard.core.BoardSummary
 import com.rejwan.rejboard.core.DriverFactory
-import com.rejwan.rejboard.core.Scene
+import com.rejwan.rejboard.core.ink.BoardEditor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -59,7 +57,7 @@ private fun App(store: BoardStore) {
     val scope = rememberCoroutineScope()
     val snack = remember { SnackbarHostState() }
     var boards by remember { mutableStateOf<List<BoardSummary>>(emptyList()) }
-    var open by remember { mutableStateOf<Pair<Board, Scene>?>(null) }
+    var open by remember { mutableStateOf<BoardEditor?>(null) }
     val context = androidx.compose.ui.platform.LocalContext.current
 
     suspend fun refresh() {
@@ -83,11 +81,11 @@ private fun App(store: BoardStore) {
         }
     }
 
-    open?.let { (board, scene) ->
-        BackHandler { open = null }
-        Scaffold(topBar = { TopAppBar(title = { Text(board.title) }, actions = { TextButton(onClick = { open = null }) { Text("Close") } }) }) { pad ->
-            BoardView(scene, Modifier.padding(pad).fillMaxSize())
-        }
+    open?.let { editor ->
+        BoardEditorScreen(editor, onClose = {
+            open = null
+            scope.launch { refresh() }
+        })
         return
     }
 
@@ -112,8 +110,8 @@ private fun App(store: BoardStore) {
                     modifier = Modifier.clickable {
                         scope.launch {
                             if (b.locked) { snack.showSnackbar("This board is password-protected. Opening it comes in a later version."); return@launch }
-                            val loaded = withContext(Dispatchers.Default) { store.load(b.id)?.let { it to Scene.of(it) } }
-                            if (loaded == null) snack.showSnackbar("That board could not be read") else open = loaded
+                            val loaded = withContext(Dispatchers.Default) { store.load(b.id) }
+                            if (loaded == null) snack.showSnackbar("That board could not be read") else open = BoardEditor(loaded, store, b.id)
                         }
                     },
                 )

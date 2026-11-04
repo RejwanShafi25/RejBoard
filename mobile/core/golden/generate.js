@@ -175,6 +175,9 @@ const rjwb = o => { const j = JSON.stringify(o); return { json: j, rjwb: 'RJWB1:
   out.rjwb = [['full', full], ['minimal', minimal], ['big', big], ['locked', locked], ['linked', linked]].map(([name, o]) => ({ name, ...rjwb(o) }));
 }
 
+/* ink: brushes, paper, input, eraser and sizes, from the desktop's own drawing code (see ink-fixtures.js) */
+require('./ink-fixtures.js')(out, { root: ROOT, rng, stroke });
+
 /* the hash itself, so the Kotlin port of fnv() can be checked on its own */
 out.fnv = ['', 'a', 'héllo 👋', '{"t":"s"}'].map(s => ({ s, h: fnv(s) }));
 

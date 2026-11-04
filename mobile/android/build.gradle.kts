@@ -1,4 +1,4 @@
-/* RejBoard Native for Android (Phase 1: board list + read-only viewer). */
+/* RejBoard Native for Android: board list and the low-latency ink editor (Phase 2). */
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -13,8 +13,8 @@ android {
         applicationId = "com.rejwan.rejboard.mobile"
         minSdk = 26
         targetSdk = 35
-        versionCode = 1
-        versionName = "0.1.0-phase1"
+        versionCode = 2
+        versionName = "0.2.0-phase2"
     }
 
     buildTypes {
@@ -40,4 +40,7 @@ dependencies {
     implementation(libs.compose.ui.tooling.preview)
     implementation(libs.activity.compose)
     implementation(libs.kotlinx.coroutines.android)
+    // low-latency ink: front-buffered rendering and stylus motion prediction
+    implementation(libs.androidx.graphics.core)
+    implementation(libs.androidx.input.motionprediction)
 }

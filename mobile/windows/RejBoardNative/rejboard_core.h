@@ -24,6 +24,32 @@ char* rb_store_import(const char* rjwb_text, long long now_ms);
 char* rb_board_scene(const char* board_id);
 char* rb_board_title(const char* board_id);
 
+// ---- editing and ink (InkApi.kt). One board is open for editing at a time; positions are view DIPs. ----
+// Draw lists come back as malloc'ed doubles, freed with rb_free_doubles:
+//   [nOps, nArgs, nTexts, ops..., args..., then per text: length n and n UTF-16 code units]  (opcodes: DrawList.kt)
+void rb_free_doubles(double* p);
+int rb_editor_open(const char* board_id, long long now_ms);   // 1 = ok (saves and closes the previous board)
+int rb_editor_close(long long now_ms);                        // saves if changed
+int rb_editor_save(long long now_ms);
+int rb_editor_dirty(void);
+int rb_view_fit(double width, double height);
+int rb_view_pan(double dx, double dy);
+int rb_view_zoom(double factor, double cx, double cy);
+int rb_view_get(double* out_ox_oy_zoom);
+int rb_set_brush(const char* tool, double size, const char* color); // tool: fount calli soft ball pencil hsq hch hrd
+int rb_set_eraser(double size, int whole);
+// tool: 0 pen, 1 eraser tip, 2 touch, 3 mouse; buttons: 1 barrel button, 2 eraser; t in ms; tilt in degrees
+int rb_ink_begin(double x, double y, double pressure, double tilt_x, double tilt_y, double twist, double t, int tool, int buttons);
+int rb_ink_move(double x, double y, double pressure, double tilt_x, double tilt_y, double twist, double t, int tool, int buttons);
+int rb_ink_end(void);      // 1 when the board changed
+int rb_ink_cancel(void);
+int rb_undo(void);
+int rb_redo(void);
+int rb_ink_version(void);  // changes whenever the items change
+double* rb_draw_paper(double width, double height, int* count); // view space
+double* rb_draw_dry(int* count);                                // board space
+double* rb_draw_wet(int* count);                                // board space
+
 #ifdef __cplusplus
 }
 #endif

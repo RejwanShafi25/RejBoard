@@ -90,6 +90,13 @@ class History(val budget: Double = DEFAULT_BUDGET, var hooks: HistoryHooks? = nu
         future.clear()
     }
 
+    /** Remember a board state captured earlier ([before]), e.g. at the start of an eraser gesture that turned out to change something. */
+    fun pushItems(before: List<Item>) {
+        past.addLast(snapshot(before))
+        trim()
+        future.clear()
+    }
+
     /** Remember "a stroke is about to be added". False when [stroke] is not a plain stroke (use [pushDeep] then). Call before adding it. */
     fun pushAdd(s: BoardState, stroke: Item): Boolean {
         val e = addEntry(s.items, stroke) ?: return false

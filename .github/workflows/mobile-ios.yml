@@ -56,6 +56,10 @@ jobs:
           path: mobile/core/build/reports/tests/
           if-no-files-found: ignore
 
+      # the ink view has a Metal shader; Xcode 26 ships the Metal compiler as a separate download (older Xcodes have it built in)
+      - name: Metal toolchain
+        run: xcodebuild -downloadComponent MetalToolchain || echo "Metal toolchain already part of this Xcode"
+
       - name: Generate the Xcode project
         working-directory: mobile/ios
         run: |

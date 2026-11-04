@@ -41,7 +41,7 @@ final class Library: ObservableObject {
                 message = "That board could not be read"
                 return nil
             }
-            return OpenBoard(title: board.title, scene: DrawScene(RejBoardCore.Scene.companion.of(board: board)))
+            return OpenBoard(editor: BoardEditor(board: board, store: store, boardId: b.id))
         } catch {
             message = error.localizedDescription
             return nil
@@ -51,8 +51,7 @@ final class Library: ObservableObject {
 
 struct OpenBoard: Identifiable {
     let id = UUID()
-    let title: String
-    let scene: DrawScene
+    let editor: BoardEditor
 }
 
 struct BoardListView: View {
@@ -86,11 +85,10 @@ struct BoardListView: View {
             }
             .fullScreenCover(item: $opened) { board in
                 NavigationStack {
-                    BoardCanvasView(scene: board.scene)
-                        .ignoresSafeArea(edges: .bottom)
-                        .navigationTitle(board.title)
-                        .navigationBarTitleDisplayMode(.inline)
-                        .toolbar { Button("Close") { opened = nil } }
+                    BoardEditorView(editor: board.editor) {
+                        opened = nil
+                        library.refresh()
+                    }
                 }
             }
         }

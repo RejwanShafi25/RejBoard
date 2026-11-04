@@ -1,5 +1,6 @@
 import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
 import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeSimulatorTest
+import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeTest
 
 /* The shared RejBoard core: board model, .rjwb/JSON format, undo/redo, storage and the drawing scene.
    - Android uses it as a normal Kotlin library (:android depends on it).
@@ -75,23 +76,16 @@ sqldelight {
 }
 
 /* Golden fixtures (core/golden/*.json, written by golden/generate.js from the desktop JS) are read from disk by the tests.
-   Their absolute path is baked into a generated source file, which works for JVM, simulator and Windows test runs alike. */
-val goldenPath = layout.buildDirectory.dir("generated/goldenPath/kotlin")
-val generateGoldenPath by tasks.registering {
-    val dir = file("golden").absolutePath
-    val out = goldenPath
-    inputs.property("dir", dir)
-    outputs.dir(out)
-    doLast {
-        val literal = dir.replace("\\", "\\\\").replace("\"", "\\\"").replace("$", "\${'$'}")
-        val f = out.get().file("com/rejwan/rejboard/core/GoldenPath.kt").asFile
-        f.parentFile.mkdirs()
-        f.writeText("package com.rejwan.rejboard.core\n\ninternal const val GOLDEN_DIR = \"$literal\"\n")
-    }
+   Their folder reaches the tests at run time, with no generated sources:
+   - Android unit tests (JVM): the system property rb.goldenDir;
+   - native tests (iOS simulator, mingwX64): the environment variable RB_GOLDEN_DIR (simctl passes SIMCTL_CHILD_* through).
+   Each platform's readGolden also falls back to paths relative to the working directory. */
+val goldenDir: String = file("golden").absolutePath
+tasks.withType<Test>().configureEach { systemProperty("rb.goldenDir", goldenDir) }
+tasks.withType<KotlinNativeTest>().configureEach {
+    environment("RB_GOLDEN_DIR", goldenDir)
+    environment("SIMCTL_CHILD_RB_GOLDEN_DIR", goldenDir)
 }
-kotlin.sourceSets.commonTest { kotlin.srcDir(generateGoldenPath) }
-/* srcDir(task) alone does not make the native test compilations run it, so every test compile depends on it explicitly */
-tasks.matching { it.name.startsWith("compile") && it.name.contains("Test") && it.name.contains("Kotlin") }.configureEach { dependsOn(generateGoldenPath) }
 
 /* simulator tests: the device name must exist on the runner (CI picks one with simctl) */
 tasks.withType<KotlinNativeSimulatorTest>().configureEach {

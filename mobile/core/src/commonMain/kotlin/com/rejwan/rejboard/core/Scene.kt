@@ -67,6 +67,12 @@ object Colors {
     fun parse(css: String?, fallback: Long = 0xFF111111): Long {
         val s = css?.trim()?.lowercase() ?: return fallback
         names[s]?.let { return it }
+        if (s.startsWith("rgb")) {
+            val m = RGB.matchEntire(s) ?: return fallback
+            val v = m.groupValues
+            val a = if (v[4].isEmpty()) 1.0 else v[4].toDoubleOrNull() ?: return fallback
+            return rgba(v[1].toInt(), v[2].toInt(), v[3].toInt(), a)
+        }
         if (!s.startsWith("#")) return fallback
         val hex = s.substring(1)
         if (hex.any { it !in "0123456789abcdef" }) return fallback
@@ -80,6 +86,14 @@ object Colors {
         }
     }
 
+    private val RGB = Regex("rgba?\\(\\s*(\\d{1,3})\\s*,\\s*(\\d{1,3})\\s*,\\s*(\\d{1,3})\\s*(?:,\\s*([0-9.eE+-]+)\\s*)?\\)")
+
+    /** CSS rgba(r, g, b, a) as 0xAARRGGBB (alpha rounded to 1/255). */
+    fun rgba(r: Int, g: Int, b: Int, a: Double): Long {
+        val al = kotlin.math.floor(a.coerceIn(0.0, 1.0) * 255 + 0.5).toLong()
+        return (al shl 24) or (r.coerceIn(0, 255).toLong() shl 16) or (g.coerceIn(0, 255).toLong() shl 8) or b.coerceIn(0, 255).toLong()
+    }
+
     /** [c] with its alpha multiplied by [opacity] (0..1). */
     fun withOpacity(c: Long, opacity: Double): Long {
         val a = ((c ushr 24) and 0xFF) * opacity.coerceIn(0.0, 1.0)
@@ -87,7 +101,7 @@ object Colors {
     }
 }
 
-private class SceneBuilder(val board: Board) {
+internal class SceneBuilder(val board: Board) {
     val prims = mutableListOf<Prim>()
     var x0 = Double.POSITIVE_INFINITY
     var y0 = Double.POSITIVE_INFINITY

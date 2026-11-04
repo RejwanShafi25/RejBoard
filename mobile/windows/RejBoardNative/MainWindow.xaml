@@ -11,7 +11,7 @@
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="300" />
+            <ColumnDefinition Width="280" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
@@ -28,7 +28,28 @@
             <TextBlock Grid.Row="3" x:Name="Status" TextWrapping="Wrap" Opacity="0.7" />
         </Grid>
 
-        <!-- Direct2D draws the open board into this panel (read-only: drag to pan, wheel to zoom) -->
-        <SwapChainPanel Grid.Column="1" x:Name="BoardPanel" />
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <!-- brushes, eraser, colours, size (0.1-60 px on a log scale, like the desktop), undo / redo -->
+            <ScrollViewer Grid.Row="0" HorizontalScrollMode="Auto" HorizontalScrollBarVisibility="Auto" VerticalScrollMode="Disabled" VerticalScrollBarVisibility="Disabled">
+                <StackPanel x:Name="Toolbar" Orientation="Horizontal" Spacing="6" Padding="8,6" IsHitTestVisible="True">
+                    <ComboBox x:Name="BrushBox" MinWidth="140" SelectionChanged="OnBrushChanged" />
+                    <ToggleButton x:Name="EraserButton" Content="Eraser" Click="OnEraserClick" />
+                    <StackPanel x:Name="Swatches" Orientation="Horizontal" Spacing="4" VerticalAlignment="Center" />
+                    <Slider x:Name="SizeSlider" Minimum="0" Maximum="1000" Width="160" VerticalAlignment="Center" ValueChanged="OnSizeChanged" />
+                    <TextBlock x:Name="SizeText" MinWidth="56" VerticalAlignment="Center" />
+                    <Button Content="Undo" Click="OnUndo" />
+                    <Button Content="Redo" Click="OnRedo" />
+                    <ToggleButton x:Name="FingerToggle" Content="Finger draws" IsChecked="True" Click="OnFingerToggle" />
+                </StackPanel>
+            </ScrollViewer>
+
+            <!-- Direct2D draws the open board here: pen ink, eraser, pan and zoom -->
+            <SwapChainPanel Grid.Row="1" x:Name="BoardPanel" />
+        </Grid>
     </Grid>
 </Window>

@@ -108,6 +108,7 @@
     <ClInclude Include="rejboard_core.h" />
     <ClInclude Include="CoreApi.h" />
     <ClInclude Include="BoardRenderer.h" />
+    <ClInclude Include="D2DReplay.h" />
     <ClInclude Include="App.xaml.h">
       <DependentUpon>App.xaml</DependentUpon>
     </ClInclude>
@@ -120,6 +121,7 @@
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="BoardRenderer.cpp" />
+    <ClCompile Include="D2DReplay.cpp" />
     <ClCompile Include="App.xaml.cpp">
       <DependentUpon>App.xaml</DependentUpon>
     </ClCompile>

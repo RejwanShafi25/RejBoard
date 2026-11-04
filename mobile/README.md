@@ -30,6 +30,45 @@ mobile/
   and its display name is "RejBoard Native (preview)". Its data lives only in its own package LocalState. It registers no
   `.rjwb` association, no URL protocol and no auto-updater.
 
+## What Phase 2 (ink) adds
+
+- **Core** (`core/src/commonMain/.../ink`):
+  - Ports of the desktop's drawing and input code, written against `Canvas2D`, an interface that mirrors the HTML canvas
+    calls the desktop makes:
+    - `StrokePainter`: `stroke()` and `smoothPts()`, for every brush and option.
+    - `PaperPainter`: `bgfx()` and `bgAll()`, for every paper pattern and for pages.
+    - `StrokeBuilder`: `addPt()` with the pen pressure curve, the stabiliser and tilt.
+    - `Eraser`: `erase()` and `eraseMove()`, with pressure and the sweep between samples.
+    - `BrushSize`: `szFromR` / `szToR`, sizes 0.1–60 px.
+  - `BoardEditor` ties these to the history, the store, the viewport and wet/dry painting. Each app only turns its
+    pointer events into `InkSample`s and draws through `Canvas2D`, or replays a recorded `DrawList`.
+  - Golden tests: `golden/ink-fixtures.js` pulls those functions out of `index.html` and runs them against a recording
+    canvas. The Kotlin ports must make the same canvas calls with the same numbers.
+- **Android:** `CanvasFrontBufferedRenderer` puts the wet stroke in the front buffer, with `MotionEventPredictor` and
+  unbuffered dispatch.
+  - Input: stylus pressure, tilt and orientation, plus historical points.
+  - The eraser tip, or the S Pen button held, erases.
+  - Palm rejection: once a pen has been seen, fingers only pan and zoom. `FLAG_CANCELED` drops the stroke.
+  - Android 8–9 fall back to a plain View.
+- **iOS:** a Metal-backed `MTKView`. Core Graphics draws into shared `MTLBuffer` textures (no copies), and a small shader
+  composites wet over dry.
+  - Apple Pencil: force, altitude/azimuth, coalesced and predicted touches, and estimated-property updates (the stroke is
+    rebuilt when a late pressure arrives).
+  - Double-tap and squeeze switch to the eraser. Hover shows a ring.
+  - With a pencil in use, fingers only pan and zoom.
+- **Windows:** Direct2D on a SwapChainPanel. Dry ink is an `ID2D1CommandList` rebuilt only when the board changes. Wet ink
+  is presented without waiting for vsync.
+  - Pen input: pressure, tilt, twist, the barrel button (erases while held) and the eraser end, with every intermediate
+    point. These come from XAML's `PointerPoint`, which WinUI fills from `WM_POINTER` / `POINTER_PEN_INFO`.
+  - Touch stops drawing once a pen is seen. Right-drag, one finger (with a pen) or two fingers pan; Ctrl+wheel zooms.
+- **Editing:** all three apps draw with every brush, change colour and size, erase, undo/redo, and save back to the store
+  in the desktop format.
+
+Known approximations (still to match the desktop exactly):
+- **Pencil grain:** Android draws the desktop's speckle texture. iOS and Windows draw a lighter line instead.
+- **Soft-brush glow:** Android and iOS use a shadow, Windows a wider faint stroke.
+- **Eraser scope:** the eraser cuts ink strokes only. Shapes and tape come with the editing phase.
+
 ## Building
 
 The CI workflows are `.github/workflows/mobile-android.yml`, `mobile-ios.yml` and `mobile-windows.yml`. They run on changes

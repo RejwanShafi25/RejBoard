@@ -5,23 +5,35 @@ package com.rejwan.rejboard.core
 import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.driver.native.NativeSqliteDriver
 import com.rejwan.rejboard.core.db.RejBoardDb
+import kotlinx.cinterop.CPointer
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.addressOf
 import kotlinx.cinterop.convert
+import kotlinx.cinterop.toKString
 import kotlinx.cinterop.usePinned
+import platform.posix.FILE
 import platform.posix.fclose
 import platform.posix.fopen
 import platform.posix.fread
+import platform.posix.getenv
+
+/** Folders to look in: RB_GOLDEN_DIR (set by the Gradle test task), then paths relative to the working directory. */
+private fun goldenDirs(): List<String> =
+    listOfNotNull(getenv("RB_GOLDEN_DIR")?.toKString()?.takeIf { it.isNotEmpty() }) + listOf("golden", "core/golden", "mobile/core/golden", "../golden")
 
 actual fun readGolden(name: String): String {
-    val path = "$GOLDEN_DIR/$name.json"
-    val f = fopen(path, "rb") ?: error("cannot open $path")
+    var f: CPointer<FILE>? = null
+    for (d in goldenDirs()) {
+        f = fopen("$d/$name.json", "rb")
+        if (f != null) break
+    }
+    val file: CPointer<FILE> = f ?: error("cannot find golden fixture $name.json (looked in ${goldenDirs()}); set RB_GOLDEN_DIR to mobile/core/golden")
     try {
         val out = ArrayList<ByteArray>()
         var total = 0
         while (true) {
             val buf = ByteArray(1 shl 16)
-            val n = buf.usePinned { fread(it.addressOf(0), 1.convert(), buf.size.convert(), f) }.toInt()
+            val n = buf.usePinned { fread(it.addressOf(0), 1.convert(), buf.size.convert(), file) }.toInt()
             if (n <= 0) break
             out += if (n == buf.size) buf else buf.copyOf(n)
             total += n
@@ -31,7 +43,7 @@ actual fun readGolden(name: String): String {
         for (b in out) { b.copyInto(all, o); o += b.size }
         return all.decodeToString()
     } finally {
-        fclose(f)
+        fclose(file)
     }
 }
 

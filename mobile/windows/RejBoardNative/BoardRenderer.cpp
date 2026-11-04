@@ -1,25 +1,27 @@
 #include "pch.h"
 #include "BoardRenderer.h"
+#include "CoreApi.h"
 
 using namespace winrt;
 using namespace Microsoft::UI::Xaml;
-using namespace Windows::Data::Json;
+using Microsoft::UI::Input::PointerDeviceType;
+using Microsoft::UI::Input::PointerPoint;
 
 namespace RejBoard
 {
     namespace
     {
-        // 0xAARRGGBB (sent as a JSON number) to a Direct2D colour
-        D2D1_COLOR_F Argb(double v)
+        constexpr int TOOL_PEN = 0, TOOL_ERASER = 1, TOOL_TOUCH = 2, TOOL_MOUSE = 3;
+
+        D2D1::Matrix3x2F ViewTransform()
         {
-            auto c = static_cast<uint32_t>(static_cast<uint64_t>(v));
-            return D2D1::ColorF(((c >> 16) & 0xFF) / 255.0f, ((c >> 8) & 0xFF) / 255.0f, (c & 0xFF) / 255.0f, ((c >> 24) & 0xFF) / 255.0f);
+            double v[3] = { 0, 0, 1 };
+            rb_view_get(v);
+            return D2D1::Matrix3x2F::Scale(static_cast<float>(v[2]), static_cast<float>(v[2])) *
+                D2D1::Matrix3x2F::Translation(static_cast<float>(v[0]), static_cast<float>(v[1]));
         }
 
-        float Num(JsonObject const& o, wchar_t const* key, double fallback = 0)
-        {
-            return static_cast<float>(o.GetNamedNumber(key, fallback));
-        }
+        DrawList Fetch(double* buffer, int count) { return DrawList::Take(buffer, count); }
     }
 
     BoardRenderer::BoardRenderer(Controls::SwapChainPanel const& panel) : m_panel(panel)
@@ -38,38 +40,138 @@ namespace RejBoard
             m_scaleY = p.CompositionScaleY();
             Resize();
         });
+
         m_panel.PointerPressed([this](auto&&, Input::PointerRoutedEventArgs const& e)
         {
-            m_dragging = m_panel.CapturePointer(e.Pointer());
-            m_last = e.GetCurrentPoint(m_panel).Position();
+            if (!m_open) return;
+            auto p = e.GetCurrentPoint(m_panel);
+            auto type = e.Pointer().PointerDeviceType();
+            auto props = p.Properties();
+            int tool = TOOL_TOUCH;
+            bool draws = false;
+            if (type == PointerDeviceType::Pen)
+            {
+                m_penSeen = true;
+                tool = props.IsEraser() || props.IsInverted() ? TOOL_ERASER : TOOL_PEN;
+                draws = true;
+            }
+            else if (type == PointerDeviceType::Mouse)
+            {
+                tool = TOOL_MOUSE;
+                draws = props.IsLeftButtonPressed();
+            }
+            else draws = fingerDraws && !m_penSeen && m_pans.empty();
+
+            if (draws && !m_inking)
+            {
+                m_panel.CapturePointer(e.Pointer());
+                m_inkPointer = e.Pointer().PointerId();
+                m_inkTool = tool;
+                Sample(p, tool, true);
+            }
+            else if (!draws || type == PointerDeviceType::Touch)
+            {
+                // a second finger while a finger draws: that stroke was the start of a pinch
+                if (m_inking && m_inkTool == TOOL_TOUCH)
+                {
+                    rb_ink_cancel();
+                    m_inking = false;
+                    m_pans[m_inkPointer] = m_lastInkPos;
+                }
+                if (m_inking) return; // palm or extra finger while the pen draws
+                m_panel.CapturePointer(e.Pointer());
+                m_pans[e.Pointer().PointerId()] = p.Position();
+            }
+            e.Handled(true);
         });
+
         m_panel.PointerMoved([this](auto&&, Input::PointerRoutedEventArgs const& e)
         {
-            if (!m_dragging) return;
-            auto p = e.GetCurrentPoint(m_panel).Position();
-            m_pan.x += p.X - m_last.X;
-            m_pan.y += p.Y - m_last.Y;
-            m_last = p;
-            Render();
-        });
-        m_panel.PointerReleased([this](auto&&, Input::PointerRoutedEventArgs const& e)
-        {
-            m_dragging = false;
-            m_panel.ReleasePointerCapture(e.Pointer());
-        });
-        m_panel.PointerWheelChanged([this](auto&&, Input::PointerRoutedEventArgs const& e)
-        {
-            auto pt = e.GetCurrentPoint(m_panel);
-            float factor = std::pow(1.0015f, static_cast<float>(pt.Properties().MouseWheelDelta()));
-            float z = std::clamp(m_zoom * factor, 0.05f, 20.0f);
-            auto c = pt.Position();
-            // keep the board point under the cursor where it is
-            m_pan.x = c.X - (c.X - m_pan.x) * (z / m_zoom);
-            m_pan.y = c.Y - (c.Y - m_pan.y) * (z / m_zoom);
-            m_zoom = z;
+            if (!m_open) return;
+            uint32_t id = e.Pointer().PointerId();
+            if (m_inking && id == m_inkPointer)
+            {
+                // every sample since the last event, oldest first
+                std::vector<PointerPoint> pts;
+                for (auto const& q : e.GetIntermediatePoints(m_panel)) pts.push_back(q);
+                std::sort(pts.begin(), pts.end(), [](PointerPoint const& a, PointerPoint const& b) { return a.Timestamp() < b.Timestamp(); });
+                for (auto const& q : pts) Sample(q, m_inkTool, false);
+                Render();
+                e.Handled(true);
+                return;
+            }
+            auto it = m_pans.find(id);
+            if (it == m_pans.end()) return;
+            auto np = e.GetCurrentPoint(m_panel).Position();
+            if (m_pans.size() == 1)
+            {
+                rb_view_pan(np.X - it->second.X, np.Y - it->second.Y);
+            }
+            else
+            {
+                // two pointers: pan by the centroid, zoom by the change in distance
+                auto other = std::find_if(m_pans.begin(), m_pans.end(), [&](auto const& q) { return q.first != id; })->second;
+                float cx0 = (it->second.X + other.X) / 2, cy0 = (it->second.Y + other.Y) / 2;
+                float cx1 = (np.X + other.X) / 2, cy1 = (np.Y + other.Y) / 2;
+                float d0 = std::hypot(it->second.X - other.X, it->second.Y - other.Y), d1 = std::hypot(np.X - other.X, np.Y - other.Y);
+                rb_view_pan(cx1 - cx0, cy1 - cy0);
+                if (d0 > 1 && d1 > 1) rb_view_zoom(d1 / d0, cx1, cy1);
+            }
+            it->second = np;
             Render();
             e.Handled(true);
         });
+
+        auto finish = [this](Input::PointerRoutedEventArgs const& e, bool cancelled)
+        {
+            uint32_t id = e.Pointer().PointerId();
+            if (m_inking && id == m_inkPointer)
+            {
+                m_inking = false;
+                if (cancelled) rb_ink_cancel();
+                else if (rb_ink_end() == 1 && onChanged) onChanged();
+                Render();
+            }
+            m_pans.erase(id);
+            m_panel.ReleasePointerCapture(e.Pointer());
+        };
+        m_panel.PointerReleased([finish](auto&&, Input::PointerRoutedEventArgs const& e) { finish(e, false); });
+        m_panel.PointerCanceled([finish](auto&&, Input::PointerRoutedEventArgs const& e) { finish(e, true); });
+        m_panel.PointerCaptureLost([this](auto&&, Input::PointerRoutedEventArgs const& e)
+        {
+            uint32_t id = e.Pointer().PointerId();
+            if (m_inking && id == m_inkPointer) { m_inking = false; rb_ink_cancel(); Render(); }
+            m_pans.erase(id);
+        });
+
+        m_panel.PointerWheelChanged([this](auto&&, Input::PointerRoutedEventArgs const& e)
+        {
+            if (!m_open) return;
+            auto p = e.GetCurrentPoint(m_panel);
+            int delta = p.Properties().MouseWheelDelta();
+            bool ctrl = (static_cast<uint32_t>(e.KeyModifiers()) & static_cast<uint32_t>(Windows::System::VirtualKeyModifiers::Control)) != 0;
+            if (ctrl) rb_view_zoom(std::pow(1.0015, delta), p.Position().X, p.Position().Y);
+            else if (p.Properties().IsHorizontalMouseWheel()) rb_view_pan(-delta, 0);
+            else rb_view_pan(0, delta);
+            Render();
+            e.Handled(true);
+        });
+    }
+
+    void BoardRenderer::Sample(PointerPoint const& p, int tool, bool begin)
+    {
+        auto pos = p.Position();
+        m_lastInkPos = pos;
+        auto props = p.Properties();
+        double pressure = tool == TOOL_PEN || tool == TOOL_ERASER ? props.Pressure() : 0.0;
+        int buttons = props.IsBarrelButtonPressed() ? 1 : 0;
+        double t = static_cast<double>(p.Timestamp()) / 1000.0; // microseconds -> ms
+        if (begin)
+        {
+            m_inking = rb_ink_begin(pos.X, pos.Y, pressure, props.XTilt(), props.YTilt(), props.Twist(), t, tool, buttons) == 1;
+            Render();
+        }
+        else rb_ink_move(pos.X, pos.Y, pressure, props.XTilt(), props.YTilt(), props.Twist(), t, tool, buttons);
     }
 
     void BoardRenderer::CreateDevice()
@@ -85,11 +187,10 @@ namespace RejBoard
         auto dxgi = m_d3d.as<IDXGIDevice>();
         check_hresult(m_factory->CreateDevice(dxgi.get(), m_d2dDevice.put()));
         check_hresult(m_d2dDevice->CreateDeviceContext(D2D1_DEVICE_CONTEXT_OPTIONS_NONE, m_ctx.put()));
-        check_hresult(m_ctx->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Black), m_brush.put()));
-
-        D2D1_STROKE_STYLE_PROPERTIES round = D2D1::StrokeStyleProperties(D2D1_CAP_STYLE_ROUND, D2D1_CAP_STYLE_ROUND, D2D1_CAP_STYLE_ROUND, D2D1_LINE_JOIN_ROUND);
-        check_hresult(static_cast<ID2D1Factory*>(m_factory.get())->CreateStrokeStyle(round, nullptr, 0, m_round.put()));
         check_hresult(DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), reinterpret_cast<::IUnknown**>(m_dwrite.put())));
+        m_replay = std::make_unique<D2DReplay>(m_ctx.get(), static_cast<ID2D1Factory*>(m_factory.get()), m_dwrite.get());
+        m_dry = nullptr;
+        m_dryVersion = -1;
     }
 
     void BoardRenderer::CreateSwapChain()
@@ -136,156 +237,93 @@ namespace RejBoard
         check_hresult(m_ctx->CreateBitmapFromDxgiSurface(surface.get(), &props, m_target.put()));
         m_ctx->SetTarget(m_target.get());
         m_ctx->SetDpi(96.0f * m_scaleX, 96.0f * m_scaleY);
-        if (m_hasScene && !m_fitted) FitToView();
+        if (m_open && !m_fitted) { rb_view_fit(m_width, m_height); m_fitted = true; }
         Render();
     }
 
-    void BoardRenderer::Clear()
+    void BoardRenderer::BoardOpened()
     {
-        m_prims.clear();
-        m_sceneJson.clear();
-        m_hasScene = false;
-        m_background = D2D1::ColorF(D2D1::ColorF::White);
-        Render();
-    }
-
-    void BoardRenderer::SetScene(std::string const& sceneJson)
-    {
-        m_sceneJson = sceneJson;
-        auto root = JsonObject::Parse(to_hstring(sceneJson));
-        m_background = Argb(root.GetNamedNumber(L"bg", 4294967295.0));
-        auto b = root.GetNamedArray(L"bounds");
-        m_bounds = D2D1::RectF(static_cast<float>(b.GetNumberAt(0)), static_cast<float>(b.GetNumberAt(1)),
-            static_cast<float>(b.GetNumberAt(2)), static_cast<float>(b.GetNumberAt(3)));
-
-        m_prims.clear();
-        for (auto const& v : root.GetNamedArray(L"prims"))
-        {
-            auto o = v.GetObject();
-            auto kind = o.GetNamedString(L"k");
-            Prim p;
-            p.color = Argb(o.GetNamedNumber(L"c", 4278190080.0));
-            if (kind == L"line")
-            {
-                p.kind = Prim::Kind::Line;
-                p.width = Num(o, L"w", 1);
-                auto a = o.GetNamedArray(L"p");
-                for (uint32_t k = 0; k + 1 < a.Size(); k += 2)
-                    p.points.push_back({ static_cast<float>(a.GetNumberAt(k)), static_cast<float>(a.GetNumberAt(k + 1)) });
-                if (p.points.size() >= 2)
-                {
-                    check_hresult(static_cast<ID2D1Factory*>(m_factory.get())->CreatePathGeometry(p.geometry.put()));
-                    com_ptr<ID2D1GeometrySink> sink;
-                    check_hresult(p.geometry->Open(sink.put()));
-                    sink->BeginFigure(p.points[0], D2D1_FIGURE_BEGIN_HOLLOW);
-                    sink->AddLines(p.points.data() + 1, static_cast<UINT32>(p.points.size() - 1));
-                    sink->EndFigure(D2D1_FIGURE_END_OPEN);
-                    check_hresult(sink->Close());
-                }
-            }
-            else if (kind == L"rect")
-            {
-                p.kind = Prim::Kind::Rect;
-                float x = Num(o, L"x"), y = Num(o, L"y");
-                p.rect = D2D1::RectF(x, y, x + Num(o, L"w"), y + Num(o, L"h"));
-                p.fill = Argb(o.GetNamedNumber(L"f", 0));
-                p.hasFill = p.fill.a > 0;
-                p.width = Num(o, L"lw", 1);
-                p.hasStroke = p.color.a > 0 && p.width > 0;
-                p.ellipse = o.GetNamedBoolean(L"e", false);
-            }
-            else if (kind == L"text")
-            {
-                p.kind = Prim::Kind::Text;
-                p.rect = D2D1::RectF(Num(o, L"x"), Num(o, L"y"), Num(o, L"x") + 100000.0f, Num(o, L"y") + 100000.0f);
-                p.size = std::max(1.0f, Num(o, L"s", 16));
-                p.text = std::wstring(o.GetNamedString(L"t"));
-            }
-            else continue;
-            m_prims.push_back(std::move(p));
-        }
-        m_hasScene = true;
+        m_open = true;
         m_fitted = false;
-        if (m_target) FitToView();
+        m_inking = false;
+        m_pans.clear();
+        m_dry = nullptr;
+        m_dryVersion = -1;
+        if (m_width > 0 && m_height > 0) { rb_view_fit(m_width, m_height); m_fitted = true; }
         Render();
     }
 
-    void BoardRenderer::FitToView()
+    void BoardRenderer::BoardClosed()
     {
-        const float margin = 24;
-        float bw = std::max(1.0f, m_bounds.right - m_bounds.left);
-        float bh = std::max(1.0f, m_bounds.bottom - m_bounds.top);
-        m_zoom = std::clamp(std::min((m_width - 2 * margin) / bw, (m_height - 2 * margin) / bh), 0.05f, 4.0f);
-        m_pan = { margin - m_bounds.left * m_zoom, margin - m_bounds.top * m_zoom };
-        m_fitted = true;
+        m_open = false;
+        m_dry = nullptr;
+        Render();
     }
 
-    IDWriteTextFormat* BoardRenderer::TextFormat(float size)
+    void BoardRenderer::Invalidate()
     {
-        int key = static_cast<int>(std::lround(size * 2)); // half-point steps
-        auto& f = m_formats[key];
-        if (!f)
-        {
-            check_hresult(m_dwrite->CreateTextFormat(L"Segoe UI", nullptr, DWRITE_FONT_WEIGHT_NORMAL, DWRITE_FONT_STYLE_NORMAL,
-                DWRITE_FONT_STRETCH_NORMAL, key / 2.0f, L"", f.put()));
-            f->SetWordWrapping(DWRITE_WORD_WRAPPING_NO_WRAP);
-        }
-        return f.get();
+        m_dryVersion = -1;
+        Render();
+    }
+
+    // Records all items into a command list (board space), so panning and zooming only replay it.
+    void BoardRenderer::RebuildDry()
+    {
+        int version = rb_ink_version();
+        if (m_dry && version == m_dryVersion) return;
+        int count = 0;
+        auto list = Fetch(rb_draw_dry(&count), count);
+        com_ptr<ID2D1CommandList> cl;
+        check_hresult(m_ctx->CreateCommandList(cl.put()));
+        com_ptr<ID2D1Image> old;
+        m_ctx->GetTarget(old.put());
+        m_ctx->SetTarget(cl.get());
+        m_ctx->BeginDraw();
+        m_replay->Play(list, D2D1::Matrix3x2F::Identity());
+        HRESULT hr = m_ctx->EndDraw();
+        m_ctx->SetTarget(old.get());
+        check_hresult(hr);
+        check_hresult(cl->Close());
+        m_dry = cl;
+        m_dryVersion = version;
     }
 
     void BoardRenderer::Render()
     {
         if (!m_target) return;
+        if (m_open) RebuildDry();
         m_ctx->BeginDraw();
         m_ctx->SetTransform(D2D1::Matrix3x2F::Identity());
-        m_ctx->Clear(m_hasScene ? m_background : D2D1::ColorF(0.93f, 0.94f, 0.96f));
-        m_ctx->SetTransform(D2D1::Matrix3x2F::Scale(m_zoom, m_zoom) * D2D1::Matrix3x2F::Translation(m_pan.x, m_pan.y));
-        for (auto const& p : m_prims)
+        m_ctx->Clear(D2D1::ColorF(0.93f, 0.94f, 0.96f));
+        if (m_open)
         {
-            switch (p.kind)
+            int count = 0;
+            m_replay->Play(Fetch(rb_draw_paper(m_width, m_height, &count), count), D2D1::Matrix3x2F::Identity());
+            auto view = ViewTransform();
+            if (m_dry)
             {
-            case Prim::Kind::Line:
-                m_brush->SetColor(p.color);
-                if (p.geometry) m_ctx->DrawGeometry(p.geometry.get(), m_brush.get(), p.width, m_round.get());
-                else if (!p.points.empty()) m_ctx->FillEllipse(D2D1::Ellipse(p.points[0], p.width / 2, p.width / 2), m_brush.get());
-                break;
-            case Prim::Kind::Rect:
-            {
-                auto e = D2D1::Ellipse(D2D1::Point2F((p.rect.left + p.rect.right) / 2, (p.rect.top + p.rect.bottom) / 2),
-                    (p.rect.right - p.rect.left) / 2, (p.rect.bottom - p.rect.top) / 2);
-                if (p.hasFill)
-                {
-                    m_brush->SetColor(p.fill);
-                    if (p.ellipse) m_ctx->FillEllipse(e, m_brush.get()); else m_ctx->FillRectangle(p.rect, m_brush.get());
-                }
-                if (p.hasStroke)
-                {
-                    m_brush->SetColor(p.color);
-                    if (p.ellipse) m_ctx->DrawEllipse(e, m_brush.get(), p.width); else m_ctx->DrawRectangle(p.rect, m_brush.get(), p.width);
-                }
-                break;
+                m_ctx->SetTransform(view);
+                m_ctx->DrawImage(m_dry.get());
             }
-            case Prim::Kind::Text:
-                m_brush->SetColor(p.color);
-                m_ctx->DrawText(p.text.c_str(), static_cast<UINT32>(p.text.size()), TextFormat(p.size), p.rect, m_brush.get());
-                break;
-            }
+            count = 0;
+            auto wet = Fetch(rb_draw_wet(&count), count);
+            if (!wet.empty()) m_replay->Play(wet, view);
+            m_ctx->SetTransform(D2D1::Matrix3x2F::Identity());
         }
         HRESULT hr = m_ctx->EndDraw();
         if (hr == D2DERR_RECREATE_TARGET)
         {
-            // device lost: rebuild everything and draw again on the next event
+            // device lost: rebuild everything; the next event draws again
             m_ctx->SetTarget(nullptr);
             m_target = nullptr;
             m_swapChain = nullptr;
-            m_formats.clear();
-            m_d3d = nullptr; m_factory = nullptr; m_d2dDevice = nullptr; m_ctx = nullptr; m_brush = nullptr; m_round = nullptr; m_dwrite = nullptr;
+            m_d3d = nullptr; m_factory = nullptr; m_d2dDevice = nullptr; m_ctx = nullptr; m_dwrite = nullptr; m_replay = nullptr;
             CreateDevice();
             Resize();
-            if (m_hasScene) SetScene(std::string(m_sceneJson)); // geometries belonged to the old factory: build them again
             return;
         }
         check_hresult(hr);
-        m_swapChain->Present(1, 0);
+        // while inking, present at once instead of waiting for the next vertical blank: lower latency
+        m_swapChain->Present(m_inking ? 0 : 1, 0);
     }
 }

@@ -23,8 +23,8 @@ import kotlin.native.CName
  * and rb_last_error then says why. Call from one thread (the UI thread).
  */
 
-private var store: BoardStore? = null
-private var lastError: String = ""
+internal var store: BoardStore? = null
+internal var lastError: String = ""
 
 private fun cString(s: String): CPointer<ByteVar>? {
     val b = s.encodeToByteArray()

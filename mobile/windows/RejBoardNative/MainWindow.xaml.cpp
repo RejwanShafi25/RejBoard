@@ -9,17 +9,75 @@ using namespace winrt;
 using namespace Microsoft::UI::Xaml;
 using namespace Windows::Data::Json;
 
+namespace
+{
+    struct BrushInfo { const char* key; const wchar_t* name; double size; };
+    // DEF in index.html
+    const BrushInfo BRUSHES[] = {
+        { "fount", L"Fountain pen", 6 }, { "calli", L"Calligraphy", 8 }, { "soft", L"Soft brush", 14 }, { "ball", L"Ballpoint", 3 },
+        { "pencil", L"Pencil", 3 }, { "hsq", L"Highlighter", 18 }, { "hch", L"Chisel highlighter", 18 }, { "hrd", L"Round highlighter", 18 },
+    };
+    const char* COLORS[] = { "#111111", "#dc2626", "#2563eb", "#16a34a", "#f59e0b", "#7c3aed", "#ffffff" };
+
+    // The desktop's log size slider (szFromR / szToR, same as BrushSize in the core): 0..1000 -> lo..hi px.
+    double SizeFromSlider(double r, double lo, double hi)
+    {
+        double v = lo * std::pow(hi / lo, std::clamp(r, 0.0, 1000.0) / 1000.0);
+        return v < 10 ? std::floor(v * 10 + 0.5) / 10 : std::floor(v + 0.5);
+    }
+    double SliderFromSize(double v, double lo, double hi)
+    {
+        return std::floor(1000 * std::log(std::clamp(v, lo, hi) / lo) / std::log(hi / lo) + 0.5);
+    }
+
+    winrt::Windows::UI::Color ParseColor(std::string const& hex)
+    {
+        auto c = static_cast<uint32_t>(std::stoul(hex.substr(1), nullptr, 16));
+        return winrt::Windows::UI::Color{ 255, static_cast<uint8_t>(c >> 16), static_cast<uint8_t>(c >> 8), static_cast<uint8_t>(c) };
+    }
+}
+
 namespace winrt::RejBoardNative::implementation
 {
     void MainWindow::InitializeComponent()
     {
         MainWindowT::InitializeComponent();
         m_renderer = std::make_unique<::RejBoard::BoardRenderer>(BoardPanel());
+        m_renderer->onChanged = [this] { ScheduleSave(); };
+
+        for (auto const& b : BRUSHES) BrushBox().Items().Append(winrt::box_value(winrt::hstring(b.name)));
+        for (auto c : COLORS)
+        {
+            Controls::Button sw;
+            sw.Width(28);
+            sw.Height(28);
+            sw.Padding(ThicknessHelper::FromUniformLength(0));
+            sw.Background(Media::SolidColorBrush(ParseColor(c)));
+            std::string color = c;
+            sw.Click([this, color](auto&&, auto&&)
+            {
+                m_color = color;
+                EraserButton().IsChecked(false);
+                ApplyTool();
+            });
+            Swatches().Children().Append(sw);
+        }
+
+        m_saveTimer = DispatcherQueue().CreateTimer();
+        m_saveTimer.Interval(std::chrono::milliseconds(1500));
+        m_saveTimer.IsRepeating(false);
+        m_saveTimer.Tick([this](auto&&, auto&&)
+        {
+            if (m_editorOpen && rb_editor_dirty() == 1) rb_editor_save(::RejBoard::NowMs());
+        });
+        Closed([this](auto&&, auto&&) { if (m_editorOpen) rb_editor_close(::RejBoard::NowMs()); });
 
         // Boards live only in this package's own LocalState folder, never in the Electron app's data.
         auto folder = winrt::to_string(Windows::Storage::ApplicationData::Current().LocalFolder().Path());
         m_storeOpen = rb_store_open(folder.c_str(), ::RejBoard::NowMs()) == 1;
         auto version = ::RejBoard::Take(rb_version()).value_or("?");
+        m_ready = true;
+        BrushBox().SelectedIndex(0);
         if (!m_storeOpen)
         {
             SetStatus(L"Could not open the board database: " + winrt::hstring(::RejBoard::LastError()));
@@ -32,6 +90,77 @@ namespace winrt::RejBoardNative::implementation
     void MainWindow::SetStatus(winrt::hstring const& text)
     {
         Status().Text(text);
+    }
+
+    void MainWindow::ScheduleSave()
+    {
+        m_saveTimer.Stop();
+        m_saveTimer.Start();
+    }
+
+    void MainWindow::SetSliderFor(double size)
+    {
+        bool er = EraserButton().IsChecked() && EraserButton().IsChecked().Value();
+        SizeSlider().Value(er ? SliderFromSize(size, 0.5, 80) : SliderFromSize(size, 0.1, 60));
+    }
+
+    // Sends the chosen brush (or the eraser) to the core.
+    void MainWindow::ApplyTool()
+    {
+        if (!m_ready) return;
+        bool er = EraserButton().IsChecked() && EraserButton().IsChecked().Value();
+        double size = er ? m_eraserSize : m_brushSize;
+        wchar_t buf[32];
+        swprintf_s(buf, size < 10 ? L"%.1f px" : L"%.0f px", size);
+        SizeText().Text(buf);
+        if (!m_editorOpen) return;
+        if (er) rb_set_eraser(m_eraserSize, 0);
+        else
+        {
+            int k = std::max(0, BrushBox().SelectedIndex());
+            rb_set_brush(BRUSHES[k].key, m_brushSize, m_color.c_str());
+        }
+    }
+
+    void MainWindow::OnBrushChanged(winrt::Windows::Foundation::IInspectable const&, Controls::SelectionChangedEventArgs const&)
+    {
+        if (!m_ready) return;
+        int k = std::max(0, BrushBox().SelectedIndex());
+        m_brushSize = BRUSHES[k].size;
+        EraserButton().IsChecked(false);
+        SetSliderFor(m_brushSize);
+        ApplyTool();
+    }
+
+    void MainWindow::OnEraserClick(winrt::Windows::Foundation::IInspectable const&, RoutedEventArgs const&)
+    {
+        bool er = EraserButton().IsChecked() && EraserButton().IsChecked().Value();
+        SetSliderFor(er ? m_eraserSize : m_brushSize);
+        ApplyTool();
+    }
+
+    void MainWindow::OnSizeChanged(winrt::Windows::Foundation::IInspectable const&, Controls::Primitives::RangeBaseValueChangedEventArgs const& e)
+    {
+        if (!m_ready) return;
+        bool er = EraserButton().IsChecked() && EraserButton().IsChecked().Value();
+        if (er) m_eraserSize = SizeFromSlider(e.NewValue(), 0.5, 80);
+        else m_brushSize = SizeFromSlider(e.NewValue(), 0.1, 60);
+        ApplyTool();
+    }
+
+    void MainWindow::OnUndo(winrt::Windows::Foundation::IInspectable const&, RoutedEventArgs const&)
+    {
+        if (m_editorOpen && rb_undo() == 1) { m_renderer->Invalidate(); ScheduleSave(); }
+    }
+
+    void MainWindow::OnRedo(winrt::Windows::Foundation::IInspectable const&, RoutedEventArgs const&)
+    {
+        if (m_editorOpen && rb_redo() == 1) { m_renderer->Invalidate(); ScheduleSave(); }
+    }
+
+    void MainWindow::OnFingerToggle(winrt::Windows::Foundation::IInspectable const&, RoutedEventArgs const&)
+    {
+        m_renderer->fingerDraws = FingerToggle().IsChecked() && FingerToggle().IsChecked().Value();
     }
 
     void MainWindow::RefreshList(std::string const& select)
@@ -63,15 +192,18 @@ namespace winrt::RejBoardNative::implementation
     {
         int k = BoardList().SelectedIndex();
         if (k < 0 || k >= static_cast<int>(m_ids.size())) return;
-        auto scene = ::RejBoard::Take(rb_board_scene(m_ids[k].c_str()));
-        if (!scene)
+        m_saveTimer.Stop();
+        if (rb_editor_open(m_ids[k].c_str(), ::RejBoard::NowMs()) != 1)
         {
-            m_renderer->Clear();
+            m_editorOpen = false;
+            m_renderer->BoardClosed();
             SetStatus(winrt::hstring(::RejBoard::LastError()));
             return;
         }
-        m_renderer->SetScene(*scene);
-        SetStatus(L"Read-only view. Drag to pan, mouse wheel to zoom.");
+        m_editorOpen = true;
+        ApplyTool();
+        m_renderer->BoardOpened();
+        SetStatus(L"Write with a pen, mouse or finger. Pen side button or eraser end erases. Right-drag or two fingers to pan; Ctrl+wheel zooms.");
     }
 
     winrt::fire_and_forget MainWindow::OnOpenFile(winrt::Windows::Foundation::IInspectable const&, RoutedEventArgs const&)
