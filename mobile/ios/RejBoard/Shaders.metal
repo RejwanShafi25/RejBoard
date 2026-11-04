@@ -1,8 +1,9 @@
 #include <metal_stdlib>
 using namespace metal;
 
-// Ink compositing: one full-screen triangle; the wet layer (stroke being drawn) goes over the dry layer (paper + board).
-// Both textures hold premultiplied BGRA written by Core Graphics.
+// Ink compositing: one full-screen triangle; tail (provisional end of the stroke, rings) over wet (the stroke being drawn)
+// over dry (paper + board).
+// All three textures hold premultiplied BGRA written by Core Graphics.
 
 struct InkVertexOut {
     float4 position [[position]];
@@ -19,9 +20,12 @@ vertex InkVertexOut ink_vertex(uint vid [[vertex_id]]) {
 
 fragment float4 ink_fragment(InkVertexOut in [[stage_in]],
                              texture2d<float> dry [[texture(0)]],
-                             texture2d<float> wet [[texture(1)]]) {
+                             texture2d<float> wet [[texture(1)]],
+                             texture2d<float> tail [[texture(2)]]) {
     constexpr sampler s(coord::normalized, filter::nearest, address::clamp_to_edge);
     float4 d = dry.sample(s, in.uv);
     float4 w = wet.sample(s, in.uv);
-    return w + d * (1.0 - w.a);
+    float4 t = tail.sample(s, in.uv);
+    float4 under = w + d * (1.0 - w.a);
+    return t + under * (1.0 - t.a);
 }

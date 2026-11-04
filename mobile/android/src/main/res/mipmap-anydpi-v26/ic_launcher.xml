@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The RejBoard brand logo (made from the Electron app's icon-512.png by mobile/tools/make-icons.ps1):
+     the logo inside the safe zone over its own pink gradient, so every launcher mask shows it whole. -->
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+    <background android:drawable="@mipmap/ic_launcher_background" />
+    <foreground android:drawable="@mipmap/ic_launcher_foreground" />
+</adaptive-icon>

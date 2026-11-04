@@ -75,6 +75,12 @@ class Eraser(
     private var lastPr = 0.0
     private var pr = 1.0
 
+    /** Where the eraser is (board units) and how big, for drawing its ring while erasing. */
+    val hasCursor: Boolean get() = hasLast
+    val cursorX: Double get() = lastX
+    val cursorY: Double get() = lastY
+    val cursorRadius: Double get() = size / 2 * pr
+
     /** Starts a new eraser gesture. */
     fun begin() {
         hasLast = false

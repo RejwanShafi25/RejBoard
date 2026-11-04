@@ -19,6 +19,10 @@ namespace winrt::RejBoardNative::implementation
         void OnSizeChanged(winrt::Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::Controls::Primitives::RangeBaseValueChangedEventArgs const& args);
         void OnUndo(winrt::Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args);
         void OnRedo(winrt::Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args);
+        void OnBrushSetting(winrt::Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::Controls::Primitives::RangeBaseValueChangedEventArgs const& args);
+        void OnEraserOption(winrt::Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args);
+        void OnPenSetting(winrt::Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::Controls::Primitives::RangeBaseValueChangedEventArgs const& args);
+        void OnPenToggle(winrt::Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args);
         void OnFingerToggle(winrt::Windows::Foundation::IInspectable const& sender, Microsoft::UI::Xaml::RoutedEventArgs const& args);
 
     private:
@@ -27,6 +31,8 @@ namespace winrt::RejBoardNative::implementation
         void ApplyTool();
         void SetSliderFor(double size);
         void ScheduleSave();
+        void ShowBrushSettings();
+        void ApplyPen();
 
         std::vector<std::string> m_ids;
         std::unique_ptr<::RejBoard::BoardRenderer> m_renderer;
@@ -36,6 +42,11 @@ namespace winrt::RejBoardNative::implementation
         bool m_ready = false;
         std::string m_color = "#111111";
         double m_brushSize = 6;
+        // the desktop's per-brush settings (cfg[tool]): size, stabiliser, pressure 0..100, nib angle, opacity
+        struct BrushSettings { double size, stab, pressure, angle, opacity; };
+        std::vector<BrushSettings> m_brushes;
+        bool m_loadingSettings = false;
+        winrt::Microsoft::UI::Dispatching::DispatcherQueueTimer m_meterTimer{ nullptr };
         double m_eraserSize = 16;
     };
 }

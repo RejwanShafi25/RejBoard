@@ -42,10 +42,36 @@ namespace winrt::RejBoardNative::implementation
     void MainWindow::InitializeComponent()
     {
         MainWindowT::InitializeComponent();
+        // the RejBoard logo in the title bar and Alt+Tab (the Electron app's icon.ico)
+        try { AppWindow().SetIcon(L"Assets\\AppIcon.ico"); } catch (...) {}
         m_renderer = std::make_unique<::RejBoard::BoardRenderer>(BoardPanel());
         m_renderer->onChanged = [this] { ScheduleSave(); };
+        m_renderer->onError = [this](std::wstring const& text)
+        {
+            ErrorBar().Message(winrt::hstring(text));
+            ErrorBar().IsOpen(true);
+            SetStatus(winrt::hstring(text));
+        };
+        if (!m_renderer->startupError.empty()) m_renderer->onError(m_renderer->startupError);
 
-        for (auto const& b : BRUSHES) BrushBox().Items().Append(winrt::box_value(winrt::hstring(b.name)));
+        for (auto const& b : BRUSHES)
+        {
+            BrushBox().Items().Append(winrt::box_value(winrt::hstring(b.name)));
+            bool hl = b.key[0] == 'h';
+            m_brushes.push_back({ b.size, 30, 60, std::string(b.key) == "hch" ? 45.0 : 135.0, hl ? 35.0 : 100.0 });
+        }
+        m_meterTimer = DispatcherQueue().CreateTimer();
+        m_meterTimer.Interval(std::chrono::milliseconds(50));
+        m_meterTimer.Tick([this](auto&&, auto&&)
+        {
+            if (!m_editorOpen) return;
+            double p = rb_last_pressure();
+            PressureMeter().Value(p);
+            wchar_t buf[32];
+            swprintf_s(buf, L"Pressure %.2f", p);
+            PressureMeterText().Text(buf);
+        });
+        m_meterTimer.Start();
         for (auto c : COLORS)
         {
             Controls::Button sw;
@@ -85,6 +111,8 @@ namespace winrt::RejBoardNative::implementation
         }
         SetStatus(L"Core " + winrt::to_hstring(version) + L". Boards are stored in this app only.");
         RefreshList();
+        // open the first board right away, so the canvas never starts empty
+        if (BoardList().Items().Size() > 0) BoardList().SelectedIndex(0);
     }
 
     void MainWindow::SetStatus(winrt::hstring const& text)
@@ -114,11 +142,18 @@ namespace winrt::RejBoardNative::implementation
         swprintf_s(buf, size < 10 ? L"%.1f px" : L"%.0f px", size);
         SizeText().Text(buf);
         if (!m_editorOpen) return;
-        if (er) rb_set_eraser(m_eraserSize, 0);
+        if (er)
+        {
+            bool whole = EraseWholeCheck().IsChecked() && EraseWholeCheck().IsChecked().Value();
+            bool hl = EraseHighlighterCheck().IsChecked() && EraseHighlighterCheck().IsChecked().Value();
+            rb_set_eraser_ex(m_eraserSize, whole ? 1 : 0, hl ? 1 : 0);
+        }
         else
         {
             int k = std::max(0, BrushBox().SelectedIndex());
-            rb_set_brush(BRUSHES[k].key, m_brushSize, m_color.c_str());
+            auto& b = m_brushes[k];
+            b.size = m_brushSize;
+            rb_set_brush_ex(BRUSHES[k].key, b.size, m_color.c_str(), b.stab, b.pressure, b.angle, b.opacity);
         }
     }
 
@@ -126,10 +161,73 @@ namespace winrt::RejBoardNative::implementation
     {
         if (!m_ready) return;
         int k = std::max(0, BrushBox().SelectedIndex());
-        m_brushSize = BRUSHES[k].size;
+        m_brushSize = m_brushes[k].size;
         EraserButton().IsChecked(false);
         SetSliderFor(m_brushSize);
+        ShowBrushSettings();
         ApplyTool();
+    }
+
+    // Puts the selected brush's settings into the flyout's sliders (Opacity only where the desktop shows it).
+    void MainWindow::ShowBrushSettings()
+    {
+        int k = std::max(0, BrushBox().SelectedIndex());
+        auto const& b = m_brushes[k];
+        m_loadingSettings = true;
+        StabSlider().Value(b.stab);
+        PressureSlider().Value(b.pressure);
+        AngleSlider().Value(b.angle);
+        OpacitySlider().Value(b.opacity);
+        std::string key = BRUSHES[k].key;
+        bool opacity = !(key == "fount" || key == "calli" || key == "ball" || key == "pencil");
+        OpacitySlider().Visibility(opacity ? Visibility::Visible : Visibility::Collapsed);
+        OpacityText().Visibility(opacity ? Visibility::Visible : Visibility::Collapsed);
+        m_loadingSettings = false;
+        wchar_t buf[64];
+        swprintf_s(buf, L"Stabiliser %.0f", b.stab); StabText().Text(buf);
+        swprintf_s(buf, L"Pressure %.0f", b.pressure); PressureText().Text(buf);
+        swprintf_s(buf, L"Nib angle %.0f\u00B0", b.angle); AngleText().Text(buf);
+        swprintf_s(buf, L"Opacity %.0f%%", b.opacity); OpacityText().Text(buf);
+    }
+
+    void MainWindow::OnBrushSetting(winrt::Windows::Foundation::IInspectable const&, Controls::Primitives::RangeBaseValueChangedEventArgs const&)
+    {
+        if (!m_ready || m_loadingSettings) return;
+        int k = std::max(0, BrushBox().SelectedIndex());
+        auto& b = m_brushes[k];
+        b.stab = std::round(StabSlider().Value());
+        b.pressure = std::round(PressureSlider().Value());
+        b.angle = std::round(AngleSlider().Value());
+        b.opacity = std::round(OpacitySlider().Value());
+        EraserButton().IsChecked(false);
+        ShowBrushSettings();
+        ApplyTool();
+    }
+
+    void MainWindow::OnEraserOption(winrt::Windows::Foundation::IInspectable const&, RoutedEventArgs const&)
+    {
+        EraserButton().IsChecked(true);
+        SetSliderFor(m_eraserSize);
+        ApplyTool();
+    }
+
+    // Pressure sensitivity, tilt shading, pressure feel and the pen button, as on the desktop's pen panel.
+    void MainWindow::ApplyPen()
+    {
+        if (!m_ready || !m_editorOpen) return;
+        rb_set_pen(PressureToggle().IsOn() ? 1 : 0, TiltToggle().IsOn() ? 1 : 0, std::round(CurveSlider().Value()), BarrelToggle().IsOn() ? 1 : 0);
+        double c = std::round(CurveSlider().Value());
+        CurveText().Text(c < 50 ? L"Pressure feel: soft" : c > 50 ? L"Pressure feel: firm" : L"Pressure feel: raw");
+    }
+
+    void MainWindow::OnPenSetting(winrt::Windows::Foundation::IInspectable const&, Controls::Primitives::RangeBaseValueChangedEventArgs const&)
+    {
+        ApplyPen();
+    }
+
+    void MainWindow::OnPenToggle(winrt::Windows::Foundation::IInspectable const&, RoutedEventArgs const&)
+    {
+        ApplyPen();
     }
 
     void MainWindow::OnEraserClick(winrt::Windows::Foundation::IInspectable const&, RoutedEventArgs const&)
@@ -197,11 +295,16 @@ namespace winrt::RejBoardNative::implementation
         {
             m_editorOpen = false;
             m_renderer->BoardClosed();
-            SetStatus(winrt::hstring(::RejBoard::LastError()));
+            auto err = L"Opening the board failed: " + ::RejBoard::LastError();
+            ErrorBar().Message(winrt::hstring(err));
+            ErrorBar().IsOpen(true);
+            SetStatus(winrt::hstring(err));
             return;
         }
+        ErrorBar().IsOpen(false);
         m_editorOpen = true;
         ApplyTool();
+        ApplyPen();
         m_renderer->BoardOpened();
         SetStatus(L"Write with a pen, mouse or finger. Pen side button or eraser end erases. Right-drag or two fingers to pan; Ctrl+wheel zooms.");
     }

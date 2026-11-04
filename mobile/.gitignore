@@ -27,6 +27,7 @@ windows/**/Debug/
 windows/**/Release/
 windows/**/Generated Files/
 windows/**/AppPackages/
+windows/artifact/
 windows/**/BundleArtifacts/
 windows/**/*.user
 windows/**/*.aps

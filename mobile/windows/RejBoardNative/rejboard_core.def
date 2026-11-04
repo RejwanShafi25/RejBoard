@@ -31,3 +31,14 @@ EXPORTS
     rb_draw_paper
     rb_draw_dry
     rb_draw_wet
+    rb_dry_generation
+    rb_dry_chunk_count
+    rb_draw_dry_chunk
+    rb_wet_incremental
+    rb_wet_generation
+    rb_draw_wet_new
+    rb_draw_wet_tail
+    rb_set_brush_ex
+    rb_set_eraser_ex
+    rb_set_pen
+    rb_last_pressure

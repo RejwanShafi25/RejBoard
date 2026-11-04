@@ -24,21 +24,41 @@ namespace RejBoard
         DrawList Fetch(double* buffer, int count) { return DrawList::Take(buffer, count); }
     }
 
+    // Turns the exception being handled into a message for the user (status line / error bar).
+    void BoardRenderer::ReportCurrent(wchar_t const* where)
+    {
+        try { throw; }
+        catch (hresult_error const& e) { Report(where, e.code(), std::wstring(e.message())); }
+        catch (std::exception const& e) { Report(where, E_FAIL, std::wstring(to_hstring(e.what()))); }
+        catch (...) { Report(where, E_FAIL, L"unknown error"); }
+    }
+
+    void BoardRenderer::Report(wchar_t const* where, hresult code, std::wstring const& detail)
+    {
+        wchar_t hr[32];
+        swprintf_s(hr, L"0x%08X", static_cast<uint32_t>(code.value));
+        std::wstring text = std::wstring(where) + L" failed (" + hr + L"): " + detail;
+        if (text == m_lastError) return;
+        m_lastError = text;
+        if (onError) onError(text);
+        else if (startupError.empty()) startupError = text;
+    }
+
     BoardRenderer::BoardRenderer(Controls::SwapChainPanel const& panel) : m_panel(panel)
     {
-        CreateDevice();
+        try { CreateDevice(); } catch (...) { ReportCurrent(L"Creating the Direct3D / Direct2D device"); }
 
         m_panel.SizeChanged([this](auto&&, SizeChangedEventArgs const& e)
         {
             m_width = e.NewSize().Width;
             m_height = e.NewSize().Height;
-            Resize();
+            try { Resize(); } catch (...) { ReportCurrent(L"Creating the swap chain"); }
         });
         m_panel.CompositionScaleChanged([this](Controls::SwapChainPanel const& p, auto&&)
         {
             m_scaleX = p.CompositionScaleX();
             m_scaleY = p.CompositionScaleY();
-            Resize();
+            try { Resize(); } catch (...) { ReportCurrent(L"Resizing the swap chain"); }
         });
 
         m_panel.PointerPressed([this](auto&&, Input::PointerRoutedEventArgs const& e)
@@ -96,7 +116,9 @@ namespace RejBoard
                 for (auto const& q : e.GetIntermediatePoints(m_panel)) pts.push_back(q);
                 std::sort(pts.begin(), pts.end(), [](PointerPoint const& a, PointerPoint const& b) { return a.Timestamp() < b.Timestamp(); });
                 for (auto const& q : pts) Sample(q, m_inkTool, false);
-                Render();
+                if (rb_wet_incremental() == 1) { try { UpdateWet(); } catch (...) { ReportCurrent(L"Drawing the stroke"); } Render(); }
+                else if (m_inkTool == TOOL_ERASER || rb_ink_version() != m_lastInkVersion) RequestRender(); // erasing changes the board
+                else Render();
                 e.Handled(true);
                 return;
             }
@@ -118,7 +140,7 @@ namespace RejBoard
                 if (d0 > 1 && d1 > 1) rb_view_zoom(d1 / d0, cx1, cy1);
             }
             it->second = np;
-            Render();
+            RequestRender();
             e.Handled(true);
         });
 
@@ -153,7 +175,7 @@ namespace RejBoard
             if (ctrl) rb_view_zoom(std::pow(1.0015, delta), p.Position().X, p.Position().Y);
             else if (p.Properties().IsHorizontalMouseWheel()) rb_view_pan(-delta, 0);
             else rb_view_pan(0, delta);
-            Render();
+            RequestRender();
             e.Handled(true);
         });
     }
@@ -189,8 +211,10 @@ namespace RejBoard
         check_hresult(m_d2dDevice->CreateDeviceContext(D2D1_DEVICE_CONTEXT_OPTIONS_NONE, m_ctx.put()));
         check_hresult(DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), reinterpret_cast<::IUnknown**>(m_dwrite.put())));
         m_replay = std::make_unique<D2DReplay>(m_ctx.get(), static_cast<ID2D1Factory*>(m_factory.get()), m_dwrite.get());
-        m_dry = nullptr;
-        m_dryVersion = -1;
+        m_chunks.clear();
+        m_dryGeneration = -1;
+        m_wet = nullptr;
+        m_wetGeneration = -1;
     }
 
     void BoardRenderer::CreateSwapChain()
@@ -237,6 +261,7 @@ namespace RejBoard
         check_hresult(m_ctx->CreateBitmapFromDxgiSurface(surface.get(), &props, m_target.put()));
         m_ctx->SetTarget(m_target.get());
         m_ctx->SetDpi(96.0f * m_scaleX, 96.0f * m_scaleY);
+        CreateWetLayer();
         if (m_open && !m_fitted) { rb_view_fit(m_width, m_height); m_fitted = true; }
         Render();
     }
@@ -247,8 +272,9 @@ namespace RejBoard
         m_fitted = false;
         m_inking = false;
         m_pans.clear();
-        m_dry = nullptr;
-        m_dryVersion = -1;
+        m_chunks.clear();
+        m_dryGeneration = -1;
+        m_wetGeneration = -1;
         if (m_width > 0 && m_height > 0) { rb_view_fit(m_width, m_height); m_fitted = true; }
         Render();
     }
@@ -256,59 +282,156 @@ namespace RejBoard
     void BoardRenderer::BoardClosed()
     {
         m_open = false;
-        m_dry = nullptr;
+        m_chunks.clear();
+        m_dryGeneration = -1;
         Render();
     }
 
     void BoardRenderer::Invalidate()
     {
-        m_dryVersion = -1;
-        Render();
+        RequestRender();
     }
 
-    // Records all items into a command list (board space), so panning and zooming only replay it.
+    void BoardRenderer::RequestRender()
+    {
+        if (m_renderQueued) return;
+        m_renderQueued = true;
+        // low priority: runs after the pending input events, so a burst of moves costs one redraw
+        m_panel.DispatcherQueue().TryEnqueue(Microsoft::UI::Dispatching::DispatcherQueuePriority::Low, [this]
+        {
+            m_renderQueued = false;
+            Render();
+        });
+    }
+
+    // The kept wet layer: a bitmap the size of the swap chain, in the same DPI, so it is drawn 1:1.
+    void BoardRenderer::CreateWetLayer()
+    {
+        m_wet = nullptr;
+        m_wetGeneration = -1;
+        UINT w = std::max(1u, static_cast<UINT>(m_width * m_scaleX));
+        UINT h = std::max(1u, static_cast<UINT>(m_height * m_scaleY));
+        auto props = D2D1::BitmapProperties1(D2D1_BITMAP_OPTIONS_TARGET,
+            D2D1::PixelFormat(DXGI_FORMAT_B8G8R8A8_UNORM, D2D1_ALPHA_MODE_PREMULTIPLIED), 96.0f * m_scaleX, 96.0f * m_scaleY);
+        check_hresult(m_ctx->CreateBitmap(D2D1::SizeU(w, h), nullptr, 0, &props, m_wet.put()));
+    }
+
+    // Adds the segments of the stroke that became final since the last call to the kept wet layer.
+    void BoardRenderer::UpdateWet()
+    {
+        if (!m_wet || !m_target) return;
+        int gen = rb_wet_generation();
+        bool clear = gen != m_wetGeneration;
+        m_wetGeneration = gen;
+        int count = 0;
+        auto list = Fetch(rb_draw_wet_new(&count), count);
+        if (!clear && list.empty()) return;
+        m_ctx->SetTarget(m_wet.get());
+        m_ctx->BeginDraw();
+        try
+        {
+            m_ctx->SetTransform(D2D1::Matrix3x2F::Identity());
+            if (clear) m_ctx->Clear(D2D1::ColorF(0, 0, 0, 0));
+            if (!list.empty()) m_replay->Play(list, ViewTransform());
+        }
+        catch (...)
+        {
+            m_ctx->EndDraw();
+            m_ctx->SetTarget(m_target.get());
+            throw;
+        }
+        HRESULT hr = m_ctx->EndDraw();
+        m_ctx->SetTarget(m_target.get());
+        check_hresult(hr);
+    }
+
+    // Records the core's dry-ink chunks into command lists (board space), so panning and zooming only replay them.
+    // While the core's dry generation stays the same, earlier chunks are unchanged: only the new ones are recorded.
     void BoardRenderer::RebuildDry()
     {
-        int version = rb_ink_version();
-        if (m_dry && version == m_dryVersion) return;
-        int count = 0;
-        auto list = Fetch(rb_draw_dry(&count), count);
-        com_ptr<ID2D1CommandList> cl;
-        check_hresult(m_ctx->CreateCommandList(cl.put()));
-        com_ptr<ID2D1Image> old;
-        m_ctx->GetTarget(old.put());
-        m_ctx->SetTarget(cl.get());
-        m_ctx->BeginDraw();
-        m_replay->Play(list, D2D1::Matrix3x2F::Identity());
-        HRESULT hr = m_ctx->EndDraw();
-        m_ctx->SetTarget(old.get());
-        check_hresult(hr);
-        check_hresult(cl->Close());
-        m_dry = cl;
-        m_dryVersion = version;
+        int gen = rb_dry_generation();
+        int n = rb_dry_chunk_count();
+        if (gen != m_dryGeneration || n < static_cast<int>(m_chunks.size()))
+        {
+            m_chunks.clear();
+            m_dryGeneration = gen;
+        }
+        for (int k = static_cast<int>(m_chunks.size()); k < n; k++)
+        {
+            int count = 0;
+            auto list = Fetch(rb_draw_dry_chunk(k, &count), count);
+            com_ptr<ID2D1CommandList> cl;
+            check_hresult(m_ctx->CreateCommandList(cl.put()));
+            com_ptr<ID2D1Image> old;
+            m_ctx->GetTarget(old.put());
+            m_ctx->SetTarget(cl.get());
+            m_ctx->BeginDraw();
+            try { m_replay->Play(list, D2D1::Matrix3x2F::Identity()); }
+            catch (...)
+            {
+                // a Direct2D draw left open would make every later frame fail: end it, put the target back, report
+                m_ctx->EndDraw();
+                m_ctx->SetTarget(old.get());
+                throw;
+            }
+            HRESULT hr = m_ctx->EndDraw();
+            m_ctx->SetTarget(old.get());
+            check_hresult(hr);
+            check_hresult(cl->Close());
+            m_chunks.push_back(cl);
+        }
+        m_lastInkVersion = rb_ink_version();
     }
 
     void BoardRenderer::Render()
     {
-        if (!m_target) return;
-        if (m_open) RebuildDry();
+        try { RenderFrame(); }
+        catch (...) { ReportCurrent(L"Drawing the board"); }
+    }
+
+    void BoardRenderer::RenderFrame()
+    {
+        if (!m_target || !m_ctx) return;
+        if (m_open)
+        {
+            try { RebuildDry(); }
+            catch (...) { ReportCurrent(L"Preparing the board's ink"); }
+        }
         m_ctx->BeginDraw();
+        try
+        {
         m_ctx->SetTransform(D2D1::Matrix3x2F::Identity());
         m_ctx->Clear(D2D1::ColorF(0.93f, 0.94f, 0.96f));
         if (m_open)
         {
             int count = 0;
-            m_replay->Play(Fetch(rb_draw_paper(m_width, m_height, &count), count), D2D1::Matrix3x2F::Identity());
+            auto paper = Fetch(rb_draw_paper(m_width, m_height, &count), count);
+            if (paper.empty()) Report(L"Getting the paper from the core", E_FAIL, LastError());
+            m_replay->Play(paper, D2D1::Matrix3x2F::Identity());
             auto view = ViewTransform();
-            if (m_dry)
-            {
-                m_ctx->SetTransform(view);
-                m_ctx->DrawImage(m_dry.get());
-            }
+            m_ctx->SetTransform(view);
+            for (auto const& cl : m_chunks) m_ctx->DrawImage(cl.get());
             count = 0;
-            auto wet = Fetch(rb_draw_wet(&count), count);
-            if (!wet.empty()) m_replay->Play(wet, view);
+            if (m_inking && rb_wet_incremental() == 1)
+            {
+                // the kept final segments, then the provisional end (and nothing is repainted twice)
+                m_ctx->SetTransform(D2D1::Matrix3x2F::Identity());
+                if (m_wet && m_wetGeneration == rb_wet_generation()) m_ctx->DrawImage(m_wet.get());
+                auto tail = Fetch(rb_draw_wet_tail(&count), count);
+                if (!tail.empty()) m_replay->Play(tail, view);
+            }
+            else
+            {
+                auto wet = Fetch(rb_draw_wet(&count), count);
+                if (!wet.empty()) m_replay->Play(wet, view);
+            }
             m_ctx->SetTransform(D2D1::Matrix3x2F::Identity());
+        }
+        }
+        catch (...)
+        {
+            m_ctx->EndDraw();
+            throw;
         }
         HRESULT hr = m_ctx->EndDraw();
         if (hr == D2DERR_RECREATE_TARGET)

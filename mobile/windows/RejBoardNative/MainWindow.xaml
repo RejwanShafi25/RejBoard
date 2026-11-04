@@ -42,6 +42,41 @@
                     <StackPanel x:Name="Swatches" Orientation="Horizontal" Spacing="4" VerticalAlignment="Center" />
                     <Slider x:Name="SizeSlider" Minimum="0" Maximum="1000" Width="160" VerticalAlignment="Center" ValueChanged="OnSizeChanged" />
                     <TextBlock x:Name="SizeText" MinWidth="56" VerticalAlignment="Center" />
+                    <!-- the desktop's brush panel: stabiliser, pressure, nib angle, opacity (soft brush and highlighters) -->
+                    <Button Content="Brush settings">
+                        <Button.Flyout>
+                            <Flyout>
+                                <StackPanel Spacing="4" Width="280">
+                                    <TextBlock x:Name="StabText" Text="Stabiliser" />
+                                    <Slider x:Name="StabSlider" Minimum="0" Maximum="100" ValueChanged="OnBrushSetting" />
+                                    <TextBlock x:Name="PressureText" Text="Pressure" />
+                                    <Slider x:Name="PressureSlider" Minimum="0" Maximum="100" ValueChanged="OnBrushSetting" />
+                                    <TextBlock x:Name="AngleText" Text="Nib angle" />
+                                    <Slider x:Name="AngleSlider" Minimum="0" Maximum="180" ValueChanged="OnBrushSetting" />
+                                    <TextBlock x:Name="OpacityText" Text="Opacity" />
+                                    <Slider x:Name="OpacitySlider" Minimum="5" Maximum="100" ValueChanged="OnBrushSetting" />
+                                    <CheckBox x:Name="EraseWholeCheck" Content="Eraser: erase whole strokes" Click="OnEraserOption" />
+                                    <CheckBox x:Name="EraseHighlighterCheck" Content="Eraser: only highlighter" Click="OnEraserOption" />
+                                </StackPanel>
+                            </Flyout>
+                        </Button.Flyout>
+                    </Button>
+                    <!-- the desktop's pen panel: live pressure, pressure feel, switches -->
+                    <Button Content="Pen">
+                        <Button.Flyout>
+                            <Flyout>
+                                <StackPanel Spacing="4" Width="280">
+                                    <TextBlock x:Name="PressureMeterText" Text="Pressure 0.00" />
+                                    <ProgressBar x:Name="PressureMeter" Minimum="0" Maximum="1" />
+                                    <TextBlock x:Name="CurveText" Text="Pressure feel" />
+                                    <Slider x:Name="CurveSlider" Minimum="0" Maximum="100" Value="50" ValueChanged="OnPenSetting" />
+                                    <ToggleSwitch x:Name="PressureToggle" Header="Pressure sensitivity" IsOn="True" Toggled="OnPenToggle" />
+                                    <ToggleSwitch x:Name="TiltToggle" Header="Tilt shading (pencil, soft brush)" IsOn="False" Toggled="OnPenToggle" />
+                                    <ToggleSwitch x:Name="BarrelToggle" Header="Pen button erases" IsOn="True" Toggled="OnPenToggle" />
+                                </StackPanel>
+                            </Flyout>
+                        </Button.Flyout>
+                    </Button>
                     <Button Content="Undo" Click="OnUndo" />
                     <Button Content="Redo" Click="OnRedo" />
                     <ToggleButton x:Name="FingerToggle" Content="Finger draws" IsChecked="True" Click="OnFingerToggle" />
@@ -49,7 +84,12 @@
             </ScrollViewer>
 
             <!-- Direct2D draws the open board here: pen ink, eraser, pan and zoom -->
-            <SwapChainPanel Grid.Row="1" x:Name="BoardPanel" />
+            <!-- Background makes the panel hit-testable: without it, pointer input never reaches the board -->
+            <SwapChainPanel Grid.Row="1" x:Name="BoardPanel" Background="Transparent">
+                <!-- drawing or core failures are shown here instead of a silently blank canvas -->
+                <InfoBar x:Name="ErrorBar" Severity="Error" IsOpen="False" IsClosable="True" Title="Something went wrong"
+                         VerticalAlignment="Top" Margin="12" />
+            </SwapChainPanel>
         </Grid>
     </Grid>
 </Window>

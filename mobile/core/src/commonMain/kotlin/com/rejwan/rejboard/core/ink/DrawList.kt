@@ -71,6 +71,43 @@ class DrawList : Canvas2D {
         textList.add(text)
     }
 
+    /**
+     * x0, y0, x1, y1 covering everything the list draws (path points grown by the widest line and arc radii), in the
+     * list's own coordinates, or null when it draws nothing. Transforms inside the list are not applied (painters of wet
+     * ink use none). Callers use it to clear only the part of a layer the list touched.
+     */
+    fun bounds(): DoubleArray? {
+        var x0 = Double.POSITIVE_INFINITY
+        var y0 = Double.POSITIVE_INFINITY
+        var x1 = Double.NEGATIVE_INFINITY
+        var y1 = Double.NEGATIVE_INFINITY
+        var grow = 1.0
+        fun add(x: Double, y: Double, r: Double = 0.0) {
+            if (!x.isFinite() || !y.isFinite()) return
+            if (x - r < x0) x0 = x - r
+            if (y - r < y0) y0 = y - r
+            if (x + r > x1) x1 = x + r
+            if (y + r > y1) y1 = y + r
+        }
+        var k = 0
+        val g = argBuf
+        for (i in 0 until nOps) when (opBuf[i]) {
+            TRANSLATE, SCALE, MOVE, LINE -> { if (opBuf[i] == MOVE || opBuf[i] == LINE) add(g[k], g[k + 1]); k += 2 }
+            QUAD -> { add(g[k], g[k + 1]); add(g[k + 2], g[k + 3]); k += 4 }
+            BEZIER -> { add(g[k], g[k + 1]); add(g[k + 2], g[k + 3]); add(g[k + 4], g[k + 5]); k += 6 }
+            ARC -> { add(g[k], g[k + 1], g[k + 2]); k += 5 }
+            RECT, FILL_RECT -> { add(g[k], g[k + 1]); add(g[k] + g[k + 2], g[k + 1] + g[k + 3]); k += 4 }
+            FILL_COLOR, STROKE_COLOR, STROKE_GRAIN, LINE_CAP, LINE_JOIN, ALPHA -> k += 1
+            LINE_WIDTH -> { if (g[k].isFinite() && g[k] > grow) grow = g[k]; k += 1 }
+            LINE_DASH -> k += 1 + g[k].toInt()
+            SHADOW -> { if (g[k + 1].isFinite() && g[k + 1] > grow) grow = g[k + 1]; k += 2 }
+            TEXT -> k += 6
+            else -> {}
+        }
+        if (x0 > x1) return null
+        return doubleArrayOf(x0 - grow, y0 - grow, x1 + grow, y1 + grow)
+    }
+
     /** Plays the recording into [c]. */
     fun replay(c: Canvas2D) {
         var k = 0

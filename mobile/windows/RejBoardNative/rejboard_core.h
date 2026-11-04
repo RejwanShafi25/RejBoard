@@ -50,6 +50,20 @@ double* rb_draw_paper(double width, double height, int* count); // view space
 double* rb_draw_dry(int* count);                                // board space
 double* rb_draw_wet(int* count);                                // board space
 
+// faster drawing: dry ink in chunks (a finished stroke adds one), wet ink in pieces on a kept layer
+int rb_dry_generation(void);              // changes when every chunk must be drawn again
+int rb_dry_chunk_count(void);
+double* rb_draw_dry_chunk(int index, int* count);   // board space
+int rb_wet_incremental(void);             // 1: draw rb_draw_wet_new on a kept layer and rb_draw_wet_tail on top each frame
+int rb_wet_generation(void);              // changes when the kept wet layer must be cleared
+double* rb_draw_wet_new(int* count);      // board space
+double* rb_draw_wet_tail(int* count);     // board space (also the eraser ring)
+// the desktop brush panel: size px, stabiliser 0..100, pressure 0..100, nib angle 0..180, opacity 5..100
+int rb_set_brush_ex(const char* tool, double size, const char* color, double stab, double pressure, double angle, double opacity);
+int rb_set_eraser_ex(double size, int whole, int only_highlighter);
+int rb_set_pen(int pressure_on, int tilt_on, double curve, int barrel_erases);
+double rb_last_pressure(void);
+
 #ifdef __cplusplus
 }
 #endif

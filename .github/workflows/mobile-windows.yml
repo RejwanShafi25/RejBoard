@@ -72,7 +72,7 @@ jobs:
         run: |
           msbuild RejBoardNative.sln /restore /p:RestorePackagesConfig=true /p:Configuration=Release /p:Platform=x64 `
             /p:AppxBundle=Never /p:UapAppxPackageBuildMode=SideloadOnly /p:AppxPackageSigningEnabled=false `
-            /p:GenerateAppxPackageOnBuild=true /p:AppxPackageDir=$PWD\AppPackages\ /m /v:minimal
+            /p:GenerateAppxPackageOnBuild=true /p:AppxSymbolPackageEnabled=false /p:AppxPackageDir=$PWD\AppPackages\ /m /v:minimal
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
       # A throw-away test certificate per run, so the MSIX can be sideloaded. Its .cer is in the artifact:
@@ -98,9 +98,39 @@ jobs:
           Remove-Item "$env:RUNNER_TEMP\ci.pfx"
           Get-ChildItem AppPackages -Recurse | Select-Object FullName, Length | Format-Table -AutoSize
 
+      # The package folder Visual Studio makes (RejBoardNative_<ver>_x64_Test: .msix, Add-AppDevPackage.ps1, Install.ps1,
+      # Dependencies), trimmed to what an install needs: no .msixsym debug symbols, no x86/ARM64 dependencies (the
+      # artifact was 122 MB with them). The test certificate goes INSIDE that folder, next to the .msix:
+      # Add-AppDevPackage.ps1 looks for the .cer in its own folder ("No certificate found in the script directory").
+      - name: Stage the artifact
+        working-directory: mobile/windows
+        shell: pwsh
+        run: |
+          $msix = Get-ChildItem AppPackages -Recurse -Filter *.msix | Where-Object { $_.FullName -notmatch '\\Dependencies\\' } | Select-Object -First 1
+          if (-not $msix) { throw 'no .msix was produced' }
+          $pkg = $msix.Directory
+          $out = New-Item -ItemType Directory -Force -Path artifact
+          $dest = Join-Path $out $pkg.Name
+          Copy-Item $pkg.FullName $dest -Recurse
+          Get-ChildItem $dest -Recurse -Include *.msixsym, *.appxsym | Remove-Item -Force
+          $depRoot = Join-Path $dest 'Dependencies'
+          if (Test-Path $depRoot) {
+            Get-ChildItem $depRoot -Directory | Where-Object { $_.Name -ne 'x64' } | Remove-Item -Recurse -Force
+          }
+          Copy-Item AppPackages\RejBoardNative-test-certificate.cer $dest
+          @(
+            'RejBoard Native (preview) for Windows',
+            "Easiest: right-click $($pkg.Name)\Install.ps1 > Run with PowerShell (it trusts the test certificate and installs the runtime and the app).",
+            'By hand:',
+            '1. Import RejBoardNative-test-certificate.cer into Local Machine > Trusted People (once per CI build).',
+            '2. If Windows asks for the Windows App Runtime, install the package in Dependencies\x64 first.',
+            '3. Double-click the .msix.'
+          ) | Set-Content -Encoding utf8 (Join-Path $out 'INSTALL.txt')
+          Get-ChildItem $out -Recurse | Select-Object FullName, Length | Format-Table -AutoSize
+
       - name: Upload MSIX
         uses: actions/upload-artifact@v4
         with:
           name: RejBoardNative-windows-msix
-          path: mobile/windows/AppPackages/
+          path: mobile/windows/artifact/
           if-no-files-found: error

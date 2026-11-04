@@ -187,3 +187,77 @@ fun rbDrawWet(count: CPointer<IntVar>?): CPointer<DoubleVar>? = try {
     ed().paintWet(d)
     export(d, count)
 } catch (e: Throwable) { lastError = e.message ?: e.toString(); null }
+
+/* ---- faster drawing: dry ink in chunks, wet ink in pieces, and the brush panel's settings ---- */
+
+/** Changes when every dry chunk must be drawn again (undo, redo, erasing); a finished stroke only adds a chunk. */
+@CName("rb_dry_generation")
+fun rbDryGeneration(): Int = editor?.dryGeneration ?: -1
+
+/** Number of dry chunks (call before rb_draw_dry_chunk; earlier chunks are unchanged while the generation is the same). */
+@CName("rb_dry_chunk_count")
+fun rbDryChunkCount(): Int = try { ed().dryChunks().size } catch (e: Throwable) { lastError = e.message ?: e.toString(); 0 }
+
+/** Dry chunk [index], in board units. */
+@CName("rb_draw_dry_chunk")
+fun rbDrawDryChunk(index: Int, count: CPointer<IntVar>?): CPointer<DoubleVar>? = try {
+    export(ed().dryChunks()[index], count)
+} catch (e: Throwable) { lastError = e.message ?: e.toString(); null }
+
+/** 1 when the stroke being drawn is painted in pieces (rb_draw_wet_new on a kept layer + rb_draw_wet_tail each frame). */
+@CName("rb_wet_incremental")
+fun rbWetIncremental(): Int = if (editor?.wetIncremental == true) 1 else 0
+
+/** Changes when the kept wet layer must be cleared (a new, restarted or finished stroke). */
+@CName("rb_wet_generation")
+fun rbWetGeneration(): Int = editor?.wetGeneration ?: -1
+
+/** Segments of the stroke that became final since the last call, in board units: draw them on the kept wet layer. */
+@CName("rb_draw_wet_new")
+fun rbDrawWetNew(count: CPointer<IntVar>?): CPointer<DoubleVar>? = try {
+    val d = DrawList()
+    ed().paintWetNew(d)
+    export(d, count)
+} catch (e: Throwable) { lastError = e.message ?: e.toString(); null }
+
+/** The provisional end of the stroke and the eraser ring, in board units: draw them on top each frame. */
+@CName("rb_draw_wet_tail")
+fun rbDrawWetTail(count: CPointer<IntVar>?): CPointer<DoubleVar>? = try {
+    val d = DrawList()
+    ed().paintWetTail(d)
+    export(d, count)
+} catch (e: Throwable) { lastError = e.message ?: e.toString(); null }
+
+/** The desktop brush panel: size px, stabiliser 0..100, pressure 0..100 (sens), nib angle 0..180, opacity 5..100. */
+@CName("rb_set_brush_ex")
+fun rbSetBrushEx(tool: CPointer<ByteVar>?, size: Double, color: CPointer<ByteVar>?, stab: Double, pressure: Double, angle: Double, opacity: Double): Int = ok {
+    val e = ed()
+    val t = tool?.toKString() ?: e.brush.tool
+    e.brush = e.brushFor(t).withSettings(size, stab, pressure / 100, angle, opacity)
+    color?.toKString()?.let { e.color = it }
+    e.mode = BoardEditor.Mode.PEN
+}
+
+/** Eraser mode: diameter, whole strokes (1/0), only highlighter (1/0). */
+@CName("rb_set_eraser_ex")
+fun rbSetEraserEx(size: Double, whole: Int, onlyHighlighter: Int): Int = ok {
+    val e = ed()
+    e.eraser.size = size
+    e.eraser.whole = whole != 0
+    e.eraser.onlyHighlighter = onlyHighlighter != 0
+    e.mode = BoardEditor.Mode.ERASER
+}
+
+/** Pen settings: pressure sensitivity on/off, tilt shading on/off, pressure feel 0..100 (50 = raw), side button erases. */
+@CName("rb_set_pen")
+fun rbSetPen(pressureOn: Int, tiltOn: Int, curve: Double, barrelErases: Int): Int = ok {
+    val e = ed()
+    e.pressureOn = pressureOn != 0
+    e.tiltOn = tiltOn != 0
+    e.pressureCurve.curve = curve
+    e.barrelErases = barrelErases != 0
+}
+
+/** The latest raw pen pressure 0..1, for a pressure meter. */
+@CName("rb_last_pressure")
+fun rbLastPressure(): Double = editor?.lastPressure ?: 0.0

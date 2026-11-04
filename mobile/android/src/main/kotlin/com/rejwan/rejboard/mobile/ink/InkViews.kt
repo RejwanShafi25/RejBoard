@@ -5,7 +5,9 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.PorterDuff
+import android.graphics.RenderNode
 import android.os.Build
+import android.view.Choreographer
 import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.SurfaceView
@@ -87,7 +89,10 @@ class InkInput(
         val tx = Math.toDegrees(atan(tan(tilt.toDouble()) * sin(orient.toDouble())))
         val ty = Math.toDegrees(atan(-tan(tilt.toDouble()) * cos(orient.toDouble())))
         val v = editor.view
-        return InkSample(v.toBoardX(x.toDouble()), v.toBoardY(y.toDouble()), p.toDouble(), tx, ty, orient.toDouble(), t.toDouble(), tool, buttons)
+        // a finger's "pressure" is contact size on most screens, nearly constant: send none, so the core uses the desktop's
+        // speed-based pressure (as for a mouse); pens send their real pressure (AXIS_PRESSURE)
+        val pressure = if (tool == InkTool.TOUCH) 0.0 else p.toDouble()
+        return InkSample(v.toBoardX(x.toDouble()), v.toBoardY(y.toDouble()), pressure, tx, ty, orient.toDouble(), t.toDouble(), tool, buttons)
     }
 
     private fun samples(e: MotionEvent, idx: Int): List<InkSample> {
@@ -205,17 +210,34 @@ class InkInput(
     }
 }
 
-/** The wet stroke recorded on the UI thread, with the view it was drawn for (the renderer draws on its own thread). */
-class WetFrame(val wet: DrawList, val ox: Double, val oy: Double, val zoom: Double)
+/**
+ * The wet stroke recorded on the UI thread, with the view it was drawn for (the renderer draws on its own thread).
+ * [clear]: wipe the front buffer first (a new stroke, or a brush repainted whole); otherwise [wet] adds to what is there.
+ */
+class WetFrame(val wet: DrawList, val ox: Double, val oy: Double, val zoom: Double, val clear: Boolean)
 
-/** Paper and dry ink recorded on the UI thread. The lists are never changed afterwards, so the render thread may replay them. */
-class BoardFrame(val paper: DrawList, val dry: DrawList, val ox: Double, val oy: Double, val zoom: Double)
+/**
+ * Paper, dry ink chunks and an overlay (the eraser ring), recorded on the UI thread. The lists are never changed afterwards,
+ * so the render thread may replay them; [generation] tells it when cached chunk drawings are stale.
+ */
+class BoardFrame(
+    val paper: DrawList,
+    val chunks: List<DrawList>,
+    val overlay: DrawList,
+    val generation: Int,
+    val ox: Double,
+    val oy: Double,
+    val zoom: Double,
+)
 
 /**
  * Low-latency ink (Android 10+): the wet stroke is drawn straight into the front buffer with androidx.graphics
  * CanvasFrontBufferedRenderer, the board (paper + dry ink) into the normal multi-buffered layer.
- * The renderer calls back on a worker thread, so it only ever sees immutable recordings ([WetFrame], [BoardFrame]),
- * never the live editor.
+ * - The renderer calls back on a worker thread, so it only ever sees immutable recordings ([WetFrame], [BoardFrame]).
+ * - Fountain and calligraphy strokes are added to the front buffer a segment at a time (not repainted whole per sample).
+ * - Each dry-ink chunk is recorded once into a RenderNode on the render thread; a finished stroke only adds a chunk.
+ * - Full redraws (pan, zoom, erasing) are coalesced: at most one is in flight, the newest view wins. Before this, every
+ *   move queued a whole-board render and the screen fell seconds behind the pen.
  */
 @RequiresApi(Build.VERSION_CODES.Q)
 @SuppressLint("ViewConstructor")
@@ -225,10 +247,19 @@ class FrontBufferedInkView(context: Context, private val editor: BoardEditor, on
     private var viewW = 0.0
     private var viewH = 0.0
     @Volatile private var frame: BoardFrame? = null
+    private var wetGeneration = -1
+    private var redrawScheduled = false
+    private var redrawInFlight = false
+    private var redrawPending = false
+
+    // render thread only: one RenderNode per dry chunk
+    private val nodes = java.util.IdentityHashMap<DrawList, RenderNode>()
+    private var nodesGeneration = -1
+    private var nodesZoom = 0.0
 
     private val renderer = CanvasFrontBufferedRenderer(this, object : CanvasFrontBufferedRenderer.Callback<WetFrame> {
         override fun onDrawFrontBufferedLayer(canvas: Canvas, bufferWidth: Int, bufferHeight: Int, param: WetFrame) {
-            canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
+            if (param.clear) canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
             val c = AndroidCanvas2D(canvas, param.zoom.toFloat())
             c.save()
             c.translate(param.ox, param.oy)
@@ -239,13 +270,39 @@ class FrontBufferedInkView(context: Context, private val editor: BoardEditor, on
 
         override fun onDrawMultiBufferedLayer(canvas: Canvas, bufferWidth: Int, bufferHeight: Int, params: Collection<WetFrame>) {
             val f = frame ?: return
-            val c = AndroidCanvas2D(canvas, f.zoom.toFloat())
-            f.paper.replay(c)
-            c.save()
-            c.translate(f.ox, f.oy)
-            c.scale(f.zoom, f.zoom)
-            f.dry.replay(c)
-            c.restore()
+            f.paper.replay(AndroidCanvas2D(canvas, f.zoom.toFloat()))
+            // the pencil grain is scaled for one zoom: re-record the chunks when the zoom changed a lot
+            val zoomChanged = nodesZoom == 0.0 || f.zoom / nodesZoom > 1.5 || nodesZoom / f.zoom > 1.5
+            if (f.generation != nodesGeneration || zoomChanged) {
+                for (n in nodes.values) n.discardDisplayList()
+                nodes.clear()
+                nodesGeneration = f.generation
+                nodesZoom = f.zoom
+            }
+            val live = java.util.Collections.newSetFromMap(java.util.IdentityHashMap<DrawList, Boolean>())
+            live.addAll(f.chunks)
+            val it = nodes.entries.iterator()
+            while (it.hasNext()) {
+                val e = it.next()
+                if (e.key !in live) { e.value.discardDisplayList(); it.remove() }
+            }
+            canvas.save()
+            canvas.translate(f.ox.toFloat(), f.oy.toFloat())
+            canvas.scale(f.zoom.toFloat(), f.zoom.toFloat())
+            for (chunk in f.chunks) {
+                val node = nodes.getOrPut(chunk) {
+                    RenderNode("rejboard-ink").also { n ->
+                        n.setPosition(0, 0, 1 shl 24, 1 shl 24)
+                        n.setClipToBounds(false)
+                        val rc = n.beginRecording()
+                        chunk.replay(AndroidCanvas2D(rc, nodesZoom.toFloat()))
+                        n.endRecording()
+                    }
+                }
+                canvas.drawRenderNode(node)
+            }
+            f.overlay.replay(AndroidCanvas2D(canvas, f.zoom.toFloat()))
+            canvas.restore()
         }
     })
 
@@ -268,8 +325,11 @@ class FrontBufferedInkView(context: Context, private val editor: BoardEditor, on
     private fun snapshot(): BoardFrame {
         val paper = DrawList()
         editor.paintPaper(paper, viewW, viewH)
+        val overlay = DrawList()
+        editor.paintEraserRing(overlay)
+        val chunks = editor.dryChunks()
         val v = editor.view
-        return BoardFrame(paper, editor.dryInk(), v.ox, v.oy, v.zoom)
+        return BoardFrame(paper, chunks, overlay, editor.dryGeneration, v.ox, v.oy, v.zoom)
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -277,9 +337,19 @@ class FrontBufferedInkView(context: Context, private val editor: BoardEditor, on
 
     override fun drawWet(predicted: List<InkSample>) {
         val d = DrawList()
-        editor.paintWet(d, predicted)
+        val clear: Boolean
+        if (editor.wetIncremental) {
+            // a front buffer keeps its pixels: add the new segments and the provisional end (no prediction: it could not be taken back)
+            clear = editor.wetGeneration != wetGeneration
+            wetGeneration = editor.wetGeneration
+            editor.paintWetNew(d)
+            editor.paintWetTail(d)
+        } else {
+            clear = true
+            editor.paintWet(d, predicted)
+        }
         val v = editor.view
-        renderer.renderFrontBufferedLayer(WetFrame(d, v.ox, v.oy, v.zoom))
+        renderer.renderFrontBufferedLayer(WetFrame(d, v.ox, v.oy, v.zoom, clear))
     }
 
     override fun commitDry() {
@@ -287,9 +357,29 @@ class FrontBufferedInkView(context: Context, private val editor: BoardEditor, on
         renderer.commit()
     }
 
+    /** Coalesced full redraw: once per display frame at most, and never more than one waiting on the render thread. */
     override fun redrawAll() {
-        frame = snapshot()
-        renderer.renderMultiBufferedLayer(emptyList())
+        if (redrawScheduled) return
+        redrawScheduled = true
+        Choreographer.getInstance().postFrameCallback {
+            redrawScheduled = false
+            if (redrawInFlight) {
+                redrawPending = true
+                return@postFrameCallback
+            }
+            redrawInFlight = true
+            frame = snapshot()
+            renderer.renderMultiBufferedLayer(emptyList())
+            renderer.execute {
+                post {
+                    redrawInFlight = false
+                    if (redrawPending) {
+                        redrawPending = false
+                        redrawAll()
+                    }
+                }
+            }
+        }
     }
 
     override fun cancelWet() = renderer.cancel()

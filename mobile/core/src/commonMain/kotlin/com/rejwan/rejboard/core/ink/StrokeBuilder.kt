@@ -80,6 +80,10 @@ data class Brush(
     /** This brush at another size (for Swift / C, where data-class copy() is awkward). */
     fun withSize(size: Double): Brush = copy(size = size)
 
+    /** This brush with the desktop brush panel's settings: size, stabiliser, pressure (sens 0..1), nib angle, opacity. */
+    fun withSettings(size: Double, stab: Double, sens: Double, ang: Double, opacity: Double): Brush =
+        copy(size = size, stab = stab, sens = sens, ang = ang, opacity = opacity)
+
     companion object {
         /** DEF in index.html */
         val DEFAULT_SIZES = linkedMapOf("fount" to 6.0, "calli" to 8.0, "soft" to 14.0, "ball" to 3.0, "pencil" to 3.0, "hsq" to 18.0, "hch" to 18.0, "hrd" to 18.0)
@@ -164,6 +168,12 @@ class StrokeBuilder(
 
     /** Rows for predicted samples (the latest smoothed pressure, no tilt), to show ahead of the pen on the wet layer. */
     fun predictedRows(samples: List<InkSample>): List<DoubleArray> = samples.map { doubleArrayOf(it.x, it.y, lp, 0.0) }
+
+    /** How this stroke is drawn (the same fields [finish] stores). */
+    fun style(): StrokeStyle {
+        val dashed = brush.isPen && brush.lineType != null && brush.lineType != "solid"
+        return StrokeStyle(brush.tool, brush.size, color, sens, brush.ang, brush.opacity, tl, dashed, if (dashed) brush.lineType else null, null, false)
+    }
 
     /** The stroke as the desktop builds it: {t, tool, color, size, sens, ang, opacity, [lineType, pl], tl, pts, ly}. */
     fun finish(): Item = Item(JsonObject(buildFields(pts)))

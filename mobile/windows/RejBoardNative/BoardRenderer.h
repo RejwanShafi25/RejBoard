@@ -25,12 +25,24 @@ namespace RejBoard
         bool fingerDraws = true;
         // called after a stroke or erase changed the board
         std::function<void()> onChanged;
+        // called when drawing or a core call fails, with a message for the user (shown once per distinct message)
+        std::function<void(std::wstring const&)> onError;
+        // what went wrong before onError was set (device creation in the constructor)
+        std::wstring startupError;
 
     private:
         void CreateDevice();
         void CreateSwapChain();
         void Resize();
         void RebuildDry();
+        void RenderFrame();
+        void Report(wchar_t const* where, winrt::hresult code, std::wstring const& detail);
+        void ReportCurrent(wchar_t const* where);
+        std::wstring m_lastError;
+        void CreateWetLayer();
+        void UpdateWet();
+        // coalesced full redraw: input handlers ask for it on every move, it runs once after the input batch
+        void RequestRender();
         void Sample(winrt::Microsoft::UI::Input::PointerPoint const& p, int tool, bool begin);
 
         winrt::Microsoft::UI::Xaml::Controls::SwapChainPanel m_panel;
@@ -41,12 +53,18 @@ namespace RejBoard
         winrt::com_ptr<IDXGISwapChain1> m_swapChain;
         winrt::com_ptr<ID2D1Bitmap1> m_target;
         winrt::com_ptr<IDWriteFactory> m_dwrite;
-        winrt::com_ptr<ID2D1CommandList> m_dry;
+        // dry ink: one command list per chunk from the core; a finished stroke only adds one
+        std::vector<winrt::com_ptr<ID2D1CommandList>> m_chunks;
+        int m_dryGeneration = -1;
+        // wet ink for segment brushes: final segments are added to this kept bitmap; the provisional end is drawn per frame
+        winrt::com_ptr<ID2D1Bitmap1> m_wet;
+        int m_wetGeneration = -1;
+        bool m_renderQueued = false;
+        int m_lastInkVersion = -1;
         std::unique_ptr<D2DReplay> m_replay;
 
         bool m_open = false;
         bool m_fitted = false;
-        int m_dryVersion = -1;
         float m_scaleX = 1, m_scaleY = 1;   // composition scale (DPI)
         float m_width = 0, m_height = 0;    // panel size in DIPs
 

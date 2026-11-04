@@ -34,9 +34,14 @@ private final class InkLayer {
     }
 
     func clear() {
+        clear(CGRect(x: -1e6, y: -1e6, width: 2e6, height: 2e6))
+    }
+
+    /// Clears a rectangle (points) only: cheaper than wiping the whole layer on every pen sample.
+    func clear(_ r: CGRect) {
         context.saveGState()
         context.resetClip()
-        context.clear(CGRect(x: -1e6, y: -1e6, width: 2e6, height: 2e6))
+        context.clear(r)
         context.restoreGState()
     }
 }
@@ -50,11 +55,14 @@ private struct RawSample {
     }
 }
 
-/// The iPad ink view: Metal-backed, two layers (dry board, wet stroke) composited on the GPU.
-/// - Apple Pencil: force, altitude / azimuth (tilt), coalesced and predicted touches, estimated-property updates.
-/// - UIPencilInteraction: double-tap and squeeze switch to the eraser and back (as the user set it in Settings).
-/// - Hover (M2 and newer iPads): a ring shows where the pencil will write.
-/// - With a pencil in use, fingers never draw: one finger pans, two fingers pan and zoom.
+/// The iPad ink view: Metal-backed, three layers composited on the GPU.
+/// - dry: paper and the board; a finished stroke is drawn on top of what is there, the rest is redrawn only when the view
+///   or the board changes otherwise (undo, erasing), at most once per display frame;
+/// - wet: the stroke being drawn; fountain and calligraphy strokes add each final segment once instead of repainting;
+/// - tail: the provisional end of the stroke, predicted touches and the eraser / hover rings, cleared only where drawn.
+/// Input: Apple Pencil force, altitude / azimuth (tilt), coalesced and predicted touches, estimated-property updates;
+/// UIPencilInteraction double-tap and squeeze switch to the eraser; hover shows a ring; with a pencil in use, fingers
+/// never draw (one finger pans, two fingers pan and zoom).
 final class InkMetalView: MTKView, MTKViewDelegate, UIPencilInteractionDelegate {
     let editor: BoardEditor
     var onChanged: () -> Void = {}
@@ -66,8 +74,14 @@ final class InkMetalView: MTKView, MTKViewDelegate, UIPencilInteractionDelegate 
     private var pipeline: MTLRenderPipelineState?
     private var dry: InkLayer?
     private var wet: InkLayer?
-    private var dryVersion = -1
+    private var tail: InkLayer?
+    private var dryGeneration = -1
+    private var dryChunks = 0
     private var dryView = (0.0, 0.0, 0.0)
+    private var wetGeneration = -1
+    private var tailRect: CGRect?
+    private var displayLink: CADisplayLink?
+    private var needsDry = false
     private var pencilSeen = false
     private var inkTouch: UITouch?
     private var samples: [RawSample] = []
@@ -115,6 +129,17 @@ final class InkMetalView: MTKView, MTKViewDelegate, UIPencilInteractionDelegate 
 
     required init(coder: NSCoder) { fatalError("not used") }
 
+    deinit { displayLink?.invalidate() }
+
+    /// The display link holds this view strongly: stop it when the view leaves the screen.
+    override func willMove(toWindow newWindow: UIWindow?) {
+        super.willMove(toWindow: newWindow)
+        if newWindow == nil {
+            displayLink?.invalidate()
+            displayLink = nil
+        }
+    }
+
     // MARK: - drawing
 
     override func layoutSubviews() {
@@ -123,7 +148,9 @@ final class InkMetalView: MTKView, MTKViewDelegate, UIPencilInteractionDelegate 
         if dry?.width != w || dry?.height != h, let device {
             dry = InkLayer(device: device, width: w, height: h, scale: contentScaleFactor)
             wet = InkLayer(device: device, width: w, height: h, scale: contentScaleFactor)
-            dryVersion = -1
+            tail = InkLayer(device: device, width: w, height: h, scale: contentScaleFactor)
+            dryGeneration = -1
+            wetGeneration = -1
         }
         if !fitted && bounds.width > 0 {
             editor.fitView(width: Double(bounds.width), height: Double(bounds.height))
@@ -132,62 +159,123 @@ final class InkMetalView: MTKView, MTKViewDelegate, UIPencilInteractionDelegate 
         redrawAll()
     }
 
-    /// Paper and every item, only when the board or the view changed.
+    /// Paper and items. When only strokes were added and the view did not move, just the new chunks are drawn on top.
     private func renderDry() {
         guard let dry else { return }
         let v = editor.view
         let key = (v.ox, v.oy, v.zoom)
-        if dryVersion == Int(editor.version) && dryView == key { return }
-        dry.clear()
+        let chunks = editor.dryChunks()
+        let gen = Int(editor.dryGeneration)
         let c = CGCanvas(dry.context)
         dry.context.saveGState()
-        editor.paintPaper(c: c, width: Double(bounds.width), height: Double(bounds.height))
-        c.save()
-        c.translate(x: v.ox, y: v.oy)
-        c.scale(x: v.zoom, y: v.zoom)
-        editor.dryInk().replay(c: c)
-        c.restore()
+        if gen != dryGeneration || dryView != key || chunks.count < dryChunks {
+            dry.clear()
+            editor.paintPaper(c: c, width: Double(bounds.width), height: Double(bounds.height))
+            dryChunks = 0
+        }
+        if dryChunks < chunks.count {
+            c.save()
+            c.translate(x: v.ox, y: v.oy)
+            c.scale(x: v.zoom, y: v.zoom)
+            for k in dryChunks..<chunks.count { chunks[k].replay(c: c) }
+            c.restore()
+        }
         dry.context.restoreGState()
-        dryVersion = Int(editor.version)
+        dryGeneration = gen
+        dryChunks = chunks.count
         dryView = key
     }
 
-    /// The stroke being drawn (plus predicted touches) and the hover ring.
+    /// The stroke being drawn: new final segments on the wet layer (or the whole stroke for one-path brushes), and the
+    /// provisional end, predicted touches and the rings on the tail layer.
     private func renderWet(predicted: [InkSample]) {
-        guard let wet else { return }
-        wet.clear()
+        guard let wet, let tail else { return }
         let v = editor.view
+        if Int(editor.wetGeneration) != wetGeneration {
+            wet.clear()
+            wetGeneration = Int(editor.wetGeneration)
+        }
         let c = CGCanvas(wet.context)
         wet.context.saveGState()
         c.save()
         c.translate(x: v.ox, y: v.oy)
         c.scale(x: v.zoom, y: v.zoom)
-        editor.paintWet(c: c, predicted: predicted)
+        let incremental = editor.wetIncremental
+        if incremental {
+            editor.paintWetNew(c: c)
+        } else if editor.isDrawing {
+            wet.clear()
+            editor.paintWet(c: c, predicted: predicted)
+        }
         c.restore()
+        wet.context.restoreGState()
+
+        // tail: clear what was drawn last time, draw the new provisional parts
+        if let r = tailRect { tail.clear(r.insetBy(dx: -2, dy: -2)) }
+        tailRect = nil
+        let list = DrawList()
+        list.save()
+        list.translate(x: v.ox, y: v.oy)
+        list.scale(x: v.zoom, y: v.zoom)
+        if incremental { editor.paintWetTail(c: list, predicted: predicted) } else { editor.paintEraserRing(c: list) }
+        list.restore()
+        let tc = CGCanvas(tail.context)
+        tail.context.saveGState()
+        list.replay(c: tc)
+        if let b = list.bounds() {
+            // the list's own coordinates are board units under the view transform it starts with
+            tailRect = CGRect(x: v.ox + b.get(index: 0) * v.zoom, y: v.oy + b.get(index: 1) * v.zoom,
+                              width: (b.get(index: 2) - b.get(index: 0)) * v.zoom, height: (b.get(index: 3) - b.get(index: 1)) * v.zoom)
+        }
         if let h = hover, inkTouch == nil {
             let r = max(2, CGFloat(editor.mode == .eraser ? editor.eraser.size : editor.brush.size) * CGFloat(v.zoom) / 2)
-            wet.context.setStrokeColor(UIColor.systemBlue.withAlphaComponent(0.7).cgColor)
-            wet.context.setLineWidth(1)
-            wet.context.strokeEllipse(in: CGRect(x: h.x - r, y: h.y - r, width: 2 * r, height: 2 * r))
+            tail.context.setStrokeColor(UIColor.systemBlue.withAlphaComponent(0.7).cgColor)
+            tail.context.setLineWidth(1)
+            let ring = CGRect(x: h.x - r, y: h.y - r, width: 2 * r, height: 2 * r)
+            tail.context.strokeEllipse(in: ring)
+            tailRect = tailRect.map { $0.union(ring) } ?? ring
         }
-        wet.context.restoreGState()
+        tail.context.restoreGState()
     }
 
+    /// Everything, coalesced to once per display frame (erasing, panning and zooming ask for it on every move).
     func redrawAll() {
-        renderDry()
-        renderWet(predicted: [])
+        needsDry = true
+        if displayLink == nil {
+            let link = CADisplayLink(target: self, selector: #selector(onFrame))
+            link.add(to: .main, forMode: .common)
+            displayLink = link
+        }
+        displayLink?.isPaused = false
+    }
+
+    @objc private func onFrame() {
+        if needsDry {
+            needsDry = false
+            renderDry()
+            renderWet(predicted: [])
+            draw()
+        } else {
+            displayLink?.isPaused = true
+        }
+    }
+
+    /// The wet stroke only, right away (the low-latency path).
+    private func updateWet(predicted: [InkSample]) {
+        renderWet(predicted: predicted)
         draw()
     }
 
     func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {}
 
     func draw(in view: MTKView) {
-        guard let pipeline, let dry, let wet, let queue = commandQueue,
+        guard let pipeline, let dry, let wet, let tail, let queue = commandQueue,
               let pass = currentRenderPassDescriptor, let drawable = currentDrawable,
               let cmd = queue.makeCommandBuffer(), let enc = cmd.makeRenderCommandEncoder(descriptor: pass) else { return }
         enc.setRenderPipelineState(pipeline)
         enc.setFragmentTexture(dry.texture, index: 0)
         enc.setFragmentTexture(wet.texture, index: 1)
+        enc.setFragmentTexture(tail.texture, index: 2)
         enc.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 3)
         enc.endEncoding()
         cmd.present(drawable)
@@ -208,6 +296,7 @@ final class InkMetalView: MTKView, MTKViewDelegate, UIPencilInteractionDelegate 
             tx = atan(tan(tilt) * cos(az)) * 180 / Double.pi
             ty = atan(tan(tilt) * sin(az)) * 180 / Double.pi
         }
+        // fingers send no pressure: the core uses the desktop's speed-based pressure, as for a mouse
         return RawSample(x: v.toBoardX(sx: Double(p.x)), y: v.toBoardY(sy: Double(p.y)), pressure: force, tiltX: tx, tiltY: ty,
                          azimuth: az, t: t.timestamp * 1000, tool: pencil ? .pen : .touch)
     }
@@ -228,7 +317,7 @@ final class InkMetalView: MTKView, MTKViewDelegate, UIPencilInteractionDelegate 
         track(t, index: 0)
         if editor.begin(s: s.sample()) {
             inkTouch = t
-            if editor.isErasing { redrawAll() } else { renderWet(predicted: []); draw() }
+            if editor.isErasing { redrawAll() } else { updateWet(predicted: []) }
         }
     }
 
@@ -251,8 +340,7 @@ final class InkMetalView: MTKView, MTKViewDelegate, UIPencilInteractionDelegate 
             redrawAll()
         } else {
             let predicted = (event?.predictedTouches(for: t) ?? []).map { rawSample($0).sample() }
-            renderWet(predicted: predicted)
-            draw()
+            updateWet(predicted: predicted)
         }
     }
 
@@ -266,9 +354,9 @@ final class InkMetalView: MTKView, MTKViewDelegate, UIPencilInteractionDelegate 
             changed = true
         }
         if changed {
+            // the stroke is rebuilt with the better pressures; its wet layer is repainted (new wetGeneration)
             editor.restartStroke(all: samples.map { $0.sample() })
-            renderWet(predicted: [])
-            draw()
+            updateWet(predicted: [])
         }
     }
 
@@ -276,7 +364,10 @@ final class InkMetalView: MTKView, MTKViewDelegate, UIPencilInteractionDelegate 
         guard let t = inkTouch, touches.contains(t) else { return }
         inkTouch = nil
         let changed = editor.end()
-        redrawAll()
+        // the finished stroke goes on the dry layer (one new chunk) and the wet layer is cleared, in the same frame
+        renderDry()
+        renderWet(predicted: [])
+        draw()
         if changed { onChanged() }
     }
 
@@ -318,8 +409,7 @@ final class InkMetalView: MTKView, MTKViewDelegate, UIPencilInteractionDelegate 
         case .began, .changed: hover = g.location(in: self)
         default: hover = nil
         }
-        renderWet(predicted: [])
-        draw()
+        updateWet(predicted: [])
     }
 
     // MARK: - Apple Pencil double-tap and squeeze
@@ -327,8 +417,7 @@ final class InkMetalView: MTKView, MTKViewDelegate, UIPencilInteractionDelegate 
     private func toggleEraser() {
         editor.mode = editor.mode == .eraser ? .pen : .eraser
         onModeChanged()
-        renderWet(predicted: [])
-        draw()
+        updateWet(predicted: [])
     }
 
     func pencilInteractionDidTap(_ interaction: UIPencilInteraction) {
