@@ -195,6 +195,19 @@ test('layered layout: left to right, cycles and isolated nodes', () => {
   assert.ok(P[5], 'an unconnected node still gets a place');
 });
 
+test('layered layout: an edge that skips layers gets its own lane, clear of the shapes it passes', () => {
+  const nodes = ['a', 'b', 'd', 'e', 'c', 'f'].map(id => ({ id, w: 150, h: 60 }));
+  const edges = [['a', 'b'], ['b', 'c'], ['b', 'd'], ['d', 'e'], ['e', 'c'], ['c', 'f']];
+  const { pos, bends } = D.layeredRoutes(nodes, edges, { gap: 70, sep: 50 });
+  assert.deepEqual(bends.map(b => b && b.length), [0, 2, 0, 0, 0, 0], 'b -> c crosses two layers');
+  for (const [x, y] of bends[1]) for (const id of ['d', 'e']) {
+    const [px, py] = pos[id];
+    assert.ok(!(x >= px - 10 && x <= px + 160 && y >= py && y <= py + 60), 'the lane of b -> c is not inside ' + id);
+  }
+  assert.deepEqual(D.layered(nodes, edges, { gap: 70, sep: 50 }), pos, 'layered() is the same layout');
+  assert.deepEqual(D.layeredRoutes([{ id: 'x', w: 1, h: 1 }], [['x', 'x'], null, ['x', 'nope']]).bends, [null, null, null]);
+});
+
 test('layered layout survives junk and scales', () => {
   assert.deepEqual(D.layered([], []), {});
   assert.deepEqual(Object.keys(D.layered([{ id: 'x', w: 1, h: 1 }, null], [['x', 'x'], ['x', 'nope'], null])), ['x']);

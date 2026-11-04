@@ -189,10 +189,17 @@
   /* ---------- automatic layered layout ----------
      nodes: [{id, w, h}], edges: [[fromId, toId]]. Cycles are broken by ignoring edges that close a loop.
      Returns {id: [x, y]} top-left positions, starting at (0, 0). dir 'TB' (top to bottom) or 'LR' (left to right). */
-  function layered(nodes, edges, opts) {
-    const o = Object.assign({ dir: 'TB', gap: 60, sep: 40, sweeps: 4 }, opts || {});
-    const N = (nodes || []).filter(n => n && n.id != null), ids = new Map(N.map((n, k) => [n.id, k])), n = N.length;
-    if (!n) return {};
+  function layered(nodes, edges, opts) { return layeredRoutes(nodes, edges, opts).pos; }
+
+  /* Same layout, plus the lane each long edge runs in: an edge that skips layers gets a placeholder in every layer it crosses,
+     so no shape is put in its way. bends[k] lists those lane centres for edges[k] ([] for an edge between neighbouring layers,
+     null for an edge that was dropped: a loop, a duplicate or an unknown id). */
+  function layeredRoutes(nodes, edges, opts) {
+    const o = Object.assign({ dir: 'TB', gap: 60, sep: 40, sweeps: 4, lane: 24 }, opts || {});
+    const N = (nodes || []).filter(n => n && n.id != null).map(q => ({ id: q.id, w: +q.w || 0, h: +q.h || 0 })), ids = new Map(N.map((q, k) => [q.id, k])), n0 = N.length;
+    const E = Array.isArray(edges) ? edges : [];
+    if (!n0) return { pos: {}, bends: E.map(() => null) };
+    const n = n0;
     const out = Array.from({ length: n }, () => []), inn = Array.from({ length: n }, () => []);
     const seen = new Set();
     for (const e of edges || []) {
@@ -221,33 +228,67 @@
     const layer = new Array(n).fill(0), q = [];
     for (let k = 0; k < n; k++) if (!indeg[k]) q.push(k);
     while (q.length) { const v = q.shift(); for (const w of keep[v]) { layer[w] = Math.max(layer[w], layer[v] + 1); if (!--indeg[w]) q.push(w); } }
+    /* long edges: a chain of placeholders (index >= n0), one per crossed layer */
+    const TB = o.dir !== 'LR', V = N.slice(), chains = new Map();
+    const succ = keep.map(l => l.slice());
+    keep.forEach((l, v) => l.forEach(w => {
+      if (layer[w] - layer[v] < 2) return;
+      let prev = v; const chain = [];
+      for (let li = layer[v] + 1; li < layer[w]; li++) {
+        const d = V.length; V.push({ id: null, w: TB ? o.lane : 0, h: TB ? 0 : o.lane }); layer[d] = li; succ[d] = [];
+        succ[prev] = succ[prev].map(x => x === w && prev === v ? d : x); if (prev !== v) succ[prev].push(d);
+        chain.push(d); prev = d;
+      }
+      succ[prev].push(w); chains.set(v + ',' + w, chain);
+    }));
+    const m = V.length;
     const L = [];
-    for (let k = 0; k < n; k++) (L[layer[k]] = L[layer[k]] || []).push(k);
+    for (let k = 0; k < m; k++) (L[layer[k]] = L[layer[k]] || []).push(k);
     /* order inside each layer: a few barycentre sweeps reduce crossings */
-    const pos = new Array(n).fill(0);
+    const pos = new Array(m).fill(0);
     L.forEach(l => l.forEach((v, k) => { pos[v] = k; }));
-    const up = Array.from({ length: n }, () => []); keep.forEach((l, v) => l.forEach(w => up[w].push(v)));
+    const up = Array.from({ length: m }, () => []); succ.forEach((l, v) => l.forEach(w => up[w].push(v)));
     const bary = (v, nb) => nb[v].length ? nb[v].reduce((s, u) => s + pos[u], 0) / nb[v].length : pos[v];
     for (let s = 0; s < o.sweeps; s++) {
       const down = s % 2 === 0;
       const seq = down ? L.slice(1) : L.slice(0, -1).reverse();
-      for (const l of seq) { l.sort((x, y) => bary(x, down ? up : keep) - bary(y, down ? up : keep) || x - y); l.forEach((v, k) => { pos[v] = k; }); }
+      for (const l of seq) { l.sort((x, y) => bary(x, down ? up : succ) - bary(y, down ? up : succ) || x - y); l.forEach((v, k) => { pos[v] = k; }); }
     }
-    /* coordinates: layers along the main axis, nodes centred across it */
-    const TB = o.dir !== 'LR', along = k => (TB ? N[k].h : N[k].w), across = k => (TB ? N[k].w : N[k].h);
+    /* coordinates: layers along the main axis; across it, every layer starts centred, then each shape is pulled towards
+       the middle of its neighbours (alternating down and up), never closer than sep to the shape beside it */
+    const along = k => (TB ? V[k].h : V[k].w), across = k => (TB ? V[k].w : V[k].h);
     const thick = L.map(l => Math.max(...l.map(along))), span = L.map(l => l.reduce((s, v) => s + across(v), 0) + o.sep * (l.length - 1));
-    const widest = Math.max(...span), res = {};
+    const widest = Math.max(...span), ctr = new Array(m).fill(0);
+    L.forEach((l, li) => { let c = (widest - span[li]) / 2; for (const v of l) { ctr[v] = c + across(v) / 2; c += across(v) + o.sep; } });
+    const fit = (l, want) => {
+      /* keep the order and the gaps, stay as close as possible to want: push right, push left, average */
+      const a = [], b = [];
+      l.forEach((v, k) => { a[k] = k ? Math.max(want[k], a[k - 1] + (across(l[k - 1]) + across(v)) / 2 + o.sep) : want[k]; });
+      for (let k = l.length - 1; k >= 0; k--) b[k] = k < l.length - 1 ? Math.min(want[k], b[k + 1] - (across(l[k + 1]) + across(l[k])) / 2 - o.sep) : want[k];
+      l.forEach((v, k) => { ctr[v] = (a[k] + b[k]) / 2; });
+      for (let k = 1; k < l.length; k++) { const min = ctr[l[k - 1]] + (across(l[k - 1]) + across(l[k])) / 2 + o.sep; if (ctr[l[k]] < min) ctr[l[k]] = min; }
+    };
+    if (m <= 3000) for (let s = 0; s < 8; s++) {
+      const down = s % 2 === 0, seq = down ? L.slice(1) : L.slice(0, -1).reverse(), nb = down ? up : succ;
+      for (const l of seq) fit(l, l.map(v => nb[v].length ? nb[v].reduce((t, u) => t + ctr[u], 0) / nb[v].length : ctr[v]));
+    }
+    let lo = Infinity; for (let k = 0; k < m; k++) lo = Math.min(lo, ctr[k] - across(k) / 2);
+    const res = {}, mid = [];
     let main = 0;
     L.forEach((l, li) => {
-      let c = (widest - span[li]) / 2;
       for (const v of l) {
-        const m = main + (thick[li] - along(v)) / 2;
-        res[N[v].id] = TB ? [c, m] : [m, c];
-        c += across(v) + o.sep;
+        const c = ctr[v] - across(v) / 2 - lo, ma = main + (thick[li] - along(v)) / 2;
+        if (v < n0) res[V[v].id] = TB ? [c, ma] : [ma, c];
+        else mid[v] = TB ? [ctr[v] - lo, main + thick[li] / 2] : [main + thick[li] / 2, ctr[v] - lo];
       }
       main += thick[li] + o.gap;
     });
-    return res;
+    const bends = E.map(e => {
+      const a = ids.get(e && e[0]), b = ids.get(e && e[1]);
+      if (a == null || b == null || a === b || !keep[a].includes(b)) return null;
+      return (chains.get(a + ',' + b) || []).map(d => mid[d]);
+    });
+    return { pos: res, bends };
   }
 
   /* ---------- Mermaid flowcharts ----------
@@ -333,5 +374,5 @@
     return lines.join('\n') + '\n';
   }
 
-  return { HEADS, orthoRoute, simplify, crossings, hops, polyMid, head, guideSnap, gridSnap, inside, layered, parseMermaid, toMermaid };
+  return { HEADS, orthoRoute, simplify, crossings, hops, polyMid, head, guideSnap, gridSnap, inside, layered, layeredRoutes, parseMermaid, toMermaid };
 });

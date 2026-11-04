@@ -1,4 +1,27 @@
 # Changelog
+## [Unreleased]
+### Added
+- **Board replay** (**Export → Replay board**): the board draws itself again in the order it was made: ink follows the pen path stroke by stroke, and text, shapes, pictures and everything else fade in one after another. Play, pause, scrub and change the speed (0.5× to 8×), then **Save video** to get an MP4 (WebM where MP4 recording isn't available) of the whole board, fitted into a 1080p frame (portrait for tall boards). Hidden layers stay out. Erased items aren't in the replay, and things that were moved show up where they are now.
+- **Set squares and protractor** (📐 in the dock, next to the ruler). A 45° set square and a 30°/60° set square, true to the corner, with millimetre-style scales: start a pen stroke on any edge and it runs exactly along it. A protractor with a mark for every degree and two scales (0–180 both ways): start a stroke on its arc for a perfect arc, and turn its two arms by their knobs to read the angle between them to 0.1° (hold Shift for whole degrees). Drag to move, turn with the blue knob (Shift snaps to 15°).
+- **View mode** (👁 View in the top bar): look, point, never smudge. Every drag pans, with pen, finger or mouse, the laser pointer still works, and nothing on the board can be changed: no drawing, typing, deleting, pasting, dropping or ticking checklists. Esc goes back to editing.
+- **Page strip** (◧ Strip in the page bar): every page of a paged board as a thumbnail down the side, with the current page highlighted; click one to go there. Thumbnails follow your edits.
+- **Pressure-sensitive eraser:** with a pen and Pressure sensitivity on, a light touch rubs out a thin line and pressing harder a wide one; the eraser ring shows the current width.
+- **Real staves:** Music staff paper now has a treble clef and a start barline on every staff, and Guitar tab paper has T-A-B and a barline on every six-line system, at true size.
+- **229 templates** (up from 61): narrow, wide, college-ruled, A5 and Letter paper, Q&A, outline, boxing and charting notes, journals, coordinate planes, polar paper, the periodic table, times tables, essay and lab planners, KWL, T-charts, Frayer models, Venn diagrams, planners for every day, week, month, quarter and year, trackers (savings, bills, sleep, mood, reading, medication…), guitar and ukulele chord charts, songwriting sheets, storyboards, comic and manga pages, perspective grids, Lean canvas, empathy maps, RACI, risk registers, Eisenhower and decision matrices, roadmaps, PESTLE, five forces, invoices, status reports, decision trees, state machines, sequence and data-flow diagrams, family trees and more.
+- **Gallery of example notes** in the template gallery: 16 finished notes to learn from and copy (Cornell notes on photosynthesis, the quadratic formula, Newton’s laws, a history timeline, French vocabulary, a café SWOT, a week of meals, a trip itinerary, a lab report, an essay plan, a sprint retrospective, a chord sheet, a study timetable, a login flowchart, a cell mind map and a student budget).
+- **Unlimited sticker library:** My stickers no longer stops at 60. Stickers are kept in their own store on the device (existing ones move over automatically), at up to 512 px, and **Add a picture…** takes several pictures at once.
+- **Transparent stickers and pictures select only where you can see them:** the empty border of a sticker is trimmed when it is saved, so its box fits the drawing, and clicking a transparent part of a sticker or picture goes through to whatever is underneath.
+- All of it translated into the 22 languages.
+
+### Changed
+- **Diagram layout:** an edge that skips layers (in Mermaid, PlantUML, SQL imports and Auto-layout) now gets its own lane, so the shapes in between move aside and the connector curves around them instead of running through them.
+- The template gallery draws the thumbnails on screen first.
+
+### Fixed
+- Clicking a connected line to select it detached it from its shapes, so it no longer followed them and Auto-layout skipped them.
+- The web clipper's **Article text** picked up menus and table-of-contents entries on sites like Wikipedia; it now takes the main article text, without navigation, sidebars, tables or citation marks.
+- Hold to snap threw an error on every pen movement after the stroke had snapped into a shape.
+
 ## [1.3.3]
 ### Added
 - **Version history.** Every board keeps earlier versions automatically (at most one every 10 minutes while you edit, thinned to hourly, daily and weekly, up to 60 per board). Restore one (the current state is saved first, so it can be undone), open it as a copy, or save a named version. **Export → Version history** or a board's ⋮ menu.

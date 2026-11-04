@@ -237,7 +237,91 @@
   ok('double-clicking the graph reopens the editor', !document.getElementById('graphp').hidden && document.getElementById('gr_title').textContent === 'Edit graph');
   document.getElementById('gr_cancel').click();
 
+  /* ----- connectors stay attached when they are only clicked ----- */
+  {
+    const mk = (x, y) => { const s = mkSp('rect', [x, y], [x + 120, y + 60], 0); s.id = uid(); return s; };
+    const A = mk(200, 6000), B = mk(600, 6200), L = mkSp('arr', [260, 6030], [660, 6230], 0); L.id = uid(); L.lk0 = { id: A.id, s: 'auto' }; L.lk1 = { id: B.id, s: 'auto' };
+    push(); [A, B, L].forEach(addI); setTool('select'); S.z = 1; S.ox = 0; S.oy = -5800; cache = null; draw(); await sleep(50);
+    ev('pointerdown', 460, 330); ev('pointerup', 460, 330); await sleep(60);
+    ok('clicking a connector keeps it attached to both shapes', L.lk0 && L.lk1 && L.lk0.id === A.id && L.lk1.id === B.id, JSON.stringify([L.lk0, L.lk1]));
+    S.items = S.items.filter(i => ![A, B, L].includes(i)); S.sel = []; cache = null; draw();
+  }
+
+  /* ----- hold to snap turns a held stroke into a shape, without errors from the rest of the movement ----- */
+  {
+    const errs = out.errors.length, n = S.items.length, was = ST.hold; ST.hold = true; setTool('fount');
+    ev('pointerdown', 600, 300); for (let k = 1; k <= 40; k++) { const a = -Math.PI / 2 + k / 40 * Math.PI * 2; ev('pointermove', 600 + Math.cos(a) * 80, 380 + Math.sin(a) * 80); await sleep(6); }
+    await sleep(750); for (let k = 0; k < 5; k++) { ev('pointermove', 600 + k, 300); await sleep(10); } ev('pointerup', 605, 300); await sleep(80);
+    const last = S.items[S.items.length - 1];
+    ok('hold to snap makes a clean shape', S.items.length === n + 1 && last && last.t === 'sp', last && (last.t + ' ' + (last.shp || '')));
+    ok('moving after a snap raises no errors', out.errors.length === errs, out.errors.slice(errs).join(' | '));
+    ST.hold = was; undo();
+  }
+
+  /* ----- set squares and protractor: strokes that start on an edge run exactly along it ----- */
+  {
+    setTool('ball'); S.z = 1; S.ox = 0; S.oy = 0; cache = null; draw();
+    const scr = p => [p[0] * S.z + S.ox, p[1] * S.z + S.oy];
+    const devs = [];
+    for (const kind of ['sq45', 'sq60']) {
+      geoShow(kind); await sleep(30);
+      for (let e = 0; e < 3; e++) {
+        const [a, b] = geoEdges()[e].seg.map(geoToWorld), n = S.items.length, A = scr(a), B = scr(b);
+        ev('pointerdown', A[0] + (B[0] - A[0]) * .1, A[1] + (B[1] - A[1]) * .1);
+        for (let k = 1; k <= 20; k++) { const t = .1 + .8 * k / 20; ev('pointermove', A[0] + (B[0] - A[0]) * t + (k % 3 - 1) * 4, A[1] + (B[1] - A[1]) * t + (k % 2 ? 4 : -4)); await sleep(6); }
+        ev('pointerup', A[0] + (B[0] - A[0]) * .9, A[1] + (B[1] - A[1]) * .9); await sleep(40);
+        const s = S.items[S.items.length - 1], dx = b[0] - a[0], dy = b[1] - a[1];
+        devs.push(S.items.length === n + 1 ? Math.max(...s.pts.map(p => Math.abs((p[0] - a[0]) * dy - (p[1] - a[1]) * dx) / Math.hypot(dx, dy))) : 1e9);
+      }
+    }
+    ok('set squares: strokes run exactly along all six edges', devs.every(d => d < .01), devs.map(d => d.toFixed(3)).join(', '));
+    geoShow('prot'); await sleep(30);
+    { const R = geoR(), at = a => scr(geoToWorld([Math.cos(a) * (R + 5), -Math.sin(a) * (R + 5)])), n = S.items.length;
+      let p = at(.3); ev('pointerdown', p[0], p[1]); for (let k = 1; k <= 24; k++) { p = at(.3 + k * .08); ev('pointermove', p[0], p[1]); await sleep(6); } ev('pointerup', p[0], p[1]); await sleep(40);
+      const s = S.items[S.items.length - 1], c = geoToWorld([0, 0]), d = S.items.length === n + 1 ? s.pts.map(q => Math.hypot(q[0] - c[0], q[1] - c[1])) : [0];
+      ok('protractor: a stroke started on the arc stays on the circle', Math.max(...d.map(v => Math.abs(v - R))) < R * .01, 'R ' + R.toFixed(1) + ', ' + Math.min(...d).toFixed(1) + '..' + Math.max(...d).toFixed(1)); }
+    geo.arms = [20, 75]; ok('protractor reads the angle between its arms', geoReading() === 55, geoReading());
+    geo.arms = [170, -170]; ok('protractor reading never exceeds 180°', geoReading() === 20, geoReading());
+    geoShow(null); for (let k = 0; k < 7; k++) undo();
+  }
+
+  /* ----- view mode: look and point, nothing changes ----- */
+  {
+    const before = JSON.stringify(S.items), oy = S.oy; setTool('fount'); setView(true);
+    ev('pointerdown', 300, 400); for (let k = 0; k < 15; k++) { ev('pointermove', 300 + k * 8, 400 - k * 6); await sleep(6); } ev('pointerup', 420, 310); await sleep(40);
+    for (const k of ['Delete', 't', 'z']) window.dispatchEvent(new KeyboardEvent('keydown', { key: k, ctrlKey: k === 'z', bubbles: true }));
+    ok('view mode: drawing, Delete and Ctrl+Z change nothing, a drag pans', JSON.stringify(S.items) === before && S.oy !== oy && S.tool === 'hand');
+    window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    ok('Esc leaves view mode and gives the pen back', !VIEW && S.tool === 'fount');
+  }
+
+  /* ----- pressure-sensitive eraser ----- */
+  ok('eraser width follows pen pressure', erPress({ pointerType: 'pen', pressure: .15 }) < 1 && erPress({ pointerType: 'pen', pressure: .95 }) > 1 && erPress({ pointerType: 'mouse', pressure: .5 }) === 1);
+
+  /* ----- page strip ----- */
+  {
+    const pg0 = S.pg, on0 = STRIP.on; S.pg = { size: 'a4', o: 'p', n: 3 }; STRIP.on = true; stripBuild(); await sleep(300);
+    ok('page strip shows every page', document.querySelectorAll('#pgstrip .pgs-c').length === 3 && !document.getElementById('pgstrip').hidden);
+    S.pg = pg0; STRIP.on = on0; stripBuild();
+  }
+
+  /* ----- stickers: trimmed to what is visible, and only the visible part can be clicked ----- */
+  {
+    const c = document.createElement('canvas'); c.width = c.height = 300; const g = c.getContext('2d'); g.fillStyle = '#e8679b'; g.beginPath(); g.arc(150, 150, 50, 0, 7); g.fill();
+    const t = await trimAlpha(c.toDataURL('image/png')), m = new Image(); m.src = t; await m.decode();
+    ok('a sticker is trimmed to its visible part', m.naturalWidth <= 110 && m.naturalHeight <= 110, m.naturalWidth + 'x' + m.naturalHeight);
+    const src = c.toDataURL('image/png'); img(src); await new Promise(r => { const q = IM[src]; if (q.complete) r(); else q.onload = r; });
+    const P = { t: 'i', src, x: 0, y: 0, w: 300, h: 300 };
+    ok('a transparent picture is only hit where it is visible', imgSolid(P, [150, 150]) && !imgSolid(P, [20, 20]));
+  }
+
+  /* ----- templates and Mermaid layout ----- */
+  ok('more than 200 templates, with a gallery of examples', TemplatesCore.TEMPLATES.length >= 200 && TemplatesCore.TEMPLATES.some(t => t.cat === 'Gallery'), TemplatesCore.TEMPLATES.length);
+  { const r = mermaidBuild('flowchart TD\n A --> B\n B --> C\n C --> D\n A --> D'), skip = r.items.find(i => i.lk0 && i.lk1 && i.cm);
+    ok('a Mermaid edge that skips layers curves around the shapes between', !!skip); }
+
   /* ----- clean up ----- */
+  await saveNow(); await sleep(300); /* let any autosave queued by the checks above land before the test boards are deleted */
   await tx('readwrite', s => s.delete('smoke-board')); await tx('readwrite', s => s.delete('smoke-legacy'));
   await sleep(150); ok('index forgets the deleted test boards', !hasId(await txMeta(), 'smoke-board') && !hasId(await txMeta(), 'smoke-legacy'));
   ok('no uncaught errors', out.errors.length === 0, out.errors.join(' | '));
