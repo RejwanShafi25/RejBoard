@@ -3,7 +3,9 @@ name: Tests
 on:
   push:
     branches: [main]
+    paths-ignore: ["mobile/**", ".github/workflows/mobile-*.yml"]
   pull_request:
+    paths-ignore: ["mobile/**", ".github/workflows/mobile-*.yml"]
   workflow_dispatch:
 
 permissions:

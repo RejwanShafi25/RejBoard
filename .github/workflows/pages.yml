@@ -4,6 +4,7 @@ name: Deploy web build
 on:
   push:
     branches: [main]
+    paths-ignore: ["mobile/**", ".github/workflows/mobile-*.yml"]
   workflow_dispatch:
 
 permissions:

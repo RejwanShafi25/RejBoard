@@ -1,0 +1,12 @@
+; Exports of rejboard_core.dll (Kotlin/Native mingwX64, see core/src/mingwX64Main/.../CApi.kt).
+; MSVC cannot use MinGW import libraries, so the pre-build step makes rejboard_core.lib from this list.
+LIBRARY rejboard_core
+EXPORTS
+    rb_version
+    rb_free
+    rb_last_error
+    rb_store_open
+    rb_store_list
+    rb_store_import
+    rb_board_scene
+    rb_board_title

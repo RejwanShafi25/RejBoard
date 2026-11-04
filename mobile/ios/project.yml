@@ -1,0 +1,47 @@
+# XcodeGen spec for the RejBoard Native iOS / iPadOS app (Phase 1: board list + read-only viewer).
+# Generate the project with:  xcodegen generate   (CI does this; the .xcodeproj is not checked in)
+# Needs the core first:       gradle -p .. :core:assembleRejBoardCoreReleaseXCFramework
+name: RejBoard
+options:
+  bundleIdPrefix: com.rejwan.rejboard
+  deploymentTarget:
+    iOS: "16.0"
+  createIntermediateGroups: true
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    MARKETING_VERSION: "0.1.0"
+    CURRENT_PROJECT_VERSION: "1"
+targets:
+  RejBoard:
+    type: application
+    platform: iOS
+    sources:
+      - path: RejBoard
+    info:
+      path: RejBoard/Info.plist
+      properties:
+        CFBundleDisplayName: RejBoard Native
+        UILaunchScreen: {}
+        UIApplicationSupportsIndirectInputEvents: true
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+        UISupportedInterfaceOrientations~ipad:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationPortraitUpsideDown
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.rejwan.rejboard.mobile
+        TARGETED_DEVICE_FAMILY: "1,2"
+        # RejBoardCore is a static Kotlin/Native framework: link the system SQLite (SQLDelight's native driver) and libc++.
+        OTHER_LDFLAGS: ["$(inherited)", "-lsqlite3", "-lc++"]
+        # the core is built for arm64 devices and arm64 simulators only
+        EXCLUDED_ARCHS[sdk=iphonesimulator*]: x86_64
+    scheme: {}
+    dependencies:
+      - framework: ../core/build/XCFrameworks/release/RejBoardCore.xcframework
+        embed: false

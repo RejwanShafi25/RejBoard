@@ -1,0 +1,94 @@
+# Native apps: shared Kotlin core tests on the iOS simulator + the SwiftUI app (simulator .app and an unsigned .xcarchive).
+# Runs only when the native apps change.
+name: Mobile (iOS)
+on:
+  push:
+    branches: [main]
+    paths: ["mobile/**", ".github/workflows/mobile-ios.yml"]
+  pull_request:
+    paths: ["mobile/**", ".github/workflows/mobile-ios.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mobile-ios-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ios:
+    name: Core tests + iOS app
+    runs-on: macos-15
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.14.3"
+
+      - name: Tool versions
+        run: |
+          xcodebuild -version
+          xcrun simctl list runtimes
+
+      - name: Pick a simulator
+        run: |
+          DEVICE=$(xcrun simctl list devices available -j | python3 -c "import json,sys; d=json.load(sys.stdin)['devices']; print(next(x['name'] for k,v in d.items() if 'iOS' in k for x in v if x['name'].startswith('iPhone')))")
+          echo "Using simulator: $DEVICE"
+          echo "SIM_DEVICE=$DEVICE" >> "$GITHUB_ENV"
+
+      - name: Core tests on the simulator, XCFramework
+        working-directory: mobile
+        run: gradle :core:iosSimulatorArm64Test :core:assembleRejBoardCoreReleaseXCFramework "-Prb.iosSimulator=$SIM_DEVICE" --stacktrace
+
+      - name: Upload test reports
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: core-test-reports-ios
+          path: mobile/core/build/reports/tests/
+          if-no-files-found: ignore
+
+      - name: Generate the Xcode project
+        working-directory: mobile/ios
+        run: |
+          brew install xcodegen
+          xcodegen generate
+
+      - name: Build for the simulator
+        working-directory: mobile/ios
+        run: |
+          xcodebuild -project RejBoard.xcodeproj -scheme RejBoard -configuration Release \
+            -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath build/sim CODE_SIGNING_ALLOWED=NO build
+          ditto -c -k --keepParent build/sim/Build/Products/Release-iphonesimulator/RejBoard.app build/RejBoard-simulator.app.zip
+
+      # unsigned: sign it in Xcode (or with your team id) before installing on an iPad / sending to TestFlight
+      - name: Archive for devices (unsigned)
+        working-directory: mobile/ios
+        run: |
+          xcodebuild -project RejBoard.xcodeproj -scheme RejBoard -configuration Release \
+            -sdk iphoneos -destination 'generic/platform=iOS' \
+            -archivePath build/RejBoard.xcarchive CODE_SIGNING_ALLOWED=NO archive
+          ditto -c -k --keepParent build/RejBoard.xcarchive build/RejBoard.xcarchive.zip
+
+      - name: Upload simulator app
+        uses: actions/upload-artifact@v4
+        with:
+          name: RejBoardNative-ios-simulator-app
+          path: mobile/ios/build/RejBoard-simulator.app.zip
+          if-no-files-found: error
+
+      - name: Upload xcarchive
+        uses: actions/upload-artifact@v4
+        with:
+          name: RejBoardNative-ios-xcarchive-unsigned
+          path: mobile/ios/build/RejBoard.xcarchive.zip
+          if-no-files-found: error

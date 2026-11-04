@@ -3,6 +3,8 @@ name: Build installers
 on:
   push:
     tags: ["v*"]
+    # (GitHub does not apply path filters to tag pushes; this keeps native-app-only pushes out if branches are ever added)
+    paths-ignore: ["mobile/**", ".github/workflows/mobile-*.yml"]
   workflow_dispatch:
 
 permissions:

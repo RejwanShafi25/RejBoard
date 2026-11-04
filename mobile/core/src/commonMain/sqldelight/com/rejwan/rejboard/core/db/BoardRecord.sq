@@ -1,0 +1,31 @@
+-- Boards stored by the native apps. `body` is the board JSON exactly as the desktop app writes it (unknown fields included),
+-- so a board can always be written back out as an identical .rjwb file. The other columns are a small index for the board list.
+CREATE TABLE board_record (
+    id TEXT NOT NULL PRIMARY KEY,
+    title TEXT NOT NULL,
+    updated INTEGER NOT NULL,
+    locked INTEGER NOT NULL DEFAULT 0,
+    item_count INTEGER NOT NULL DEFAULT 0,
+    search TEXT NOT NULL DEFAULT '',
+    body TEXT NOT NULL
+);
+
+CREATE INDEX board_record_updated ON board_record(updated);
+
+listSummaries:
+SELECT id, title, updated, locked, item_count FROM board_record ORDER BY updated DESC, id;
+
+bodyOf:
+SELECT body FROM board_record WHERE id = ?;
+
+countById:
+SELECT count(*) FROM board_record WHERE id = ?;
+
+upsert:
+INSERT OR REPLACE INTO board_record (id, title, updated, locked, item_count, search, body) VALUES (?, ?, ?, ?, ?, ?, ?);
+
+remove:
+DELETE FROM board_record WHERE id = ?;
+
+countAll:
+SELECT count(*) FROM board_record;

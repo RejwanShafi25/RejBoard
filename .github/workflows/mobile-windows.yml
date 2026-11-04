@@ -1,0 +1,106 @@
+# Native apps: shared Kotlin core tests (mingwX64) + the WinUI 3 / Direct2D app as an MSIX.
+# Runs only when the native apps change. The MSIX is "RejBoard Native (preview)" (com.rejwan.rejboard.native): it installs next to
+# the Electron RejBoard without sharing data, file types, protocols or updates with it.
+name: Mobile (Windows)
+on:
+  push:
+    branches: [main]
+    paths: ["mobile/**", ".github/workflows/mobile-windows.yml"]
+  pull_request:
+    paths: ["mobile/**", ".github/workflows/mobile-windows.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mobile-windows-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  windows:
+    name: Core tests + MSIX
+    runs-on: windows-latest
+    timeout-minutes: 75
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      # SQLite for the mingwX64 core (SQLDelight's native driver links it)
+      - uses: msys2/setup-msys2@v2
+        id: msys2
+        with:
+          msystem: MINGW64
+          update: false
+          install: mingw-w64-x86_64-sqlite3
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.14.3"
+
+      - name: Core tests (mingwX64) and rejboard_core.dll
+        working-directory: mobile
+        shell: pwsh
+        run: |
+          $root = '${{ steps.msys2.outputs.msys2-location }}'
+          $lib = (Join-Path $root 'mingw64\lib') -replace '\\', '/'
+          $env:PATH = (Join-Path $root 'mingw64\bin') + ';' + $env:PATH   # the test executable loads libsqlite3-0.dll
+          gradle :core:mingwX64Test :core:linkReleaseSharedMingwX64 "-Prb.sqliteMingwDir=$lib" --stacktrace
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Upload test reports
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: core-test-reports-windows
+          path: mobile/core/build/reports/tests/
+          if-no-files-found: ignore
+
+      - name: Stage the core for Visual Studio
+        shell: pwsh
+        run: ./mobile/windows/stage-core.ps1 -Msys2Root '${{ steps.msys2.outputs.msys2-location }}'
+
+      - uses: microsoft/setup-msbuild@v2
+
+      - name: Build MSIX
+        working-directory: mobile/windows
+        shell: pwsh
+        run: |
+          msbuild RejBoardNative.sln /restore /p:RestorePackagesConfig=true /p:Configuration=Release /p:Platform=x64 `
+            /p:AppxBundle=Never /p:UapAppxPackageBuildMode=SideloadOnly /p:AppxPackageSigningEnabled=false `
+            /p:GenerateAppxPackageOnBuild=true /p:AppxPackageDir=$PWD\AppPackages\ /m /v:minimal
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      # A throw-away test certificate per run, so the MSIX can be sideloaded. Its .cer is in the artifact:
+      # trust it once (Local Machine > Trusted People), then double-click the .msix.
+      - name: Sign MSIX with a test certificate
+        working-directory: mobile/windows
+        shell: pwsh
+        run: |
+          $cert = New-SelfSignedCertificate -Type Custom -Subject 'CN=Rejwan Shafi' -KeyUsage DigitalSignature `
+            -FriendlyName 'RejBoard Native CI test certificate' -CertStoreLocation 'Cert:\CurrentUser\My' `
+            -TextExtension @('2.5.29.37={text}1.3.6.1.5.5.7.3.3', '2.5.29.19={text}')
+          $pass = [guid]::NewGuid().ToString()
+          $secure = ConvertTo-SecureString -String $pass -Force -AsPlainText
+          Export-PfxCertificate -Cert $cert -FilePath "$env:RUNNER_TEMP\ci.pfx" -Password $secure | Out-Null
+          Export-Certificate -Cert $cert -FilePath AppPackages\RejBoardNative-test-certificate.cer | Out-Null
+          $signtool = Get-ChildItem "${env:ProgramFiles(x86)}\Windows Kits\10\bin\*\x64\signtool.exe" | Sort-Object FullName -Descending | Select-Object -First 1
+          $msix = Get-ChildItem AppPackages -Recurse -Filter *.msix | Where-Object { $_.FullName -notmatch '\\Dependencies\\' }
+          if (-not $msix) { throw 'no .msix was produced' }
+          foreach ($m in $msix) {
+            & $signtool.FullName sign /fd SHA256 /f "$env:RUNNER_TEMP\ci.pfx" /p $pass $m.FullName
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          }
+          Remove-Item "$env:RUNNER_TEMP\ci.pfx"
+          Get-ChildItem AppPackages -Recurse | Select-Object FullName, Length | Format-Table -AutoSize
+
+      - name: Upload MSIX
+        uses: actions/upload-artifact@v4
+        with:
+          name: RejBoardNative-windows-msix
+          path: mobile/windows/AppPackages/
+          if-no-files-found: error

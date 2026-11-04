@@ -1,0 +1,61 @@
+# Native apps: shared Kotlin core tests (JVM) + the Android app. Runs only when the native apps change.
+name: Mobile (Android)
+on:
+  push:
+    branches: [main]
+    paths: ["mobile/**", ".github/workflows/mobile-android.yml"]
+  pull_request:
+    paths: ["mobile/**", ".github/workflows/mobile-android.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mobile-android-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  android:
+    name: Core tests + APK
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # the golden fixtures must still be what the desktop JS (board-core.js, test/helpers.js) produces
+      - name: Golden fixtures are up to date
+        run: node mobile/core/golden/generate.js --check
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      # no Gradle wrapper jar is checked in; CI uses a pinned Gradle
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.14.3"
+
+      - name: Core unit + golden tests, debug APK
+        working-directory: mobile
+        run: gradle :core:testDebugUnitTest :android:assembleDebug --stacktrace
+
+      - name: Upload test reports
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: core-test-reports-android
+          path: mobile/core/build/reports/tests/
+          if-no-files-found: ignore
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: RejBoardNative-android-debug-apk
+          path: mobile/android/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
