@@ -1,5 +1,5 @@
 # Changelog
-## [Unreleased]
+## [1.3.4]
 ### Added
 - **Board replay** (**Export → Replay board**): the board draws itself again in the order it was made: ink follows the pen path stroke by stroke, and text, shapes, pictures and everything else fade in one after another. Play, pause, scrub and change the speed (0.5× to 8×), then **Save video** to get an MP4 (WebM where MP4 recording isn't available) of the whole board, fitted into a 1080p frame (portrait for tall boards). Hidden layers stay out. Erased items aren't in the replay, and things that were moved show up where they are now.
 - **Set squares and protractor** (📐 in the dock, next to the ruler). A 45° set square and a 30°/60° set square, true to the corner, with millimetre-style scales: start a pen stroke on any edge and it runs exactly along it. A protractor with a mark for every degree and two scales (0–180 both ways): start a stroke on its arc for a perfect arc, and turn its two arms by their knobs to read the angle between them to 0.1° (hold Shift for whole degrees). Drag to move, turn with the blue knob (Shift snaps to 15°).
