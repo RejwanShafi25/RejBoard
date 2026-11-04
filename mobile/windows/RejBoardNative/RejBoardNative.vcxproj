@@ -8,6 +8,8 @@
     <WinAppSdkVersion>1.6.250108002</WinAppSdkVersion>
     <SdkBuildToolsVersion>10.0.26100.1742</SdkBuildToolsVersion>
     <CppWinRTVersion>2.0.240405.15</CppWinRTVersion>
+    <!-- packages.config gets no transitive packages, so the WebView2 SDK the Windows App SDK 1.6 needs (>= 1.0.2651.64) is listed itself -->
+    <WebView2Version>1.0.2651.64</WebView2Version>
     <PackagesDir>$(MSBuildThisFileDirectory)..\packages\</PackagesDir>
   </PropertyGroup>
   <Import Project="$(PackagesDir)Microsoft.WindowsAppSDK.$(WinAppSdkVersion)\build\native\Microsoft.WindowsAppSDK.props" Condition="Exists('$(PackagesDir)Microsoft.WindowsAppSDK.$(WinAppSdkVersion)\build\native\Microsoft.WindowsAppSDK.props')" />
@@ -164,6 +166,7 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
+    <Import Project="$(PackagesDir)Microsoft.Web.WebView2.$(WebView2Version)\build\native\Microsoft.Web.WebView2.targets" Condition="Exists('$(PackagesDir)Microsoft.Web.WebView2.$(WebView2Version)\build\native\Microsoft.Web.WebView2.targets')" />
     <Import Project="$(PackagesDir)Microsoft.WindowsAppSDK.$(WinAppSdkVersion)\build\native\Microsoft.WindowsAppSDK.targets" Condition="Exists('$(PackagesDir)Microsoft.WindowsAppSDK.$(WinAppSdkVersion)\build\native\Microsoft.WindowsAppSDK.targets')" />
     <Import Project="$(PackagesDir)Microsoft.Windows.SDK.BuildTools.$(SdkBuildToolsVersion)\build\Microsoft.Windows.SDK.BuildTools.targets" Condition="Exists('$(PackagesDir)Microsoft.Windows.SDK.BuildTools.$(SdkBuildToolsVersion)\build\Microsoft.Windows.SDK.BuildTools.targets')" />
     <Import Project="$(PackagesDir)Microsoft.Windows.CppWinRT.$(CppWinRTVersion)\build\native\Microsoft.Windows.CppWinRT.targets" Condition="Exists('$(PackagesDir)Microsoft.Windows.CppWinRT.$(CppWinRTVersion)\build\native\Microsoft.Windows.CppWinRT.targets')" />
@@ -175,6 +178,7 @@
     <Error Condition="!Exists('$(PackagesDir)Microsoft.WindowsAppSDK.$(WinAppSdkVersion)\build\native\Microsoft.WindowsAppSDK.props')" Text="$([System.String]::Format('$(ErrorText)', 'Microsoft.WindowsAppSDK.props'))" />
     <Error Condition="!Exists('$(PackagesDir)Microsoft.Windows.SDK.BuildTools.$(SdkBuildToolsVersion)\build\Microsoft.Windows.SDK.BuildTools.props')" Text="$([System.String]::Format('$(ErrorText)', 'Microsoft.Windows.SDK.BuildTools.props'))" />
     <Error Condition="!Exists('$(PackagesDir)Microsoft.Windows.CppWinRT.$(CppWinRTVersion)\build\native\Microsoft.Windows.CppWinRT.props')" Text="$([System.String]::Format('$(ErrorText)', 'Microsoft.Windows.CppWinRT.props'))" />
+    <Error Condition="!Exists('$(PackagesDir)Microsoft.Web.WebView2.$(WebView2Version)\build\native\Microsoft.Web.WebView2.targets')" Text="$([System.String]::Format('$(ErrorText)', 'Microsoft.Web.WebView2.targets'))" />
     <Error Condition="!Exists('$(MSBuildThisFileDirectory)rejboard_core.dll')" Text="rejboard_core.dll is missing: build the core (gradle :core:linkReleaseSharedMingwX64) and stage it with mobile/windows/stage-core.ps1." />
   </Target>
 </Project>
