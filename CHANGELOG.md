@@ -1,5 +1,5 @@
 # Changelog
-## [Unreleased]
+## [1.3.5]
 ### Added
 - **Shortcut ring:** hold your pen or finger still on an empty part of the board, or right-click with the mouse, and a ring of shortcuts opens right there: fountain pen, ballpoint pen, pencil, square-tip highlighter, eraser, lasso select and **Paste**, with **Undo** and **Redo** in the middle. Each pen shows, and picks, the colour you last used it with. Slide onto one and lift, or lift first and tap; Undo and Redo keep the ring open so you can press them again. Right-drag still pans when that setting is on.
 - **Scribble to erase:** scribble back and forth over ink with a pen and it disappears, together with the scribble; Ctrl+Z brings it back. Over empty paper the scribble stays a stroke, and highlighters never trigger it. It can be turned off in Settings.
