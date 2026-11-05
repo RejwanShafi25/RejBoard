@@ -173,12 +173,14 @@
   const utf8 = s => new TextEncoder().encode(s);
   function dosTime(d) { return { t: (d.getHours() << 11) | (d.getMinutes() << 5) | (d.getSeconds() >> 1), d: ((Math.max(1980, d.getFullYear()) - 1980) << 9) | ((d.getMonth() + 1) << 5) | d.getDate() }; }
 
-  /* entries: [{path, bytes|text}] -> array of Uint8Array parts (pass to new Blob(parts)). Refuses unsafe or duplicate paths and >4 GB archives. */
-  function zip(entries, when) {
+  /* entries: [{path, bytes|text}] -> array of Uint8Array parts (pass to new Blob(parts)). Refuses unsafe or duplicate paths and >4 GB archives.
+     o.fixed: the paths are the caller's own fixed part names (e.g. a .pptx's _rels/.rels and [Content_Types].xml), so only traversal is refused. */
+  const fixedPath = p => typeof p === 'string' && p.length > 0 && p.length < 1024 && !p.startsWith('/') && !/[\\:\0]/.test(p) && p.split('/').every(seg => seg && seg !== '.' && seg !== '..');
+  function zip(entries, when, o = {}) {
     const dt = dosTime(when instanceof Date ? when : new Date()), parts = [], central = [], seen = new Set();
     let off = 0;
     for (const e of entries) {
-      if (!safePath(e.path)) throw new Error('unsafe path in archive: ' + JSON.stringify(e.path));
+      if (!(o.fixed ? fixedPath(e.path) : safePath(e.path))) throw new Error('unsafe path in archive: ' + JSON.stringify(e.path));
       const key = e.path.toLowerCase();
       if (seen.has(key)) throw new Error('duplicate path in archive: ' + e.path);
       seen.add(key);

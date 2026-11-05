@@ -1,6 +1,20 @@
 # Changelog
 ## [Unreleased]
+### Added
+- **Shortcut ring:** hold your pen or finger still on an empty part of the board, or right-click with the mouse, and a ring of shortcuts opens right there: fountain pen, ballpoint pen, pencil, square-tip highlighter, eraser, lasso select and **Paste**, with **Undo** and **Redo** in the middle. Each pen shows, and picks, the colour you last used it with. Slide onto one and lift, or lift first and tap; Undo and Redo keep the ring open so you can press them again. Right-drag still pans when that setting is on.
+- **Scribble to erase:** scribble back and forth over ink with a pen and it disappears, together with the scribble; Ctrl+Z brings it back. Over empty paper the scribble stays a stroke, and highlighters never trigger it. It can be turned off in Settings.
+- **Zoom writing window** (🔍 in the dock): a magnified strip above the dock (2× to 5×). Write large in it and the ink lands small inside a box on the board, at the pen's real size. Lifting the pen in the shaded right margin moves the box along the line, ◀ ▶ ↵ move it by hand (↵ starts the next line), and its tab drags it anywhere. On a paged board it stays on the paper.
+- **Flashcards from notes:** select a question and its answer (anything: text, ink, a picture, a group) and press 🃏 in the selection bar; small Q and A tags mark the pair. **Tools → 🃏 Flashcards** reviews them: the question, **Show answer**, then **Again / Hard / Good / Easy**, which schedule the next review by spaced repetition (Space and 1–4 work too). The schedule is saved on the board.
+- **Page numbers, headers and a watermark on export:** the PDF and PNG export options can add page numbers (“2 / 5”), a header (the board title, or your own text) and an optional small “Made with RejBoard” watermark. A paged board exported as PNG then shows its whole pages, each numbered.
+- **Backlinks:** the *Linked from* list beside a board's name now shows every link to the board with the sentence it sits in, and opening one lands on that exact text, selected.
+- **Export to PowerPoint (.pptx):** one slide per page (one slide for an infinite board), shaped like the page, with page numbers, header and watermark when they are switched on. Opens in PowerPoint, Keynote and Google Slides.
+- **Open on your phone (QR code)** (Export menu, desktop app): a read-only, live view of the open board for phones and tablets on the same Wi-Fi. Scan the QR code and the board opens in the phone's browser and follows your edits a moment later. The link carries a random key, nothing leaves your network, and **Stop** ends it.
+
 ### Changed
+- **Ink keeps up with the pen:** the live stroke now also draws the pen's predicted next points at its tip (never saved), and the desktop app uses the low-latency canvas by default (Settings → Low latency inking turns it off).
+- **Reliable web updates:** the web app starts straight from its offline copy and checks for a new version in the background; a new version is stored only once all its files are in, so old and new files are never mixed, and a note says when a reload brings the update.
+- **Smoother exports and saves:** PDF pages are drawn one at a time and compressed in the background, with progress on long documents, so the app stays responsive while exporting; autosave waits for an idle moment between frames.
+- **Faster desktop start-up:** compiled scripts are kept between launches.
 - **Much finer brush sizes:** pens, pencil and highlighters now go down to **0.1 px** (from 1 px), in 0.1 px steps below 10 px. The size slider is spread out so the small sizes get as much room as the large ones, and a number box next to it takes an exact size. The same applies to the size of selected strokes in the style bar, the shape border width (0.1–12), the eraser (from 0.5 px) and the laser dot (from 1 px). Existing boards look exactly as before.
 
 ## [1.3.4]

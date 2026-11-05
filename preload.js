@@ -28,6 +28,12 @@ contextBridge.exposeInMainWorld('wb', {
     open: () => ipcRenderer.invoke('backup:open')
   },
   fetchRemoteImage: url => ipcRenderer.invoke('image:fetch-remote', url),
+  view: {
+    start: () => ipcRenderer.invoke('view:start'),
+    update: d => ipcRenderer.invoke('view:update', d),
+    stop: () => ipcRenderer.invoke('view:stop'),
+    info: () => ipcRenderer.invoke('view:info')
+  },
   updates: {
     getVersion: () => ipcRenderer.invoke('updates:version'),
     check: () => ipcRenderer.invoke('updates:check'),

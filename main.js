@@ -1,6 +1,7 @@
 // Electron main process: opens the app and proxies handwriting recognition.
 const { app, BrowserWindow, ipcMain, shell, Menu, clipboard, dialog } = require('electron');
 const lanShare = require('./lan');
+const liveView = require('./liveview');
 const ocr = require('./ocr'); // on-device handwriting OCR (no network, no files)
 const backupStore = require('./backup-store'); // automatic daily backups into <app data>/backups
 const path = require('path');
@@ -203,7 +204,8 @@ function showMain() {
 ipcMain.on('app:ready', showMain);
 function createWindow() {
   const w = new BrowserWindow({ width: 1320, height: 860, title: 'RejBoard', icon: path.join(__dirname, 'build', 'icon.png'), backgroundColor: '#fff7fa', show: false,
-    webPreferences: { preload: path.join(__dirname, 'preload.js'), contextIsolation: true, webviewTag: true, nodeIntegration: false, sandbox: true, backgroundThrottling: !SMOKE } });
+    webPreferences: { preload: path.join(__dirname, 'preload.js'), contextIsolation: true, webviewTag: true, nodeIntegration: false, sandbox: true, backgroundThrottling: !SMOKE,
+      v8CacheOptions: 'bypassHeatCheck' /* keep compiled scripts between launches from the first run, so start-up skips recompiling them */ } });
   updateWindow = w; mainWin = w; mainShown = false;
   if (!SMOKE || SPLASH_TEST) {
     splashTimer = setTimeout(() => {
@@ -281,4 +283,10 @@ app.on('before-quit', (event) => {
   event.preventDefault(); finalCleanupStarted = true;
   (async () => { try { const ses = require('electron').session.fromPartition('rejboard-ephemeral'); await ses.clearStorageData(); await ses.clearCache(); } catch (_) {} finally { app.quit(); } })();
 });
+/* "Open on your phone": a read-only view of the open board for devices on this network (liveview.js) */
+ipcMain.handle('view:start', () => liveView.start());
+ipcMain.handle('view:update', (_e, d) => liveView.update(d));
+ipcMain.handle('view:stop', () => liveView.stop());
+ipcMain.handle('view:info', () => liveView.info());
+app.on('will-quit', () => liveView.stop());
 app.on('window-all-closed', () => app.quit());
