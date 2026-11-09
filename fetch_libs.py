@@ -1,13 +1,23 @@
 #!/usr/bin/env python3
 """Download MathJax, jsPDF and pdf.js into ./vendor, and the English OCR data into ./ocr-engine/tessdata, so the app works fully offline."""
-import os, sys, urllib.request
+import os, sys, time, urllib.request
+def fetch(url, path, tries=5):
+    """Download url to path, retrying on network errors and 5xx answers (CDNs and github.com time out now and then)."""
+    for k in range(tries):
+        try:
+            with urllib.request.urlopen(url, timeout=60) as r, open(path + ".part", "wb") as f:
+                f.write(r.read())
+            os.replace(path + ".part", path); return
+        except Exception as e:
+            if k == tries - 1 or (getattr(e, "code", 500) < 500 and getattr(e, "code", None) not in (None, 429)): raise
+            wait = 5 * 2 ** k; print(f"  {e} - retrying in {wait}s"); time.sleep(wait)
 C = "https://cdnjs.cloudflare.com/ajax/libs/"
 LIBS = {"tex-svg.js": C + "mathjax/3.2.2/es5/tex-svg.min.js", "jspdf.umd.min.js": C + "jspdf/2.5.1/jspdf.umd.min.js",
         "pdf.min.js": C + "pdf.js/3.11.174/pdf.min.js", "pdf.worker.min.js": C + "pdf.js/3.11.174/pdf.worker.min.js",
         "math.min.js": C + "mathjs/15.2.0/math.min.js", "nerdamer.all.min.js": "https://cdn.jsdelivr.net/npm/nerdamer@1.1.13/all.min.js"}
 d = os.path.join(os.path.dirname(os.path.abspath(__file__)), "vendor"); os.makedirs(d, exist_ok=True)
 for n, u in LIBS.items():
-    print("downloading", n); urllib.request.urlretrieve(u, os.path.join(d, n))
+    print("downloading", n); fetch(u, os.path.join(d, n))
 print("done")
 # ONNX Runtime loader for handwriting -> LaTeX (the 14 MB engine itself is downloaded by the app on first use, like the model).
 # Pinned by SHA-256: a changed file on the CDN fails the build instead of shipping.
@@ -17,12 +27,12 @@ ORT = {"ort.wasm.min.js": "faece07e84faa9001f5104bbe4e5c70861d06cb2376a0dea1fa0a
        "ort-wasm-simd-threaded.mjs": "e13f7f94fc51b4ca72b12faeb1ee95f4ace6dfbc8939bc718aabdc0a27c4299b"}
 os.makedirs(os.path.join(d, "ort"), exist_ok=True)
 for n, h in ORT.items():
-    print("downloading ort/" + n); p = os.path.join(d, "ort", n); urllib.request.urlretrieve(O + n, p)
+    print("downloading ort/" + n); p = os.path.join(d, "ort", n); fetch(O + n, p)
     if hashlib.sha256(open(p, "rb").read()).hexdigest() != h: os.remove(p); sys.exit("checksum mismatch for ort/" + n)
 print("done (ort)")
 if True:  # English data for the bundled Tesseract.js (used by every platform build)
     t = os.path.join(os.path.dirname(os.path.abspath(__file__)), "ocr-engine", "tessdata"); os.makedirs(t, exist_ok=True)
     print("downloading eng.traineddata")
-    urllib.request.urlretrieve("https://github.com/tesseract-ocr/tessdata_fast/raw/main/eng.traineddata", os.path.join(t, "eng.traineddata"))
+    fetch("https://github.com/tesseract-ocr/tessdata_fast/raw/main/eng.traineddata", os.path.join(t, "eng.traineddata"))
     assert os.path.getsize(os.path.join(t, "eng.traineddata")) > 1_000_000, "eng.traineddata looks wrong"
     print("done (ocr)")

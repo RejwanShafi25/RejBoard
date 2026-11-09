@@ -80,9 +80,17 @@ jobs:
           LINKS=$(find ocr-engine/node_modules -path ocr-engine/node_modules/.bin -prune -o -type l -print)
           if [ -n "$LINKS" ]; then echo "Unexpected links in ocr-engine/node_modules:"; echo "$LINKS"; exit 1; fi
 
+      # Retried: a download or an upload to the release can hit a passing 5xx (v1.3.6's macOS build failed on a 504).
+      # electron-builder replaces assets it already uploaded, so a second attempt does not duplicate them.
       - name: Build and publish installers (tag build)
         if: startsWith(github.ref, 'refs/tags/v')
-        run: npx electron-builder --publish always
+        shell: bash
+        run: |
+          for i in 1 2 3; do
+            npx electron-builder --publish always && exit 0
+            echo "electron-builder failed (attempt $i of 3)"; [ "$i" -lt 3 ] && sleep $((i * 45))
+          done
+          exit 1
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # No code-signing certificates: skip auto-discovery so the macOS build does not fail/hang.
@@ -150,8 +158,11 @@ jobs:
         shell: bash
         run: |
           VER="${GITHUB_REF_NAME#v}"
-          awk -v v="$VER" '$0 ~ "^## \\[" v "\\]" {f=1; next} /^## \[/{f=0} f' CHANGELOG.md > release-notes.md
-          test -s release-notes.md || { echo "No CHANGELOG.md section for $VER"; exit 1; }
+          section() { awk -v v="$1" '$0 ~ "^## \\[" v "\\]" {f=1; next} /^## \[/{f=0} f' CHANGELOG.md; }
+          section "$VER" > release-notes.md
+          # tagged before the [Unreleased] heading was renamed: use that section instead of failing
+          if [ ! -s release-notes.md ]; then echo "No CHANGELOG.md section for $VER, using [Unreleased]"; section Unreleased > release-notes.md; fi
+          test -s release-notes.md || { echo "No CHANGELOG.md section for $VER or Unreleased"; exit 1; }
       - uses: softprops/action-gh-release@v2
         with:
           body_path: release-notes.md
