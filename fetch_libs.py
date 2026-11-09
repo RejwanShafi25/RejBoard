@@ -33,6 +33,6 @@ print("done (ort)")
 if True:  # English data for the bundled Tesseract.js (used by every platform build)
     t = os.path.join(os.path.dirname(os.path.abspath(__file__)), "ocr-engine", "tessdata"); os.makedirs(t, exist_ok=True)
     print("downloading eng.traineddata")
-    fetch("https://github.com/tesseract-ocr/tessdata_fast/raw/main/eng.traineddata", os.path.join(t, "eng.traineddata"))
+    fetch("https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/main/eng.traineddata", os.path.join(t, "eng.traineddata"))  # direct, not via github.com/.../raw
     assert os.path.getsize(os.path.join(t, "eng.traineddata")) > 1_000_000, "eng.traineddata looks wrong"
     print("done (ocr)")
