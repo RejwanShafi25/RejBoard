@@ -1,0 +1,67 @@
+<!doctype html>
+<!-- RejBoard for Android: Word (.docx) and PowerPoint (.pptx) -> pages, in a hidden view.
+     The desktop app converts these files with LibreOffice or Microsoft Office; Android has neither, so the document is laid out here
+     (docx-preview, @jvmr/pptx-to-html; both offline, no network) and the app (DocRender.kt) draws every page into a PDF, which the board
+     then imports exactly like a PDF on the desktop. The file comes from /__rb/doc/<key> (served once by the app) and never leaves the device. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+<title>RejBoard document renderer</title>
+<style>
+  html, body { margin: 0; padding: 0; background: #fff; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+  #out { display: block; width: max-content; }
+  .rbpage { position: relative; overflow: hidden; background: #fff; margin: 0 !important; box-shadow: none !important; }
+  section.docx { margin: 0 !important; box-shadow: none !important; }
+</style>
+<script src="jszip.min.js"></script>
+<script src="docx-preview.min.js"></script>
+<script type="importmap">{ "imports": { "jszip": "./jszip-shim.mjs" } }</script>
+</head>
+<body>
+<div id="st"></div>
+<div id="out"></div>
+<script type="module">
+const key = location.hash.slice(1), kind = new URLSearchParams(location.search).get('k');
+const done = o => window.RBDoc.done(JSON.stringify(o)), fail = m => window.RBDoc.fail(String(m));
+try {
+  const res = await fetch('/__rb/doc/' + encodeURIComponent(key), { cache: 'no-store' });
+  if (!res.ok) throw new Error('the document could not be read');
+  const buf = await res.arrayBuffer(), out = document.getElementById('out');
+  if (kind === 'docx') {
+    // pages break where Word last broke them (lastRenderedPageBreak) and at explicit page/section breaks
+    await window.docx.renderAsync(buf, out, document.getElementById('st'), {
+      inWrapper: false, breakPages: true, ignoreLastRenderedPageBreak: false, ignoreWidth: false, ignoreHeight: false,
+      ignoreFonts: false, experimental: true, useBase64URL: true, renderHeaders: true, renderFooters: true,
+      renderFootnotes: true, renderEndnotes: true, renderComments: false
+    });
+    out.querySelectorAll('section.docx').forEach(s => s.classList.add('rbpage'));
+    // Word's list bullets are private-use characters of the Symbol / Wingdings fonts, which Android does not have: use real bullets
+    const PUA = { 'f0b7': '•', 'f0a7': '▪', 'f0a8': '◆', 'f0d8': '➢', 'f0fc': '✓', 'f076': '❖', 'f06e': '■', 'f071': '❑', 'f0e0': '➔' };
+    for (const st of document.querySelectorAll('style')) {
+      const t = st.textContent.replace(/\\(f0[0-9a-f]{2})\b ?/gi, (m, h) => PUA[h.toLowerCase()] || '•').replace(/[-]/g, c => PUA[c.charCodeAt(0).toString(16)] || '•');
+      if (t !== st.textContent) st.textContent = t;
+    }
+    out.querySelectorAll('*').forEach(el => { for (const n of el.childNodes) if (n.nodeType === 3 && /[-]/.test(n.data)) n.data = n.data.replace(/[-]/g, c => PUA[c.charCodeAt(0).toString(16)] || '•'); });
+  } else {
+    const { pptxToHtml } = await import('./pptx-to-html.mjs');
+    const slides = await pptxToHtml(buf, {});
+    for (const h of slides) { const d = document.createElement('div'); d.className = 'rbpage'; d.innerHTML = h; out.append(d); }
+    for (const d of out.children) { // each wrapper takes the size of its slide
+      const c = d.firstElementChild;
+      if (c) { const r = c.getBoundingClientRect(); d.style.width = Math.ceil(r.width) + 'px'; d.style.height = Math.ceil(r.height) + 'px'; }
+    }
+  }
+  await Promise.all([...document.images].map(i => i.decode().catch(() => {})));
+  try { await document.fonts.ready; } catch (_) {}
+  await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+  const pages = [...document.querySelectorAll('.rbpage')].map(p => {
+    const r = p.getBoundingClientRect();
+    return { x: Math.round(r.left + scrollX), y: Math.round(r.top + scrollY), w: Math.ceil(r.width), h: Math.ceil(r.height) };
+  }).filter(p => p.w > 2 && p.h > 2);
+  if (!pages.length) throw new Error('the document has no pages');
+  done({ pages, scale: (window.visualViewport && visualViewport.scale) || 1, iw: innerWidth, dpr: devicePixelRatio });
+} catch (e) { fail((e && e.message) || e); }
+</script>
+</body>
+</html>

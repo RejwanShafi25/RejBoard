@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Same start-up colours as the Electron window (backgroundColor #fff7fa) and splash.html. DayNight so the page's
+         prefers-color-scheme follows the system theme, exactly like the desktop app's "Auto" theme. -->
+    <style name="Theme.RejBoard" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="colorPrimary">#e8679b</item>
+        <item name="colorAccent">#e8679b</item>
+        <item name="android:windowBackground">@color/rb_bg</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">@bool/rb_light_bars</item>
+        <item name="android:windowLightNavigationBar">@bool/rb_light_bars</item>
+    </style>
+</resources>

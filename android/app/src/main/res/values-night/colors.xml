@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="rb_bg">#1d1a1e</color>
+    <color name="rb_fg">#f2e6ec</color>
+    <color name="rb_track">#3a2f37</color>
+    <color name="rb_accent">#e8679b</color>
+    <bool name="rb_light_bars">false</bool>
+</resources>

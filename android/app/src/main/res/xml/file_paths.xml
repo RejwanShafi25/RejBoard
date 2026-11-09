@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <!-- automatic daily backups (shared on request from Settings) -->
+    <files-path name="backups" path="backups/" />
+    <!-- downloaded update APKs -->
+    <cache-path name="updates" path="updates/" />
+</paths>

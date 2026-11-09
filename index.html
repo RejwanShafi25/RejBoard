@@ -176,6 +176,13 @@ button,select,input,textarea{border-radius:12px}
 .nb-tplrow{display:flex;align-items:center;gap:8px;margin:4px 0;flex-wrap:wrap}
 .nb-tpln{font-size:13px;font-weight:600}
 .nb-tplx{padding:3px 8px}
+.csz{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+.csz-pre{display:flex;align-items:center;gap:8px;font-size:12.5px}.csz-pre select{flex:0 1 auto;min-width:0}
+.csz-wh{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.csz-wh label{display:flex;align-items:center;gap:6px;font-size:12.5px}
+.csz-wh input{width:96px;text-align:center;font-variant-numeric:tabular-nums}
+.csz-wh button{width:34px;height:34px;min-width:0;padding:0;display:inline-flex;align-items:center;justify-content:center;border-radius:10px}
+.csz-wh button.on{background:var(--ac,#2f7bff);color:#fff;border-color:transparent}
+.csz-note{font-size:11.5px;opacity:.7;margin:0}
 #osp input.osel{width:74px!important;min-width:0;flex:0 0 auto;padding:4px 6px;font-size:12px}
 html.rb-locked body>*:not(#applock){visibility:hidden!important}
 #applock{position:fixed;inset:0;z-index:100000;display:flex;align-items:center;justify-content:center;background:var(--bg,#111);color:var(--fg,#eee);padding:16px}
@@ -239,6 +246,7 @@ html.rb-locked body>*:not(#applock){visibility:hidden!important}
 #dk{box-sizing:border-box;width:max-content}
 #dk.sm button{padding:2px 3px;font-size:17px}#dk.sm svg{width:21px;height:21px}#dk.sm{padding:5px 8px}
 #dk.xs button{padding:1px 2px;font-size:15px}#dk.xs svg{width:18px;height:18px}#dk.xs{padding:4px 6px;gap:1px}
+#dk.fit1{overflow:visible;gap:0;padding-left:5px;padding-right:5px}#dk.fit1 button{min-width:0!important;padding-left:2px;padding-right:2px}#dk.fit1 .sep{margin:0 2px}
 #dk,#zw,#pgn{will-change:auto}#pgn{z-index:11}
 @media(max-width:1180px){#cvb span,#exb span,#prb span,#recb .lb{display:none}}
 @media(max-width:960px){#hdr>b{display:none}}
@@ -658,7 +666,7 @@ html.lowmem .mdl,html.lowmem #stm{backdrop-filter:none!important}
 <label><span data-i="lang"></span> <select id="lg"></select></label>
 </div>
 <div class="bar" id="tb"></div>
-<div class="bar" id="b5"><label><span data-i="size"></span> <select id="cps"><option value="inf" data-i="inf"></option><option value="pdf">PDF</option><option value="a4">A4</option><option value="a5">A5</option><option value="a3">A3</option><option value="letter">Letter</option></select></label><label><span data-i="orient"></span> <select id="cpo"><option value="p" data-i="portrait"></option><option value="l" data-i="landscape"></option></select></label><button id="apg" data-i="addpage"></button></div>
+<div class="bar" id="b5"><label><span data-i="size"></span> <select id="cps"><option value="inf" data-i="inf"></option><option value="pdf">PDF</option><option value="a4">A4</option><option value="a5">A5</option><option value="a3">A3</option><option value="letter">Letter</option><option value="custom">Custom…</option></select></label><button id="cpsz" type="button" hidden title="Change the custom size"></button><label><span data-i="orient"></span> <select id="cpo"><option value="p" data-i="portrait"></option><option value="l" data-i="landscape"></option></select></label><button id="apg" data-i="addpage"></button></div>
 <div class="bar" id="b4"><span class="sep"></span>
 <label><input type="checkbox" id="palm"> <span data-i="palm"></span></label><label><input type="checkbox" id="tilt"> <span data-i="tilt"></span></label><label><input type="checkbox" id="fast"> <span data-i="speed"></span></label><button id="penb" type="button" hidden title="Graphics tablet pen detected - adjust pen pressure">🖊 Pen</button><span class="sep"></span>
 <select id="shp" hidden><option value="rect">Rectangle</option><option value="frame">Container</option><option value="lane">Swimlane</option><option value="ell">Ellipse</option><option value="tri">Triangle</option><option value="dia">Diamond</option><option value="line">Line</option><option value="arr">Arrow</option><option value="rtri">Right triangle</option><option value="pent">Pentagon</option><option value="hex">Hexagon</option><option value="oct">Octagon</option><option value="star">Star</option><option value="darr">Double arrow</option><option value="cyl">Cylinder</option><option value="cone">Cone</option><option value="sphere">Sphere</option><option value="cube">Cube</option><option value="prism">Prism</option><option value="xyz">XYZ Plane</option><option value="trap">Trapezoid</option><option value="para">Parallelogram</option><option value="heart">Heart</option><option value="cross">Cross</option><option value="cloud">Cloud</option><option value="hexagram">Hexagram</option></select>
@@ -1359,9 +1367,37 @@ function autoLayout(dir){const pick=S.sel.filter(i=>i.t=='sp'&&!LINEK.includes(i
  push();for(const n of nodes){const q=P[n.id];if(q){n.x=b[0]+q[0];n.y=b[1]+q[1]}}cache=null;save();draw();toast(t_('Arranged {n} shapes',{n:nodes.length}))}
 /* ===== new board dialog (size, paper, pattern, live preview), templates gallery, Mermaid text <-> diagram ===== */
 const NB_PATS=[['plain','Plain'],['grid','Grid'],['dots','Dots'],['lines','Lined'],['margin','Ruled + margin'],['cornell','Cornell'],['cols','Columns'],['iso','Isometric dots'],['eng','Engineering'],['mm','Millimetre'],['hex','Hexagons'],['music','Music staff'],['tab','Guitar tab'],['hand','Handwriting practice'],['slant','Calligraphy guides']],
- NB_SIZES=[['inf','Infinite'],['a4','A4'],['a5','A5'],['a3','A3'],['letter','Letter']],
+ NB_SIZES=[['inf','Infinite'],['a4','A4'],['a5','A5'],['a3','A3'],['letter','Letter'],['custom','Custom']],
+ /* starting points for a custom board, in pixels (paper sizes at 300 dpi). Any width and height can be typed: there is no upper limit. */
+ CSZ_PRE=[['a4','A4',2480,3508],['a5','A5',1748,2480],['a3','A3',3508,4961],['letter','Letter',2550,3300],['fhd','Full HD',1920,1080],['4k','4K UHD',3840,2160],['sq','Square',2000,2000]],
  NB_PAP=[['white','White'],['cream','Cream'],['gray','Light gray'],['mint','Mint'],['sky','Sky'],['blush','Blush'],['black','Black'],['slate','Slate'],['navy','Navy'],['forest','Forest']];
-function nbDefaults(){const d={size:'inf',o:'p',bg:S.bg||'white',pat:'plain',gs:28,gd:1.5},v=L('wb.nbset',null);if(v&&typeof v==='object')for(const k in d)if(v[k]!=null)d[k]=v[k];
+/* a custom size in pixels: any whole number from 1 up (no upper limit) */
+const cszNum=(v,def)=>{v=Math.round(+v);return Number.isFinite(v)&&v>=1?v:def};
+/* the "Custom" size editor: preset picker, width, height, keep-proportions link and swap. st holds cw, ch, lk; changed() runs after every edit. */
+function customSizeRow(st,changed){const el=document.createElement('div');el.className='csz';
+ const LINK='<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg>',
+  SWAP='<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h15l-4-4M20 16H5l4 4"/></svg>';
+ el.innerHTML=`<label class="csz-pre"><span>${t_('Choose a preset size:')}</span><select class="csz-p"><option value="">${t_('Custom')}</option>${CSZ_PRE.map(p=>`<option value="${p[0]}">${t_(p[1])} (${p[2]} × ${p[3]})</option>`).join('')}</select></label>
+<div class="csz-wh"><label>W <input class="csz-w" type="number" min="1" step="1" inputmode="numeric" aria-label="${t_('Width in pixels')}"></label><label>H <input class="csz-h" type="number" min="1" step="1" inputmode="numeric" aria-label="${t_('Height in pixels')}"></label>
+<button type="button" class="csz-lk" title="${t_('Keep proportions')}" aria-label="${t_('Keep proportions')}">${LINK}</button><button type="button" class="csz-sw" title="${t_('Swap width and height')}" aria-label="${t_('Swap width and height')}">${SWAP}</button></div>
+<p class="csz-note">${t_('Width and height in pixels, any size.')}</p>`;
+ const q=k=>el.querySelector(k),w=q('.csz-w'),h=q('.csz-h'),p=q('.csz-p'),lk=q('.csz-lk');
+ const sync=()=>{w.value=st.cw;h.value=st.ch;lk.classList.toggle('on',!!st.lk);lk.setAttribute('aria-pressed',st.lk?'true':'false');const m=CSZ_PRE.find(x=>x[2]===st.cw&&x[3]===st.ch);p.value=m?m[0]:''};
+ p.onchange=()=>{const m=CSZ_PRE.find(x=>x[0]===p.value);if(m){st.cw=m[2];st.ch=m[3]}sync();changed()};
+ /* typing: keep the ratio when linked; values are only checked when the field is left, so a number can be typed freely */
+ const typed=(inp,other)=>()=>{const v=Math.round(+inp.value);if(!Number.isFinite(v)||v<1)return;const r=st.ch/st.cw;
+  if(inp===w){if(st.lk)st.ch=Math.max(1,Math.round(v*r));st.cw=v}else{if(st.lk)st.cw=Math.max(1,Math.round(v/r));st.ch=v}
+  other.value=inp===w?st.ch:st.cw;const m=CSZ_PRE.find(x=>x[2]===st.cw&&x[3]===st.ch);p.value=m?m[0]:'';changed()};
+ w.oninput=typed(w,h);h.oninput=typed(h,w);w.onchange=h.onchange=sync;
+ lk.onclick=()=>{st.lk=!st.lk;sync()};
+ q('.csz-sw').onclick=()=>{[st.cw,st.ch]=[st.ch,st.cw];sync();changed()};
+ el.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.tagName==='INPUT'){e.target.blur();sync()}});
+ sync();return el}
+/* Canvas panel: pick a custom size for the open board. Resolves [w,h] or null. */
+async function customSizeDialog(w,h){const st={cw:cszNum(w,2480),ch:cszNum(h,3508),lk:true};
+ const r=await dlg({title:t_('Custom board size'),ok:t_('Apply'),body:()=>customSizeRow(st,()=>{})});return r?[st.cw,st.ch]:null}
+function nbDefaults(){const d={size:'inf',o:'p',bg:S.bg||'white',pat:'plain',gs:28,gd:1.5,cw:2480,ch:3508,lk:true},v=L('wb.nbset',null);if(v&&typeof v==='object')for(const k in d)if(v[k]!=null)d[k]=v[k];
+ d.cw=cszNum(d.cw,2480);d.ch=cszNum(d.ch,3508);d.lk=d.lk!==false;
  if(!PAP[d.bg])d.bg='white';if(!NB_PATS.some(p=>p[0]===d.pat))d.pat='plain';if(!NB_SIZES.some(p=>p[0]===d.size))d.size='inf';if(d.o!=='l')d.o='p';d.gs=Math.max(10,Math.min(80,+d.gs||28));d.gd=Math.max(1,Math.min(5,+d.gd||1.5));return d}
 function patAllowed(t){if(!t||t.id==='blank')return null;if(['cornell','twocol','lecture','journal','reading','math','sketch'].includes(t.id))return[...new Set(['plain','dots','iso','grid','lines',t.pat])];return[t.pat]}
 function patLocked(t){const a=patAllowed(t);return!!a&&a.length===1}
@@ -1370,6 +1406,7 @@ const tplBuild=(t,bg)=>TemplatesCore.build(t,dk(bg),uid,k=>t_(k));
 /* draws a board (paper + items) into a canvas, fitted into maxW x maxH css pixels */
 function boardPreview(cv,o,items,maxW,maxH){let wb;
  if(o.size==='inf'){wb=[0,0,1400,900];if(items.length){const b=bnds(items);wb=[Math.min(0,b[0]-40),Math.min(0,b[1]-40),Math.max(1400,b[2]+40),Math.max(900,b[3]+40)]}}
+ else if(o.size==='custom'||o.size==='pdf')wb=[0,0,o.cw||o.w||800,o.ch||o.h||1100];
  else{const d=PSZ[o.size]||PSZ.a4,[pw,ph]=o.o==='l'?[d[1],d[0]]:d;wb=[0,0,pw,ph]}
  const ww=wb[2]-wb[0],wh=wb[3]-wb[1],z=Math.min(maxW/ww,maxH/wh),r=2,Z=z*r;cv.width=Math.max(1,Math.round(ww*Z));cv.height=Math.max(1,Math.round(wh*Z));cv.style.width=Math.round(ww*z)+'px';cv.style.height=Math.round(wh*z)+'px';
  const c=cv.getContext('2d');
@@ -1389,23 +1426,25 @@ async function newBoardDialog(pre){const st=nbDefaults();let tpl=null,items=[],t
 <div class="nb-sl"><label><span>${t_('Spacing')} <b class="nb-gsv"></b></span><input type="range" class="nb-gs" min="10" max="80"></label><label><span>${t_('Line weight')} <b class="nb-gdv"></b></span><input type="range" class="nb-gd" min="1" max="5" step=".5"></label></div></div>`;
   const q=k=>el.querySelector(k),cvp=q('canvas');titleIn=q('.nb-title');titleIn.placeholder=t_('Untitled');
   const chips=(box,list,key,fn)=>{box.innerHTML='';list.forEach(([k,n])=>{const b=document.createElement('button');b.type='button';b.textContent=t_(n);b.dataset.k=k;b.onclick=()=>{fn?fn(k):(st[key]=k);if(key==='bg'&&tpl)items=tplBuild(tpl,st.bg);upd()};box.append(b)})};
+  const csz=customSizeRow(st,()=>upd());q('.nb-or').after(csz);
   chips(q('.nb-size'),NB_SIZES,'size');chips(q('.nb-or'),[['p','Portrait'],['l','Landscape']],'o');chips(q('.nb-pat'),NB_PATS,'pat',k=>{{const al=patAllowed(tpl);if(al&&!al.includes(k))return}const G={music:64,tab:80,hand:60,eng:50,mm:50,slant:40};if(G[k])st.gs=G[k];else if(G[st.pat])st.gs=28;st.pat=k});
   NB_PAP.forEach(([k,n])=>{const b=document.createElement('button');b.type='button';b.dataset.k=k;b.title=t_(n);b.setAttribute('aria-label',t_(n));b.style.background=PAP[k];b.onclick=()=>{st.bg=k;if(tpl)items=tplBuild(tpl,st.bg);upd()};q('.nb-sw').append(b)});
   const gs=q('.nb-gs'),gd=q('.nb-gd');gs.oninput=()=>{st.gs=+gs.value;upd()};gd.oninput=()=>{st.gd=+gd.value;upd()};
   q('.nb-tplb').onclick=async()=>{const t=await templateGallery({bg:st.bg});if(t)useTpl(t)};q('.nb-tplx').onclick=()=>useTpl(null);
   let raf=0;upd=()=>{const on=(box,v)=>box.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.k===v));
-   on(q('.nb-size'),st.size);on(q('.nb-or'),st.o);on(q('.nb-pat'),st.pat);on(q('.nb-sw'),st.bg);q('.nb-or').querySelectorAll('button').forEach(b=>b.disabled=st.size==='inf');
+   on(q('.nb-size'),st.size);on(q('.nb-or'),st.o);on(q('.nb-pat'),st.pat);on(q('.nb-sw'),st.bg);q('.nb-or').querySelectorAll('button').forEach(b=>b.disabled=st.size==='inf');q('.nb-or').hidden=st.size==='custom';csz.hidden=st.size!=='custom';
    gs.value=st.gs;gd.value=st.gd;{const al=patAllowed(tpl);q('.nb-pat').querySelectorAll('button').forEach(b=>{b.disabled=!!al&&!al.includes(b.dataset.k)});const nt=q('.nb-lock');nt.hidden=!al;if(al)nt.textContent='🔒 '+patNote(al)}q('.nb-gsv').textContent=st.gs;q('.nb-gdv').textContent=st.gd;q('.nb-sl').hidden=st.pat==='plain';
    q('.nb-tpln').textContent=tpl?t_(tpl.name):t_('No template');q('.nb-tplx').hidden=!tpl;titleIn.placeholder=tpl?t_(tpl.name):t_('Untitled');
-   q('.nb-cap').textContent=[t_((NB_SIZES.find(x=>x[0]===st.size)||[])[1]||''),st.size==='inf'?'':t_(st.o==='l'?'Landscape':'Portrait'),t_((NB_PAP.find(x=>x[0]===st.bg)||[])[1]||''),t_((NB_PATS.find(x=>x[0]===st.pat)||[])[1]||'')].filter(Boolean).join(' · ');
+   q('.nb-cap').textContent=[t_((NB_SIZES.find(x=>x[0]===st.size)||[])[1]||''),st.size==='inf'?'':st.size==='custom'?st.cw+' × '+st.ch+' px':t_(st.o==='l'?'Landscape':'Portrait'),t_((NB_PAP.find(x=>x[0]===st.bg)||[])[1]||''),t_((NB_PATS.find(x=>x[0]===st.pat)||[])[1]||'')].filter(Boolean).join(' · ');
    cancelAnimationFrame(raf);raf=requestAnimationFrame(()=>boardPreview(cvp,st,items,Math.min(300,innerWidth-80),380))};
   el.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.tagName==='BUTTON')e.stopPropagation()});
   titleIn.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();e.stopPropagation();el.closest('.box').querySelector('.acts .pri').click()}});
   setTimeout(()=>{titleIn.focus();if(pre&&pre.tpl)useTpl(pre.tpl);else upd()},30);return el}});
  if(!r)return false;
- if(!tpl)Wr('wb.nbset',{size:st.size,o:st.o,bg:st.bg,pat:st.pat,gs:st.gs,gd:st.gd});
+ if(!tpl)Wr('wb.nbset',{size:st.size,o:st.o,bg:st.bg,pat:st.pat,gs:st.gs,gd:st.gd,cw:st.cw,ch:st.ch,lk:st.lk});
  const title=(titleIn.value||'').trim()||(tpl?t_(tpl.name):'Untitled');
- await newNote({title,bg:st.bg,pat:st.pat,gs:st.gs,gd:st.gd,patLock:patAllowed(tpl)?tpl.id:'',pg:{size:st.size,o:st.o,n:1},items:tpl?tplBuild(tpl,st.bg):[]});
+ const pg=st.size==='custom'?{size:'custom',o:st.cw>st.ch?'l':'p',n:1,w:st.cw,h:st.ch}:{size:st.size,o:st.o,n:1};
+ await newNote({title,bg:st.bg,pat:st.pat,gs:st.gs,gd:st.gd,patLock:patAllowed(tpl)?tpl.id:'',pg,items:tpl?tplBuild(tpl,st.bg):[]});
  if(st.size==='inf'&&S.items.length){const b=bnds(S.items);if(b[2]>cv.clientWidth||b[3]>cv.clientHeight)fitAll();draw()}
  $('#hm').hidden=1;return true}
 /* the templates gallery: resolves the chosen template or null */
@@ -1809,7 +1848,7 @@ function splitPlace(){const el=$('#split'),w=$('#w');if(!el||el.hidden||!SPL){w.
  requestAnimationFrame(()=>{const r=w.getBoundingClientRect(),dk=$('#dk'),db=dk&&!dk.hidden?dk.getBoundingClientRect():null,bottom=db&&db.right>r.right+10&&db.top<r.bottom?db.top-8:r.bottom; /* stop above the dock where it reaches under the pane */
   Object.assign(el.style,{left:(r.right+10)+'px',top:r.top+'px',width:W+'px',height:Math.max(160,bottom-r.top)+'px'});if(SPL.fit){SPL.fit=false;splitFit()}else splitDraw()})}
 addEventListener('resize',()=>{if(SPL)splitPlace()});
-function splitPage(){const d=PSZ[SPL.pg.size]||PSZ.a4;if(SPL.pg.size==='pdf')return[SPL.pg.w||800,SPL.pg.h||1100];return SPL.pg.o==='l'?[d[1],d[0]]:d}
+function splitPage(){const d=PSZ[SPL.pg.size]||PSZ.a4;if(SPL.pg.size==='pdf'||SPL.pg.size==='custom')return[SPL.pg.w||800,SPL.pg.h||1100];return SPL.pg.o==='l'?[d[1],d[0]]:d}
 function splitFit(){if(!SPL)return;const cv2=$('#split canvas'),W=cv2.clientWidth,H=cv2.clientHeight;let b;
  if(SPL.pg.size!=='inf'){const[pw,ph]=splitPage(),y=SPL.page*(ph+PG_GAP);b=[0,y,pw,y+ph]}else b=SPL.items.length?withBoard(SPL,()=>bnds(SPL.items.filter(act))):[0,0,800,600];
  const z=Math.min(W/Math.max(1,b[2]-b[0]+60),H/Math.max(1,b[3]-b[1]+60),3);SPL.z=z;SPL.ox=W/2-(b[0]+b[2])/2*z;SPL.oy=H/2-(b[1]+b[3])/2*z;splitDraw()}
@@ -2077,11 +2116,14 @@ let sdRAF=0,sdSafe=false,sdUnsafe=false;function schedDraw(safe){if(safe===true)
 const pinchStart=()=>{const[a,b]=[...tp.values()];return{k:'pz',d:Math.hypot(a[0]-b[0],a[1]-b[1])||1,z:S.z,mx:(a[0]+b[0])/2,my:(a[1]+b[1])/2,ox:S.ox,oy:S.oy}};
 function xyzHandles(i){const o=i.xyz||{},ox=o.ox??i.x,oy=o.oy??i.y,dx=(o.zLen||35)*.72,dy=(o.zLen||35)*.55;return {x:[ox+(o.xLen||120),oy,'x'],y:[ox,oy+(o.yLen||90),'y'],z:[ox+dx,oy-dy,'z']}}
 cv.addEventListener('pointerdown',()=>{LCSEL=S.tool=='select'||S.tool=='lasso'},true);
-cv.addEventListener('pointerdown',e=>{cv.setPointerCapture(e.pointerId);if(e.button==2){if(ST.rdrag){drag={k:'pan',x:e.clientX,y:e.clientY,ox:S.ox,oy:S.oy};mkCache()}return}
+/* a pen's side (barrel) button arrives as the "right" button (Samsung S Pen, Wacom, Surface pens); the eraser end as button 5 / buttons 32 */
+const penRub=e=>ST.side&&e.pointerType=='pen'&&(e.button==2||e.button==5||(e.buttons&34)>0);
+cv.addEventListener('pointerdown',e=>{cv.setPointerCapture(e.pointerId);if(e.button==2&&!penRub(e)){if(ST.rdrag){drag={k:'pan',x:e.clientX,y:e.clientY,ox:S.ox,oy:S.oy};mkCache()}return}
  if(e.pointerType=='pen')lastPen=Date.now();
  if(e.pointerType=='touch'){if((S.palm||ST.finger=='auto')&&Date.now()-lastPen<1500)return;tp.set(e.pointerId,[e.clientX,e.clientY]);if(tp.size==2){cur=null;lasso=null;cache=null;drag=pinchStart();draw();return}if(S.palm||ST.finger=='never'){drag={k:'pan',x:e.clientX,y:e.clientY,ox:S.ox,oy:S.oy};mkCache();return}}
  if(e.pointerType=='mouse'&&ST.mouse=='never'&&!['select','lasso','hand','laser'].includes(S.tool)){drag={k:'pan',x:e.clientX,y:e.clientY,ox:S.ox,oy:S.oy};mkCache();return}
- if(ST.side&&e.pointerType=='pen'&&(e.buttons&32)){push();drag={k:'er',last:pt(e)};lcPre();erase(pt(e));lcErasePatch();draw();return}
+ /* holding the side button erases for as long as it is held; the selected pen never changes, so letting go goes straight back to it */
+ if(penRub(e)){push();drag={k:'er',last:pt(e),side:1};lcPre();erase(pt(e));lcErasePatch();draw();return}
  geo.lock=null;if(geo.on&&e.button!==1){const gp=pt(e),gh=geoHit(gp);if(gh&&gh.m==='edge')geo.lock=gh;else if(gh){const c=geoToWorld(geoCentroid());drag={k:'geo',h:gh,last:gp,C:c,a0:Math.atan2(gp[1]-c[1],gp[0]-c[0])-geo.angle};return}}
  ruler.lock=false;if(ruler.on&&e.button!==1&&!geo.lock){const rp=pt(e),rh=rulerHit(rp);if(rh==='edge')ruler.lock=true;else if(rh){const co=Math.cos(ruler.angle),si=Math.sin(ruler.angle),C=[ruler.x+co*ruler.len/2,ruler.y+si*ruler.len/2];drag={k:'rl',m:rh,last:rp,C,a0:ruler.angle-(Math.atan2(rp[1]-C[1],rp[0]-C[0])+(rh==='rotA'?Math.PI:0))};return}}
  let p=rulerPoint(paperPoint(pt(e))),t=S.tool;
@@ -3154,16 +3196,27 @@ async function replayDialog(){if(!S.items.length)return toast(t_('Nothing to rep
  alive=false;playing=false;cancelAnimationFrame(raf);if(rec&&rec.state!='inactive')rec.stop()}
 
 /* ---------- bottom bar layout: dock + page navigator + zoom never overlap ---------- */
-function fitBottom(){const dk=$('#dk'),zw0=$('#zw'),pp=$('#pp'),pg=$('#pgn');if(!dk)return;
+/* small landscape screens (phones, small tablets): the header, page bar and zoom widget shrink together by one factor, so the
+   interface stays in proportion with the board and the dock instead of crowding it. Laptops, tablets and portrait phones (which have
+   their own layout) stay at 100%. Never below 72%, so everything stays easy to tap. The board itself is never scaled. */
+let UIS=1;
+function uiScale(){const land=innerWidth>innerHeight,s=land?Math.max(.72,Math.min(1,innerWidth/1100,innerHeight/700)):1;
+ UIS=Math.round(s*100)/100;for(const id of ['hdr','pgn','zw','pp']){const e=document.getElementById(id);if(e)e.style.zoom=UIS<1?String(UIS):''}}
+function fitBottom(){uiScale();const dk=$('#dk'),zw0=$('#zw'),pp=$('#pp'),pg=$('#pgn');if(!dk)return;
  const vis=e=>e&&!e.hidden&&getComputedStyle(e).display!='none',root=document.documentElement,vw=root.clientWidth,m=8,gap=10,safe='env(safe-area-inset-bottom,0px)',B=14,zw=vis(zw0)?zw0:(vis(pp)?pp:zw0);
- dk.classList.remove('sm','xs');dk.style.maxWidth='none';dk.style.left='50%';dk.style.transform='translateX(-50%)';
+ dk.classList.remove('sm','xs','fit1');dk.style.maxWidth='none';dk.style.width='';dk.style.zoom='';dk.style.left='50%';dk.style.transform='translateX(-50%)';
  let dW=dk.getBoundingClientRect().width;
- for(const c of ['sm','xs']){if(dW<=vw-2*m)break;dk.classList.add(c);dW=dk.getBoundingClientRect().width}
- dk.style.maxWidth=(vw-2*m)+'px';dW=Math.min(dW,vw-2*m);
+ /* landscape: every tool is visible at once on ONE row, never behind a sideways scroll: the spacing tightens first (icons keep their
+    size), then the icons get smaller, then the whole dock scales down just enough to fit. Portrait keeps one row that scrolls sideways. */
+ const room=vw-2*m,land=innerWidth>innerHeight;
+ if(UIS<1){dk.style.zoom=String(UIS);dW=dk.getBoundingClientRect().width} /* same size as the rest of the interface */
+ for(const c of land?['fit1','sm','xs']:['sm','xs']){if(dW<=room)break;dk.classList.add(c);dW=dk.getBoundingClientRect().width}
+ if(land&&dW>room+.5){dk.style.zoom=((parseFloat(dk.style.zoom)||1)*room/dW).toFixed(4);dW=dk.getBoundingClientRect().width}
+ dk.style.maxWidth=((vw-2*m)/(parseFloat(dk.style.zoom)||1))+'px';dW=Math.min(dW,vw-2*m); /* a zoomed dock's own lengths are zoomed too */
  const zW=vis(zw)?zw.getBoundingClientRect().width:0,pW=vis(pg)?pg.getBoundingClientRect().width:0,lo=m+(pW?pW+gap:0),hi=vw-m-(zW?zW+gap:0)-dW;
  const dH=dk.getBoundingClientRect().height;let pb=86;
  /* the themes force #pgn's bottom with !important, so an inline value must be !important too or the page bar stays hidden behind the dock */
- const setB=(e,px)=>e&&e.style.setProperty('bottom',px+'px','important'),dB=Math.max(0,Math.round(innerHeight-dk.getBoundingClientRect().bottom));
+ const setB=(e,px)=>e&&e.style.setProperty('bottom',(px/(parseFloat(e.style.zoom)||1))+'px','important') /* a zoomed widget's own lengths are zoomed too */,dB=Math.max(0,Math.round(innerHeight-dk.getBoundingClientRect().bottom));
  if(lo<=hi){/* everything fits on one row: keep the dock centred, shifting only if a side widget needs the room */
   const Lc=(vw-dW)/2,L=Math.max(lo,Math.min(Lc,hi)),sh=Math.round(L-Lc);dk.style.left='50%';dk.style.transform=sh?`translateX(calc(-50% + ${sh}px))`:'translateX(-50%)';
   setB(zw,dB);setB(pg,dB);
@@ -4007,7 +4060,8 @@ function openSettings(){const m=$('#stm');m.hidden=0;m.innerHTML='';m.onclick=e=
  updateButtons.append(checkBtn,downloadBtn,laterBtn,installBtn,releaseBtn);updateBox.append(updateVersion,autoWrap,updateButtons,updateStatusLine);box.append(updateBox);
  const releases='https://github.com/RejwanShafi25/RejBoard/releases/latest';let latestUpdateState=null;
  const updateStatusText=(s)=>{latestUpdateState=s;const reason=s.reason;downloadBtn.hidden=s.status!=='available';laterBtn.hidden=s.status!=='available';installBtn.hidden=s.status!=='ready';releaseBtn.hidden=!(s.policy&&!s.policy.enabled)||!!(s.policy&&s.policy.enabled);if(s.status==='checking')updateStatusLine.textContent='Checking for updates…';else if(s.status==='up-to-date')updateStatusLine.textContent='You are up to date.';else if(s.status==='available')updateStatusLine.textContent='Version '+(s.availableVersion||'')+' is available. Download it now?';else if(s.status==='downloading')updateStatusLine.textContent='Downloading '+(s.percent||0)+'%';else if(s.status==='ready')updateStatusLine.textContent='Update ready to install.'+(s.blocked?' Finish recording/transfers and save your work first.':'');else if(s.status==='error')updateStatusLine.textContent=({offline:'Could not reach GitHub. Check your internet connection.', 'rate-limit':'GitHub temporarily limited update checks. Try again later.',checksum:'The downloaded update failed its integrity check and was rejected.',failed:'Update failed. RejBoard will continue working normally.'})[reason]||'Update failed. RejBoard will continue working normally.';else if(s.status==='idle')updateStatusLine.textContent='Not checked yet';if(s.policy&&!s.policy.enabled){updateStatusLine.textContent=({portable:'Portable builds cannot update in-app.', 'linux-package':'Linux .deb/.rpm packages cannot update in-app.','unsigned-mac':'This unsigned macOS build cannot update in-app.','development':'Updates are available in packaged builds only.'})[s.policy.reason]||'Use GitHub Releases to get the latest version.';releaseBtn.hidden=false;}}
- if(window.wb&&wb.updates){wb.updates.getVersion().then(v=>updateVersion.textContent='Current version: '+v);wb.updates.onStatus(updateStatusText);checkBtn.onclick=async()=>{updateStatusLine.textContent='Checking for updates…';const r=await wb.updates.check();if(!r.ok){if(r.releasesUrl){updateStatusText({status:'idle',policy:{enabled:false,reason:r.reason}})}else updateStatusText({status:'error',reason:r.reason||'failed'})}};downloadBtn.onclick=async()=>{downloadBtn.disabled=true;updateStatusLine.textContent='Starting download…';const r=await wb.updates.download();downloadBtn.disabled=false;if(!r.ok)updateStatusText({status:'error',reason:r.reason||'failed'})};laterBtn.onclick=()=>{downloadBtn.hidden=true;laterBtn.hidden=true;updateStatusLine.textContent='Update postponed. You can check again later.'};installBtn.onclick=async()=>{if(DIRTY)await saveNow();pushUpdateActivity();const r=await wb.updates.install();if(!r.ok)updateStatusLine.textContent=r.reason==='busy'?'Save your work and finish any recording or LAN transfer before restarting.':'The update is not ready yet.'};releaseBtn.onclick=()=>window.open(releases,'_blank','noopener');autoCheck.onchange=()=>{localStorage.setItem('wb.updates.auto',String(autoCheck.checked));if(autoCheck.checked&&window.wb&&wb.updates)wb.updates.check()};}
+ if(window.wb&&wb.updates){wb.updates.getVersion().then(v=>updateVersion.textContent='Current version: '+v);wb.updates.onStatus(updateStatusText);checkBtn.onclick=async()=>{updateStatusLine.textContent='Checking for updates…';const r=await wb.updates.check();if(!r.ok){if(r.releasesUrl){updateStatusText({status:'idle',policy:{enabled:false,reason:r.reason}})}else updateStatusText({status:'error',reason:r.reason||'failed'})}};downloadBtn.onclick=async()=>{downloadBtn.disabled=true;updateStatusLine.textContent='Starting download…';const r=await wb.updates.download();downloadBtn.disabled=false;if(!r.ok)updateStatusText({status:'error',reason:r.reason||'failed'})};laterBtn.onclick=()=>{downloadBtn.hidden=true;laterBtn.hidden=true;updateStatusLine.textContent='Update postponed. You can check again later.'};installBtn.onclick=async()=>{if(DIRTY)await saveNow();pushUpdateActivity();const r=await wb.updates.install();if(!r.ok)updateStatusLine.textContent=r.reason==='busy'?'Save your work and finish any recording or LAN transfer before restarting.':'The update is not ready yet.'};releaseBtn.onclick=()=>{const s=latestUpdateState||{},u=s.releasesUrl||(s.policy&&s.policy.releasesUrl); /* each app names its own release page (the Android app: Android releases only) */
+ window.open(/^https:\/\/github\.com\/RejwanShafi25\/RejBoard\//.test(String(u||''))?u:releases,'_blank','noopener')};autoCheck.onchange=()=>{localStorage.setItem('wb.updates.auto',String(autoCheck.checked));if(autoCheck.checked&&window.wb&&wb.updates)wb.updates.check()};}
  const pushUpdateActivity=()=>({recording:!!(typeof RC!=='undefined'&&(RC.mr||RC.busy)),lanTransfer:!!window.__rejLanTransfer,unsavedChanges:!!(typeof DIRTY!=='undefined'&&DIRTY)});
  if(window.wb&&wb.updates){document.addEventListener('visibilitychange',pushUpdateActivity);window.addEventListener('beforeunload',()=>{if(DIRTY)saveNow()});}
  H('Reset to default','Put every setting back to how it shipped. Your boards are not touched.');const rb=document.createElement('button');rb.textContent='Reset all settings';rb.onclick=()=>{if(!confirmTwice(rb))return;Object.keys(localStorage).filter(k=>k.startsWith('wb.')).forEach(k=>localStorage.removeItem(k));location.reload()};box.append(rb);
@@ -4017,16 +4071,20 @@ function openSettings(){const m=$('#stm');m.hidden=0;m.innerHTML='';m.onclick=e=
 $('#stb').onclick=()=>{closeTransient();openSettings()};
 const tr=k=>{const e=T.en[k];return e==null?k:(window.__tx?window.__tx(e):e)};
 const PSZ={a4:[794,1123],a5:[559,794],a3:[1123,1587],letter:[816,1056]},PG_GAP=40;
-const pdim=()=>{if(S.pg.size=='pdf')return [S.pg.w||800,S.pg.h||1100];const d=PSZ[S.pg.size]||PSZ.a4;return S.pg.o=='l'?[d[1],d[0]]:d};
+const pgOwnWH=()=>S.pg.size=='pdf'||S.pg.size=='custom'; /* PDF and custom pages carry their own width and height */
+const pdim=()=>{if(pgOwnWH())return [S.pg.w||800,S.pg.h||1100];const d=PSZ[S.pg.size]||PSZ.a4;return S.pg.o=='l'?[d[1],d[0]]:d};
 function bgAll(c,W,H,ox,oy,z){if(S.pg.size=='inf')return bgfx(c,W,H,ox,oy,z);const[pw,ph]=pdim(),pitch=ph+PG_GAP;c.fillStyle=dk(S.bg)?'#0b0b0d':'#d9d4de';c.fillRect(0,0,W,H);
  for(let i=0;i<S.pg.n;i++){const y=oy+i*pitch*z;if(y>H||y+ph*z<0)continue;c.save();c.shadowColor='#0004';c.shadowBlur=14;c.fillStyle='#fff';c.fillRect(ox,y,pw*z,ph*z);c.restore();c.save();c.beginPath();c.rect(ox,y,pw*z,ph*z);c.clip();bgfx(c,W,H,ox,y,z);c.restore()}}
 function camTo(z,ox,oy){cache=null;const z0=S.z,x0=S.ox,y0=S.oy,t0=performance.now();(function f(){const k=Math.min(1,(performance.now()-t0)/320),e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2;S.z=z0+(z-z0)*e;S.ox=x0+(ox-x0)*e;S.oy=y0+(oy-y0)*e;zl();LCZ=k<1;draw();LCZ=false;if(k<1)requestAnimationFrame(f)})()}
 function pgOf(){const[,ph]=pdim(),cy=(cv.clientHeight/2-S.oy)/S.z;return Math.max(0,Math.min(S.pg.n-1,Math.floor(cy/(ph+PG_GAP))))}
 function goPage(i){if(S.pg.size=='inf')return;i=Math.max(0,Math.min(S.pg.n-1,i));const[pw,ph]=pdim(),W=cv.clientWidth,H=cv.clientHeight,z=Math.min(W/(pw+60),H/(ph+60),3);camTo(z,(W-pw*z)/2,(H-ph*z)/2-i*(ph+PG_GAP)*z)}
-function pgUi(){const pg=S.pg.size!='inf';$('#pgn').hidden=!pg;$('#cps').value=S.pg.size;$('#cpo').value=S.pg.size=='pdf'?((S.pg.w||800)>(S.pg.h||1100)?'l':'p'):S.pg.o;$('#cpo').disabled=!pg;if(!pg)return;const[,ph]=pdim(),last=(S.pg.n-1)*(ph+PG_GAP)+ph,b=S.items.length?bnds(S.items):[0,0,0,0],f=$('#pgfull');f.hidden=b[3]<last-50;f.textContent=tr('full')}
+function pgUi(){const pg=S.pg.size!='inf';$('#pgn').hidden=!pg;$('#cps').value=S.pg.size;{const b=$('#cpsz');b.hidden=S.pg.size!='custom';if(!b.hidden)b.textContent='✎ '+(S.pg.w||800)+' × '+(S.pg.h||1100)}$('#cpo').value=pgOwnWH()?((S.pg.w||800)>(S.pg.h||1100)?'l':'p'):S.pg.o;$('#cpo').disabled=!pg;if(!pg)return;const[,ph]=pdim(),last=(S.pg.n-1)*(ph+PG_GAP)+ph,b=S.items.length?bnds(S.items):[0,0,0,0],f=$('#pgfull');f.hidden=b[3]<last-50;f.textContent=tr('full')}
 function addPage(){if(S.pg.size=='inf')return toast(tr('pickpage'));push();S.pg.n++;save();pgUi();goPage(S.pg.n-1)}
-$('#cps').onchange=e=>{S.pg.size=e.target.value;if(S.pg.n<1)S.pg.n=1;save();pgUi();if(S.pg.size=='inf')fitAll();else goPage(0);draw()};
-$('#cpo').onchange=e=>{const o=e.target.value;if(S.pg.size=='pdf'){const w=S.pg.w||800,h=S.pg.h||1100;if(w!==h&&(o=='l')!==(w>h)){S.pg.w=h;S.pg.h=w}} /* PDF pages carry their own w/h, so rotating means swapping them */
+$('#cps').onchange=async e=>{const v=e.target.value;
+ if(v==='custom'){const[w0,h0]=S.pg.size=='inf'?[2480,3508]:pdim(),r=await customSizeDialog(w0,h0);if(!r){pgUi();return}S.pg.w=r[0];S.pg.h=r[1];S.pg.o=r[0]>r[1]?'l':'p'} /* the board keeps its pages; only their size changes */
+ S.pg.size=v;if(S.pg.n<1)S.pg.n=1;save();pgUi();if(S.pg.size=='inf')fitAll();else goPage(0);draw()};
+$('#cpsz').onclick=async()=>{const r=await customSizeDialog(S.pg.w,S.pg.h);if(!r)return;S.pg.w=r[0];S.pg.h=r[1];S.pg.o=r[0]>r[1]?'l':'p';save();pgUi();goPage(pgOf());draw()};
+$('#cpo').onchange=e=>{const o=e.target.value;if(pgOwnWH()){const w=S.pg.w||800,h=S.pg.h||1100;if(w!==h&&(o=='l')!==(w>h)){S.pg.w=h;S.pg.h=w}} /* PDF pages carry their own w/h, so rotating means swapping them */
  S.pg.o=o;save();pgUi();goPage(pgOf())};
 $('#apg').onclick=$('#pgadd').onclick=$('#pgfull').onclick=addPage;$('#pg0').onclick=()=>goPage(pgOf()-1);$('#pg1').onclick=()=>goPage(pgOf()+1);$('#zs').onclick=()=>zoomSel();
 function zoomSel(){const L=S.sel.length?S.sel:S.items;if(!L.length)return;const b=bnds(L),W=cv.clientWidth,H=cv.clientHeight,z=Math.max(ZMIN,Math.min(6,.85*Math.min(W/Math.max(1,b[2]-b[0]),H/Math.max(1,b[3]-b[1])))),mx=(b[0]+b[2])/2,my=(b[1]+b[3])/2;camTo(z,W/2-mx*z,H/2-my*z)}

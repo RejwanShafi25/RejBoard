@@ -1,4 +1,16 @@
 # Changelog
+## [1.3.7]
+### Added
+- **RejBoard for Android 1.0.0** is out: the same RejBoard on Android phones and tablets, released separately (tag `android-v1.0.0`). See [android/CHANGELOG.md](android/CHANGELOG.md).
+- **Custom board size:** **Custom** in the New board dialog takes any width and height in pixels, with no upper limit. Start from a preset (A4, A5, A3 and Letter at 300 dpi, Full HD, 4K, Square), keep the proportions with the link button, or swap width and height. An open board can be switched to a custom size, or resized, from the Canvas panel (**Custom…** and the ✎ size button).
+
+### Changed
+- **The dock always fits in landscape:** on any screen held sideways, every tool in the bottom dock is visible on one row, with no sideways scrolling: its spacing tightens first, then the icons get smaller, then the whole dock scales just enough. In portrait the dock still scrolls sideways.
+- **Small landscape screens stay in proportion:** on phones and small tablets held sideways, the header, page bar, zoom controls and dock shrink together (never below 72%), so the board gets more room and nothing crowds it. Larger tablets, laptops and portrait phones are unchanged.
+
+### Fixed
+- **Pen side button erases on more pens:** with *Pen side button rubs out* on, holding the barrel button of Wacom, Surface and S Pen styluses now erases instead of panning the board.
+
 ## [1.3.6]
 ### Fixed
 - The zoom writing window's box on the board turned solid purple while you wrote, hiding the ink under it; it is now a plain outline.

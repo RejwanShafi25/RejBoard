@@ -1,8 +1,10 @@
-# Build installable desktop packages on version tags.
+# Releases. Desktop and Android have their own versions and are released separately:
+#   tag vX.Y.Z          -> desktop installers (Windows, macOS, Linux); version from package.json
+#   tag android-vX.Y.Z  -> Android APK, signed;                         version from android/version.properties
 name: Build installers
 on:
   push:
-    tags: ["v*"]
+    tags: ["v*", "android-v*"]
   workflow_dispatch:
 
 permissions:
@@ -11,6 +13,7 @@ permissions:
 jobs:
   build:
     name: Build (${{ matrix.label }})
+    if: ${{ !startsWith(github.ref, 'refs/tags/android-v') }}
     timeout-minutes: 25
     strategy:
       fail-fast: false
@@ -160,8 +163,112 @@ jobs:
             test -s "$RES/ocr/tessdata/eng.traineddata"
           done
 
+  # Android: the same web UI in the native app (android/), as a release APK signed with the project's own key.
+  # Needs four repository secrets: ANDROID_KEYSTORE_BASE64 (the .jks file, base64), ANDROID_KEYSTORE_PASSWORD,
+  # ANDROID_KEY_ALIAS and ANDROID_KEY_PASSWORD. Runs for android-v* tags (and manual runs); android-release publishes it.
+  android:
+    name: Build (android)
+    if: ${{ startsWith(github.ref, 'refs/tags/android-v') || github.event_name == 'workflow_dispatch' }}
+    timeout-minutes: 30
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Tag must match android/version.properties
+        if: startsWith(github.ref, 'refs/tags/android-v')
+        shell: bash
+        run: |
+          VER="android-v$(sed -n 's/^versionName=//p' android/version.properties | tr -d '[:space:]')"
+          if [ "$VER" != "${{ github.ref_name }}" ]; then
+            echo "Tag ${{ github.ref_name }} does not match android/version.properties ($VER)"; exit 1
+          fi
+
+      # vendor/ and the OCR engine are git-ignored: the APK bundles the same offline libraries as the desktop installers.
+      - name: Fetch offline libraries and OCR engine
+        shell: bash
+        run: |
+          python fetch_libs.py
+          (cd ocr-engine && npm install --omit=dev --ignore-scripts)
+          test -s ocr-engine/node_modules/tesseract.js/dist/tesseract.min.js
+          test -s ocr-engine/tessdata/eng.traineddata
+
+      - name: Android SDK packages
+        shell: bash
+        run: |
+          SDKM="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
+          yes | "$SDKM" --licenses > /dev/null || true
+          "$SDKM" "platforms;android-35" "build-tools;35.0.0" > /dev/null
+
+      - name: Release signing key
+        shell: bash
+        env:
+          KS_B64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          KS_PASS: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          KEY_PASS: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          for v in KS_B64 KS_PASS KEY_ALIAS KEY_PASS; do
+            [ -n "${!v}" ] || { echo "::error::Missing Android signing secret ($v). See android/README.md"; exit 1; }
+          done
+          echo "$KS_B64" | base64 -d > android/release.jks
+          {
+            echo "storeFile=release.jks"
+            echo "storePassword=$KS_PASS"
+            echo "keyAlias=$KEY_ALIAS"
+            echo "keyPassword=$KEY_PASS"
+          } > android/keystore.properties
+
+      - name: Build signed release APK
+        working-directory: android
+        env:
+          REQUIRE_RELEASE_SIGNING: "true"
+        shell: bash
+        run: |
+          chmod +x gradlew
+          for i in 1 2 3; do
+            ./gradlew assembleRelease --no-daemon --stacktrace && exit 0
+            echo "Gradle build failed (attempt $i of 3)"; [ "$i" -lt 3 ] && sleep $((i * 30))
+          done
+          exit 1
+
+      - name: Verify signature and name the APK
+        shell: bash
+        run: |
+          APK=$(ls android/app/build/outputs/apk/release/*.apk | head -1)
+          "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs "$APK" | tee certs.txt
+          if grep -q "CN=Android Debug" certs.txt; then echo "::error::The APK is signed with the debug key"; exit 1; fi
+          VER=$(sed -n 's/^versionName=//p' android/version.properties | tr -d '[:space:]')
+          mkdir -p out && cp "$APK" "out/RejBoard-$VER-android.apk"
+          ls -la out
+
+      - name: Remove signing key from the runner
+        if: always()
+        shell: bash
+        run: rm -f android/release.jks android/keystore.properties
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: android-apk
+          path: out/*.apk
+          if-no-files-found: error
+
   release-notes:
-    name: Update release notes
+    name: Update desktop release notes
     needs: build
     if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
@@ -183,3 +290,48 @@ jobs:
           body_path: release-notes.md
           generate_release_notes: false
           fail_on_unmatched_files: false
+
+  # The Android app's own release (tag android-vX.Y.Z), separate from the desktop installers. It is never marked "latest":
+  # the desktop app's updater (electron-updater) follows the latest release, which must stay the desktop one.
+  # The Android app's updater looks for the newest android-v* release instead (Updater.kt).
+  android-release:
+    name: Publish Android release
+    needs: android
+    if: startsWith(github.ref, 'refs/tags/android-v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: android-apk
+          path: android-apk
+      - name: Release notes
+        id: notes
+        shell: bash
+        run: |
+          VER="${GITHUB_REF_NAME#android-v}"
+          echo "ver=$VER" >> "$GITHUB_OUTPUT"
+          section() { awk -v v="$1" '$0 ~ "^## \\[" v "\\]" {f=1; next} /^## \[/{f=0} f' android/CHANGELOG.md; }
+          section "$VER" > changes.md
+          test -s changes.md || { echo "No android/CHANGELOG.md section for $VER"; exit 1; }
+          {
+            echo "**RejBoard for Android $VER**: phones and tablets, Android 8 and later."
+            echo
+            echo "Download \`RejBoard-$VER-android.apk\` below and open it on your device to install or update (allow installs from your browser or file manager when Android asks). Every version is signed with the same key, so updating keeps your boards. The app also offers new versions itself in Settings → Updates."
+            echo
+            echo "The desktop app (Windows, macOS, Linux) is in the [latest RejBoard release](https://github.com/$GITHUB_REPOSITORY/releases/latest)."
+            echo
+            echo "---"
+            echo
+            cat changes.md
+          } > android-notes.md
+      - uses: softprops/action-gh-release@v2
+        with:
+          name: RejBoard for Android ${{ steps.notes.outputs.ver }}
+          body_path: android-notes.md
+          files: android-apk/*.apk
+          fail_on_unmatched_files: true
+          make_latest: "false"
+          generate_release_notes: false

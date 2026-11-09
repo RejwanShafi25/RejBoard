@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!-- The in-app browser may open plain http:// sites (as in the desktop app). The app's own UI is always served from
+         https://appassets.androidplatform.net out of the APK, and LAN sharing uses raw TCP with its own end-to-end encryption. -->
+    <base-config cleartextTrafficPermitted="true">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+</network-security-config>
