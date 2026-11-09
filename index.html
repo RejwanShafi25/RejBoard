@@ -1038,8 +1038,14 @@ function placeHwPopup(){const p=$('#hwp'),b=$('#hwh');if(!p||p.hidden||!b)return
 function openHwPopup(b){const p=$('#hwp'),was=!p.hidden;closeTransient();if(was)return;syncHw();p.hidden=false;placeHwPopup()}
 /* keep the popup glued to its button when the window is resized, maximised or goes full screen (the dock re-flows after the resize) */
 (()=>{let t=0;const again=()=>{placeHwPopup();clearTimeout(t);t=setTimeout(placeHwPopup,150)};window.addEventListener('resize',again);document.addEventListener('fullscreenchange',again);if(window.ResizeObserver){const d=$('#dk');if(d)new ResizeObserver(again).observe(d)}})();
-function item(c,i){c.save();if(i.au&&RC.cur===i.au.r&&RC.sync!==false&&RC.audio&&RC.audio.currentTime+.05<i.au.t)c.globalAlpha*=.14; /* replay: notes not written yet at this point of the recording */let rb=null;if(i.rot){const b=bnds([i]);rb=[(b[0]+b[2])/2,(b[1]+b[3])/2];c.translate(rb[0],rb[1]);c.rotate(i.rot);c.translate(-rb[0],-rb[1]);}if(i.t=='tb')tbl(c,i);else if(i.t=='sp')drawSp(c,i);else if(i.t=='s'&&i.xyz)drawXYZ(c,i);else if(i.t=='s'&&i.shape3d)drawShape3D(c,i);else if(i.t=='k'&&i.pts)tapePath(c,i);else if(i.t=='k'){c.fillStyle=i.color;if(i.open){c.globalAlpha=.18;c.fillRect(i.x,i.y,i.w,i.h);c.globalAlpha=1}else if(i.st&&i.st!='solid'){tapeDraw(c,i)}else{c.fillRect(i.x,i.y,i.w,i.h);c.fillStyle='rgba(0,0,0,.08)';for(let x=i.x;x<i.x+i.w;x+=14)c.fillRect(x,i.y,6,i.h)}}else if(i.t=='s')stroke(c,i);else if(i.t=='t'&&i.sticky)drawSticky(c,i);else if(i.t=='gr')drawGraph(c,i);else if(i.t=='ck')drawCk(c,i);else if(i.t=='i'||i.t=='m'){const m=img(i.src);if(m.complete&&m.naturalWidth)c.drawImage(m,i.x,i.y,i.w,i.h)}else txt(c,i,1);c.restore()}
-function bnds(L){let a=[1e9,1e9,-1e9,-1e9];for(const i of L){let b;if(i.t=='sp')b=spAabb(i);else if(i.t=='s'&&i.xyz){const o=i.xyz,ox=o.ox??i.x,oy=o.oy??i.y,dx=(o.zLen||35)*.72,dy=(o.zLen||35)*.55;b=[ox,oy-(o.zLen||35)*.55,ox+(o.xLen||120)+10,oy+(o.yLen||90)+10]}else if(i.t=='s'){const r=i.size/2;b=i.pts.reduce((m,p)=>[Math.min(m[0],p[0]-r),Math.min(m[1],p[1]-r),Math.max(m[2],p[0]+r),Math.max(m[3],p[1]+r)],[1e9,1e9,-1e9,-1e9])}else{if(i.t=='t'||i.t=='l')txt(cx,i,0);b=[i.x,i.y,i.x+i.w,i.y+i.h]}a=[Math.min(a[0],b[0]),Math.min(a[1],b[1]),Math.max(a[2],b[2]),Math.max(a[3],b[3])]}return a}
+function item(c,i){c.save();if(i.au&&RC.cur===i.au.r&&RC.sync!==false&&RC.audio&&RC.audio.currentTime+.05<i.au.t)c.globalAlpha*=.14; /* replay: notes not written yet at this point of the recording */let rb=null;if(i.rot){const b=bndsRaw([i]);rb=[(b[0]+b[2])/2,(b[1]+b[3])/2];c.translate(rb[0],rb[1]);c.rotate(i.rot);c.translate(-rb[0],-rb[1]);}if(i.t=='tb')tbl(c,i);else if(i.t=='sp')drawSp(c,i);else if(i.t=='s'&&i.xyz)drawXYZ(c,i);else if(i.t=='s'&&i.shape3d)drawShape3D(c,i);else if(i.t=='k'&&i.pts)tapePath(c,i);else if(i.t=='k'){c.fillStyle=i.color;if(i.open){c.globalAlpha=.18;c.fillRect(i.x,i.y,i.w,i.h);c.globalAlpha=1}else if(i.st&&i.st!='solid'){tapeDraw(c,i)}else{c.fillRect(i.x,i.y,i.w,i.h);c.fillStyle='rgba(0,0,0,.08)';for(let x=i.x;x<i.x+i.w;x+=14)c.fillRect(x,i.y,6,i.h)}}else if(i.t=='s')stroke(c,i);else if(i.t=='t'&&i.sticky)drawSticky(c,i);else if(i.t=='gr')drawGraph(c,i);else if(i.t=='ck')drawCk(c,i);else if(i.t=='i'||i.t=='m'){const m=img(i.src);if(m.complete&&m.naturalWidth)c.drawImage(m,i.x,i.y,i.w,i.h)}else txt(c,i,1);c.restore()}
+/* the box items cover AS DRAWN: a rotated picture, sticky, text, table or stroke gets the box around its rotated outline (shapes already did,
+   via spAabb). Selection boxes, handles, tap-to-select, lasso, snapping and zoom-to-fit all use it. bndsRaw() is the box before rotation,
+   for the few places that apply the rotation themselves. */
+function bnds(L){if(!L.some(i=>i&&i.rot&&i.t!='sp'))return bndsRaw(L);let a=[1e9,1e9,-1e9,-1e9];
+ for(const i of L){let b=bndsRaw([i]);if(i.rot&&i.t!='sp'){const mx=(b[0]+b[2])/2,my=(b[1]+b[3])/2,co=Math.abs(Math.cos(i.rot)),si=Math.abs(Math.sin(i.rot)),hw=(b[2]-b[0])/2,hh=(b[3]-b[1])/2,ex=co*hw+si*hh,ey=si*hw+co*hh;b=[mx-ex,my-ey,mx+ex,my+ey]}
+  a=[Math.min(a[0],b[0]),Math.min(a[1],b[1]),Math.max(a[2],b[2]),Math.max(a[3],b[3])]}return a}
+function bndsRaw(L){let a=[1e9,1e9,-1e9,-1e9];for(const i of L){let b;if(i.t=='sp')b=spAabb(i);else if(i.t=='s'&&i.xyz){const o=i.xyz,ox=o.ox??i.x,oy=o.oy??i.y,dx=(o.zLen||35)*.72,dy=(o.zLen||35)*.55;b=[ox,oy-(o.zLen||35)*.55,ox+(o.xLen||120)+10,oy+(o.yLen||90)+10]}else if(i.t=='s'){const r=i.size/2;b=i.pts.reduce((m,p)=>[Math.min(m[0],p[0]-r),Math.min(m[1],p[1]-r),Math.max(m[2],p[0]+r),Math.max(m[3],p[1]+r)],[1e9,1e9,-1e9,-1e9])}else{if(i.t=='t'||i.t=='l')txt(cx,i,0);b=[i.x,i.y,i.x+i.w,i.y+i.h]}a=[Math.min(a[0],b[0]),Math.min(a[1],b[1]),Math.max(a[2],b[2]),Math.max(a[3],b[3])]}return a}
 function clipPages(c){if(S.pg.size==='inf')return;const[pw,ph]=pdim();c.beginPath();for(let i=0;i<S.pg.n;i++)c.rect(0,i*(ph+PG_GAP),pw,ph);c.clip()}
 var rulerActive=false,rulerHook=null;
 function draw(){draw0();ov2();if(window.fcPaint)fcPaint();if(window.ZW&&ZW.on)zwPaint();if(drag&&drag.k=='mv'&&drag.guides)drawGuides(cx,drag.guides);if(typeof renderRuler==='function')renderRuler()}
@@ -1971,7 +1977,8 @@ const pt=e=>{const r=cv.getBoundingClientRect();return[(e.clientX-r.left-S.ox)/S
 const pip=(p,P)=>{let c=0;for(let i=0,j=P.length-1;i<P.length;j=i++)if((P[i][1]>p[1])!=(P[j][1]>p[1])&&p[0]<(P[j][0]-P[i][0])*(p[1]-P[i][1])/(P[j][1]-P[i][1])+P[i][0])c=!c;return c};
 const selIn=(i,poly)=>{if(i.t=='s')return i.pts.some(p=>pip(p,poly));const b=bnds([i]);return pip([(b[0]+b[2])/2,(b[1]+b[3])/2],poly)||[[b[0],b[1]],[b[2],b[1]],[b[2],b[3]],[b[0],b[3]]].some(q=>pip(q,poly))||poly.some(q=>q[0]>b[0]&&q[0]<b[2]&&q[1]>b[1]&&q[1]<b[3])};
 const LY=id=>S.layers.find(l=>l.id==(id??1)),act=i=>{const l=LY(i.ly);return!!l&&l.vis&&!l.lock},addI=it=>{it.ly??=S.ly;if(window.recStamp)recStamp(it);S.items.push(it)};
-function xf(L,fn,sx=1,sy=sx){const k=Math.sqrt(sx*sy);for(const i of L){if(i.t=='sp'){const c=fn(i.x+i.w/2,i.y+i.h/2);i.w*=sx;i.h*=sy;i.x=c[0]-i.w/2;i.y=c[1]-i.h/2;continue}if(i.xyz){const o=i.xyz;o.ox=o.ox??i.x;o.oy=o.oy??i.y;[o.ox,o.oy]=fn(o.ox,o.oy);o.xLen*=sx;o.yLen*=sy;o.zLen*=k;i.x=o.ox;i.y=o.oy;continue}if(i.t=='k'&&i.pts){i.pts.forEach(p=>{[p[0],p[1]]=fn(p[0],p[1])});i.size*=k;tapeBB(i);continue}if(i.t=='s'){i.pts.forEach(p=>{[p[0],p[1]]=fn(p[0],p[1])});i.size*=k}else if(i.rot){const b=bnds([i]),c=[(b[0]+b[2])/2,(b[1]+b[3])/2];const q=fn(c[0],c[1]);i.x+=q[0]-c[0];i.y+=q[1]-c[1]}else{[i.x,i.y]=fn(i.x,i.y);i.w*=sx;i.h*=sy;if(i.size)i.size*=k;if(i.t=='tb'){i.cw=i.cw.map(v=>v*sx);i.rh=i.rh.map(v=>v*sy);i.fs*=k}}}}
+function xf(L,fn,sx=1,sy=sx){const k=Math.sqrt(sx*sy);for(const i of L){if(i.t=='sp'){const c=fn(i.x+i.w/2,i.y+i.h/2);i.w*=sx;i.h*=sy;i.x=c[0]-i.w/2;i.y=c[1]-i.h/2;continue}if(i.xyz){const o=i.xyz;o.ox=o.ox??i.x;o.oy=o.oy??i.y;[o.ox,o.oy]=fn(o.ox,o.oy);o.xLen*=sx;o.yLen*=sy;o.zLen*=k;i.x=o.ox;i.y=o.oy;continue}if(i.t=='k'&&i.pts){i.pts.forEach(p=>{[p[0],p[1]]=fn(p[0],p[1])});i.size*=k;tapeBB(i);continue}if(i.t=='s'){i.pts.forEach(p=>{[p[0],p[1]]=fn(p[0],p[1])});i.size*=k}else if(i.rot){const b=bndsRaw([i]),c=[(b[0]+b[2])/2,(b[1]+b[3])/2],q=fn(c[0],c[1]),co=Math.cos(i.rot),si=Math.sin(i.rot),sw=Math.hypot(sx*co,sy*si),sh=Math.hypot(sx*si,sy*co); /* the box's stretch, measured along the item's own (rotated) sides */
+  if(i.t=='t'||i.t=='l'){i.x+=q[0]-c[0];i.y+=q[1]-c[1];if(i.size)i.size*=Math.sqrt(sw*sh)}else{i.w*=sw;i.h*=sh;i.x=q[0]-i.w/2;i.y=q[1]-i.h/2;if(i.size)i.size*=Math.sqrt(sw*sh);if(i.t=='tb'){i.cw=i.cw.map(v=>v*sw);i.rh=i.rh.map(v=>v*sh);i.fs*=Math.sqrt(sw*sh)}}}else{[i.x,i.y]=fn(i.x,i.y);i.w*=sx;i.h*=sy;if(i.size)i.size*=k;if(i.t=='tb'){i.cw=i.cw.map(v=>v*sx);i.rh=i.rh.map(v=>v*sy);i.fs*=k}}}}
 const rotPoint=(p,cx,cy,a)=>{const dx=p[0]-cx,dy=p[1]-cy,co=Math.cos(a),si=Math.sin(a);return[cx+dx*co-dy*si,cy+dx*si+dy*co]};
 const itemCenter=i=>{const b=bnds([i]);return[(b[0]+b[2])/2,(b[1]+b[3])/2]};
 const HD=b=>{const mx=(b[0]+b[2])/2,my=(b[1]+b[3])/2;return[[b[0],b[1],'nw'],[mx,b[1],'n'],[b[2],b[1],'ne'],[b[2],my,'e'],[b[2],b[3],'se'],[mx,b[3],'s'],[b[0],b[3],'sw'],[b[0],my,'w']]};
@@ -2814,10 +2821,10 @@ const keepColors=i=>i.t=='i'||!!i.imp;
 /* thumbnails of crowded boards: strokes are drawn as plain polylines (they are only 200px wide) instead of the full brush renderers */
 var THF=false;
 function fastStroke(c,i){const P=i.pts,k=Math.max(.0001,c.getTransform().a);c.save();c.strokeStyle=i.color||'#000';c.globalAlpha=Math.min(1,Math.max(.15,(i.opacity??100)/100));c.lineWidth=Math.max(i.size||2,1.2/k);c.lineCap=c.lineJoin='round';c.beginPath();c.moveTo(P[0][0],P[0][1]);for(let j=1;j<P.length;j++)c.lineTo(P[j][0],P[j][1]);if(P.length==1)c.lineTo(P[0][0]+.01,P[0][1]);c.stroke();c.restore()}
-function paintExp(c,inv){for(const l of S.layers)if(l.vis)for(const i of S.items){if((i.ly??1)!=l.id)continue;if(THF&&i.t=='s'&&Array.isArray(i.pts)&&i.pts.length&&!i.xyz&&!i.shape3d&&!i.rot){fastStroke(c,i);continue}item(c,i);if(inv&&keepColors(i)){const b=i.t=='i'?[i.x,i.y,i.x+i.w,i.y+i.h]:bnds([i]);c.save();if(i.rot){const rb=[(b[0]+b[2])/2,(b[1]+b[3])/2];c.translate(rb[0],rb[1]);c.rotate(i.rot);c.translate(-rb[0],-rb[1])}c.globalCompositeOperation='difference';c.fillStyle='#fff';c.fillRect(b[0],b[1],b[2]-b[0],b[3]-b[1]);c.restore()}}}
+function paintExp(c,inv){for(const l of S.layers)if(l.vis)for(const i of S.items){if((i.ly??1)!=l.id)continue;if(THF&&i.t=='s'&&Array.isArray(i.pts)&&i.pts.length&&!i.xyz&&!i.shape3d&&!i.rot){fastStroke(c,i);continue}item(c,i);if(inv&&keepColors(i)){const b=i.t=='i'?[i.x,i.y,i.x+i.w,i.y+i.h]:bndsRaw([i]);c.save();if(i.rot){const rb=[(b[0]+b[2])/2,(b[1]+b[3])/2];c.translate(rb[0],rb[1]);c.rotate(i.rot);c.translate(-rb[0],-rb[1])}c.globalCompositeOperation='difference';c.fillStyle='#fff';c.fillRect(b[0],b[1],b[2]-b[0],b[3]-b[1]);c.restore()}}}
 /* Export bounds that never clip: honours rotation and full pen width / glow / shadows (bnds() alone ignores them) */
 function expBounds(L){if(!L||!L.length)return[0,0,800,600];let a=[1e9,1e9,-1e9,-1e9];
- for(const i of L){if(!i)continue;let b;try{b=bnds([i])}catch(e){continue}if(!b||!(b[2]>=b[0])||!(b[3]>=b[1])||Math.abs(b[0])>1e8)continue;
+ for(const i of L){if(!i)continue;let b;try{b=bndsRaw([i])}catch(e){continue}if(!b||!(b[2]>=b[0])||!(b[3]>=b[1])||Math.abs(b[0])>1e8)continue;
   if(i.rot&&i.t!='sp'){const mx=(b[0]+b[2])/2,my=(b[1]+b[3])/2,co=Math.abs(Math.cos(i.rot)),si=Math.abs(Math.sin(i.rot)),hw=(b[2]-b[0])/2,hh=(b[3]-b[1])/2,ex=co*hw+si*hh,ey=si*hw+co*hh;b=[mx-ex,my-ey,mx+ex,my+ey]}
   const pad=i.t=='s'?(i.size||4)*.8+4:i.t=='sp'?(i.size||3)+6:4;
   a=[Math.min(a[0],b[0]-pad),Math.min(a[1],b[1]-pad),Math.max(a[2],b[2]+pad),Math.max(a[3],b[3]+pad)]}
@@ -3199,16 +3206,16 @@ async function replayDialog(){if(!S.items.length)return toast(t_('Nothing to rep
 /* small landscape screens (phones, small tablets): the header, page bar and zoom widget shrink together by one factor, so the
    interface stays in proportion with the board and the dock instead of crowding it. Laptops, tablets and portrait phones (which have
    their own layout) stay at 100%. Never below 72%, so everything stays easy to tap. The board itself is never scaled. */
-let UIS=1;
-function uiScale(){const land=innerWidth>innerHeight,s=land?Math.max(.72,Math.min(1,innerWidth/1100,innerHeight/700)):1;
- UIS=Math.round(s*100)/100;for(const id of ['hdr','pgn','zw','pp']){const e=document.getElementById(id);if(e)e.style.zoom=UIS<1?String(UIS):''}}
+let UIS=1;const UIH={}; /* tallest height seen per window width: an on-screen keyboard shortens the window but must not shrink the interface */
+function uiScale(){const w=innerWidth,h=UIH[w]=Math.max(UIH[w]||0,innerHeight),land=w>h,s=land?Math.max(.72,Math.min(1,w/1100,h/700)):1;
+ UIS=Math.round(s*100)/100;const z=UIS<1?String(UIS):'';for(const id of ['hdr','pgn','zw','pp']){const e=document.getElementById(id);if(e&&e.style.zoom!==z)e.style.zoom=z}} /* only touch it when it changes: no needless relayout */
 function fitBottom(){uiScale();const dk=$('#dk'),zw0=$('#zw'),pp=$('#pp'),pg=$('#pgn');if(!dk)return;
  const vis=e=>e&&!e.hidden&&getComputedStyle(e).display!='none',root=document.documentElement,vw=root.clientWidth,m=8,gap=10,safe='env(safe-area-inset-bottom,0px)',B=14,zw=vis(zw0)?zw0:(vis(pp)?pp:zw0);
  dk.classList.remove('sm','xs','fit1');dk.style.maxWidth='none';dk.style.width='';dk.style.zoom='';dk.style.left='50%';dk.style.transform='translateX(-50%)';
  let dW=dk.getBoundingClientRect().width;
  /* landscape: every tool is visible at once on ONE row, never behind a sideways scroll: the spacing tightens first (icons keep their
     size), then the icons get smaller, then the whole dock scales down just enough to fit. Portrait keeps one row that scrolls sideways. */
- const room=vw-2*m,land=innerWidth>innerHeight;
+ const room=vw-2*m,land=innerWidth>(UIH[innerWidth]||innerHeight); /* the keyboard does not turn a portrait screen into a landscape one */
  if(UIS<1){dk.style.zoom=String(UIS);dW=dk.getBoundingClientRect().width} /* same size as the rest of the interface */
  for(const c of land?['fit1','sm','xs']:['sm','xs']){if(dW<=room)break;dk.classList.add(c);dW=dk.getBoundingClientRect().width}
  if(land&&dW>room+.5){dk.style.zoom=((parseFloat(dk.style.zoom)||1)*room/dW).toFixed(4);dW=dk.getBoundingClientRect().width}
@@ -3228,7 +3235,8 @@ function fitBottom(){uiScale();const dk=$('#dk'),zw0=$('#zw'),pp=$('#pp'),pg=$('
  root.style.setProperty('--pb',(pb+Math.max(0,dH-48))+'px')}
 const refitBottom=()=>{fitBottom();requestAnimationFrame(fitBottom);setTimeout(fitBottom,120);setTimeout(fitBottom,400)};
 addEventListener('resize',()=>{refitBottom();const sp=$('#shpp');if(sp&&!sp.hidden)renderShapePreview()});
-if(window.ResizeObserver){const ro=new ResizeObserver(()=>fitBottom());['#zw','#pp','#pgn'].forEach(q=>{const e=$(q);e&&ro.observe(e)});ro.observe(document.documentElement)}
+/* refit on the next frame, not inside the observer: fitting resizes the observed widgets (interface scale), which would start a ResizeObserver loop */
+if(window.ResizeObserver){let rq=0;const ro=new ResizeObserver(()=>{if(!rq)rq=requestAnimationFrame(()=>{rq=0;fitBottom()})});['#zw','#pp','#pgn'].forEach(q=>{const e=$(q);e&&ro.observe(e)});ro.observe(document.documentElement)}
 if(window.visualViewport)visualViewport.addEventListener('resize',refitBottom);
 document.addEventListener('fullscreenchange',refitBottom);addEventListener('orientationchange',refitBottom);addEventListener('focus',refitBottom);
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fitBottom);
@@ -5910,7 +5918,7 @@ document.getElementById('graphd').onclick = () => graphOpen(null);
 /* Temporary embedded browser/video surfaces. No address or form input is written to app storage. */
 (()=>{
  const hub=document.getElementById('mediaHub'), choices=document.getElementById('mediaChoices'), body=document.getElementById('mediaBody'), address=document.getElementById('mediaAddress'), title=document.getElementById('mediaTitle');
- const localPicker=document.getElementById('localVideoPicker'); let view=null, localPlayer=null, localObjectUrl=null, kind='browser', lastUrl='', drag=null;
+ const localPicker=document.getElementById('localVideoPicker'); let view=null, localPlayer=null, localObjectUrl=null, kind='browser', lastUrl='', drag=null, hubHome=null;
 window.rbHub=()=>({view,kind,url:lastUrl,title:(typeof title!=='undefined'&&title&&title.textContent)||''});
  const secureUrl=(raw)=>{let v=String(raw||'').trim();if(!v)return '';if(!/^[a-z][a-z0-9+.-]*:/i.test(v)){v=/\s/.test(v)||!v.includes('.')?'https://www.google.com/search?q='+encodeURIComponent(v):'https://'+v}try{const u=new URL(v);return ['http:','https:'].includes(u.protocol)?u.href:''}catch(_){return ''}};
  function makeVisible(t){hub.hidden=false;hub.classList.remove('maximized');if(hub.classList.contains('minimized')||hub.style.bottom)unmin();title.textContent=t;document.getElementById('mediaPlay').hidden=kind==='browser';document.getElementById('mediaBack10').hidden=kind==='browser';document.getElementById('mediaFwd10').hidden=kind==='browser';}
@@ -5958,7 +5966,8 @@ window.rbHub=()=>({view,kind,url:lastUrl,title:(typeof title!=='undefined'&&titl
   // Side and corner handles resize from the selected edge while keeping the opposite edge anchored.
   const head=document.getElementById('mediaHead'), resizeHandles=[...hub.querySelectorAll('.mh-resize-handle')];
   let frameAction=null;
-  function endFrameAction(){frameAction=null;try{document.body.style.userSelect=''}catch(_){}}
+  function endFrameAction(){if(frameAction&&!hub.classList.contains('minimized')&&!hub.classList.contains('maximized')&&hub.style.left){const r=hub.getBoundingClientRect();hubHome={left:r.left,top:r.top}} /* where the person put the frame */
+ frameAction=null;try{document.body.style.userSelect=''}catch(_){}}
   head.addEventListener('pointerdown',e=>{
     if(e.button!==0||e.target.closest('button,input')||hub.classList.contains('maximized'))return;
     if(hub.classList.contains('minimized'))minUser=true;
@@ -6000,7 +6009,12 @@ window.rbHub=()=>({view,kind,url:lastUrl,title:(typeof title!=='undefined'&&titl
   document.addEventListener('pointerup',e=>{if(frameAction&&e.pointerId===frameAction.pointerId)endFrameAction()},true);
   document.addEventListener('pointercancel',e=>{if(frameAction&&e.pointerId===frameAction.pointerId)endFrameAction()},true);
   window.addEventListener('blur',endFrameAction);
-  window.addEventListener('resize',()=>{if(hub.hidden||hub.classList.contains('maximized'))return;const r=hub.getBoundingClientRect();if(hub.classList.contains('minimized'))return;hub.style.left=Math.max(0,Math.min(innerWidth-r.width,r.left))+'px';hub.style.top=Math.max(0,Math.min(innerHeight-42,r.top))+'px'});
+  /* window resized (also: an on-screen keyboard opening or closing): keep the frame on screen. A frame nobody moved stays centred by
+     its CSS; a moved one goes back to where it was put as soon as there is room again (the keyboard closes), instead of staying pushed
+     aside. Its position is absolute from then on, so the CSS centring shift must not apply on top of it. */
+  window.addEventListener('resize',()=>{if(hub.hidden||hub.classList.contains('maximized')||hub.classList.contains('minimized')||!hubHome)return;
+   const r=hub.getBoundingClientRect();hub.style.transform='none';
+   hub.style.left=Math.max(0,Math.min(innerWidth-r.width,hubHome.left))+'px';hub.style.top=Math.max(0,Math.min(innerHeight-42,hubHome.top))+'px'});
   document.addEventListener('keydown',e=>{if(e.key==='Escape'){if(!choices.hidden)choices.hidden=true;else if(!hub.hidden)closeSurface()}});
  window.addEventListener('beforeunload',closeSurface);
 })();

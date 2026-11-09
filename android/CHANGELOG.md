@@ -2,6 +2,11 @@
 
 Versions of the Android app (tags `android-vX.Y.Z`). The desktop app has its own changelog and versions: [CHANGELOG.md](../CHANGELOG.md).
 
+## [1.0.1]
+### Fixed
+- **Typing in the in-app browser** keeps the browser panel in place above the keyboard, and the interface keeps its size while the keyboard is open.
+- **Rotated pictures** show a selection box that matches how they look, and can be resized.
+
 ## [1.0.0]
 ### Added
 - **First release** (phones and tablets, Android 8 and later). A native Android app that runs the very same RejBoard as the desktop app, so the home screen, boards, tools, menus, templates, settings and the 22 languages look and work the same. Everything the desktop app does behind the scenes works on Android too:

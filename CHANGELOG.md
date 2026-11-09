@@ -1,4 +1,10 @@
 # Changelog
+## [1.3.8]
+### Fixed
+- **Rotated pictures select properly:** a picture (from a file, the web, the clipboard or a scan), sticky note, text box or table that was rotated now shows a selection box around how it actually looks, can be picked by tapping anywhere on it, and resizes with the handles (it used to keep the box of its unrotated shape and could not be resized).
+- **The browser and video panel stays where you put it:** resizing the window moved the panel up and to the left by half its size each time; on phones and tablets the on-screen keyboard pushed it off the screen. It now keeps its place and returns there when the keyboard closes.
+- The bottom bar no longer triggers a "ResizeObserver loop" error while it fits itself to the window.
+
 ## [1.3.7]
 ### Added
 - **RejBoard for Android 1.0.0** is out: the same RejBoard on Android phones and tablets, released separately (tag `android-v1.0.0`). See [android/CHANGELOG.md](android/CHANGELOG.md).
