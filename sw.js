@@ -1,7 +1,7 @@
 // Offline cache. The page comes from the cache at once and is checked against the server in the background; a newer page is stored only
 // after the app scripts and translations were fetched again, so a cached index.html is never paired with an older script. Libraries,
 // fonts and images stay cache-first. V only needs a bump to force a full refresh (the shell list below is pre-cached on install).
-const V='rw-v19';
+const V='rw-v20';
 const SHELL=['index.html','board-core.js','versions-core.js','md-core.js','pptx-core.js','qr-core.js','vault-core.js','diagram-core.js','templates-core.js','schema-core.js','interop-core.js','scanner-core.js','math-engine.js','graph-core.js','mfr-core.js','mfr-worker.js','manifest.json'];
 const ICONS=['icon.svg','icon-192.png','icon-512.png'];
 /* The shell is fetched with cache:'reload' so a new version never pairs a fresh index.html with an older script left in the browser's HTTP cache. */

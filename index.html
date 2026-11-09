@@ -2997,7 +2997,7 @@ var ZW={on:false,z:L('wb.zwz',3),box:null,cur:null,x0:0};
   /* the right-margin zone and the writing line */
   g.setTransform(d,0,0,d,0,0);g.fillStyle='rgba(108,99,181,.07)';g.fillRect(w*MARGIN,0,w*(1-MARGIN),h);g.strokeStyle='rgba(108,99,181,.35)';g.setLineDash([6,6]);g.beginPath();g.moveTo(w*MARGIN,0);g.lineTo(w*MARGIN,h);g.stroke();g.setLineDash([]);
   /* the box on the board */
-  cx.save();cx.setTransform(dpr*S.z,0,0,dpr*S.z,dpr*S.ox,dpr*S.oy);cx.lineWidth=1.6/S.z;cx.strokeStyle='#6c63b5';cx.fillStyle='rgba(108,99,181,.06)';cx.fillRect(b.x,b.y,b.w,b.h);cx.strokeRect(b.x,b.y,b.w,b.h);
+  cx.save();cx.setTransform(dpr*S.z,0,0,dpr*S.z,dpr*S.ox,dpr*S.oy);cx.lineWidth=1.6/S.z;cx.strokeStyle='#6c63b5';cx.strokeRect(b.x,b.y,b.w,b.h); /* outline only: the overlay can be painted again over a frame that was not cleared, so nothing translucent here */
   const tw=22/S.z,th=14/S.z;cx.fillStyle='#6c63b5';cx.fillRect(b.x,b.y-th,tw,th);cx.fillStyle='#fff';for(let k=0;k<3;k++)cx.fillRect(b.x+tw*.25,b.y-th+th*(.25+k*.22),tw*.5,th*.09);cx.restore()};
  function show(on){ZW.on=on;pane.hidden=!on;$('#zwBtn').classList.toggle('on',on);if(on){sel.value=String(ZW.z);setTimeout(()=>{if(!ZW.on)return;if(!ZW.box)place();else fit();follow();draw()})}draw()}
  $('#zwBtn').onclick=()=>show(!ZW.on);

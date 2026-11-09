@@ -1,4 +1,8 @@
 # Changelog
+## [1.3.6]
+### Fixed
+- The zoom writing window's box on the board turned solid purple while you wrote, hiding the ink under it; it is now a plain outline.
+
 ## [1.3.5]
 ### Added
 - **Shortcut ring:** hold your pen or finger still on an empty part of the board, or right-click with the mouse, and a ring of shortcuts opens right there: fountain pen, ballpoint pen, pencil, square-tip highlighter, eraser, lasso select and **Paste**, with **Undo** and **Redo** in the middle. Each pen shows, and picks, the colour you last used it with. Slide onto one and lift, or lift first and tap; Undo and Redo keep the ring open so you can press them again. Right-drag still pans when that setting is on.
