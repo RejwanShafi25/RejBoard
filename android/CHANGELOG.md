@@ -2,6 +2,11 @@
 
 Versions of the Android app (tags `android-vX.Y.Z`). The desktop app has its own changelog and versions: [CHANGELOG.md](../CHANGELOG.md).
 
+## [1.0.2]
+### Fixed
+- **Text stays still while you write:** typed text on a board no longer shakes slightly while you handwrite next to it.
+- **The Solve button is readable in the light theme** in the equation solver.
+
 ## [1.0.1]
 ### Fixed
 - **Typing in the in-app browser** keeps the browser panel in place above the keyboard, and the interface keeps its size while the keyboard is open.

@@ -1,4 +1,9 @@
 # Changelog
+## [1.3.9]
+### Fixed
+- **Text stays still while you write:** typed text on a board no longer shakes by a pixel or two each time the pen touches down or lifts. The board drew text slightly narrower on screen than in the copy it shows while you write; both now match exactly.
+- **The Solve button is readable in the light theme:** the selected mode buttons in the equation solver (Solve and the others) no longer show white text on a pale background.
+
 ## [1.3.8]
 ### Fixed
 - **Rotated pictures select properly:** a picture (from a file, the web, the clipboard or a scan), sticky note, text box or table that was rotated now shows a selection box around how it actually looks, can be picked by tapping anywhere on it, and resizes with the handles (it used to keep the box of its unrotated shape and could not be resized).
