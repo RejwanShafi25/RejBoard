@@ -25,7 +25,7 @@ button,select,input,textarea{font:inherit;color:var(--fg);background:var(--pn);b
 button{cursor:pointer}button.on{background:var(--ac);color:var(--acf,#fff);border-color:var(--ac)}
 input[type=range]{padding:0;width:90px}input[type=color]{padding:0;width:30px;height:26px}
 .sw{width:22px;height:22px;padding:0;border-radius:50%}.sep{width:1px;height:20px;background:var(--bd)}
-#w{flex:1;position:relative;overflow:hidden;min-height:200px;direction:ltr}#c{direction:ltr}/* RTL interface languages must not mirror the board: canvas text inherits CSS direction (start-aligned text jumped to the right) */#c{position:absolute;left:0;top:0;touch-action:none}.brush-cursor{position:absolute;left:0;top:0;width:20px;height:20px;border:1.5px solid currentColor;border-radius:50%;transform:translate(-50%,-50%);pointer-events:none;z-index:9;display:none;box-sizing:border-box;opacity:.9}.brush-cursor.on{display:block}
+#w{flex:1;position:relative;overflow:hidden;min-height:200px;direction:ltr}canvas{letter-spacing:normal;word-spacing:normal}/* canvas text inherits CSS letter-spacing from <body>: the board canvas drew text narrower than the off-screen layer cache, so text shifted by a pixel or two each time the pen went down or up */#c{direction:ltr}/* RTL interface languages must not mirror the board: canvas text inherits CSS direction (start-aligned text jumped to the right) */#c{position:absolute;left:0;top:0;touch-action:none}.brush-cursor{position:absolute;left:0;top:0;width:20px;height:20px;border:1.5px solid currentColor;border-radius:50%;transform:translate(-50%,-50%);pointer-events:none;z-index:9;display:none;box-sizing:border-box;opacity:.9}.brush-cursor.on{display:block}
 .xq{display:flex;align-items:center;gap:6px;margin-bottom:8px;font-size:13px}.pop{position:fixed;z-index:20;background:var(--pn);border:1px solid var(--bd);border-radius:10px;padding:12px;box-shadow:0 8px 30px #0005}
 #mq{left:50%;top:20%;transform:translateX(-50%);width:min(440px,92vw)}#mq textarea{width:100%;box-sizing:border-box;height:80px;font-family:monospace}
 #np{right:8px;top:60px;bottom:8px;width:min(400px,94vw);overflow:auto}#dock{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(10px + env(safe-area-inset-bottom,0px));z-index:12;display:flex;gap:4px;align-items:center;background:var(--pn);border:1px solid var(--bd);border-radius:999px;padding:4px 10px;box-shadow:0 4px 18px #0004}#sv{font-size:12px;opacity:.85;min-width:92px}
@@ -5515,7 +5515,7 @@ const mtStyle = document.createElement('style');
 mtStyle.textContent = `
 .mtp{position:fixed;z-index:30;left:50%;top:5vh;transform:translateX(-50%);width:min(760px,94vw);max-height:90vh;overflow:auto;box-sizing:border-box}
 .mtp h3{margin:0 0 8px;display:flex;align-items:center;gap:8px}.mtp h3 span{flex:1}
-.mtp .mtm{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px}.mtp .mtm button.on,.mtp button.on{background:#3b82f633;border-color:#3b82f6}
+.mtp .mtm{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px}.mtp .mtm button.on,.mtp button.on{background:#3b82f633;border-color:#3b82f6;color:inherit}
 .mtp textarea{width:100%;box-sizing:border-box;font:15px/1.4 ui-monospace,Consolas,monospace;padding:8px;border-radius:8px;resize:vertical;min-height:54px}
 .mtp .mto{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:8px 0;font-size:13px}.mtp .mto input,.mtp .mto select{max-width:90px}
 .mtp .mtx{display:flex;flex-wrap:wrap;gap:4px;margin:4px 0 8px}.mtp .mtx button{font-size:12px;opacity:.85}

@@ -146,3 +146,9 @@ test('the math tools are not loaded at start-up', () => {
   assert.ok(!/<script[^>]+src="vendor\/(math|nerdamer)/.test(html), 'math.min.js / nerdamer must be loaded lazily');
   assert.ok(!/lib\('vendor\/(math|nerdamer)/.test(html));
 });
+
+test('canvas text never inherits page letter-spacing (text on the board must not shift when the pen goes down)', () => {
+  // The board paints from an off-screen layer cache while the pen is down and repaints the visible canvas when it lifts.
+  // A visible canvas inherits CSS letter-spacing from <body>, an off-screen one does not, so typed text shifted 1-2 px on every stroke.
+  assert.ok(/(^|[}\s])canvas\{[^}]*letter-spacing:normal/.test(html), 'index.html must reset letter-spacing on canvas elements');
+});
